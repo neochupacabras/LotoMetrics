@@ -35,6 +35,11 @@ html,
 body {
   padding: 0;
   margin: 0;
+  /* Rede de segurança: nenhum elemento (presente ou futuro) deve
+     conseguir alargar a página inteira e forçar rolagem horizontal no
+     celular. Qualquer overflow horizontal pontual (como o menu de
+     abas) deve se conter sozinho — ver .subnav__inner. */
+  overflow-x: hidden;
 }
 
 body {
@@ -438,10 +443,21 @@ footer.rodape {
 
 /* ---------- Tabela de dados genérica (páginas de estatística) ---------- */
 
+.tabela-scroll {
+  width: 100%;
+  overflow-x: auto;
+  margin: 6px 0 36px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tabela-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 .tabela-dados {
   width: 100%;
   border-collapse: collapse;
-  margin: 6px 0 36px;
   font-family: var(--font-mono);
   font-size: 0.88rem;
 }
@@ -575,6 +591,16 @@ footer.rodape {
   display: flex;
   gap: 4px;
   padding: 0 24px;
+  overflow-x: auto;
+  /* A rolagem continua funcionando (arrastar/deslizar no celular,
+     scroll lateral no desktop) — só a barra de rolagem em si fica
+     escondida, pra não pesar visualmente embaixo do menu. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.subnav__inner::-webkit-scrollbar {
+  display: none;
 }
 
 .subnav a {

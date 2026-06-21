@@ -45,7 +45,8 @@ export default function ProbabilidadesClient({
         </span>
       </div>
 
-      <table className="tabela-dados">
+      <div className="tabela-scroll">
+        <table className="tabela-dados">
         <thead>
           <tr>
             <th>Acertos</th>
@@ -75,6 +76,7 @@ export default function ProbabilidadesClient({
             ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

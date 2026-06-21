@@ -66,6 +66,15 @@ em **Run**. **Nessa ordem exata** (há dependências entre eles):
 Não rode `transicao_markov.sql` — é da feature que foi removida do site.
 Se ele aparecer na sua pasta de arquivos antigos, pode ignorar ou apagar.
 
+**Aviso de Row Level Security:** ao rodar `setup_banco.sql` (só esse —
+os demais só criam funções, não tabelas), o Supabase mostra um aviso
+perguntando se quer habilitar RLS. Clique em **"Run and enable RLS"**.
+O projeto nunca usa a API pública do Supabase (PostgREST/`supabase-js`)
+— o Next.js conecta direto no Postgres via `pg`, autenticado como o
+usuário `postgres` (dono das tabelas), que não é afetado por RLS. Ligar
+RLS sem nenhuma política só fecha um caminho de acesso que o app nunca
+usou (a API pública via chave `anon`), sem nenhum efeito no app em si.
+
 ### 1.4 Carregar o histórico de concursos
 
 Esse passo roda do seu computador, não do Supabase. Abra o `cmd` na pasta

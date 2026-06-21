@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
 import Footer from "@/components/Footer";
 import "./globals.css";
 
@@ -44,9 +43,6 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         {children}
         <Footer />
-
-        {/* COMPONENTE ADICIONADA AQUI */}
-        <Analytics />
       </body>
     </html>
   );

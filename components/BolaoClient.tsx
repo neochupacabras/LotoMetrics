@@ -203,7 +203,8 @@ export default function BolaoClient({
                 Ordenado da maior garantia para a menor. Clique num plano para escolher as
                 dezenas.
               </p>
-              <table className="tabela-dados">
+              <div className="tabela-scroll">
+        <table className="tabela-dados">
                 <thead>
                   <tr>
                     <th>Pool</th>
@@ -233,6 +234,7 @@ export default function BolaoClient({
                   ))}
                 </tbody>
               </table>
+      </div>
             </div>
           )}
         </div>

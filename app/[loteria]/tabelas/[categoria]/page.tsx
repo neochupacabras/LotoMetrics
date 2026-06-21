@@ -247,7 +247,8 @@ async function ConteudoAtraso({
         vertical
         altura={300}
       />
-      <table className="tabela-dados">
+      <div className="tabela-scroll">
+        <table className="tabela-dados">
         <thead>
           <tr>
             <th>Dezena</th>
@@ -267,6 +268,7 @@ async function ConteudoAtraso({
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }
@@ -318,6 +320,7 @@ async function ConteudoCiclos({ loteriaId }: { loteriaId: number }) {
           rotuloValor="concursos"
           altura={240}
         />
+        <div className="tabela-scroll">
         <table className="tabela-dados">
           <thead>
             <tr>
@@ -338,6 +341,7 @@ async function ConteudoCiclos({ loteriaId }: { loteriaId: number }) {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
     </>
   );
@@ -372,6 +376,7 @@ async function ConteudoSequencias({ loteriaId }: { loteriaId: number }) {
         <p className="bloco__nota">
           Quantos concursos seguidos, sem interrupção, uma mesma dezena já chegou a sair.
         </p>
+        <div className="tabela-scroll">
         <table className="tabela-dados">
           <thead>
             <tr>
@@ -388,6 +393,7 @@ async function ConteudoSequencias({ loteriaId }: { loteriaId: number }) {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
     </>
   );
@@ -410,7 +416,8 @@ async function ConteudoParesImpares({ loteriaId }: { loteriaId: number }) {
         rotuloValor="% do histórico"
         altura={260}
       />
-      <table className="tabela-dados">
+      <div className="tabela-scroll">
+        <table className="tabela-dados">
         <thead>
           <tr>
             <th>Pares</th>
@@ -430,6 +437,7 @@ async function ConteudoParesImpares({ loteriaId }: { loteriaId: number }) {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }
@@ -461,6 +469,7 @@ async function ConteudoCategoriaBinaria({
     <>
       <div className="bloco">
         <h2 className="bloco__titulo">Frequência geral</h2>
+        <div className="tabela-scroll">
         <table className="tabela-dados">
           <thead>
             <tr>
@@ -486,6 +495,7 @@ async function ConteudoCategoriaBinaria({
             )}
           </tbody>
         </table>
+      </div>
       </div>
       <div className="bloco">
         <h2 className="bloco__titulo">Quantidade de {rotuloQuantidade} por concurso</h2>
@@ -549,6 +559,7 @@ async function ConteudoSoma({ loteriaId }: { loteriaId: number }) {
           A barra em destaque é a faixa que contém a soma média
           {estatisticas ? ` (${estatisticas.media})` : ""}.
         </p>
+        <div className="tabela-scroll">
         <table className="tabela-dados">
           <thead>
             <tr>
@@ -567,6 +578,7 @@ async function ConteudoSoma({ loteriaId }: { loteriaId: number }) {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
     </>
   );
@@ -611,6 +623,7 @@ async function ConteudoMolduraCentro({ loteriaId }: { loteriaId: number }) {
           rotuloValor="% do total sorteado"
           altura={200}
         />
+        <div className="tabela-scroll">
         <table className="tabela-dados">
           <thead>
             <tr>
@@ -630,8 +643,10 @@ async function ConteudoMolduraCentro({ loteriaId }: { loteriaId: number }) {
           </tbody>
         </table>
       </div>
+      </div>
       <div className="bloco">
         <h2 className="bloco__titulo">Combinações mais comuns por concurso</h2>
+        <div className="tabela-scroll">
         <table className="tabela-dados">
           <thead>
             <tr>
@@ -653,6 +668,7 @@ async function ConteudoMolduraCentro({ loteriaId }: { loteriaId: number }) {
           </tbody>
         </table>
       </div>
+      </div>
     </>
   );
 }
@@ -671,6 +687,7 @@ async function ConteudoLinhasColunas({ loteriaId }: { loteriaId: number }) {
           rotuloValor="ocorrências"
           altura={220}
         />
+        <div className="tabela-scroll">
         <table className="tabela-dados">
           <thead>
             <tr>
@@ -688,6 +705,7 @@ async function ConteudoLinhasColunas({ loteriaId }: { loteriaId: number }) {
           </tbody>
         </table>
       </div>
+      </div>
       <div className="bloco">
         <h2 className="bloco__titulo">Frequência por coluna do volante</h2>
         <GraficoBarras
@@ -695,6 +713,7 @@ async function ConteudoLinhasColunas({ loteriaId }: { loteriaId: number }) {
           rotuloValor="ocorrências"
           altura={220}
         />
+        <div className="tabela-scroll">
         <table className="tabela-dados">
           <thead>
             <tr>
@@ -711,6 +730,7 @@ async function ConteudoLinhasColunas({ loteriaId }: { loteriaId: number }) {
             ))}
           </tbody>
         </table>
+      </div>
       </div>
     </>
   );
@@ -758,7 +778,8 @@ async function ConteudoDuquesTrincas({ loteriaId }: { loteriaId: number }) {
 
 function ListaCombinacoes({ itens }: { itens: Estat.DuqueOuTrinca[] }) {
   return (
-    <table className="tabela-dados">
+    <div className="tabela-scroll">
+        <table className="tabela-dados">
       <thead>
         <tr>
           <th>Dezenas</th>
@@ -780,6 +801,7 @@ function ListaCombinacoes({ itens }: { itens: Estat.DuqueOuTrinca[] }) {
         ))}
       </tbody>
     </table>
+      </div>
   );
 }
 
@@ -794,7 +816,8 @@ function TabelaDezenaValor({
   rotuloValor: string;
 }) {
   return (
-    <table className="tabela-dados">
+    <div className="tabela-scroll">
+        <table className="tabela-dados">
       <thead>
         <tr>
           <th>Dezena</th>
@@ -810,6 +833,7 @@ function TabelaDezenaValor({
         ))}
       </tbody>
     </table>
+      </div>
   );
 }
 
@@ -821,7 +845,8 @@ function TabelaDistribuicao({
   linhas: [number, number, number][];
 }) {
   return (
-    <table className="tabela-dados">
+    <div className="tabela-scroll">
+        <table className="tabela-dados">
       <thead>
         <tr>
           <th>{rotuloPrimeiraColuna}</th>
@@ -839,5 +864,6 @@ function TabelaDistribuicao({
         ))}
       </tbody>
     </table>
+      </div>
   );
 }

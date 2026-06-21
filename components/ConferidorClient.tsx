@@ -182,7 +182,8 @@ function ResultadoConferidor({
         rotuloValor="concursos"
         altura={240}
       />
-      <table className="tabela-dados">
+      <div className="tabela-scroll">
+        <table className="tabela-dados">
         <thead>
           <tr>
             <th>Pontos</th>
@@ -198,6 +199,7 @@ function ResultadoConferidor({
           ))}
         </tbody>
       </table>
+      </div>
 
       <RetornoFinanceiroSection
         codigoLoteria={codigoLoteria}
@@ -208,7 +210,8 @@ function ResultadoConferidor({
       {dados.acertosNasFaixas.length > 0 ? (
         <>
           <h2 className="bloco__titulo">Concursos em que bateu faixa premiada</h2>
-          <table className="tabela-dados">
+          <div className="tabela-scroll">
+        <table className="tabela-dados">
             <thead>
               <tr>
                 <th>Concurso</th>
@@ -226,6 +229,7 @@ function ResultadoConferidor({
               ))}
             </tbody>
           </table>
+      </div>
         </>
       ) : (
         <p className="bloco__nota">
