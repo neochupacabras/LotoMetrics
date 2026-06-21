@@ -30,6 +30,9 @@ export const metadata: Metadata = {
   description:
     "Resultados oficiais e estatísticas de Lotofácil e Mega-Sena: frequência, atraso, ciclos e mais.",
   robots: { index: true, follow: true },
+  verification: {
+    google: "WLl3OBG-d1NTYCfOVMGnAFQnsn73NjfYwpkingyJm2E",
+  },
 };
 
 export default function RootLayout({
