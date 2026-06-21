@@ -134,7 +134,9 @@ export default function FechamentoClient({
             checked={tipo === "reduzido"}
             onChange={() => setTipo("reduzido")}
           />
-          Reduzido (menos jogos, garante uma faixa menor)
+          <span className="campo-checkbox__texto">
+            Reduzido (menos jogos, garante uma faixa menor)
+          </span>
         </label>
         <label className="campo-checkbox">
           <input
@@ -143,7 +145,9 @@ export default function FechamentoClient({
             checked={tipo === "completo"}
             onChange={() => setTipo("completo")}
           />
-          Completo (todas as combinações, garante o prêmio máximo)
+          <span className="campo-checkbox__texto">
+            Completo (todas as combinações, garante o prêmio máximo)
+          </span>
         </label>
       </div>
 

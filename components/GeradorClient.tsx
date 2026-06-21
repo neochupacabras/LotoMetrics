@@ -203,17 +203,19 @@ export default function GeradorClient({
                 checked={usarAtrasadas}
                 onChange={(e) => setUsarAtrasadas(e.target.checked)}
               />
-              Incluir
-              <input
-                type="number"
-                min={0}
-                max={dados.maisAtrasadas.length}
-                value={qtdAtrasadas}
-                disabled={!usarAtrasadas}
-                onChange={(e) => setQtdAtrasadas(Number(e.target.value))}
-                className="campo-checkbox__numero"
-              />
-              dezena(s) entre as 10 mais atrasadas
+              <span className="campo-checkbox__texto">
+                Incluir
+                <input
+                  type="number"
+                  min={0}
+                  max={dados.maisAtrasadas.length}
+                  value={qtdAtrasadas}
+                  disabled={!usarAtrasadas}
+                  onChange={(e) => setQtdAtrasadas(Number(e.target.value))}
+                  className="campo-checkbox__numero"
+                />
+                dezena(s) entre as 10 mais atrasadas
+              </span>
             </label>
 
             <label
@@ -231,18 +233,20 @@ export default function GeradorClient({
                 disabled={!cicloDisponivel}
                 onChange={(e) => setUsarCiclo(e.target.checked)}
               />
-              Incluir
-              <input
-                type="number"
-                min={0}
-                max={dados.dezenasFaltantesCiclo.length}
-                value={qtdCiclo}
-                disabled={!usarCiclo || !cicloDisponivel}
-                onChange={(e) => setQtdCiclo(Number(e.target.value))}
-                className="campo-checkbox__numero"
-              />
-              dezena(s) que faltam pra fechar o ciclo atual ({dados.dezenasFaltantesCiclo.length}{" "}
-              disponíveis)
+              <span className="campo-checkbox__texto">
+                Incluir
+                <input
+                  type="number"
+                  min={0}
+                  max={dados.dezenasFaltantesCiclo.length}
+                  value={qtdCiclo}
+                  disabled={!usarCiclo || !cicloDisponivel}
+                  onChange={(e) => setQtdCiclo(Number(e.target.value))}
+                  className="campo-checkbox__numero"
+                />
+                dezena(s) que faltam pra fechar o ciclo atual ({dados.dezenasFaltantesCiclo.length}{" "}
+                disponíveis)
+              </span>
             </label>
 
             <label
@@ -256,17 +260,19 @@ export default function GeradorClient({
                 disabled={!quenteDisponivel}
                 onChange={(e) => setUsarQuente(e.target.checked)}
               />
-              Forçar um
-              <select
-                className="campo-select"
-                value={tipoQuente}
-                disabled={!usarQuente}
-                onChange={(e) => setTipoQuente(e.target.value as "duque" | "trinca")}
-              >
-                <option value="duque">duque</option>
-                <option value="trinca">trinca</option>
-              </select>
-              quente (entre os 10 mais frequentes) no jogo
+              <span className="campo-checkbox__texto">
+                Forçar um
+                <select
+                  className="campo-select"
+                  value={tipoQuente}
+                  disabled={!usarQuente}
+                  onChange={(e) => setTipoQuente(e.target.value as "duque" | "trinca")}
+                >
+                  <option value="duque">duque</option>
+                  <option value="trinca">trinca</option>
+                </select>
+                quente (entre os 10 mais frequentes) no jogo
+              </span>
             </label>
 
             <hr className="gerador-form__divisor" />
@@ -278,17 +284,19 @@ export default function GeradorClient({
                 checked={usarExcluirFrequentes}
                 onChange={(e) => setUsarExcluirFrequentes(e.target.checked)}
               />
-              Excluir as
-              <input
-                type="number"
-                min={0}
-                max={dados.maisFrequentes.length}
-                value={qtdExcluirFrequentes}
-                disabled={!usarExcluirFrequentes}
-                onChange={(e) => setQtdExcluirFrequentes(Number(e.target.value))}
-                className="campo-checkbox__numero"
-              />
-              dezena(s) mais frequentes do histórico
+              <span className="campo-checkbox__texto">
+                Excluir as
+                <input
+                  type="number"
+                  min={0}
+                  max={dados.maisFrequentes.length}
+                  value={qtdExcluirFrequentes}
+                  disabled={!usarExcluirFrequentes}
+                  onChange={(e) => setQtdExcluirFrequentes(Number(e.target.value))}
+                  className="campo-checkbox__numero"
+                />
+                dezena(s) mais frequentes do histórico
+              </span>
             </label>
 
             {[
@@ -334,7 +342,7 @@ export default function GeradorClient({
                   disabled={!tamanhoPadrao}
                   onChange={(e) => item.set(e.target.checked)}
                 />
-                {item.label}
+                <span className="campo-checkbox__texto">{item.label}</span>
               </label>
             ))}
           </>

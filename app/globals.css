@@ -676,8 +676,7 @@ footer.rodape {
 
 .campo-checkbox {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+  align-items: flex-start;
   gap: 8px;
   font-size: 0.88rem;
   line-height: 1.4;
@@ -689,10 +688,17 @@ footer.rodape {
   cursor: not-allowed;
 }
 
-.campo-checkbox input[type="checkbox"] {
+.campo-checkbox input[type="checkbox"],
+.campo-checkbox input[type="radio"] {
   width: 16px;
   height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
   accent-color: var(--pine);
+}
+
+.campo-checkbox__texto {
+  flex: 1;
 }
 
 .campo-checkbox__numero {
@@ -704,6 +710,11 @@ footer.rodape {
   text-align: center;
   background: var(--paper);
   color: var(--ink);
+  /* fica dentro do bloco de texto, então acompanha a quebra de linha
+     junto com as palavras ao redor, em vez de quebrar pro proprio
+     item separado */
+  vertical-align: middle;
+  margin: 0 2px;
 }
 
 .botao-gerar {
