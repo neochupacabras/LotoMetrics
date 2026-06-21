@@ -136,7 +136,19 @@ main {
 }
 
 .secao {
-  padding: 40px 0;
+  /* Longhand de propósito: .secao quase sempre é combinada com
+     .container no mesmo elemento (className="container secao"). Usar
+     o shorthand "padding: 40px 0" zeraria o padding lateral que
+     .container define, porque o shorthand reseta os 4 lados de uma vez
+     — e como .secao vem depois no arquivo, ela venceria a cascata
+     mesmo as duas classes tendo a mesma especificidade. Em telas
+     largas isso passa despercebido (o max-width do .container já cria
+     margem sozinho), mas no celular, onde o container ocupa 100% da
+     largura, o texto ficava colado nas bordas. Longhand aqui mexe só
+     no espaçamento vertical, que é o propósito real da classe.
+  */
+  padding-top: 40px;
+  padding-bottom: 40px;
 }
 
 .secao + .secao {
