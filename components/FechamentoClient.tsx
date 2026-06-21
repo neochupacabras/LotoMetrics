@@ -190,11 +190,12 @@ export default function FechamentoClient({
       {resultado?.ok && resultado.tickets && (
         <div className="bloco">
           <h2 className="bloco__titulo">
-            {resultado.totalTickets} jogos — garante pelo menos {resultado.pontosGarantidos} pontos
+            <span className="celula-acertos__pontos">
+              {resultado.totalTickets} jogos — garante pelo menos {resultado.pontosGarantidos}{" "}
+              pontos
+            </span>
             {resultado.garantiaVerificada && (
-              <span className="chip chip--destaque" style={{ marginLeft: "10px" }}>
-                garantia verificada
-              </span>
+              <span className="chip chip--destaque chip--bloco">garantia verificada</span>
             )}
           </h2>
           <p className="bloco__nota">

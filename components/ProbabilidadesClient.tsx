@@ -62,11 +62,9 @@ export default function ProbabilidadesClient({
             .map((f) => (
               <tr key={f.acertos}>
                 <td>
-                  {f.acertos} pontos
+                  <span className="celula-acertos__pontos">{f.acertos} pontos</span>
                   {f.acertos === faixaPrincipal && (
-                    <span className="chip chip--destaque" style={{ marginLeft: "8px" }}>
-                      prêmio principal
-                    </span>
+                    <span className="chip chip--destaque chip--bloco">prêmio principal</span>
                   )}
                 </td>
                 <td className="num">{f.combinacoesFavoraveis.toLocaleString("pt-BR")}</td>

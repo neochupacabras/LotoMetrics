@@ -565,18 +565,39 @@ footer.rodape {
 }
 
 .chip {
+  display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.78rem;
   padding: 5px 10px;
   border-radius: 999px;
   border: 1px solid var(--line-strong);
   background: var(--paper-raised);
+  /* Sem isso, "prêmio principal" podia quebrar no meio em telas
+     estreitas, com cada palavra ganhando seu próprio pedaço de fundo
+     arredondado (parecia duas pílulas cortadas em vez de uma). Com
+     nowrap, a frase inteira se move pra linha de baixo como uma
+     unidade só quando não cabe ao lado do texto anterior. */
+  white-space: nowrap;
 }
 
 .chip--destaque {
   background: var(--ochre-soft);
   border-color: var(--ochre);
   color: var(--pine-deep);
+}
+
+.celula-acertos__pontos {
+  display: block;
+}
+
+.chip--bloco {
+  /* Em vez de tentar caber ao lado do texto anterior (frágil: depende
+     da largura exata da coluna/fonte, e já se mostrou inconsistente
+     entre navegadores/dispositivos reais), o selo de destaque some
+     pro modo bloco e sempre cai numa linha própria, logo abaixo do
+     texto — não importa a largura da tela. */
+  display: inline-block;
+  margin-top: 6px;
 }
 
 .breadcrumb {

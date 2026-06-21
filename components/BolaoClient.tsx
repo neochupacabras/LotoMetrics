@@ -284,11 +284,12 @@ export default function BolaoClient({
       {etapa === "resultado" && resultado?.ok && resultado.tickets && planoEscolhido && (
         <div className="bloco">
           <h2 className="bloco__titulo">
-            {resultado.totalTickets} jogos — garante pelo menos {resultado.pontosGarantidos} pontos
+            <span className="celula-acertos__pontos">
+              {resultado.totalTickets} jogos — garante pelo menos {resultado.pontosGarantidos}{" "}
+              pontos
+            </span>
             {resultado.garantiaVerificada && (
-              <span className="chip chip--destaque" style={{ marginLeft: "10px" }}>
-                garantia verificada
-              </span>
+              <span className="chip chip--destaque chip--bloco">garantia verificada</span>
             )}
           </h2>
 
