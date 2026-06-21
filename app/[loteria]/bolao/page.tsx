@@ -1,7 +1,25 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import BolaoClient from "@/components/BolaoClient";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
+import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ loteria: string }>;
+}): Promise<Metadata> {
+  const { loteria: codigoLoteria } = await params;
+  if (!isCodigoLoteriaValido(codigoLoteria)) return {};
+  const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
+  return metadataPagina(
+    codigoLoteria,
+    "/bolao",
+    `Otimizador de bolão ${nome} — planos por orçamento`,
+    `Veja quantos jogos cabem no seu orçamento pra um bolão de ${nome}, com garantia mínima de pontuação, e baixe o volante completo em PDF.`
+  );
+}
 
 export default async function BolaoPage({
   params,

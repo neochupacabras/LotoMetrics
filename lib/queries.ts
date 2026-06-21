@@ -1,7 +1,8 @@
+import { cache } from "react";
 import pool from "./db";
 import { Concurso, ConcursoResumo, Loteria, PremiacaoFaixa } from "./types";
 
-export async function getLoteriaPorCodigo(codigo: string): Promise<Loteria | null> {
+export const getLoteriaPorCodigo = cache(async (codigo: string): Promise<Loteria | null> => {
   const { rows } = await pool.query(
     `SELECT id, codigo, nome, dezena_min, dezena_max, qtd_dezenas_sorteadas, grid_colunas
      FROM loteria WHERE codigo = $1`,
@@ -18,7 +19,7 @@ export async function getLoteriaPorCodigo(codigo: string): Promise<Loteria | nul
     qtdDezenasSorteadas: r.qtd_dezenas_sorteadas,
     gridColunas: r.grid_colunas,
   };
-}
+});
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapConcursoRow(r: any): Omit<Concurso, "premiacoes"> {
@@ -55,7 +56,7 @@ async function getPremiacoes(concursoId: number): Promise<PremiacaoFaixa[]> {
   }));
 }
 
-export async function getUltimoConcurso(loteriaId: number): Promise<Concurso | null> {
+export const getUltimoConcurso = cache(async (loteriaId: number): Promise<Concurso | null> => {
   const { rows } = await pool.query(
     `SELECT * FROM concurso WHERE loteria_id = $1 ORDER BY numero DESC LIMIT 1`,
     [loteriaId]
@@ -64,21 +65,35 @@ export async function getUltimoConcurso(loteriaId: number): Promise<Concurso | n
   const concurso = mapConcursoRow(rows[0]);
   const premiacoes = await getPremiacoes(rows[0].id);
   return { ...concurso, premiacoes };
+});
+
+// Versão leve, só número + data — usada para montar o sitemap.xml sem
+// puxar dezenas/premiações de milhares de concursos.
+export async function getNumerosConcursos(
+  loteriaId: number
+): Promise<{ numero: number; dataSorteio: string }[]> {
+  const { rows } = await pool.query(
+    `SELECT numero, data_sorteio FROM concurso WHERE loteria_id = $1 ORDER BY numero ASC`,
+    [loteriaId]
+  );
+  return rows.map((r) => ({
+    numero: r.numero,
+    dataSorteio: r.data_sorteio.toISOString(),
+  }));
 }
 
-export async function getConcursoPorNumero(
-  loteriaId: number,
-  numero: number
-): Promise<Concurso | null> {
-  const { rows } = await pool.query(
-    `SELECT * FROM concurso WHERE loteria_id = $1 AND numero = $2`,
-    [loteriaId, numero]
-  );
-  if (rows.length === 0) return null;
-  const concurso = mapConcursoRow(rows[0]);
-  const premiacoes = await getPremiacoes(rows[0].id);
-  return { ...concurso, premiacoes };
-}
+export const getConcursoPorNumero = cache(
+  async (loteriaId: number, numero: number): Promise<Concurso | null> => {
+    const { rows } = await pool.query(
+      `SELECT * FROM concurso WHERE loteria_id = $1 AND numero = $2`,
+      [loteriaId, numero]
+    );
+    if (rows.length === 0) return null;
+    const concurso = mapConcursoRow(rows[0]);
+    const premiacoes = await getPremiacoes(rows[0].id);
+    return { ...concurso, premiacoes };
+  }
+);
 
 export async function getConcursosPaginado(
   loteriaId: number,

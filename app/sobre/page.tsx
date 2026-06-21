@@ -1,5 +1,23 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
+import { SITE_URL, SITE_NAME } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "Sobre o LotoMetrics — de onde vêm os dados",
+  description:
+    "O LotoMetrics reúne resultados oficiais e o comportamento histórico das dezenas de Lotofácil e Mega-Sena com tabelas estatísticas, gerador de jogos, fechamentos, conferidor e probabilidades reais.",
+  alternates: { canonical: `${SITE_URL}/sobre` },
+  openGraph: {
+    title: "Sobre o LotoMetrics — de onde vêm os dados",
+    description:
+      "Resultados oficiais e comportamento histórico de Lotofácil e Mega-Sena num só lugar, com ferramentas pra explorar esses dados.",
+    url: `${SITE_URL}/sobre`,
+    siteName: SITE_NAME,
+    locale: "pt_BR",
+    type: "website",
+  },
+};
 
 export default function SobrePage() {
   return (

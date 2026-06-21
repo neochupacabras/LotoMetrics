@@ -1,5 +1,23 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
+import { SITE_URL, SITE_NAME } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "LotoMetrics — Resultados e estatísticas de Lotofácil e Mega-Sena",
+  description:
+    "Resultados oficiais, tabelas estatísticas, gerador de jogos, fechamentos, conferidor e probabilidades reais de Lotofácil e Mega-Sena, calculados sobre todo o histórico de concursos.",
+  alternates: { canonical: SITE_URL },
+  openGraph: {
+    title: "LotoMetrics — Resultados e estatísticas de loteria",
+    description:
+      "Resultados oficiais e estatísticas de Lotofácil e Mega-Sena: frequência, atraso, ciclos, gerador de jogos e mais.",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    locale: "pt_BR",
+    type: "website",
+  },
+};
 
 export default function HomePage() {
   return (

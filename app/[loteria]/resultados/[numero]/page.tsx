@@ -1,9 +1,59 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
 import { getConcursoPorNumero, getLoteriaPorCodigo } from "@/lib/queries";
 import { analisarConcurso } from "@/lib/analise-concurso";
 import { formatarData, formatarMoeda, isCodigoLoteriaValido } from "@/lib/format";
+import { SITE_URL, SITE_NAME, NOME_LOTERIA } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ loteria: string; numero: string }>;
+}): Promise<Metadata> {
+  const { loteria: codigoLoteria, numero: numeroParam } = await params;
+  if (!isCodigoLoteriaValido(codigoLoteria)) return {};
+
+  const numero = Number(numeroParam);
+  if (!Number.isInteger(numero) || numero <= 0) return {};
+
+  const loteria = await getLoteriaPorCodigo(codigoLoteria);
+  if (!loteria) return {};
+
+  const concurso = await getConcursoPorNumero(loteria.id, numero);
+  if (!concurso) return {};
+
+  const nomeLoteria = NOME_LOTERIA[codigoLoteria] ?? loteria.nome;
+  const dezenasStr = concurso.dezenas.map((d) => String(d).padStart(2, "0")).join("-");
+  const data = formatarData(concurso.dataSorteio);
+  const statusPremio = concurso.acumulado
+    ? "Acumulou — não teve ganhador na faixa principal."
+    : "Teve ganhador na faixa principal.";
+
+  const titulo = `${nomeLoteria} concurso ${concurso.numero}: resultado de ${data}`;
+  const descricao = `Dezenas sorteadas no concurso ${concurso.numero} da ${nomeLoteria} (${data}): ${dezenasStr}. ${statusPremio} Veja a premiação completa e a análise estatística do sorteio.`;
+  const url = `${SITE_URL}/${codigoLoteria}/resultados/${concurso.numero}`;
+
+  return {
+    title: titulo,
+    description: descricao,
+    alternates: { canonical: url },
+    openGraph: {
+      title: titulo,
+      description: descricao,
+      url,
+      siteName: SITE_NAME,
+      locale: "pt_BR",
+      type: "article",
+    },
+    twitter: {
+      card: "summary",
+      title: titulo,
+      description: descricao,
+    },
+  };
+}
 
 export default async function DetalheConcursoPage({
   params,

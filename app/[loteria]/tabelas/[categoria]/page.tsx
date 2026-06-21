@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
 import HeatmapVolante from "@/components/HeatmapVolante";
 import GraficoBarras from "@/components/GraficoBarras";
@@ -7,6 +8,25 @@ import { getCategoriaPorSlug } from "@/lib/categorias";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { formatarDezena, isCodigoLoteriaValido } from "@/lib/format";
 import * as Estat from "@/lib/estatisticas";
+import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ loteria: string; categoria: string }>;
+}): Promise<Metadata> {
+  const { loteria: codigoLoteria, categoria: slugCategoria } = await params;
+  if (!isCodigoLoteriaValido(codigoLoteria)) return {};
+  const categoria = getCategoriaPorSlug(slugCategoria);
+  if (!categoria) return {};
+  const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
+  return metadataPagina(
+    codigoLoteria,
+    `/tabelas/${categoria.slug}`,
+    `${categoria.titulo} — Tabela estatística da ${nome}`,
+    categoria.descricao
+  );
+}
 
 export default async function CategoriaPage({
   params,

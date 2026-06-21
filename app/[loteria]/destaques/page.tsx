@@ -1,8 +1,26 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { gerarDestaques } from "@/lib/destaques";
 import { isCodigoLoteriaValido } from "@/lib/format";
+import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ loteria: string }>;
+}): Promise<Metadata> {
+  const { loteria: codigoLoteria } = await params;
+  if (!isCodigoLoteriaValido(codigoLoteria)) return {};
+  const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
+  return metadataPagina(
+    codigoLoteria,
+    "/destaques",
+    `Destaques ${nome} — fatos do histórico atual`,
+    `Maior atraso atual, ciclo perto de fechar e o resultado mais incomum do último concurso da ${nome} — sempre descrevendo o que já aconteceu, nunca prevendo o próximo.`
+  );
+}
 
 export default async function DestaquesPage({
   params,

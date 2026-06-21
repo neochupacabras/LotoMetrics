@@ -1,7 +1,25 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import FechamentoClient from "@/components/FechamentoClient";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
+import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ loteria: string }>;
+}): Promise<Metadata> {
+  const { loteria: codigoLoteria } = await params;
+  if (!isCodigoLoteriaValido(codigoLoteria)) return {};
+  const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
+  return metadataPagina(
+    codigoLoteria,
+    "/fechamentos",
+    `Fechamento de dezenas ${nome} — reduzido e completo`,
+    `Monte um fechamento de dezenas da ${nome} com garantia matemática de pontuação mínima, no modo reduzido (menos jogos) ou completo (todas as combinações).`
+  );
+}
 
 // Exemplos concretos (números já validados nos testes de performance) só
 // pra tornar a explicação tangível — não são usados em nenhum cálculo,

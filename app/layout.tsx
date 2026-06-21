@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import Footer from "@/components/Footer";
+import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -24,9 +25,11 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "LotoMetrics — Resultados e estatísticas de loteria",
   description:
     "Resultados oficiais e estatísticas de Lotofácil e Mega-Sena: frequência, atraso, ciclos e mais.",
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

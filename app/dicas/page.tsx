@@ -1,5 +1,23 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
+import { SITE_URL, SITE_NAME } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: "Dicas e estratégias de loteria — o que funciona e o que é lenda",
+  description:
+    "Um guia de como usar tabelas estatísticas, gerador de jogos e fechamentos com inteligência — e de quais ideias populares sobre loteria são só lenda. Sem prometer truque nenhum.",
+  alternates: { canonical: `${SITE_URL}/dicas` },
+  openGraph: {
+    title: "Dicas e estratégias de loteria — o que funciona e o que é lenda",
+    description:
+      "Um guia de como usar tabelas estatísticas, gerador de jogos e fechamentos com inteligência — e de quais ideias populares sobre loteria são só lenda.",
+    url: `${SITE_URL}/dicas`,
+    siteName: SITE_NAME,
+    locale: "pt_BR",
+    type: "article",
+  },
+};
 
 export default function DicasPage() {
   return (

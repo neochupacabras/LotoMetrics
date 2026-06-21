@@ -1,10 +1,28 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
 import { getConcursosPaginado, getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 import { formatarData, formatarMoeda, isCodigoLoteriaValido } from "@/lib/format";
+import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 
 const POR_PAGINA = 20;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ loteria: string }>;
+}): Promise<Metadata> {
+  const { loteria: codigoLoteria } = await params;
+  if (!isCodigoLoteriaValido(codigoLoteria)) return {};
+  const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
+  return metadataPagina(
+    codigoLoteria,
+    "/resultados",
+    `Resultados ${nome} — últimos concursos e histórico completo`,
+    `Todos os resultados já sorteados da ${nome}, com dezenas, premiação por faixa e análise estatística de cada concurso.`
+  );
+}
 
 export default async function ResultadosPage({
   params,

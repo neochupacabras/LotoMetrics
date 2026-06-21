@@ -1,8 +1,26 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import ProbabilidadesClient from "@/components/ProbabilidadesClient";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { FAIXAS_PREMIADAS } from "@/lib/probabilidades";
 import { isCodigoLoteriaValido } from "@/lib/format";
+import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ loteria: string }>;
+}): Promise<Metadata> {
+  const { loteria: codigoLoteria } = await params;
+  if (!isCodigoLoteriaValido(codigoLoteria)) return {};
+  const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
+  return metadataPagina(
+    codigoLoteria,
+    "/probabilidades",
+    `Probabilidades reais da ${nome} — chance exata por faixa`,
+    `As chances matemáticas exatas de cada faixa de premiação da ${nome}, calculadas por combinatória — a mesma chance em todo concurso, sem depender do histórico.`
+  );
+}
 
 export default async function ProbabilidadesPage({
   params,

@@ -1,8 +1,26 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import GeradorClient from "@/components/GeradorClient";
 import { prepararDadosGerador } from "@/lib/gerador";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
+import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ loteria: string }>;
+}): Promise<Metadata> {
+  const { loteria: codigoLoteria } = await params;
+  if (!isCodigoLoteriaValido(codigoLoteria)) return {};
+  const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
+  return metadataPagina(
+    codigoLoteria,
+    "/gerador",
+    `Gerador de jogos ${nome} — combinações com filtros estatísticos`,
+    `Monte combinações aleatórias de ${nome} com filtros opcionais baseados nas tabelas estatísticas do histórico: atraso, ciclo, dezenas quentes e mais.`
+  );
+}
 
 export default async function GeradorPage({
   params,

@@ -168,7 +168,37 @@ o que mudou.
 
 ---
 
-## Parte 4 — Manutenção: manter os concursos em dia
+## Parte 4 — SEO: variável de ambiente e indexação no Google
+
+O site agora gera `sitemap.xml`, `robots.txt` e título/descrição únicos
+por página automaticamente — mas duas coisas dependem de você:
+
+**1. Variável `NEXT_PUBLIC_SITE_URL`** — todo o sitemap, as tags
+canonical e o Open Graph usam essa URL como base. Sem ela, o código cai
+num valor padrão (`https://loto-metrics.vercel.app`, o domínio atual),
+então não é estritamente obrigatório agora — mas se você configurar um
+domínio próprio depois, **adicione essa variável no Vercel** (mesma tela
+de Environment Variables onde está `DATABASE_URL`) apontando pro domínio
+novo, e refaça o deploy.
+
+**2. Google Search Console** — isso o código não faz sozinho. Acesse
+[search.google.com/search-console](https://search.google.com/search-console),
+adicione a propriedade do seu domínio, verifique a posse (o Search
+Console guia esse passo), e em Sitemaps, envie:
+
+```
+https://loto-metrics.vercel.app/sitemap.xml
+```
+
+Isso acelera a descoberta das páginas pelo Google — sem isso, ele
+encontra o site eventualmente sozinho, mas pode demorar bem mais.
+Indexação de um site novo costuma levar de alguns dias a algumas
+semanas, mesmo com tudo configurado certo; não é algo que aconteça da
+noite pro dia.
+
+---
+
+## Parte 5 — Manutenção: manter os concursos em dia
 
 O site não busca resultados novos sozinho — isso é o `importador.py`
 rodando em **modo incremental** (sem os parâmetros `--modo backfill`):
