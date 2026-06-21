@@ -16,6 +16,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     locale: "pt_BR",
     type: "article",
+    images: [`${SITE_URL}/opengraph-image`],
   },
 };
 

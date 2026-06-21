@@ -23,6 +23,12 @@ export function metadataPagina(
   descricao: string
 ) {
   const url = `${SITE_URL}/${codigoLoteria}${caminho}`;
+  // Precisa ser explícito aqui: quando uma página define seu próprio
+  // objeto openGraph, o Next.js substitui o openGraph inteiro herdado
+  // do layout raiz — inclusive a imagem gerada por opengraph-image.tsx.
+  // Sem repetir a URL da imagem aqui, essas páginas ficariam sem
+  // imagem nenhuma no preview de compartilhamento.
+  const imagem = `${SITE_URL}/opengraph-image`;
   return {
     title: titulo,
     description: descricao,
@@ -34,11 +40,13 @@ export function metadataPagina(
       siteName: SITE_NAME,
       locale: "pt_BR",
       type: "website" as const,
+      images: [imagem],
     },
     twitter: {
-      card: "summary" as const,
+      card: "summary_large_image" as const,
       title: titulo,
       description: descricao,
+      images: [imagem],
     },
   };
 }

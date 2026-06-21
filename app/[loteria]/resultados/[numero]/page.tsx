@@ -34,6 +34,7 @@ export async function generateMetadata({
   const titulo = `${nomeLoteria} concurso ${concurso.numero}: resultado de ${data}`;
   const descricao = `Dezenas sorteadas no concurso ${concurso.numero} da ${nomeLoteria} (${data}): ${dezenasStr}. ${statusPremio} Veja a premiação completa e a análise estatística do sorteio.`;
   const url = `${SITE_URL}/${codigoLoteria}/resultados/${concurso.numero}`;
+  const imagem = `${SITE_URL}/opengraph-image`;
 
   return {
     title: titulo,
@@ -46,11 +47,13 @@ export async function generateMetadata({
       siteName: SITE_NAME,
       locale: "pt_BR",
       type: "article",
+      images: [imagem],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: titulo,
       description: descricao,
+      images: [imagem],
     },
   };
 }
