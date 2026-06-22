@@ -109,6 +109,56 @@ export default function ArtigoPrimosPage() {
           não uma previsão baseada no passado).
         </p>
 
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          E na Mega-Sena?
+        </h2>
+        <p>
+          Entre 1 e 60 existem 17 primos: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37,
+          41, 43, 47, 53 e 59. Com 6 dezenas sorteadas de 60, a média esperada de primos
+          por concurso é <strong>1,70</strong> (6 × 17 ÷ 60). A distribuição mais
+          provável:
+        </p>
+        <div className="tabela-scroll">
+          <table className="tabela-dados">
+            <thead>
+              <tr>
+                <th>Primos no sorteio — Mega-Sena</th>
+                <th className="num">% do total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2 primos</td>
+                <td className="num">33,52%</td>
+              </tr>
+              <tr>
+                <td>1 primo</td>
+                <td className="num">32,69%</td>
+              </tr>
+              <tr>
+                <td>3 primos</td>
+                <td className="num">16,76%</td>
+              </tr>
+              <tr>
+                <td>0 primos</td>
+                <td className="num">12,18%</td>
+              </tr>
+              <tr>
+                <td>4 primos</td>
+                <td className="num">4,29%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          A diferença mais notable em relação à Lotofácil: na Mega-Sena, 12% dos
+          sorteios possíveis não têm nenhum primo — na Lotofácil, sorteios com 0 ou 1
+          primo são matematicamente possíveis mas extremamente raros. Isso reflete
+          diretamente a proporção: 9 primos em 25 (36%) na Lotofácil contra 17 em 60
+          (28%) na Mega-Sena — proporcionalmente menos, e com muito menos dezenas
+          sendo sorteadas por vez.
+        </p>
+
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
           Este artigo é conteúdo educativo. Os números acima são combinatória exata, não
           uma previsão do próximo sorteio.

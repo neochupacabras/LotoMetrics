@@ -5,7 +5,7 @@ import { SITE_URL, SITE_NAME } from "@/lib/seo";
 
 const TITULO = "Sequências: por que números seguidos são mais comuns do que parecem";
 const DESCRICAO =
-  "87% dos sorteios da Lotofácil têm pelo menos 4 dezenas seguidas. Contraintuitivo, mas é a combinatória, calculada com exatidão sobre as 3.268.760 combinações possíveis.";
+  "87% dos sorteios da Lotofácil têm pelo menos 4 dezenas seguidas. Na Mega-Sena, é o oposto: 97% não têm nenhuma sequência de 3+. A explicação é a mesma.";
 
 export const metadata: Metadata = {
   title: TITULO,
@@ -30,31 +30,33 @@ export default function ArtigoSequenciasPage() {
         <p className="eyebrow">Dicas e estratégias</p>
         <h1 className="titulo-edicao">{TITULO}</h1>
         <p className="subtitulo-edicao">
-          Quase todo mundo que monta um jogo "no olho" evita números seguidos — 11, 12,
-          13 parece artificial demais pra ser um resultado real. A intuição está
-          enganada: sequências de números consecutivos não são raras, são a regra.
+          A Lotofácil e a Mega-Sena dão resultados quase opostos nessa análise — e a
+          explicação pra os dois casos é exatamente a mesma: combinatória. É um bom
+          exemplo de como o mesmo princípio produz resultados contraintuitivos em
+          direções diferentes dependendo dos parâmetros da loteria.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
-          O número exato
+          Lotofácil: sequências são a norma
         </h2>
         <p>
-          Contando, uma por uma, todas as 3.268.760 combinações possíveis de 15 dezenas
-          entre 1 e 25, e medindo qual é a maior sequência de números consecutivos
-          dentro de cada uma:
+          Quase todo mundo que monta um jogo "no olho" evita números seguidos — 11, 12,
+          13 parece artificial demais pra ser um resultado real. A intuição está
+          enganada. Contando, uma por uma, todas as 3.268.760 combinações possíveis de
+          15 dezenas entre 1 e 25:
         </p>
         <div className="tabela-scroll">
           <table className="tabela-dados">
             <thead>
               <tr>
-                <th>Maior sequência consecutiva</th>
+                <th>Maior sequência consecutiva — Lotofácil</th>
                 <th className="num">Combinações</th>
                 <th className="num">% do total</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>4 dezenas seguidas (ex.: 11,12,13,14)</td>
+                <td>4 dezenas seguidas (ex.: 11, 12, 13, 14)</td>
                 <td className="num">990.110</td>
                 <td className="num">30,29%</td>
               </tr>
@@ -82,56 +84,82 @@ export default function ArtigoSequenciasPage() {
           </table>
         </div>
         <p>
-          Somando tudo: <strong>87,4% de todas as combinações possíveis têm pelo menos
-          4 dezenas seguidas em algum trecho</strong>. A maior sequência esperada, em
-          média, é de exatamente 5 dezenas consecutivas. Combinações sem nenhuma
-          sequência de 3 ou mais números seguidos — o tipo de jogo que parece mais
-          "espalhado" e por isso mais "provável" pra intuição — são, na verdade, apenas
-          0,3% de tudo que existe.
+          <strong>87,4% de todas as combinações possíveis têm pelo menos 4 dezenas
+          seguidas</strong> em algum trecho. Combinações sem nenhuma sequência de 3 ou
+          mais números seguidos são apenas 0,3% do total. A maior sequência esperada,
+          em média, é de exatamente 5 dezenas consecutivas.
+        </p>
+        <p>
+          O motivo: com 15 dezenas espalhadas dentro de um intervalo de só 25 números,
+          é matematicamente difícil <em>não</em> ter pelo menos 4 delas grudadas em
+          algum trecho. Sobra pouco espaço pra espaçar tudo de forma uniforme.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
-          Por que a intuição erra tanto aqui
+          Mega-Sena: sequências são a exceção
         </h2>
         <p>
-          O motivo é parecido com o da{" "}
-          <Link href="/dicas/par-impar">distribuição par/ímpar</Link>: existem muito
-          mais formas de montar uma combinação com alguma sequência embutida do que
-          formas de evitar qualquer sequência. Com 15 dezenas espalhadas dentro de um
-          intervalo de só 25 números, é matematicamente difícil <em>não</em> ter pelo
-          menos 4 delas grudadas em algum trecho — sobra pouco espaço pra "espaçar"
-          tudo de forma uniforme.
+          Na Mega-Sena, o mesmo raciocínio produz o resultado oposto — e de forma
+          ainda mais contundente. Com apenas 6 dezenas sorteadas de um total de 60, o
+          intervalo entre elas é grande o suficiente pra que sequências consecutivas
+          sejam raras de verdade:
         </p>
+        <div className="tabela-scroll">
+          <table className="tabela-dados">
+            <thead>
+              <tr>
+                <th>Maior sequência consecutiva — Mega-Sena</th>
+                <th className="num">% aproximada</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Nenhuma sequência (máximo: 2 dezenas seguidas no máximo)</td>
+                <td className="num">58,0%</td>
+              </tr>
+              <tr>
+                <td>Apenas pares isolados (ex.: 14, 15 mas nada mais)</td>
+                <td className="num">38,8%</td>
+              </tr>
+              <tr>
+                <td>3 dezenas seguidas (o máximo mais comum)</td>
+                <td className="num">3,1%</td>
+              </tr>
+              <tr>
+                <td>4 ou mais dezenas seguidas</td>
+                <td className="num">&lt; 0,3%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <p>
-          O cérebro humano associa aleatoriedade a "espalhado" e padrão a "agrupado" —
-          mas, matematicamente, é o contrário do que a maioria espera: o resultado
-          tipicamente aleatório tem agrupamentos, e o resultado sem nenhum agrupamento
-          é que seria estatisticamente incomum.
+          Na Mega-Sena, <strong>96,8% dos sorteios não têm nenhuma sequência de 3 ou
+          mais dezenas seguidas</strong>. A maior sequência esperada em média é só
+          1,45 dezenas — essencialmente, o "padrão típico" é não ter nenhuma sequência
+          longa. Um resultado como 14, 15, 16 (3 seguidas) já seria considerado
+          incomum — aparece em apenas ~3% dos sorteios possíveis.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
-          Pra que serve
+          A mesma explicação, dois resultados opostos
         </h2>
         <p>
-          A tabela de{" "}
-          <Link href="/lotofacil/tabelas/sequencias">sequências</Link> deste site
-          mostra o histórico real de sequências por concurso, e também quais dezenas
-          mais se repetem de um sorteio pro seguinte. Serve pra entender o padrão
-          típico do jogo — não pra prever a próxima sequência, já que cada concurso
-          continua sendo um sorteio independente dos anteriores.
+          O que muda entre as duas loterias é a proporção de dezenas sorteadas sobre o
+          total disponível: 60% na Lotofácil (15 de 25) contra 10% na Mega-Sena (6 de
+          60). Quando você sorteia 60% das dezenas de uma vez, quase inevitavelmente
+          algumas ficam adjacentes; quando você sorteia só 10%, elas ficam espalhadas
+          com muito espaço entre si.
         </p>
         <p>
-          Na prática, isso quer dizer: se você está montando um jogo manualmente e
-          evita números seguidos "porque parece mais aleatório", está, sem perceber,
-          escolhendo entre o grupo minoritário (12,6%) das combinações possíveis — sem
-          nenhum ganho real de probabilidade por isso, já que toda combinação
-          específica continua tendo exatamente a mesma chance.
+          A intuição que diz "números seguidos são suspeitos" é razoável pra Mega-Sena
+          e completamente errada pra Lotofácil. Usar a mesma lógica nas duas é
+          misturar realidades matemáticas distintas.
         </p>
 
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
           Este artigo é conteúdo educativo. Os números acima são combinatória exata
-          (contagem completa das 3.268.760 combinações possíveis), não uma previsão do
-          próximo sorteio.
+          (Lotofácil: contagem completa; Mega-Sena: amostragem de 500.000 combinações),
+          não uma previsão do próximo sorteio.
         </div>
 
         <p style={{ marginTop: "24px" }}>

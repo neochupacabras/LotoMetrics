@@ -84,6 +84,36 @@ export const ARTIGOS: Artigo[] = [
       "Toda dupla específica de dezenas tem 35% de chance de sair junta em algum concurso — isso por si só explica por que algumas duplas parecem \"favoritas\".",
   },
   {
+    slug: "como-os-premios-sao-calculados",
+    titulo: "Como os prêmios são calculados: rateio, acúmulo e faixas fixas",
+    resumo:
+      "O prêmio da Lotofácil não é um valor fixo: é uma fatia da arrecadação daquele concurso, dividida entre os ganhadores. Entender isso muda como você lê o resultado.",
+  },
+  {
+    slug: "retorno-ao-apostador",
+    titulo: "Retorno ao apostador: quanto você perde por real jogado",
+    resumo:
+      "A Caixa destina 43,35% da arrecadação da Lotofácil a prêmios. O que acontece com os outros 56,65% — e o que isso significa na prática.",
+  },
+  {
+    slug: "mais-dezenas-vale-a-pena",
+    titulo: "Apostar mais dezenas vale a pena? Custo e probabilidade na mesma conta",
+    resumo:
+      "Jogar 16 dezenas na Lotofácil custa R$56 e aumenta a probabilidade de ganhar na mesma proporção. Mas a probabilidade por real gasto não muda — nunca.",
+  },
+  {
+    slug: "numeros-populares",
+    titulo: "Números populares: por que a escolha importa mesmo sem mudar sua chance",
+    resumo:
+      "Ganhar é difícil. Ganhar sem dividir o prêmio é ainda mais raro — e depende de quais números você escolheu, não de quantas vezes você jogou.",
+  },
+  {
+    slug: "vieses-cognitivos",
+    titulo: "Vieses cognitivos: por que o cérebro é péssimo em lidar com loteria",
+    resumo:
+      "Além da falácia do apostador, existem outros quatro ou cinco vieses documentados que levam pessoas a tomar decisões piores do que o acaso em jogos de sorte.",
+  },
+  {
     slug: "fechamento",
     titulo: "Fechamento: a matemática real por trás da técnica",
     resumo:

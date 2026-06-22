@@ -111,6 +111,51 @@ export default function ArtigoFibonacciPage() {
           sem nenhuma capacidade preditiva sobre o próximo sorteio.
         </p>
 
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          E na Mega-Sena?
+        </h2>
+        <p>
+          Entre 1 e 60, a sequência de Fibonacci tem 9 valores: 1, 2, 3, 5, 8, 13, 21,
+          34 e 55. A média esperada por concurso é <strong>0,90</strong> (6 × 9 ÷ 60) —
+          ou seja, em média menos de 1 número de Fibonacci por sorteio. A distribuição
+          mais provável:
+        </p>
+        <div className="tabela-scroll">
+          <table className="tabela-dados">
+            <thead>
+              <tr>
+                <th>Fibonacci no sorteio — Mega-Sena</th>
+                <th className="num">% do total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1 Fibonacci</td>
+                <td className="num">42,23%</td>
+              </tr>
+              <tr>
+                <td>0 Fibonacci</td>
+                <td className="num">35,97%</td>
+              </tr>
+              <tr>
+                <td>2 Fibonacci</td>
+                <td className="num">17,97%</td>
+              </tr>
+              <tr>
+                <td>3 Fibonacci</td>
+                <td className="num">3,49%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          O dado mais notável aqui: <strong>em 36% dos sorteios possíveis da Mega-Sena,
+          nenhuma das 6 dezenas é de Fibonacci</strong>. Isso desmonta de forma
+          especialmente clara qualquer ideia de que essa sequência teria algum papel
+          "especial" nos resultados — na Mega-Sena, o resultado mais provável numa
+          maioria relativa dos casos é simplesmente não ter nenhum Fibonacci.
+        </p>
+
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
           Este artigo é conteúdo educativo. Os números acima são combinatória exata, não
           uma previsão do próximo sorteio.

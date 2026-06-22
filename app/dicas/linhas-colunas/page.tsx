@@ -107,6 +107,57 @@ export default function ArtigoLinhasColunasPage() {
           onde as próximas dezenas vão cair na grade.
         </p>
 
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          E na Mega-Sena?
+        </h2>
+        <p>
+          O volante da Mega-Sena é uma grade de 10 linhas por 6 colunas — cada linha
+          tem 6 dezenas (a linha 1 é 1 a 6, a linha 2 é 7 a 12...) e cada coluna tem
+          10 dezenas (a coluna 1 é 1, 7, 13, 19... até 55). Com 6 dezenas sorteadas, as
+          médias esperadas são bem diferentes da Lotofácil:
+        </p>
+        <div className="tabela-scroll">
+          <table className="tabela-dados">
+            <thead>
+              <tr>
+                <th>Comparativo linhas e colunas</th>
+                <th className="num">Lotofácil</th>
+                <th className="num">Mega-Sena</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Dezenas por linha</td>
+                <td className="num">5</td>
+                <td className="num">6</td>
+              </tr>
+              <tr>
+                <td>Dezenas por coluna</td>
+                <td className="num">5</td>
+                <td className="num">10</td>
+              </tr>
+              <tr>
+                <td>Média sorteada por linha</td>
+                <td className="num">3,0</td>
+                <td className="num">0,6</td>
+              </tr>
+              <tr>
+                <td>Média sorteada por coluna</td>
+                <td className="num">3,0</td>
+                <td className="num">1,0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Na Mega-Sena, a média de 0,6 por linha significa que, em cada sorteio, mais
+          da metade das 10 linhas não terá nenhuma das 6 dezenas sorteadas — o que é
+          esperado, já que só 10% das dezenas saem por vez. O resultado mais comum por
+          linha é 0 (51,6% das vezes) ou 1 dezena (37,9%). Uma linha inteira (6
+          dezenas) saindo no mesmo concurso é possível em teoria, mas aconteceria em
+          menos de 0,001% dos sorteios — na prática, nunca vista.
+        </p>
+
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
           Este artigo é conteúdo educativo. Os números acima são combinatória exata, não
           uma previsão do próximo sorteio.

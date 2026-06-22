@@ -114,6 +114,92 @@ export default function ArtigoMultiplosDe3Page() {
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          E na Mega-Sena?
+        </h2>
+        <p>
+          Entre 1 e 60, os múltiplos de 3 são 20 no total (3, 6, 9... até 60). Com 6
+          dezenas sorteadas, a média esperada é <strong>2,00</strong> (6 × 20 ÷ 60). A
+          distribuição:
+        </p>
+        <div className="tabela-scroll">
+          <table className="tabela-dados">
+            <thead>
+              <tr>
+                <th>Múltiplos de 3 no sorteio — Mega-Sena</th>
+                <th className="num">% do total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2</td>
+                <td className="num">34,68%</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td className="num">26,29%</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td className="num">22,50%</td>
+              </tr>
+              <tr>
+                <td>0</td>
+                <td className="num">7,67%</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td className="num">7,55%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Atualizando a tabela comparativa dos três filtros para incluir a Mega-Sena:
+        </p>
+        <div className="tabela-scroll">
+          <table className="tabela-dados">
+            <thead>
+              <tr>
+                <th>Filtro</th>
+                <th className="num">Existem (1–25)</th>
+                <th className="num">Média LF</th>
+                <th className="num">Existem (1–60)</th>
+                <th className="num">Média MS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Primos</td>
+                <td className="num">9</td>
+                <td className="num">5,4</td>
+                <td className="num">17</td>
+                <td className="num">1,70</td>
+              </tr>
+              <tr>
+                <td>Múltiplos de 3</td>
+                <td className="num">8</td>
+                <td className="num">4,8</td>
+                <td className="num">20</td>
+                <td className="num">2,00</td>
+              </tr>
+              <tr>
+                <td>Fibonacci</td>
+                <td className="num">7</td>
+                <td className="num">4,2</td>
+                <td className="num">9</td>
+                <td className="num">0,90</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          O padrão fica claro: a Lotofácil sorteia uma proporção muito maior das dezenas
+          disponíveis (60%) do que a Mega-Sena (10%), então as médias por concurso são
+          bem maiores na Lotofácil mesmo quando os grupos têm proporções parecidas nos
+          dois intervalos.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
           Pra que serve
         </h2>
         <p>

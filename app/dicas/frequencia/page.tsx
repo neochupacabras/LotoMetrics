@@ -34,7 +34,8 @@ export default function ArtigoFrequenciaPage() {
           inteiro. É tentador olhar pra ela e separar mentalmente as dezenas em
           "quentes" (saem muito) e "frias" (saem pouco) — mas a diferença entre elas é
           exatamente o tamanho que a estatística pura já prevê, sem nenhum viés
-          envolvido.
+          envolvido. O princípio é o mesmo na Lotofácil e na Mega-Sena; só os números
+          mudam.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
@@ -61,7 +62,7 @@ export default function ArtigoFrequenciaPage() {
             <thead>
               <tr>
                 <th>Cenário</th>
-                <th className="num">Frequência média esperada</th>
+                <th className="num">Freq. média esperada</th>
                 <th className="num">Variação normal (±1 desvio padrão)</th>
               </tr>
             </thead>
@@ -81,13 +82,18 @@ export default function ArtigoFrequenciaPage() {
                 <td className="num">100</td>
                 <td className="num">91 a 109</td>
               </tr>
+              <tr>
+                <td>Mega-Sena, após 3.000 concursos</td>
+                <td className="num">300</td>
+                <td className="num">284 a 316</td>
+              </tr>
             </tbody>
           </table>
         </div>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
           "Quente" e "frio" são rótulos, não causas
-          </h2>
+        </h2>
         <p>
           Quando alguém chama uma dezena de "quente" por ter saído mais que a média, a
           implicação costuma ser de que ela tem alguma propriedade especial — sorte,
@@ -108,14 +114,16 @@ export default function ArtigoFrequenciaPage() {
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
           Pra que serve, então
-          </h2>
+        </h2>
         <p>
           A tabela de <Link href="/lotofacil/tabelas/frequencia">frequência</Link> é um
           retrato fiel do que já aconteceu — útil pra curiosidade histórica, pra
           conferir um jogo específico, ou só pra ver os números de verdade em vez de
           uma impressão vaga. O que ela não é: um indicador de quais dezenas vão sair
           mais no futuro. Isso nenhuma tabela consegue prever, porque essa informação
-          simplesmente não existe antes do sorteio acontecer.
+          simplesmente não existe antes do sorteio acontecer. O mesmo vale integralmente
+          pra tabela de{" "}
+          <Link href="/megasena/tabelas/frequencia">frequência da Mega-Sena</Link>.
         </p>
 
         <div className="aviso-legal" style={{ marginTop: "36px" }}>

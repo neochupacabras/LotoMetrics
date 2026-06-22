@@ -106,6 +106,58 @@ export default function ArtigoMolduraCentroPage() {
           dezenas vão cair na grade.
         </p>
 
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          E na Mega-Sena? A proporção se inverte
+        </h2>
+        <p>
+          Na Mega-Sena, o volante organiza as 60 dezenas numa grade de 10 linhas por 6
+          colunas. Aplicando a mesma definição de moldura (primeira e última linha,
+          primeira e última coluna), o resultado é{" "}
+          <strong>28 dezenas na moldura e 32 no centro</strong> — o centro é maior que
+          a borda, ao contrário da Lotofácil.
+        </p>
+        <p>
+          Isso acontece porque a grade 10×6 é muito mais "comprida" que a 5×5: as
+          bordas representam proporcionalmente menos posições (28 de 60 = 47%) do que
+          na grade quadrada da Lotofácil (16 de 25 = 64%). A distribuição esperada por
+          concurso:
+        </p>
+        <div className="tabela-scroll">
+          <table className="tabela-dados">
+            <thead>
+              <tr>
+                <th>Moldura / Centro — Mega-Sena</th>
+                <th className="num">% do total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>3 moldura / 3 centro</td>
+                <td className="num">32,46%</td>
+              </tr>
+              <tr>
+                <td>2 moldura / 4 centro</td>
+                <td className="num">27,15%</td>
+              </tr>
+              <tr>
+                <td>4 moldura / 2 centro</td>
+                <td className="num">20,29%</td>
+              </tr>
+              <tr>
+                <td>1 moldura / 5 centro</td>
+                <td className="num">11,26%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          A média esperada é <strong>2,8 dezenas da moldura e 3,2 do centro</strong> —
+          invertida em relação à Lotofácil, onde a moldura domina (9,6 contra 5,4). É
+          um bom exemplo de como a mesma análise pode produzir resultados opostos
+          dependendo da geometria do volante, sem que isso mude nada na natureza
+          aleatória do sorteio.
+        </p>
+
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
           Este artigo é conteúdo educativo. Os números acima são combinatória exata, não
           uma previsão do próximo sorteio.

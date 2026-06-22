@@ -86,6 +86,33 @@ export default function ArtigoDuquesTrincasPage() {
           histórico.
         </p>
 
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          E na Mega-Sena? A escala muda tudo
+        </h2>
+        <p>
+          Na Mega-Sena, com 6 dezenas sorteadas de 60, a conta dá um resultado radicalmente
+          diferente. A chance de duas dezenas específicas saírem juntas no mesmo concurso
+          é <strong>0,85%</strong> — quarenta vezes menor que na Lotofácil. Em 3.000
+          concursos, uma dupla específica é esperada a sair junta cerca de{" "}
+          <strong>25 vezes</strong> (contra ~1.300 na Lotofácil).
+        </p>
+        <p>
+          Isso tem uma consequência importante pra interpretar as tabelas: na
+          Mega-Sena, uma dupla que saiu junto 40 vezes em 3.000 concursos não está
+          "quente" — está acima do esperado (25), mas dentro da variação estatística
+          normal. Já na Lotofácil, uma dupla que saiu 1.400 vezes também não está
+          "quente" em relação à esperada de ~1.300 vezes — é a mesma variação normal,
+          só que com números bem maiores.
+        </p>
+        <p>
+          Outro contraste: existem 1.770 duplas possíveis na Mega-Sena (C(60, 2))
+          contra 300 na Lotofácil (C(25, 2)). Com seis vezes mais duplas pra observar
+          e cada uma aparecendo com muito menos frequência, a aparência de "pares
+          favoritos" na Mega-Sena é ainda mais fácil de criar artificialmente — uma
+          dupla que saiu juntas 32 vezes quando a esperada era 25 parece muito mais
+          significativa do que realmente é.
+        </p>
+
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
           Este artigo é conteúdo educativo. As chances de base acima são combinatória
           exata; o histórico de quais duplas mais saíram juntas é dado real, mas não

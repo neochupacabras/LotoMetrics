@@ -33,7 +33,9 @@ export default function ArtigoFechamentoPage() {
           Fechamento é provavelmente a técnica de loteria mais mal-entendida que existe
           — não porque seja complicada, mas porque costuma ser vendida como se fosse
           mágica. Não é. É combinatória pura, e dá pra entender o princípio inteiro com
-          um exemplo de quatro números.
+          um exemplo de quatro números. O mesmo princípio se aplica tanto à Lotofácil
+          quanto à Mega-Sena; o que muda é só a escala (pool maior, mais combinações,
+          mais jogos necessários).
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>

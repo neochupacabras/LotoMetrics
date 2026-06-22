@@ -33,7 +33,8 @@ export default function ArtigoAtrasoPage() {
           "Atraso" é só o nome que esse site (e a maioria dos sites de loteria) dá pra
           uma contagem simples: há quantos concursos uma dezena não é sorteada. É um
           número real, calculado sobre dados reais. O problema não é o número — é o que
-          as pessoas concluem a partir dele.
+          as pessoas concluem a partir dele. O raciocínio aqui se aplica da mesma forma
+          à Lotofácil, à Mega-Sena ou a qualquer outra loteria de sorteio.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
@@ -130,6 +131,15 @@ export default function ArtigoAtrasoPage() {
           não uma estratégia que muda a probabilidade. A probabilidade de qualquer
           dezena específica sair no próximo concurso é sempre a mesma, independente do
           atraso dela.
+        </p>
+        <p>
+          Na Mega-Sena, o raciocínio é idêntico — só os números mudam. Com 60 dezenas
+          disponíveis e apenas 6 sorteadas por concurso (10% do total), atrasos longos
+          são muito mais comuns e esperados do que na Lotofácil. Uma dezena da Mega-Sena
+          que ficou 20 concursos sem sair não está "devendo" nada — pelo contrário, com
+          probabilidade de 10% por concurso, um intervalo de 20 concursos sem sair é
+          completamente ordinário. Funciona exatamente como a moeda honesta: cada
+          sorteio é independente dos anteriores.
         </p>
 
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
