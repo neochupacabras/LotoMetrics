@@ -620,16 +620,23 @@ footer.rodape {
   background: var(--paper);
 }
 
+/* Wrapper com largura máxima do container, relativo para as setas */
+.subnav__outer {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
 .subnav__inner {
   display: flex;
   gap: 4px;
-  padding: 0 24px;
   overflow-x: auto;
-  /* A rolagem continua funcionando (arrastar/deslizar no celular,
-     scroll lateral no desktop) — só a barra de rolagem em si fica
-     escondida, pra não pesar visualmente embaixo do menu. */
   scrollbar-width: none;
   -ms-overflow-style: none;
+  flex: 1;
 }
 
 .subnav__inner::-webkit-scrollbar {
@@ -652,6 +659,54 @@ footer.rodape {
   color: var(--pine);
   border-bottom-color: var(--pine);
 }
+
+/* Setas de navegação */
+.subnav__seta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--ink-soft);
+  padding: 0;
+  transition: opacity 0.2s ease, color 0.15s ease;
+  z-index: 3;
+}
+
+.subnav__seta[aria-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.subnav__seta:hover {
+  color: var(--pine);
+}
+
+.subnav__seta--esq {
+  order: -1;  /* fica antes do nav */
+}
+
+.subnav__seta--dir {
+  /* fica depois do nav (ordem DOM natural) */
+}
+
+/* Gradiente à direita indicando que há mais conteúdo */
+.subnav__fade-dir {
+  position: absolute;
+  right: 28px; /* largura da seta direita */
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  background: linear-gradient(to left, var(--paper) 30%, transparent);
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 2;
+}
+
 
 /* ---------- Gerador de jogos ---------- */
 
@@ -1991,4 +2046,349 @@ footer.rodape {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HOME PAGE
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Hero ──────────────────────────────────────────────────── */
+.home-hero {
+  background: var(--paper-raised);
+  border-bottom: 1px solid var(--line);
+  padding: 48px 0 40px;
+}
+
+.home-hero-texto {
+  max-width: 540px;
+  margin-bottom: 32px;
+}
+
+.home-hero-titulo {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--ink);
+  margin: 8px 0 14px;
+}
+
+.home-hero-subtitulo {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 480px;
+}
+
+/* Grid de resultados */
+.home-resultados-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.home-resultado-card {
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.home-resultado-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.home-resultado-numero {
+  font-family: var(--font-mono);
+  font-size: 0.80rem;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+
+.home-resultado-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  text-align: right;
+}
+
+.home-acumulado-badge {
+  background: var(--ochre-soft);
+  color: var(--pine-deep);
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Dezenas como bolinhas */
+.home-dezenas-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.home-dezena {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ochre);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.home-resultado-link {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--pine);
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+.home-resultado-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Barra de estatísticas ─────────────────────────────────── */
+.home-stats-bar {
+  background: var(--pine);
+  padding: 12px 0;
+}
+
+.home-stats-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 0;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--paper) 75%, transparent);
+}
+
+.home-stats-inner strong {
+  color: var(--ochre-soft);
+  font-weight: 700;
+}
+
+.home-stats-sep {
+  margin: 0 12px;
+  opacity: 0.35;
+}
+
+/* ── Seções genéricas da home ──────────────────────────────── */
+.home-secao {
+  padding: 48px 0;
+}
+
+.home-secao-titulo {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.home-secao-subtitulo {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  max-width: 620px;
+  margin-bottom: 28px;
+}
+
+/* ── Grid de ferramentas ───────────────────────────────────── */
+
+/* 3 destaques em linha */
+.home-ferramentas-destaque {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* 4 ferramentas menores */
+.home-ferramentas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.home-ferramenta-card {
+  padding: 18px 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--paper-raised);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.15s ease;
+}
+
+.home-ferramenta-card--destaque {
+  border-left: 3px solid var(--ochre);
+}
+
+.home-ferramenta-card:hover {
+  border-color: var(--pine);
+}
+
+.home-ferramenta-card--destaque:hover {
+  border-left-color: var(--pine);
+}
+
+.home-ferramenta-titulo {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+.home-ferramenta-card--destaque .home-ferramenta-titulo {
+  font-size: 1.1rem;
+}
+
+.home-ferramenta-desc {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  flex: 1;
+}
+
+.home-ferramenta-links {
+  display: flex;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.home-ferramenta-link {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--pine);
+  text-decoration: none;
+}
+
+.home-ferramenta-link:hover {
+  text-decoration: underline;
+}
+
+.home-ferramenta-link--sec {
+  color: var(--ink-faint);
+}
+
+/* ── Quiz CTA ──────────────────────────────────────────────── */
+.home-quiz-cta {
+  background: var(--pine);
+  padding: 32px 0;
+}
+
+.home-quiz-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.home-quiz-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ochre-soft);
+  margin-bottom: 4px;
+  opacity: 0.8;
+}
+
+.home-quiz-titulo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--paper);
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.home-quiz-desc {
+  font-size: 0.88rem;
+  color: color-mix(in srgb, var(--paper) 75%, transparent);
+  max-width: 460px;
+  line-height: 1.55;
+}
+
+.home-quiz-btn {
+  flex-shrink: 0;
+  background: var(--ochre) !important;
+  color: var(--ink) !important;
+  white-space: nowrap;
+}
+
+/* ── Artigos ───────────────────────────────────────────────── */
+.home-artigos-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.home-artigo-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--paper-raised);
+  text-decoration: none;
+  gap: 12px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.home-artigo-card:hover {
+  border-color: var(--pine);
+  background: var(--paper);
+}
+
+.home-artigo-card--todos {
+  border-style: dashed;
+}
+
+.home-artigo-titulo {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+.home-artigo-seta {
+  font-family: var(--font-mono);
+  color: var(--pine);
+  flex-shrink: 0;
+  font-size: 0.85rem;
+}
+
+/* ── Responsivo ────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .home-stats-sep { display: none; }
+  .home-stats-inner { gap: 6px 16px; }
+  .home-quiz-inner { flex-direction: column; align-items: flex-start; }
+  .home-hero { padding: 32px 0 28px; }
 }
