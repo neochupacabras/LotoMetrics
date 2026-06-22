@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import AnalisadorClient from "@/components/AnalisadorClient";
+import Subnav from "@/components/Subnav";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -38,7 +39,9 @@ export default async function AnalisadorPage({
   }
 
   return (
-    <div className="container secao">
+    <>
+      <Subnav codigoLoteria={codigoLoteria} ativa="analisador" />
+      <div className="container secao">
       <p className="eyebrow">Estatísticas de {loteria.nome}</p>
       <h1 className="titulo-edicao">Analisador de jogo</h1>
       <p className="subtitulo-edicao" style={{ maxWidth: 600 }}>
@@ -55,5 +58,6 @@ export default async function AnalisadorPage({
         qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
       />
     </div>
+    </>
   );
 }
