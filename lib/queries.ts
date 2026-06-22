@@ -124,3 +124,42 @@ export async function getConcursosPaginado(
     total: Number(countRows[0].count),
   };
 }
+
+// Frequência de cada dezena para o heatmap interativo.
+// lookback = null → histórico completo; número → últimos N concursos.
+export async function getFrequenciaHeatmap(
+  loteriaId: number,
+  lookback: number | null
+): Promise<{ dezena: number; frequencia: number; totalConcursos: number }[]> {
+  const sql = lookback == null
+    ? `
+        WITH base AS (SELECT dezenas FROM concurso WHERE loteria_id = $1)
+        SELECT unnest(dezenas) AS dezena,
+               count(*) AS frequencia,
+               (SELECT count(*) FROM base) AS total_concursos
+        FROM base
+        GROUP BY dezena
+        ORDER BY dezena
+      `
+    : `
+        WITH base AS (
+          SELECT dezenas FROM concurso
+          WHERE loteria_id = $1
+            AND numero > (SELECT MAX(numero) FROM concurso WHERE loteria_id = $1) - $2
+        )
+        SELECT unnest(dezenas) AS dezena,
+               count(*) AS frequencia,
+               (SELECT count(*) FROM base) AS total_concursos
+        FROM base
+        GROUP BY dezena
+        ORDER BY dezena
+      `;
+
+  const params = lookback == null ? [loteriaId] : [loteriaId, lookback];
+  const { rows } = await pool.query(sql, params);
+  return rows.map((r) => ({
+    dezena: Number(r.dezena),
+    frequencia: Number(r.frequencia),
+    totalConcursos: Number(r.total_concursos),
+  }));
+}

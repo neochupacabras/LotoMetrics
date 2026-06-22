@@ -5,9 +5,11 @@ import { LOTERIAS } from "@/lib/format";
 export default function Masthead({
   loteriaAtiva,
   dicasAtiva,
+  quizAtivo,
 }: {
   loteriaAtiva?: CodigoLoteria;
   dicasAtiva?: boolean;
+  quizAtivo?: boolean;
 }) {
   return (
     <header className="masthead">
@@ -31,6 +33,9 @@ export default function Masthead({
           ))}
           <Link href="/dicas" data-ativo={dicasAtiva}>
             Dicas
+          </Link>
+          <Link href="/quiz" data-ativo={quizAtivo}>
+            Quiz
           </Link>
         </nav>
       </div>

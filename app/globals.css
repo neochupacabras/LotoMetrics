@@ -1040,3 +1040,677 @@ footer.rodape {
   margin: 0;
   line-height: 1.6;
 }
+
+/* ---------- Analisador de jogo ---------- */
+
+.analisador-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.analisador-instrucao {
+  font-family: var(--font-mono);
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  margin-bottom: 16px;
+}
+
+/* Barra de progresso da seleção */
+.analisador-progresso-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.analisador-progresso-fundo {
+  flex: 1;
+  height: 6px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.analisador-progresso-fill {
+  height: 100%;
+  background: var(--ink-soft);
+  border-radius: 999px;
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.analisador-progresso-fill[data-completo="true"] {
+  background: var(--pine);
+}
+
+.analisador-progresso-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* Resumo geral */
+.analisador-resumo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+}
+
+.analisador-resumo__numero {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: var(--pine);
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.analisador-resumo__texto {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* Grid de cards de métricas */
+.analisador-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* Card individual */
+.analisador-card {
+  padding: 18px 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--paper-raised);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.analisador-card__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.analisador-card__titulo {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+}
+
+.analisador-card__valor {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.analisador-card__detalhe {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.analisador-card__link {
+  color: var(--pine);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.analisador-card__link:hover {
+  text-decoration: underline;
+}
+
+/* Barra de frequência interna do card */
+.analisador-barra-fundo {
+  height: 5px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.analisador-barra-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--pine);
+  transition: width 0.25s ease;
+}
+
+/* Badges de tipicidade */
+.analisador-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.analisador-badge--bom {
+  background: color-mix(in srgb, var(--pine) 10%, var(--paper));
+  border-color: var(--pine);
+  color: var(--pine-deep);
+}
+
+.analisador-badge--ok {
+  background: var(--paper-raised);
+  border-color: var(--line-strong);
+  color: var(--ink-soft);
+}
+
+.analisador-badge--alerta {
+  background: var(--ochre-soft);
+  border-color: var(--ochre);
+  color: var(--pine-deep);
+}
+
+.analisador-badge--raro {
+  background: color-mix(in srgb, var(--rust) 10%, var(--paper));
+  border-color: var(--rust);
+  color: var(--rust);
+}
+
+/* Estado vazio */
+.analisador-vazio {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--ink-faint);
+  text-align: center;
+  padding: 48px 0;
+}
+
+/* ---------- Quiz Verdade ou Mito? ---------- */
+
+/* Intro */
+.quiz-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.quiz-intro-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.80rem;
+  color: var(--ink-faint);
+  margin: 16px 0 32px;
+}
+
+.quiz-btn-comecar {
+  align-self: flex-start;
+  font-size: 1.05rem;
+  padding: 14px 32px;
+}
+
+/* Wrapper principal do quiz */
+.quiz-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 12px;
+}
+
+/* Barra de progresso */
+.quiz-progresso {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.quiz-progresso-barra {
+  flex: 1;
+  height: 6px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.quiz-progresso-fill {
+  height: 100%;
+  background: var(--pine);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.quiz-progresso-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+/* Card da afirmação */
+.quiz-card {
+  padding: 28px 28px 24px;
+  border: 2px solid var(--line-strong);
+  border-radius: 6px;
+  background: var(--paper-raised);
+  transition: border-color 0.25s ease, background 0.25s ease;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.quiz-card[data-estado="correto"] {
+  border-color: var(--pine);
+  background: color-mix(in srgb, var(--pine) 5%, var(--paper-raised));
+}
+
+.quiz-card[data-estado="errado"] {
+  border-color: var(--rust);
+  background: color-mix(in srgb, var(--rust) 5%, var(--paper-raised));
+}
+
+.quiz-card-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  transition: color 0.25s ease;
+}
+
+.quiz-card[data-estado="correto"] .quiz-card-tag {
+  color: var(--pine);
+}
+
+.quiz-card[data-estado="errado"] .quiz-card-tag {
+  color: var(--rust);
+}
+
+.quiz-card-afirmacao {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.5;
+  color: var(--ink);
+  flex: 1;
+}
+
+/* Botões Verdade / Mito */
+.quiz-botoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.quiz-btn-verdade,
+.quiz-btn-mito {
+  padding: 16px;
+  border: 2px solid;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.quiz-btn-verdade {
+  background: color-mix(in srgb, var(--pine) 8%, var(--paper));
+  border-color: var(--pine);
+  color: var(--pine-deep);
+}
+
+.quiz-btn-mito {
+  background: color-mix(in srgb, var(--rust) 8%, var(--paper));
+  border-color: var(--rust);
+  color: var(--rust);
+}
+
+.quiz-btn-verdade:hover {
+  background: color-mix(in srgb, var(--pine) 18%, var(--paper));
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--pine) 20%, transparent);
+  transform: translateY(-1px);
+}
+
+.quiz-btn-mito:hover {
+  background: color-mix(in srgb, var(--rust) 18%, var(--paper));
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--rust) 20%, transparent);
+  transform: translateY(-1px);
+}
+
+/* Explicação pós-resposta */
+.quiz-explicacao {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px 24px;
+  border: 1px solid var(--line-strong);
+  border-left: 4px solid var(--ochre);
+  border-radius: 4px;
+  background: var(--paper-raised);
+}
+
+.quiz-explicacao-texto {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--ink);
+}
+
+.quiz-explicacao-link {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--pine);
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+.quiz-explicacao-link:hover {
+  text-decoration: underline;
+}
+
+.quiz-btn-proxima {
+  align-self: flex-start;
+  padding: 10px 22px;
+  font-size: 0.88rem;
+}
+
+/* Placar parcial */
+.quiz-placar-parcial {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  text-align: right;
+}
+
+/* Resultado final */
+.quiz-resultado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+.quiz-resultado-placar {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.quiz-resultado-numero {
+  font-family: var(--font-display);
+  font-size: 6rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--pine);
+}
+
+.quiz-resultado-total {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: var(--ink-soft);
+}
+
+.quiz-resultado-emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.quiz-resultado-mensagem {
+  font-size: 1rem;
+  color: var(--ink-soft);
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+.quiz-resultado-acoes {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.quiz-btn-dicas {
+  display: inline-block;
+  padding: 11px 22px;
+  font-family: var(--font-mono);
+  font-size: 0.83rem;
+  text-decoration: none;
+}
+
+@media (max-width: 480px) {
+  .quiz-botoes {
+    grid-template-columns: 1fr;
+  }
+
+  .quiz-resultado-numero {
+    font-size: 4.5rem;
+  }
+}
+
+/* ---------- Heatmap do volante ---------- */
+
+.heatmap-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 32px;
+}
+
+/* Seletor de período */
+.heatmap-periodos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.heatmap-periodo-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px 16px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--paper-raised);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  gap: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink);
+}
+
+.heatmap-periodo-btn:hover {
+  border-color: var(--pine);
+}
+
+.heatmap-periodo-btn[data-ativo="true"] {
+  border-color: var(--pine);
+  background: color-mix(in srgb, var(--pine) 8%, var(--paper-raised));
+  color: var(--pine-deep);
+}
+
+.heatmap-periodo-meta {
+  font-size: 0.70rem;
+  color: var(--ink-faint);
+  font-weight: 400;
+}
+
+/* Grade do heatmap */
+.heatmap-grade {
+  display: grid;
+  gap: 5px;
+  max-width: 560px;
+}
+
+.heatmap-celula {
+  aspect-ratio: 1;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.1s ease, transform 0.1s ease;
+  padding: 0;
+}
+
+.heatmap-celula:hover,
+.heatmap-celula[data-ativa="true"] {
+  border-color: var(--ink);
+  transform: scale(1.08);
+  z-index: 1;
+}
+
+.heatmap-celula-numero {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.heatmap-celula-freq {
+  font-family: var(--font-mono);
+  font-size: 0.60rem;
+  opacity: 0.75;
+  line-height: 1;
+}
+
+/* Legenda */
+.heatmap-legenda {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}
+
+.heatmap-legenda-barra {
+  width: 120px;
+  height: 10px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to right,
+    #efeee6,
+    #e4c189,
+    #b9802c
+  );
+  flex-shrink: 0;
+}
+
+.heatmap-legenda-media {
+  margin-left: 8px;
+  color: var(--ink-soft);
+}
+
+/* Painel de info da dezena */
+.heatmap-info {
+  padding: 16px 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--paper-raised);
+  min-height: 76px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: opacity 0.2s ease;
+}
+
+.heatmap-info[data-visivel="false"] {
+  opacity: 0.5;
+}
+
+.heatmap-info-dezena {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.heatmap-info-dados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.heatmap-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.heatmap-info-rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.heatmap-info-valor {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+.heatmap-info-valor[data-positivo="true"] {
+  color: var(--ochre);
+}
+
+.heatmap-info-valor[data-positivo="false"] {
+  color: var(--pine);
+}
+
+.heatmap-info-vazio {
+  font-family: var(--font-mono);
+  font-size: 0.80rem;
+  color: var(--ink-faint);
+  align-self: center;
+}
+
+/* Texto do insight */
+.heatmap-insight {
+  padding: 16px 20px;
+  border-left: 3px solid var(--ochre);
+  background: var(--paper-raised);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .heatmap-grade {
+    max-width: 100%;
+  }
+
+  .heatmap-celula-numero {
+    font-size: 0.68rem;
+  }
+
+  .heatmap-celula-freq {
+    font-size: 0.52rem;
+  }
+
+  .heatmap-info-dados {
+    gap: 12px;
+  }
+}
