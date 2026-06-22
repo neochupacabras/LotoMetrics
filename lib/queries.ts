@@ -163,3 +163,92 @@ export async function getFrequenciaHeatmap(
     totalConcursos: Number(r.total_concursos),
   }));
 }
+
+export interface AcumuloData {
+  concursoInicio: number;
+  concursoFim: number;
+  duracao: number;
+  ganhadores: number;
+  premio: number;
+  dataInicio: string;
+  dataFim: string;
+}
+
+export async function getAcumulos(loteriaId: number): Promise<AcumuloData[]> {
+  const sql = `
+    WITH dados AS (
+      SELECT
+        c.numero,
+        c.data_sorteio,
+        pf.qtd_ganhadores,
+        pf.valor_premio,
+        LAG(pf.qtd_ganhadores, 1, 1) OVER (ORDER BY c.numero) AS prev
+      FROM concurso c
+      JOIN premiacao_faixa pf ON pf.concurso_id = c.id AND pf.faixa = 1
+      WHERE c.loteria_id = $1
+    ),
+    grupos AS (
+      SELECT *,
+        SUM(CASE WHEN prev > 0 THEN 1 ELSE 0 END) OVER (ORDER BY numero) AS gid
+      FROM dados
+    )
+    SELECT
+      MIN(numero)::int           AS concurso_inicio,
+      MAX(numero)::int           AS concurso_fim,
+      COUNT(*)::int              AS duracao,
+      MAX(qtd_ganhadores)::int   AS ganhadores,
+      ROUND(MAX(CASE WHEN qtd_ganhadores > 0 THEN valor_premio ELSE 0 END), 2) AS premio,
+      MIN(data_sorteio)::text    AS data_inicio,
+      MAX(data_sorteio)::text    AS data_fim
+    FROM grupos
+    GROUP BY gid
+    HAVING MAX(qtd_ganhadores) > 0
+    ORDER BY concurso_fim
+  `;
+  const { rows } = await pool.query(sql, [loteriaId]);
+  return rows.map((r) => ({
+    concursoInicio: r.concurso_inicio,
+    concursoFim:    r.concurso_fim,
+    duracao:        r.duracao,
+    ganhadores:     r.ganhadores,
+    premio:         parseFloat(r.premio),
+    dataInicio:     r.data_inicio?.slice(0, 10) ?? "",
+    dataFim:        r.data_fim?.slice(0, 10) ?? "",
+  }));
+}
+
+// ─── Dados para o Simulador Histórico ────────────────────────────────────────
+
+export interface ConcessaoSimulacao {
+  numero: number;
+  dezenas: number[];
+  // Prêmio por faixa (faixa 1 = maior, ordem crescente de dificuldade)
+  premios: Record<number, number>;  // { 1: valor, 2: valor, ... }
+}
+
+export async function getDrawsParaSimulacao(
+  loteriaId: number
+): Promise<ConcessaoSimulacao[]> {
+  // Busca todos os sorteios com prêmios por faixa em uma query só
+  const { rows } = await pool.query(
+    `SELECT c.numero, c.dezenas,
+       json_object_agg(pf.faixa, pf.valor_premio) AS premios
+     FROM concurso c
+     JOIN premiacao_faixa pf ON pf.concurso_id = c.id
+     WHERE c.loteria_id = $1
+     GROUP BY c.numero, c.dezenas
+     ORDER BY c.numero`,
+    [loteriaId]
+  );
+
+  return rows.map((r) => ({
+    numero: r.numero,
+    dezenas: r.dezenas as number[],
+    premios: Object.fromEntries(
+      Object.entries(r.premios as Record<string, string>).map(([k, v]) => [
+        Number(k),
+        parseFloat(v as string),
+      ])
+    ),
+  }));
+}

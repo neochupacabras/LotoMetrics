@@ -1714,3 +1714,281 @@ footer.rodape {
     gap: 12px;
   }
 }
+
+/* ---------- Linha do tempo dos acúmulos ---------- */
+
+.acumulos-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+/* Stats rápidas */
+.acumulos-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.acumulos-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--paper-raised);
+}
+
+.acumulos-stat-valor {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--pine);
+  line-height: 1;
+}
+
+.acumulos-stat-rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+/* Legenda de cores */
+.acumulos-legenda-cores {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+
+.acumulos-legenda-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.acumulos-legenda-bolha {
+  display: inline-block;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.acumulos-legenda-hint {
+  color: var(--ink-faint);
+  font-size: 0.68rem;
+  margin-left: 4px;
+}
+
+/* Filtros */
+.acumulos-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.acumulos-filtros-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}
+
+/* Wrapper do chart */
+.acumulos-chart-wrapper {
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--paper-raised);
+  padding: 16px 8px 8px;
+}
+
+.acumulos-chart-nota {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Tooltip do chart */
+.acumulos-tooltip {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  min-width: 180px;
+}
+
+.acumulos-tooltip-premio {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ochre-soft);
+  margin-bottom: 4px;
+}
+
+.acumulos-tooltip-linha {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  opacity: 0.85;
+}
+
+.acumulos-tooltip-periodo {
+  font-size: 0.70rem;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+/* Ranking */
+.acumulos-ranking {}
+
+.acumulos-ranking-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.acumulos-ranking-toggle {
+  display: flex;
+  gap: 6px;
+}
+
+.acumulos-duracao-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* ---------- Simulador Histórico ---------- */
+
+.simulador-hist-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin-top: 32px;
+}
+
+/* Dezenas do jogo simulado */
+.simulador-hist-jogo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 14px 18px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+}
+
+.simulador-hist-jogo-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 4px;
+}
+
+.simulador-hist-dezena {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ochre);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.simulador-hist-refazer {
+  margin-left: auto;
+}
+
+/* Cards de resumo */
+.simulador-hist-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.simulador-hist-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--paper-raised);
+}
+
+.simulador-hist-card-rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.simulador-hist-card-valor {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.simulador-hist-card-detalhe {
+  font-family: var(--font-mono);
+  font-size: 0.70rem;
+  color: var(--ink-faint);
+  line-height: 1.4;
+}
+
+/* Seção do gráfico */
+.simulador-hist-chart-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.simulador-hist-chart-nota {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.simulador-hist-chart {
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--paper-raised);
+  padding: 16px 4px 8px;
+}
+
+/* Faixas e melhores */
+.simulador-hist-faixas,
+.simulador-hist-melhores {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

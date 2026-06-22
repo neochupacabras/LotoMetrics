@@ -17,7 +17,8 @@ export default function Subnav({
     | "destaques"
     | "bolao"
     | "analisador"
-    | "heatmap";
+    | "heatmap"
+    | "acumulos";
 }) {
   return (
     <div className="subnav">
@@ -51,6 +52,9 @@ export default function Subnav({
         </Link>
         <Link href={`/${codigoLoteria}/heatmap`} data-ativo={ativa === "heatmap"}>
           Heatmap
+        </Link>
+        <Link href={`/${codigoLoteria}/acumulos`} data-ativo={ativa === "acumulos"}>
+          Acúmulos
         </Link>
         <Link href={`/${codigoLoteria}/probabilidades`} data-ativo={ativa === "probabilidades"}>
           Probabilidades

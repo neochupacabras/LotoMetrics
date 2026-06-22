@@ -18,6 +18,7 @@ const ABAS: [string, number, MetadataRoute.Sitemap[number]["changeFrequency"]][]
   ["conferidor", 0.5, "monthly"],
   ["analisador", 0.6, "monthly"],
   ["heatmap", 0.6, "weekly"],
+  ["acumulos", 0.6, "daily"],
   ["probabilidades", 0.5, "monthly"],
 ];
 

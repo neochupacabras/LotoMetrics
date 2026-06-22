@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import SimuladorClient from "@/components/SimuladorClient";
-import { prepararDadosSimulador } from "@/lib/simulador";
+import SimuladorHistoricoClient from "@/components/SimuladorHistoricoClient";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -17,8 +16,8 @@ export async function generateMetadata({
   return metadataPagina(
     codigoLoteria,
     "/simulador",
-    `Simulador de retorno financeiro ${nome}`,
-    `Compare quanto custaria jogar uma combinação da ${nome} em todos os concursos já realizados contra os prêmios reais que ela teria ganhado.`
+    `Simulador histórico — e se eu tivesse jogado todo concurso? ${nome}`,
+    `Escolha qualquer combinação e veja quanto teria gasto e ganho se tivesse jogado esse jogo em cada concurso da história da ${nome}. Resultado honesto, com os prêmios históricos reais.`
   );
 }
 
@@ -29,42 +28,28 @@ export default async function SimuladorPage({
 }) {
   const { loteria: codigoLoteria } = await params;
 
-  if (!isCodigoLoteriaValido(codigoLoteria)) {
-    notFound();
-  }
+  if (!isCodigoLoteriaValido(codigoLoteria)) notFound();
 
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
-  if (!loteria) {
-    notFound();
-  }
-
-  const dados = await prepararDadosSimulador(loteria.id);
+  if (!loteria) notFound();
 
   return (
     <div className="container secao">
-      <p className="eyebrow">{loteria.nome}</p>
-      <h1 className="titulo-edicao">Simulador</h1>
-      <p className="subtitulo-edicao" style={{ maxWidth: 620 }}>
-        Monte seu jogo dezena por dezena e veja, em tempo real, como ele se compara ao
-        histórico — sem nenhum filtro automático. É a mesma análise que aplicamos a
-        qualquer concurso já sorteado, só que para o jogo que você está montando agora.
-      </p>
+        <p className="eyebrow">Estatísticas de {loteria.nome}</p>
+        <h1 className="titulo-edicao">E se eu tivesse jogado todo concurso?</h1>
+        <p className="subtitulo-edicao" style={{ maxWidth: 600 }}>
+          Escolha uma combinação e veja quanto teria gasto e ganho se tivesse apostado
+          esse mesmo jogo em cada um dos {loteria.nome === "Lotofácil" ? "3.700+" : "3.000+"} concursos
+          da história da {loteria.nome} — com os prêmios históricos reais.
+        </p>
 
-      <SimuladorClient
-        codigoLoteria={codigoLoteria}
-        dezenaMin={loteria.dezenaMin}
-        dezenaMax={loteria.dezenaMax}
-        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
-        gridColunas={loteria.gridColunas}
-        dados={dados}
-      />
-
-      <div className="aviso-legal">
-        <strong>Importante:</strong> nada aqui muda sua chance real de ganhar. O
-        simulador só mostra como a combinação que você montou se compara ao que já
-        aconteceu — uma combinação "comum" e uma "rara" têm exatamente a mesma
-        probabilidade de serem sorteadas.
+        <SimuladorHistoricoClient
+          codigoLoteria={codigoLoteria}
+          nomeLoteria={loteria.nome}
+          dezenaMin={loteria.dezenaMin}
+          dezenaMax={loteria.dezenaMax}
+          qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        />
       </div>
-    </div>
   );
 }
