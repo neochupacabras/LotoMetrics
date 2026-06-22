@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getLoteriaPorCodigo, getNumerosConcursos } from "@/lib/queries";
 import { CATEGORIAS } from "@/lib/categorias";
+import { ARTIGOS } from "@/lib/artigos";
 import { SITE_URL } from "@/lib/seo";
 
 const LOTERIAS = ["lotofacil", "megasena"] as const;
@@ -24,6 +25,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/dicas`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${SITE_URL}/sobre`, changeFrequency: "yearly", priority: 0.3 },
   ];
+
+  for (const artigo of ARTIGOS) {
+    entradas.push({
+      url: `${SITE_URL}/dicas/${artigo.slug}`,
+      changeFrequency: "yearly",
+      priority: 0.5,
+    });
+  }
 
   for (const codigoLoteria of LOTERIAS) {
     const loteria = await getLoteriaPorCodigo(codigoLoteria);

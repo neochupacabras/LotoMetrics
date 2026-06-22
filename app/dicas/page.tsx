@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import { ARTIGOS } from "@/lib/artigos";
 
 export const metadata: Metadata = {
   title: "Dicas e estratégias de loteria — o que funciona e o que é lenda",
@@ -32,6 +33,23 @@ export default function DicasPage() {
           que prometer um é mentira. É um guia de como usar as ferramentas deste site com
           inteligência, e de quais ideias populares sobre loteria são só lenda.
         </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          Artigos: a matemática por trás de cada estratégia
+        </h2>
+        <p className="subtitulo-edicao" style={{ maxWidth: 700 }}>
+          Cada um desses termos aparece espalhado pelas tabelas e ferramentas do site.
+          Aqui vai a explicação completa de cada um — com a matemática real, não só a
+          conclusão.
+        </p>
+        <div className="grade-categorias">
+          {ARTIGOS.map((a) => (
+            <Link key={a.slug} href={`/dicas/${a.slug}`} className="cartao-categoria">
+              <p className="cartao-categoria__titulo">{a.titulo}</p>
+              <p className="cartao-categoria__descricao">{a.resumo}</p>
+            </Link>
+          ))}
+        </div>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
           Como as ferramentas do site se encaixam
