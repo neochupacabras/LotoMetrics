@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-05-28.basil",
+  apiVersion: "2026-05-27.dahlia",
 });
 
 // O webhook precisa ler o body como raw bytes para validar a assinatura
@@ -93,7 +93,9 @@ export async function POST(request: Request) {
 
     case "invoice.payment_failed": {
       const invoice = event.data.object as Stripe.Invoice;
-      const subId = (invoice as { subscription?: string }).subscription;
+      const subId = typeof invoice.subscription === "string"
+        ? invoice.subscription
+        : invoice.subscription?.id ?? null;
       if (subId) {
         await supabase
           .from("subscriptions")
