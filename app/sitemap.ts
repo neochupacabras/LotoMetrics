@@ -4,9 +4,11 @@ import { CATEGORIAS } from "@/lib/categorias";
 import { ARTIGOS } from "@/lib/artigos";
 import { SITE_URL } from "@/lib/seo";
 
+// Forçar geração em runtime (não em build time) — o sitemap depende do banco
+export const dynamic = "force-dynamic";
+
 const LOTERIAS = ["lotofacil", "megasena"] as const;
 
-// Cada item: [slug da aba, prioridade, frequência de mudança]
 const ABAS: [string, number, MetadataRoute.Sitemap[number]["changeFrequency"]][] = [
   ["resultados", 0.9, "daily"],
   ["destaques", 0.7, "daily"],
@@ -37,35 +39,40 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  for (const codigoLoteria of LOTERIAS) {
-    const loteria = await getLoteriaPorCodigo(codigoLoteria);
-    if (!loteria) continue;
+  try {
+    for (const codigoLoteria of LOTERIAS) {
+      const loteria = await getLoteriaPorCodigo(codigoLoteria);
+      if (!loteria) continue;
 
-    for (const [aba, priority, changeFrequency] of ABAS) {
-      entradas.push({
-        url: `${SITE_URL}/${codigoLoteria}/${aba}`,
-        changeFrequency,
-        priority,
-      });
-    }
+      for (const [aba, priority, changeFrequency] of ABAS) {
+        entradas.push({
+          url: `${SITE_URL}/${codigoLoteria}/${aba}`,
+          changeFrequency,
+          priority,
+        });
+      }
 
-    for (const categoria of CATEGORIAS) {
-      entradas.push({
-        url: `${SITE_URL}/${codigoLoteria}/tabelas/${categoria.slug}`,
-        changeFrequency: "daily",
-        priority: 0.6,
-      });
-    }
+      for (const categoria of CATEGORIAS) {
+        entradas.push({
+          url: `${SITE_URL}/${codigoLoteria}/tabelas/${categoria.slug}`,
+          changeFrequency: "daily",
+          priority: 0.6,
+        });
+      }
 
-    const concursos = await getNumerosConcursos(loteria.id);
-    for (const c of concursos) {
-      entradas.push({
-        url: `${SITE_URL}/${codigoLoteria}/resultados/${c.numero}`,
-        lastModified: c.dataSorteio,
-        changeFrequency: "yearly",
-        priority: 0.4,
-      });
+      const concursos = await getNumerosConcursos(loteria.id);
+      for (const c of concursos) {
+        entradas.push({
+          url: `${SITE_URL}/${codigoLoteria}/resultados/${c.numero}`,
+          lastModified: c.dataSorteio,
+          changeFrequency: "yearly",
+          priority: 0.4,
+        });
+      }
     }
+  } catch (err) {
+    // Em caso de falha no banco, retorna o sitemap parcial sem as URLs dinâmicas
+    console.error("Sitemap: erro ao buscar dados do banco", err);
   }
 
   return entradas;
