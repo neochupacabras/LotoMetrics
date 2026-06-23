@@ -1,10 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
+import type { SetAllCookies } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-// Rotas que exigem usuário logado (qualquer plano)
 const ROTAS_AUTH = ["/conta"];
-
-// Rotas que exigem plano premium ativo
 const ROTAS_PREMIUM = ["/premium"];
 
 export async function proxy(request: NextRequest) {
@@ -18,7 +16,7 @@ export async function proxy(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: Parameters<SetAllCookies>[0]) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           );
@@ -31,15 +29,12 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  // IMPORTANTE: getUser() valida o token no servidor — não usar getSession()
-  // aqui porque pode ser manipulado pelo cliente.
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
 
-  // ── Rotas que exigem login ────────────────────────────────────────────────
   const precisaAuth = ROTAS_AUTH.some((r) => pathname.startsWith(r));
   if (precisaAuth && !user) {
     const url = request.nextUrl.clone();
@@ -48,7 +43,6 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // ── Rotas que exigem premium ──────────────────────────────────────────────
   const precisaPremium = ROTAS_PREMIUM.some((r) => pathname.startsWith(r));
   if (precisaPremium) {
     if (!user) {
@@ -58,7 +52,6 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    // Verificar plano no banco
     const { data: profile } = await supabase
       .from("profiles")
       .select("plan, plan_expires_at")
@@ -82,10 +75,8 @@ export async function proxy(request: NextRequest) {
 
 export const proxyConfig = {
   matcher: [
-    // Proteger apenas as rotas relevantes; excluir assets estáticos e APIs
     "/conta/:path*",
     "/premium/:path*",
-    // Excluir explicitamente para não bloquear o callback de auth
     "/((?!_next/static|_next/image|favicon.ico|auth/callback|api/).*)",
   ],
 };
