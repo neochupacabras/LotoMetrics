@@ -24,6 +24,7 @@ export default function GeradorClient({
   dezenaMax,
   qtdDezenasPadrao,
   dados,
+  nomeLoteria = "Loteria",
   modoAvancadoLiberado = false,
   logado = false,
 }: {
@@ -31,6 +32,7 @@ export default function GeradorClient({
   dezenaMax: number;
   qtdDezenasPadrao: number;
   dados: DadosGerador;
+  nomeLoteria?: string;
   modoAvancadoLiberado?: boolean;
   logado?: boolean;
 }) {
@@ -137,6 +139,40 @@ export default function GeradorClient({
   function copiarJogo(dezenas: number[]) {
     const texto = dezenas.map(formatarDezena).join(" - ");
     navigator.clipboard?.writeText(texto);
+  }
+
+  function baixarTXT() {
+    const linhas = jogos.map((jogo, i) => {
+      const dezenas = jogo.dezenas.map(formatarDezena).join(" - ");
+      const meta = `Soma: ${jogo.soma} | ${jogo.pares}P / ${jogo.impares}I`;
+      return `Jogo ${String(i + 1).padStart(2, "0")}: ${dezenas}  (${meta})`;
+    });
+
+    const cabecalho = [
+      `LotoAnalítica — Jogos gerados`,
+      `Loteria: ${nomeLoteria}`,
+      `Gerado em: ${new Date().toLocaleString("pt-BR")}`,
+      `Modo: ${modo === "avancado" ? "Avançado" : "Simples"}`,
+      "-".repeat(60),
+      "",
+    ];
+
+    const rodape = [
+      "",
+      "-".repeat(60),
+      "Aviso: estatísticas históricas não aumentam a probabilidade real",
+      "de premiação. Cada concurso é um evento independente.",
+      "lotoanalitica.com.br",
+    ];
+
+    const conteudo = [...cabecalho, ...linhas, ...rodape].join("\n");
+    const blob = new Blob([conteudo], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `lotoanalitica-jogos-${new Date().toISOString().slice(0,10)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -384,7 +420,12 @@ export default function GeradorClient({
 
       {jogos.length > 0 && (
         <div className="bloco">
-          <h2 className="bloco__titulo">Jogos gerados</h2>
+          <div className="gerador-jogos-header">
+            <h2 className="bloco__titulo">Jogos gerados</h2>
+            <button type="button" className="botao-copiar gerador-download-btn" onClick={baixarTXT}>
+              ↓ Baixar .txt
+            </button>
+          </div>
           <div className="lista-jogos-gerados">
             {jogos.map((jogo, i) => (
               <div key={i} className="jogo-gerado">

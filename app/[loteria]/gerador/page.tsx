@@ -58,6 +58,7 @@ export default async function GeradorPage({
         dezenaMax={loteria.dezenaMax}
         qtdDezenasPadrao={loteria.qtdDezenasSorteadas}
         dados={dados}
+        nomeLoteria={loteria.nome}
         modoAvancadoLiberado={premium}
         logado={logado}
       />

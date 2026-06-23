@@ -3271,3 +3271,21 @@ footer.rodape {
   .simulador-comparar-resultados { grid-template-columns: 1fr; }
   .simulador-hist-jogo-acoes { margin-left: 0; width: 100%; }
 }
+
+/* ── Gerador — botão download TXT ─────────────────────────── */
+.gerador-jogos-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.gerador-jogos-header .bloco__titulo {
+  margin-bottom: 0;
+}
+
+.gerador-download-btn {
+  white-space: nowrap;
+  font-size: 0.78rem;
+}
