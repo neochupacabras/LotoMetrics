@@ -3289,3 +3289,355 @@ footer.rodape {
   white-space: nowrap;
   font-size: 0.78rem;
 }
+
+/* ==========================================================
+   FASE 2 — Dashboard /conta
+   ========================================================== */
+
+.conta-voltar {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  margin-bottom: 8px;
+}
+.conta-voltar:hover { color: var(--pine); }
+
+.conta-checkout-sucesso {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  color: #166534;
+  border-radius: 4px;
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+}
+
+.conta-alerta-free {
+  background: #fef9ef;
+  border: 1px solid var(--ochre);
+  border-radius: 4px;
+  padding: 12px 20px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+}
+.conta-alerta-free__link { color: var(--pine); }
+
+.conta-alertas-desc {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+
+/* ── Preview de jogos na /conta ──────────────────────────── */
+.conta-jogos-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.conta-jogo-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  flex-wrap: wrap;
+}
+
+.conta-jogo-preview__loteria {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  background: var(--pine);
+  color: var(--paper);
+  padding: 2px 7px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.conta-jogo-preview__dezenas {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink);
+  flex: 1;
+}
+
+.conta-jogo-preview__label {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+/* ── Lista de jogos /conta/jogos ─────────────────────────── */
+.novo-jogo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 680px;
+}
+
+.jogos-lista { display: flex; flex-direction: column; gap: 32px; }
+
+.jogos-grupo__titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1rem;
+  color: var(--ink-soft);
+  margin: 0 0 14px;
+  font-weight: 400;
+}
+
+.jogos-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.jogo-card {
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: opacity 0.2s;
+}
+
+.jogo-card--inativo { opacity: 0.55; }
+
+.jogo-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.jogo-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.jogo-card__loteria {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--pine);
+}
+
+.jogo-card__data {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+}
+
+.jogo-card__acoes {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.jogo-card__toggle {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 3px 9px;
+  border-radius: 3px;
+  border: 1px solid var(--pine);
+  background: var(--pine);
+  color: var(--paper);
+  cursor: pointer;
+}
+
+.jogo-card__toggle--off {
+  background: transparent;
+  color: var(--ink-soft);
+  border-color: var(--line-strong);
+}
+
+.jogo-card__btn-remover {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 3px;
+}
+.jogo-card__btn-remover:hover { color: var(--rust); background: #fef2f2; }
+
+.jogo-card__dezenas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.jogo-card__dezena {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  padding: 2px 6px;
+  color: var(--ink);
+}
+
+.jogo-card__footer { border-top: 1px solid var(--line); padding-top: 10px; }
+
+.jogo-card__label-btn {
+  background: none;
+  border: none;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  padding: 0;
+  font-style: italic;
+}
+.jogo-card__label-btn:hover { color: var(--pine); }
+
+.jogo-card__editar-label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.jogo-card__label-input { font-size: 0.85rem !important; padding: 6px 10px !important; }
+
+/* ── Assinatura ──────────────────────────────────────────── */
+.assinatura-card {
+  border: 1px solid var(--ochre);
+  border-radius: 6px;
+  padding: 24px 28px;
+  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.assinatura-card__linha {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+
+.assinatura-card__linha:last-of-type { border-bottom: none; padding-bottom: 0; }
+
+.assinatura-card__rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.assinatura-card__valor { font-size: 0.9rem; color: var(--ink); }
+
+.assinatura-card__valor--destaque {
+  color: var(--ochre);
+  font-family: var(--font-fraunces);
+  font-size: 1rem;
+}
+
+.assinatura-card__acoes { margin-top: 4px; }
+
+.assinatura-card__nota {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Alertas form ────────────────────────────────────────── */
+.alertas-form { max-width: 620px; }
+
+.alertas-ativos {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 4px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+}
+
+.alertas-ativos__titulo {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+}
+
+.alertas-ativos__item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  color: var(--ink-soft);
+}
+
+.alertas-ativos__loteria {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  background: var(--pine);
+  color: var(--paper);
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+.alertas-form__campos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.alertas-form__linha {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.alertas-form__linha .auth-campo { flex: 1; min-width: 180px; }
+
+.alertas-form__separador {
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  padding-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.alertas-form__input-prefixo {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.alertas-form__prefixo {
+  padding: 10px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  background: var(--paper);
+  border-right: 1px solid var(--line-strong);
+}
+
+.alertas-form__input-prefixo .auth-input {
+  border: none !important;
+  border-radius: 0 !important;
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .jogos-grade { grid-template-columns: 1fr; }
+  .alertas-form__linha { flex-direction: column; }
+  .alertas-form__separador { display: none; }
+}
