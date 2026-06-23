@@ -1,9 +1,11 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import SimuladorHistoricoClient from "@/components/SimuladorHistoricoClient";
+import BloqueadoPremium from "@/components/BloqueadoPremium";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+import { getPlanoPremium } from "@/lib/plano";
 
 export async function generateMetadata({
   params,
@@ -21,6 +23,9 @@ export async function generateMetadata({
   );
 }
 
+// Free: últimos 100 concursos. Premium: histórico completo.
+const LIMITE_FREE = 100;
+
 export default async function SimuladorPage({
   params,
 }: {
@@ -30,26 +35,41 @@ export default async function SimuladorPage({
 
   if (!isCodigoLoteriaValido(codigoLoteria)) notFound();
 
-  const loteria = await getLoteriaPorCodigo(codigoLoteria);
+  const [loteria, { logado, premium }] = await Promise.all([
+    getLoteriaPorCodigo(codigoLoteria),
+    getPlanoPremium(),
+  ]);
   if (!loteria) notFound();
+
+  const totalLabel = loteria.nome === "Lotofácil" ? "3.700+" : "3.000+";
 
   return (
     <div className="container secao">
-        <p className="eyebrow">Estatísticas de {loteria.nome}</p>
-        <h1 className="titulo-edicao">E se eu tivesse jogado todo concurso?</h1>
-        <p className="subtitulo-edicao" style={{ maxWidth: 600 }}>
-          Escolha uma combinação e veja quanto teria gasto e ganho se tivesse apostado
-          esse mesmo jogo em cada um dos {loteria.nome === "Lotofácil" ? "3.700+" : "3.000+"} concursos
-          da história da {loteria.nome} — com os prêmios históricos reais.
-        </p>
+      <p className="eyebrow">Estatísticas de {loteria.nome}</p>
+      <h1 className="titulo-edicao">E se eu tivesse jogado todo concurso?</h1>
+      <p className="subtitulo-edicao" style={{ maxWidth: 600 }}>
+        Escolha uma combinação e veja quanto teria gasto e ganho se tivesse apostado
+        esse mesmo jogo {premium ? `em cada um dos ${totalLabel} concursos` : "nos últimos 100 concursos"} da história da {loteria.nome} — com os prêmios históricos reais.
+      </p>
 
-        <SimuladorHistoricoClient
-          codigoLoteria={codigoLoteria}
-          nomeLoteria={loteria.nome}
-          dezenaMin={loteria.dezenaMin}
-          dezenaMax={loteria.dezenaMax}
-          qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
-        />
-      </div>
+      {!premium && (
+        <div className="simulador-aviso-free">
+          <span className="simulador-aviso-free__badge">Free</span>
+          Simulação limitada aos últimos {LIMITE_FREE} concursos.{" "}
+          <a href="/assinar" className="simulador-aviso-free__link">
+            Assine o Premium para rodar no histórico completo →
+          </a>
+        </div>
+      )}
+
+      <SimuladorHistoricoClient
+        codigoLoteria={codigoLoteria}
+        nomeLoteria={loteria.nome}
+        dezenaMin={loteria.dezenaMin}
+        dezenaMax={loteria.dezenaMax}
+        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        limiteHistorico={premium ? null : LIMITE_FREE}
+      />
+    </div>
   );
 }

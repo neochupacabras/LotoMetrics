@@ -11,17 +11,22 @@ export default function ConferidorClient({
   dezenaMin,
   dezenaMax,
   qtdDezenasSorteadas,
+  jogoUnico = false,
+  logado = false,
 }: {
   codigoLoteria: string;
   dezenaMin: number;
   dezenaMax: number;
   qtdDezenasSorteadas: number;
+  jogoUnico?: boolean;   // free: bloqueia novo jogo após conferir
+  logado?: boolean;
 }) {
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
   const [textoColar, setTextoColar] = useState("");
   const [resultado, setResultado] = useState<ConferidorActionResult | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [jogoUsado, setJogoUsado] = useState(false); // controle do limite free
 
   const todasDezenas = useMemo(
     () => Array.from({ length: dezenaMax - dezenaMin + 1 }, (_, i) => dezenaMin + i),
@@ -74,6 +79,7 @@ export default function ConferidorClient({
         setErro(r.erro ?? "Não foi possível conferir esse jogo.");
       } else {
         setResultado(r);
+        if (jogoUnico) setJogoUsado(true);
       }
     });
   }
@@ -125,7 +131,7 @@ export default function ConferidorClient({
       </p>
 
       <div style={{ display: "flex", gap: "10px" }}>
-        <button type="button" className="botao-gerar" onClick={handleConferir} disabled={pending}>
+        <button type="button" className="botao-gerar" onClick={handleConferir} disabled={pending || (jogoUnico && jogoUsado)}>
           {pending ? "Conferindo..." : "Conferir contra todo o histórico"}
         </button>
         <button type="button" className="botao-copiar" onClick={limpar}>
@@ -137,6 +143,22 @@ export default function ConferidorClient({
 
       {resultado?.ok && resultado.dados && (
         <ResultadoConferidor dados={resultado.dados} codigoLoteria={codigoLoteria} />
+      )}
+
+      {jogoUnico && jogoUsado && (
+        <div className="conferidor-premium-cta">
+          <p className="conferidor-premium-cta__texto">
+            Quer conferir outro jogo? Assine o Premium para conferir quantos jogos quiser.
+          </p>
+          <a href="/assinar" className="botao-gerar">
+            Assinar Premium →
+          </a>
+          {!logado && (
+            <a href="/entrar" className="conferidor-premium-cta__entrar">
+              Já tenho uma conta
+            </a>
+          )}
+        </div>
       )}
     </div>
   );
@@ -273,6 +295,7 @@ function RetornoFinanceiroSection({
         precoNumero
       );
       setResultado(r);
+        if (jogoUnico) setJogoUsado(true);
     });
   }
 

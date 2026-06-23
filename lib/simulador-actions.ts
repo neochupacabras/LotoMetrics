@@ -40,7 +40,8 @@ const PRECO_APOSTA: Record<string, number> = {
 
 export async function simularHistorico(
   codigoLoteria: string,
-  dezenas: number[]
+  dezenas: number[],
+  limiteHistorico?: number  // undefined = histórico completo (premium)
 ): Promise<ResultadoSimulacao | { erro: string }> {
   if (!isCodigoLoteriaValido(codigoLoteria))
     return { erro: "Loteria inválida" };
@@ -51,7 +52,9 @@ export async function simularHistorico(
   if (dezenas.length !== loteria.qtdDezenasSorteadas)
     return { erro: `Selecione exatamente ${loteria.qtdDezenasSorteadas} dezenas` };
 
-  const draws = await getDrawsParaSimulacao(loteria.id);
+  const todosDraws = await getDrawsParaSimulacao(loteria.id);
+  // Aplica limite: free usa últimos N concursos, premium usa todos
+  const draws = limiteHistorico ? todosDraws.slice(-limiteHistorico) : todosDraws;
   const dezenasSet = new Set(dezenas);
   const mapaFaixas = MAPA_FAIXAS[codigoLoteria] ?? {};
   const minAcertos = Math.min(...Object.keys(mapaFaixas).map(Number));

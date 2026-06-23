@@ -5,6 +5,7 @@ import { prepararDadosGerador } from "@/lib/gerador";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+import { getPlanoPremium } from "@/lib/plano";
 
 export async function generateMetadata({
   params,
@@ -33,10 +34,11 @@ export default async function GeradorPage({
     notFound();
   }
 
-  const loteria = await getLoteriaPorCodigo(codigoLoteria);
-  if (!loteria) {
-    notFound();
-  }
+  const [loteria, { logado, premium }] = await Promise.all([
+    getLoteriaPorCodigo(codigoLoteria),
+    getPlanoPremium(),
+  ]);
+  if (!loteria) notFound();
 
   const dados = await prepararDadosGerador(loteria.id);
 
@@ -54,6 +56,8 @@ export default async function GeradorPage({
         dezenaMax={loteria.dezenaMax}
         qtdDezenasPadrao={loteria.qtdDezenasSorteadas}
         dados={dados}
+        modoAvancadoLiberado={premium}
+        logado={logado}
       />
 
       <div className="aviso-legal">

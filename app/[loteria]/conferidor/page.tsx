@@ -4,6 +4,7 @@ import ConferidorClient from "@/components/ConferidorClient";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+import { getPlanoPremium } from "@/lib/plano";
 
 export async function generateMetadata({
   params,
@@ -32,10 +33,11 @@ export default async function ConferidorPage({
     notFound();
   }
 
-  const loteria = await getLoteriaPorCodigo(codigoLoteria);
-  if (!loteria) {
-    notFound();
-  }
+  const [loteria, { logado, premium }] = await Promise.all([
+    getLoteriaPorCodigo(codigoLoteria),
+    getPlanoPremium(),
+  ]);
+  if (!loteria) notFound();
 
   return (
     <div className="container secao">
@@ -44,6 +46,7 @@ export default async function ConferidorPage({
       <p className="subtitulo-edicao" style={{ maxWidth: 620 }}>
         Veja como um jogo se saiu contra todo o histórico de concursos já sorteados —
         quantos pontos faria em cada um, e se já bateu alguma faixa premiada.
+        {!premium && <span className="conferidor-aviso-free"> (Free: 1 jogo por sessão)</span>}
       </p>
 
       <ConferidorClient
@@ -51,6 +54,8 @@ export default async function ConferidorPage({
         dezenaMin={loteria.dezenaMin}
         dezenaMax={loteria.dezenaMax}
         qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        jogoUnico={!premium}
+        logado={logado}
       />
     </div>
   );

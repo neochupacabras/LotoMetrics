@@ -52,6 +52,7 @@ interface Props {
   dezenaMin: number;
   dezenaMax: number;
   qtdDezenasSorteadas: number;
+  limiteHistorico?: number | null; // null = histórico completo (premium)
 }
 
 // ─── Componente ───────────────────────────────────────────────────────────────
@@ -61,6 +62,7 @@ export default function SimuladorHistoricoClient({
   dezenaMin,
   dezenaMax,
   qtdDezenasSorteadas,
+  limiteHistorico = null,
 }: Props) {
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
   const [resultado, setResultado] = useState<ResultadoSimulacao | null>(null);
@@ -91,7 +93,7 @@ export default function SimuladorHistoricoClient({
     const dezenas = Array.from(selecionadas).sort((a, b) => a - b);
     startTransition(async () => {
       setErro(null);
-      const res = await simularHistorico(codigoLoteria, dezenas);
+      const res = await simularHistorico(codigoLoteria, dezenas, limiteHistorico ?? undefined);
       if ("erro" in res) {
         setErro(res.erro);
       } else {

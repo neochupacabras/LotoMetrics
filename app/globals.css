@@ -2912,3 +2912,133 @@ footer.rodape {
     padding: 5px 9px;
   }
 }
+
+
+/* ==========================================================
+   FASE 1 — Camada Premium
+   ========================================================== */
+
+/* ── BloqueadoPremium ─────────────────────────────────────── */
+.bloqueado-premium {
+  border: 1px dashed var(--ochre);
+  border-radius: 6px;
+  padding: 28px 32px;
+  margin-top: 32px;
+  text-align: center;
+  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+}
+
+.bloqueado-premium__icone {
+  font-size: 1.4rem;
+  color: var(--ochre);
+  margin-bottom: 10px;
+}
+
+.bloqueado-premium__titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+
+.bloqueado-premium__desc {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  max-width: 460px;
+  margin: 0 auto 20px;
+}
+
+.bloqueado-premium__acoes {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.bloqueado-premium__cta { white-space: nowrap; }
+
+.bloqueado-premium__entrar {
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.bloqueado-premium__entrar:hover { color: var(--pine); }
+
+/* ── Simulador — aviso free ───────────────────────────────── */
+.simulador-aviso-free {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fef9ef;
+  border: 1px solid var(--ochre);
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.simulador-aviso-free__badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  background: var(--ochre);
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.simulador-aviso-free__link {
+  color: var(--pine);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.simulador-aviso-free__link:hover { text-decoration: underline; }
+
+/* ── Gerador — botão modo avançado bloqueado ──────────────── */
+.modo-toggle__botao--bloqueado {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.modo-toggle__lock {
+  font-size: 0.65rem;
+  color: var(--ochre);
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+/* ── Conferidor — CTA premium após 1 jogo ─────────────────── */
+.conferidor-aviso-free {
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.conferidor-premium-cta {
+  margin-top: 28px;
+  border: 1px dashed var(--ochre);
+  border-radius: 6px;
+  padding: 24px;
+  text-align: center;
+  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+}
+
+.conferidor-premium-cta__texto {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+
+.conferidor-premium-cta__entrar {
+  display: block;
+  margin-top: 10px;
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.conferidor-premium-cta__entrar:hover { color: var(--pine); }

@@ -24,11 +24,15 @@ export default function GeradorClient({
   dezenaMax,
   qtdDezenasPadrao,
   dados,
+  modoAvancadoLiberado = false,
+  logado = false,
 }: {
   dezenaMin: number;
   dezenaMax: number;
   qtdDezenasPadrao: number;
   dados: DadosGerador;
+  modoAvancadoLiberado?: boolean;
+  logado?: boolean;
 }) {
   const [modo, setModo] = useState<"simples" | "avancado">("simples");
   const [qtdJogos, setQtdJogos] = useState(1);
@@ -148,11 +152,14 @@ export default function GeradorClient({
         </button>
         <button
           type="button"
-          className="modo-toggle__botao"
+          className={`modo-toggle__botao${!modoAvancadoLiberado ? " modo-toggle__botao--bloqueado" : ""}`}
           data-ativo={modo === "avancado"}
-          onClick={() => setModo("avancado")}
+          onClick={() => {
+            if (modoAvancadoLiberado) setModo("avancado");
+          }}
+          title={modoAvancadoLiberado ? undefined : "Recurso Premium — assine para desbloquear"}
         >
-          Modo avançado
+          Modo avançado {!modoAvancadoLiberado && <span className="modo-toggle__lock">✦</span>}
         </button>
       </div>
 
