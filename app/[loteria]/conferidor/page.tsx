@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+export const dynamic = "force-dynamic";
+
 import type { Metadata } from "next";
 import ConferidorClient from "@/components/ConferidorClient";
 import { getLoteriaPorCodigo } from "@/lib/queries";

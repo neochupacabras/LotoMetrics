@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+export const dynamic = "force-dynamic";
+
 import type { Metadata } from "next";
 import GeradorClient from "@/components/GeradorClient";
 import { prepararDadosGerador } from "@/lib/gerador";

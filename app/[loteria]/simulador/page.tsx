@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+export const dynamic = "force-dynamic";
+
 import type { Metadata } from "next";
 import SimuladorHistoricoClient from "@/components/SimuladorHistoricoClient";
 import BloqueadoPremium from "@/components/BloqueadoPremium";

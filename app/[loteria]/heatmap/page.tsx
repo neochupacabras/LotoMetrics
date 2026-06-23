@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+export const dynamic = "force-dynamic";
+
 import type { Metadata } from "next";
 import HeatmapPageClient, { type PeriodoData } from "@/components/HeatmapPageClient";
 import Subnav from "@/components/Subnav";

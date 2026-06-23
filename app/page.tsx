@@ -4,7 +4,7 @@ import Masthead from "@/components/Masthead";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 
-export const revalidate = 3600; // Revalida a cada hora
+export const dynamic = "force-dynamic"; // Depende do banco e de auth em runtime
 
 export const metadata: Metadata = {
   title: "LotoAnalítica — Resultados e estatísticas de Lotofácil e Mega-Sena",
