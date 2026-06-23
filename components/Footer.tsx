@@ -12,6 +12,7 @@ export default function Footer() {
         <nav className="rodape__links">
           <a href="/sobre">Sobre</a>
           <a href="/dicas#jogo-responsavel">Jogo responsável</a>
+          <a href="/privacidade">Política de Privacidade</a>
         </nav>
       </div>
     </footer>

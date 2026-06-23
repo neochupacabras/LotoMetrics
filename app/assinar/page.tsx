@@ -115,7 +115,8 @@ export default async function AssinarPage() {
           <p className="assinar-nota">
             Pagamento seguro via Stripe. Aceitamos cartão de crédito e débito.
             Ao assinar, você concorda com nossos{" "}
-            <Link href="/termos" className="assinar-link">Termos de uso</Link>.
+            <Link href="/termos" className="assinar-link">Termos de uso</Link> e{" "}
+            <Link href="/privacidade" className="assinar-link">Política de Privacidade</Link>.
           </p>
         </div>
       </main>
