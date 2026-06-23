@@ -295,7 +295,6 @@ function RetornoFinanceiroSection({
         precoNumero
       );
       setResultado(r);
-        if (jogoUnico) setJogoUsado(true);
     });
   }
 
