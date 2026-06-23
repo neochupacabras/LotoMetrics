@@ -1,10 +1,8 @@
-import { notFound } from "next/navigation";
 export const dynamic = "force-dynamic";
-
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import HeatmapPageClient, { type PeriodoData } from "@/components/HeatmapPageClient";
 import Subnav from "@/components/Subnav";
-import BloqueadoPremium from "@/components/BloqueadoPremium";
 import { getLoteriaPorCodigo, getFrequenciaHeatmap } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -22,15 +20,11 @@ export async function generateMetadata({
     codigoLoteria,
     "/heatmap",
     `Heatmap do volante — frequência das dezenas da ${nome}`,
-    `Visualize quais dezenas saem mais na ${nome}, em qualquer período do histórico — e por que a variação que você vê é exatamente o esperado pela estatística.`
+    `Visualize quais dezenas saem mais na ${nome}, em qualquer período do histórico.`
   );
 }
 
-// Períodos: free vê só "Todo o histórico"; premium desbloqueia os demais
-const PERIODOS_FREE:    { id: string; label: string; lookback: number | null }[] = [
-  { id: "tudo", label: "Todo o histórico", lookback: null },
-];
-const PERIODOS_PREMIUM: { id: string; label: string; lookback: number | null }[] = [
+const TODOS_PERIODOS: { id: string; label: string; lookback: number | null }[] = [
   { id: "tudo", label: "Todo o histórico", lookback: null },
   { id: "500",  label: "Últimos 500",      lookback: 500  },
   { id: "100",  label: "Últimos 100",      lookback: 100  },
@@ -52,10 +46,13 @@ export default async function HeatmapPage({
   ]);
   if (!loteria) notFound();
 
-  const periodosSelecionados = premium ? PERIODOS_PREMIUM : PERIODOS_FREE;
+  // Free: busca só o período "tudo". Premium: busca todos os 4.
+  // Os períodos bloqueados são renderizados no client com overlay,
+  // mas sem dados reais (evita query desnecessária).
+  const periodosParaBuscar = premium ? TODOS_PERIODOS : [TODOS_PERIODOS[0]];
 
-  const periodosData: PeriodoData[] = await Promise.all(
-    periodosSelecionados.map(async (p) => {
+  const periodosComDados: PeriodoData[] = await Promise.all(
+    periodosParaBuscar.map(async (p) => {
       const dados = await getFrequenciaHeatmap(loteria.id, p.lookback);
       const totalConcursos = dados[0]?.totalConcursos ?? 0;
       return {
@@ -66,6 +63,20 @@ export default async function HeatmapPage({
       };
     })
   );
+
+  // Para usuários free, adiciona os períodos premium como "fantasmas" sem dados
+  const periodosData: (PeriodoData & { bloqueado?: boolean })[] = premium
+    ? periodosComDados
+    : [
+        ...periodosComDados,
+        ...TODOS_PERIODOS.slice(1).map((p) => ({
+          id: p.id,
+          label: p.label,
+          totalConcursos: 0,
+          frequencias: [],
+          bloqueado: true,
+        })),
+      ];
 
   return (
     <>
@@ -79,16 +90,12 @@ export default async function HeatmapPage({
           aleatoriedade.
         </p>
 
-        <HeatmapPageClient loteria={loteria} periodos={periodosData} />
-
-        {/* CTA para períodos adicionais — exibido só para não-premium */}
-        {!premium && (
-          <BloqueadoPremium
-            titulo="Comparação por períodos"
-            descricao="Assine o Premium para comparar o heatmap nos últimos 500, 100 e 50 concursos e observar como a variação muda em períodos curtos."
-            logado={logado}
-          />
-        )}
+        <HeatmapPageClient
+          loteria={loteria}
+          periodos={periodosData}
+          premium={premium}
+          logado={logado}
+        />
 
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
           Frequência histórica não prevê sorteios futuros. Cada concurso é independente

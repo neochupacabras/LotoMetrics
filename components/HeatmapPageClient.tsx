@@ -11,11 +11,14 @@ export interface PeriodoData {
   label: string;
   totalConcursos: number;
   frequencias: { dezena: number; frequencia: number }[];
+  bloqueado?: boolean;
 }
 
 interface Props {
   loteria: Loteria;
   periodos: PeriodoData[];
+  premium?: boolean;
+  logado?: boolean;
 }
 
 // ─── Cores (hex do design system, hardcoded pois CSS vars não chegam ao JS) ──
@@ -58,7 +61,7 @@ function insightTexto(periodo: PeriodoData, loteria: Loteria): string {
 
 // ─── Componente ──────────────────────────────────────────────────────────────
 
-export default function HeatmapPageClient({ loteria, periodos }: Props) {
+export default function HeatmapPageClient({ loteria, periodos, premium = false, logado = false }: Props) {
   const [periodoId, setPeriodoId] = useState(periodos[0].id);
   const [hoverId, setHoverId] = useState<number | null>(null);
 
@@ -92,15 +95,43 @@ export default function HeatmapPageClient({ loteria, periodos }: Props) {
           <button
             key={p.id}
             type="button"
-            className="heatmap-periodo-btn"
+            className={`heatmap-periodo-btn${p.bloqueado ? " heatmap-periodo-btn--bloqueado" : ""}`}
             data-ativo={p.id === periodoId}
-            onClick={() => { setPeriodoId(p.id); setHoverId(null); }}
+            onClick={() => {
+              if (!p.bloqueado) { setPeriodoId(p.id); setHoverId(null); }
+              else { setPeriodoId(p.id); } // mostra overlay
+            }}
           >
             {p.label}
-            <span className="heatmap-periodo-meta">{p.totalConcursos.toLocaleString("pt-BR")} sorteios</span>
+            {p.bloqueado
+              ? <span className="heatmap-periodo-meta">✦ Premium</span>
+              : <span className="heatmap-periodo-meta">{p.totalConcursos.toLocaleString("pt-BR")} sorteios</span>
+            }
           </button>
         ))}
       </div>
+
+      {/* Overlay premium para períodos bloqueados */}
+      {periodo.bloqueado && (
+        <div className="heatmap-premium-overlay">
+          <div className="heatmap-premium-overlay__card">
+            <p className="heatmap-premium-overlay__icone">✦</p>
+            <p className="heatmap-premium-overlay__titulo">Período Premium</p>
+            <p className="heatmap-premium-overlay__desc">
+              Compare a frequência das dezenas em períodos curtos — últimos 500, 100 e 50
+              concursos — e observe como a variação muda conforme o tamanho da amostra.
+            </p>
+            <a href="/assinar" className="botao-gerar">
+              Assinar Premium →
+            </a>
+            {!logado && (
+              <a href="/entrar" className="heatmap-premium-overlay__entrar">
+                Já tenho uma conta
+              </a>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Painel de informação da dezena selecionada */}
       <div className="heatmap-info" data-visivel={hoverId != null}>

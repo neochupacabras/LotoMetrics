@@ -152,14 +152,11 @@ export default function GeradorClient({
         </button>
         <button
           type="button"
-          className={`modo-toggle__botao${!modoAvancadoLiberado ? " modo-toggle__botao--bloqueado" : ""}`}
+          className="modo-toggle__botao"
           data-ativo={modo === "avancado"}
-          onClick={() => {
-            if (modoAvancadoLiberado) setModo("avancado");
-          }}
-          title={modoAvancadoLiberado ? undefined : "Recurso Premium — assine para desbloquear"}
+          onClick={() => setModo("avancado")}
         >
-          Modo avançado {!modoAvancadoLiberado && <span className="modo-toggle__lock">✦</span>}
+          Modo avançado {!modoAvancadoLiberado && <span className="modo-toggle__lock">✦ Premium</span>}
         </button>
       </div>
 
@@ -175,6 +172,28 @@ export default function GeradorClient({
             onChange={(e) => setQtdJogos(Number(e.target.value))}
           />
         </div>
+
+        {modo === "avancado" && !modoAvancadoLiberado && (
+          <div className="gerador-premium-overlay">
+            <div className="gerador-premium-overlay__card">
+              <p className="gerador-premium-overlay__icone">✦</p>
+              <p className="gerador-premium-overlay__titulo">Modo Avançado — Premium</p>
+              <p className="gerador-premium-overlay__desc">
+                Combine filtros de atraso, ciclo, duques e trincas quentes, distribuição
+                par/ímpar, soma, primos, Fibonacci e múltiplos de 3 para montar jogos
+                com qualquer critério estatístico.
+              </p>
+              <a href="/assinar" className="botao-gerar">
+                Assinar Premium →
+              </a>
+              {!logado && (
+                <a href="/entrar" className="gerador-premium-overlay__entrar">
+                  Já tenho uma conta
+                </a>
+              )}
+            </div>
+          </div>
+        )}
 
         {modo === "simples" ? (
           <p className="modo-simples-nota">

@@ -3042,3 +3042,107 @@ footer.rodape {
 }
 
 .conferidor-premium-cta__entrar:hover { color: var(--pine); }
+
+/* ── Gerador — overlay premium modo avançado ──────────────── */
+.gerador-premium-overlay {
+  margin-top: 24px;
+  border: 1px dashed var(--ochre);
+  border-radius: 6px;
+  padding: 40px 32px;
+  text-align: center;
+  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gerador-premium-overlay__card {
+  max-width: 420px;
+}
+
+.gerador-premium-overlay__icone {
+  font-size: 1.6rem;
+  color: var(--ochre);
+  margin: 0 0 10px;
+}
+
+.gerador-premium-overlay__titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.gerador-premium-overlay__desc {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.gerador-premium-overlay__entrar {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.gerador-premium-overlay__entrar:hover { color: var(--pine); }
+
+/* ── Heatmap — botão período bloqueado e overlay ──────────── */
+.heatmap-periodo-btn--bloqueado {
+  opacity: 0.55;
+  cursor: pointer;
+}
+
+.heatmap-periodo-btn--bloqueado:hover {
+  opacity: 0.75;
+}
+
+.heatmap-premium-overlay {
+  margin-top: 24px;
+  border: 1px dashed var(--ochre);
+  border-radius: 6px;
+  padding: 48px 32px;
+  text-align: center;
+  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.heatmap-premium-overlay__card {
+  max-width: 420px;
+}
+
+.heatmap-premium-overlay__icone {
+  font-size: 1.6rem;
+  color: var(--ochre);
+  margin: 0 0 10px;
+}
+
+.heatmap-premium-overlay__titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.heatmap-premium-overlay__desc {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.heatmap-premium-overlay__entrar {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.heatmap-premium-overlay__entrar:hover { color: var(--pine); }
