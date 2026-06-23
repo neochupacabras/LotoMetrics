@@ -1,9 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
+import type { SetAllCookies } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-// Usado em Server Components, Server Actions e Route Handlers.
-// Lê e escreve cookies via next/headers — gerencia a sessão JWT
-// sem expor a service_role key ao cliente.
 export async function createClient() {
   const cookieStore = await cookies();
 
@@ -15,14 +13,14 @@ export async function createClient() {
         getAll() {
           return cookieStore.getAll();
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: Parameters<SetAllCookies>[0]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             );
           } catch {
             // setAll chamado de um Server Component — pode ignorar.
-            // O middleware cuida de atualizar a sessão.
+            // O proxy cuida de atualizar a sessão.
           }
         },
       },
@@ -30,9 +28,6 @@ export async function createClient() {
   );
 }
 
-// Variante com service_role — para webhooks e operações administrativas
-// (atualizar plan, etc.) que precisam bypassar RLS.
-// NUNCA expor ao cliente — só usar em route handlers server-side.
 export function createAdminClient() {
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
