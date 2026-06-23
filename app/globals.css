@@ -3146,3 +3146,128 @@ footer.rodape {
 }
 
 .heatmap-premium-overlay__entrar:hover { color: var(--pine); }
+
+/* ==========================================================
+   SIMULADOR — melhorias Fase 1
+   ========================================================== */
+
+.simulador-erro {
+  color: var(--rust);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
+
+.simulador-hist-jogo-acoes {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.simulador-salvar-btn {
+  white-space: nowrap;
+}
+
+/* ── Comparador ──────────────────────────────────────────── */
+.simulador-seletor__label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin: 0 0 12px;
+}
+
+.simulador-comparar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.simulador-comparar-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.simulador-comparar-jogo {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 18px;
+  border-radius: 6px;
+  border: 2px solid var(--line-strong);
+}
+
+.simulador-comparar-jogo[data-cor="a"] { border-color: var(--ochre); }
+.simulador-comparar-jogo[data-cor="b"] { border-color: var(--pine); }
+
+.simulador-comparar-jogo__label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+
+.simulador-comparar-jogo__dezenas {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink);
+  word-break: break-all;
+}
+
+.simulador-comparar-vs {
+  font-family: var(--font-fraunces);
+  font-size: 1.1rem;
+  color: var(--ink-soft);
+  flex-shrink: 0;
+}
+
+.simulador-comparar-resultados {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.simulador-comparar-coluna {
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.simulador-comparar-coluna[data-cor="a"] { border-color: var(--ochre); }
+.simulador-comparar-coluna[data-cor="b"] { border-color: var(--pine); }
+
+.simulador-comparar-coluna__titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1rem;
+  margin: 0 0 16px;
+  color: var(--ink);
+}
+
+.simulador-comparar-veredito {
+  margin-top: 24px;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 18px 24px;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.simulador-comparar-veredito p { margin: 0; }
+.simulador-comparar-veredito strong { color: var(--ink); }
+
+@media (max-width: 640px) {
+  .simulador-comparar-grid { grid-template-columns: 1fr; }
+  .simulador-comparar-resultados { grid-template-columns: 1fr; }
+  .simulador-hist-jogo-acoes { margin-left: 0; width: 100%; }
+}

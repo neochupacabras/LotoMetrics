@@ -71,6 +71,8 @@ export default async function SimuladorPage({
         dezenaMax={loteria.dezenaMax}
         qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
         limiteHistorico={premium ? null : LIMITE_FREE}
+        logado={logado}
+        premium={premium}
       />
     </div>
   );

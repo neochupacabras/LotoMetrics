@@ -128,3 +128,130 @@ export async function simularHistorico(
     grafico,
   };
 }
+
+// ── Comparador: simula dois jogos em paralelo ─────────────────────────────────
+export interface ResultadoComparacao {
+  jogoA: ResultadoSimulacao & { dezenas: number[] };
+  jogoB: ResultadoSimulacao & { dezenas: number[] };
+  graficoComparado: { numero: number; saldoA: number; saldoB: number }[];
+}
+
+export async function compararJogos(
+  codigoLoteria: string,
+  dezenasA: number[],
+  dezenasB: number[],
+  limiteHistorico?: number
+): Promise<ResultadoComparacao | { erro: string }> {
+  if (!isCodigoLoteriaValido(codigoLoteria))
+    return { erro: "Loteria inválida" };
+
+  const loteria = await getLoteriaPorCodigo(codigoLoteria);
+  if (!loteria) return { erro: "Loteria não encontrada" };
+
+  const n = loteria.qtdDezenasSorteadas;
+  if (dezenasA.length !== n || dezenasB.length !== n)
+    return { erro: `Cada jogo precisa ter exatamente ${n} dezenas` };
+
+  const todosDraws = await getDrawsParaSimulacao(loteria.id);
+  const draws = limiteHistorico ? todosDraws.slice(-limiteHistorico) : todosDraws;
+
+  const setA = new Set(dezenasA);
+  const setB = new Set(dezenasB);
+  const mapaFaixas = MAPA_FAIXAS[codigoLoteria] ?? {};
+  const minAcertos = Math.min(...Object.keys(mapaFaixas).map(Number));
+  const preco = PRECO_APOSTA[codigoLoteria] ?? 3.50;
+
+  let saldoA = 0, saldoB = 0;
+  let ganhoA = 0, ganhoB = 0;
+  const faixaMapA = new Map<number, { qtd: number; ganhoTotal: number }>();
+  const faixaMapB = new Map<number, { qtd: number; ganhoTotal: number }>();
+  const melhoresA: { numero: number; acertos: number; premio: number }[] = [];
+  const melhoresB: { numero: number; acertos: number; premio: number }[] = [];
+  const graficoComparado: { numero: number; saldoA: number; saldoB: number }[] = [];
+
+  for (const acertos of Object.keys(mapaFaixas).map(Number)) {
+    faixaMapA.set(acertos, { qtd: 0, ganhoTotal: 0 });
+    faixaMapB.set(acertos, { qtd: 0, ganhoTotal: 0 });
+  }
+
+  for (const draw of draws) {
+    saldoA -= preco;
+    saldoB -= preco;
+
+    const acA = draw.dezenas.filter((d) => setA.has(d)).length;
+    const acB = draw.dezenas.filter((d) => setB.has(d)).length;
+
+    if (acA >= minAcertos) {
+      const faixa = mapaFaixas[acA];
+      if (faixa !== undefined) {
+        const premio = draw.premios[faixa] ?? 0;
+        if (premio > 0) {
+          saldoA += premio; ganhoA += premio;
+          faixaMapA.get(acA)!.qtd++;
+          faixaMapA.get(acA)!.ganhoTotal += premio;
+          melhoresA.push({ numero: draw.numero, acertos: acA, premio });
+        }
+      }
+    }
+
+    if (acB >= minAcertos) {
+      const faixa = mapaFaixas[acB];
+      if (faixa !== undefined) {
+        const premio = draw.premios[faixa] ?? 0;
+        if (premio > 0) {
+          saldoB += premio; ganhoB += premio;
+          faixaMapB.get(acB)!.qtd++;
+          faixaMapB.get(acB)!.ganhoTotal += premio;
+          melhoresB.push({ numero: draw.numero, acertos: acB, premio });
+        }
+      }
+    }
+
+    graficoComparado.push({
+      numero: draw.numero,
+      saldoA: Math.round(saldoA * 100) / 100,
+      saldoB: Math.round(saldoB * 100) / 100,
+    });
+  }
+
+  const totalGasto = draws.length * preco;
+  const descricoesFaixas: Record<string, Record<number, string>> = {
+    lotofacil: { 15: "15 acertos", 14: "14 acertos", 13: "13 acertos", 12: "12 acertos", 11: "11 acertos" },
+    megasena:  { 6: "Sena", 5: "Quina", 4: "Quadra" },
+  };
+
+  function montarResultado(
+    dezenas: number[],
+    ganho: number,
+    saldoFinal: number,
+    faixaMap: Map<number, { qtd: number; ganhoTotal: number }>,
+    melhores: { numero: number; acertos: number; premio: number }[]
+  ): ResultadoSimulacao & { dezenas: number[] } {
+    return {
+      dezenas,
+      nomeLoteria: loteria!.nome,
+      totalConcursos: draws.length,
+      precoAposta: preco,
+      totalGasto,
+      totalGanho: ganho,
+      saldoFinal,
+      retornoPct: totalGasto > 0 ? (ganho / totalGasto) * 100 : 0,
+      porFaixa: Array.from(faixaMap.entries())
+        .sort((a, b) => b[0] - a[0])
+        .map(([acertos, { qtd, ganhoTotal }]) => ({
+          acertos,
+          descricao: descricoesFaixas[codigoLoteria]?.[acertos] ?? `${acertos} acertos`,
+          qtd,
+          ganhoTotal,
+        })),
+      melhores: melhores.sort((a, b) => b.premio - a.premio).slice(0, 5),
+      grafico: [],
+    };
+  }
+
+  return {
+    jogoA: montarResultado(dezenasA, ganhoA, saldoA, faixaMapA, melhoresA),
+    jogoB: montarResultado(dezenasB, ganhoB, saldoB, faixaMapB, melhoresB),
+    graficoComparado,
+  };
+}
