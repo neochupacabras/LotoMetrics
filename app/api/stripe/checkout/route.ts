@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-05-27.dahlia",
-});
-
 export async function POST(request: Request) {
+  // Instanciar dentro da função — evita erro no build quando a env não está disponível
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2026-05-27.dahlia",
+  });
+
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -19,7 +20,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "priceId ausente" }, { status: 400 });
   }
 
-  // Buscar ou criar customer no Stripe
   const { data: profile } = await supabase
     .from("profiles")
     .select("stripe_customer_id, display_name")
@@ -36,7 +36,6 @@ export async function POST(request: Request) {
     });
     customerId = customer.id;
 
-    // Salvar o customer_id no profile
     await supabase
       .from("profiles")
       .update({ stripe_customer_id: customerId })

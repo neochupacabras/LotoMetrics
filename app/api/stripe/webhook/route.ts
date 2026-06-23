@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/server";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2026-05-27.dahlia",
-});
-
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  // Instanciar dentro da função — evita erro no build quando a env não está disponível
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2026-05-27.dahlia",
+  });
+
   const body = await request.text();
   const sig = request.headers.get("stripe-signature");
 
@@ -42,8 +43,6 @@ export async function POST(request: Request) {
       }
 
       const isAtivo = ["active", "trialing"].includes(sub.status);
-
-      // Na Stripe API v22, current_period_start/end estão no item, não no objeto raiz
       const item = sub.items.data[0];
       const periodoFim = item?.current_period_end
         ? new Date(item.current_period_end * 1000).toISOString()
@@ -97,7 +96,6 @@ export async function POST(request: Request) {
 
     case "invoice.payment_failed": {
       const invoice = event.data.object as Stripe.Invoice;
-      // Na Stripe API v22, subscription foi movido para invoice.parent.subscription_details.subscription
       const parent = invoice.parent;
       const subRef =
         parent?.type === "subscription_details"
