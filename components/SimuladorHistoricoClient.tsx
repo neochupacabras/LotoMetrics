@@ -278,7 +278,7 @@ export default function SimuladorHistoricoClient({
 
       {/* ── Toggle modo ──────────────────────────────────────────── */}
       {emAndamento && (
-        <div className="modo-toggle" style={{ marginBottom: 24 }}>
+        <div className="modo-toggle" style={{ marginBottom: 24, alignSelf: "flex-start" }}>
           <button
             type="button"
             className="modo-toggle__botao"
