@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Anuncio from "@/components/Anuncio";
 import type { Metadata } from "next";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { gerarDestaques } from "@/lib/destaques";
@@ -64,6 +65,8 @@ export default async function DestaquesPage({
       ) : (
         <p className="subtitulo-edicao">Nada fora do comum no momento.</p>
       )}
+
+      <Anuncio slot="8557071463" className="anuncio-entre-secoes" />
 
       <div className="aviso-legal" style={{ marginTop: "20px" }}>
         <strong>Lembrete:</strong> estes fatos descrevem o histórico. Nenhum deles indica

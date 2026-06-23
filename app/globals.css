@@ -3641,3 +3641,20 @@ footer.rodape {
   .alertas-form__linha { flex-direction: column; }
   .alertas-form__separador { display: none; }
 }
+
+/* ==========================================================
+   ANÚNCIOS — Google AdSense (só para usuários free)
+   ========================================================== */
+
+.anuncio-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Espaçamento quando inserido entre seções de conteúdo */
+.anuncio-entre-secoes {
+  margin: 36px 0 28px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 0;
+}

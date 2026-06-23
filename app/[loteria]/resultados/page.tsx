@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
+import Anuncio from "@/components/Anuncio";
 import { getConcursosPaginado, getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 import { formatarData, formatarMoeda, isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -148,6 +149,8 @@ export default async function ResultadosPage({
           </Link>
         ))}
       </div>
+
+      <Anuncio slot="8557071463" className="anuncio-entre-secoes" />
 
       <div className="paginacao">
         {pagina > 1 ? (

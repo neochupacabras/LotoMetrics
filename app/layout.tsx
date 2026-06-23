@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import Footer from "@/components/Footer";
 import { SITE_URL } from "@/lib/seo";
+import { getPlanoPremium } from "@/lib/plano";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -35,22 +37,32 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Verifica o plano no servidor — o script do AdSense só é incluído
+  // no HTML quando o usuário NÃO é premium. Para assinantes, o script
+  // nunca chega ao navegador.
+  const { premium } = await getPlanoPremium();
+
   return (
     <html lang="pt-BR" className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`}>
-      {/* suppressHydrationWarning aqui: algumas extensões de navegador (ad
-          blockers, gerenciadores de senha, etc.) injetam atributos no
-          <body> antes do React hidratar — ex.: bis_register,
-          __processed_...__. Isso não tem relação com o app, é o cenário
-          descrito na própria documentação do React para esse aviso. */}
       <body suppressHydrationWarning>
         {children}
         <Footer />
         <Analytics />
+
+        {/* Script do AdSense — NUNCA carregado para usuários premium */}
+        {!premium && (
+          <Script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2396097789128007"
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );
