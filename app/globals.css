@@ -2392,3 +2392,514 @@ footer.rodape {
   .home-quiz-inner { flex-direction: column; align-items: flex-start; }
   .home-hero { padding: 32px 0 28px; }
 }
+
+
+/* ==========================================================
+   AUTH — páginas de login, cadastro, recuperação de senha
+   ========================================================== */
+
+.auth-page {
+  min-height: calc(100vh - 140px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 36px 32px;
+}
+
+.auth-titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1.6rem;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+
+.auth-subtitulo {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 0 0 24px;
+}
+
+.auth-erro-global {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.auth-mensagem {
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.auth-mensagem--erro {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+}
+
+.auth-mensagem--ok {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  color: #166534;
+}
+
+.auth-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-label {
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: #fff;
+  font-size: 0.95rem;
+  color: var(--ink);
+  font-family: var(--font-plex-sans);
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--pine);
+}
+
+.auth-submit {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.auth-links {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.auth-link-secundario {
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.auth-link-secundario:hover {
+  color: var(--pine);
+}
+
+.auth-sep {
+  font-size: 0.83rem;
+  color: var(--line-strong);
+}
+
+/* ==========================================================
+   USER MENU — no Masthead
+   ========================================================== */
+
+.usermenu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 16px;
+}
+
+.usermenu-entrar {
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.usermenu-entrar:hover { color: var(--pine); }
+
+.usermenu-cadastrar {
+  font-size: 0.82rem;
+  padding: 6px 14px;
+}
+
+.usermenu-upgrade {
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  color: var(--ochre);
+  text-decoration: none;
+  border: 1px solid var(--ochre);
+  padding: 4px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.usermenu-upgrade:hover {
+  background: var(--ochre);
+  color: #fff;
+}
+
+.usermenu-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--pine);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.usermenu-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ochre);
+  border: 2px solid var(--paper);
+}
+
+/* ==========================================================
+   CONTA — área do usuário /conta
+   ========================================================== */
+
+.conta-page {
+  padding-top: 40px;
+  padding-bottom: 64px;
+}
+
+.conta-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.conta-titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1.6rem;
+  color: var(--ink);
+  margin: 0 0 4px;
+}
+
+.conta-email {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.conta-sair-btn {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  background: none;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.conta-sair-btn:hover { color: var(--rust); border-color: var(--rust); }
+
+.conta-secao {
+  margin-bottom: 40px;
+}
+
+.conta-secao-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.conta-secao-titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin: 0 0 16px;
+}
+
+.conta-secao-header .conta-secao-titulo { margin: 0; }
+
+.conta-link-acao {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--pine);
+  text-decoration: none;
+}
+
+.conta-link-acao:hover { text-decoration: underline; }
+
+.conta-plano-card {
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.conta-plano-card--premium {
+  border-color: var(--ochre);
+  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+}
+
+.conta-plano-nome {
+  font-family: var(--font-fraunces);
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin: 0 0 4px;
+}
+
+.conta-plano-validade,
+.conta-plano-desc {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.conta-upgrade-btn { white-space: nowrap; }
+
+.conta-link-gerenciar {
+  font-size: 0.83rem;
+  color: var(--pine);
+  text-decoration: none;
+}
+
+.conta-jogos-vazio {
+  border: 1px dashed var(--line-strong);
+  border-radius: 6px;
+  padding: 32px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.conta-jogos-vazio p { margin: 0 0 8px; }
+.conta-jogos-dica { font-size: 0.85rem; margin-bottom: 20px !important; }
+
+.conta-secao--premium-teaser {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 28px 32px;
+}
+
+.conta-premium-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.conta-premium-lista li {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  padding-left: 20px;
+  position: relative;
+}
+
+.conta-premium-lista li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--ochre);
+}
+
+/* ==========================================================
+   ASSINAR — página de planos
+   ========================================================== */
+
+.assinar-page {
+  padding: 48px 0 64px;
+}
+
+.assinar-hero {
+  text-align: center;
+  max-width: 540px;
+  margin: 0 auto 48px;
+}
+
+.assinar-titulo {
+  font-family: var(--font-fraunces);
+  font-size: 2.2rem;
+  color: var(--ink);
+  margin: 8px 0 12px;
+  line-height: 1.2;
+}
+
+.assinar-subtitulo {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.assinar-planos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 780px;
+  margin: 0 auto 48px;
+}
+
+.assinar-plano-card {
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+.assinar-plano-card--destaque {
+  border-color: var(--pine);
+  border-width: 2px;
+}
+
+.assinar-plano-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--pine);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.assinar-plano-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.assinar-plano-preco {
+  font-family: var(--font-fraunces);
+  font-size: 1.8rem;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1;
+}
+
+.assinar-plano-periodo {
+  font-family: var(--font-plex-sans);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+.assinar-plano-economia {
+  font-size: 0.78rem;
+  color: var(--pine);
+  margin: 0;
+}
+
+.assinar-checkout-btn { width: 100%; margin-top: auto; }
+
+.assinar-checkout-btn--sec {
+  background: transparent;
+  color: var(--pine);
+  border: 1px solid var(--pine);
+}
+
+.assinar-checkout-btn--sec:hover {
+  background: var(--pine);
+  color: var(--paper);
+}
+
+.assinar-beneficios {
+  max-width: 540px;
+  margin: 0 auto 32px;
+}
+
+.assinar-beneficios-titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.assinar-beneficios-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.assinar-beneficio-item {
+  display: flex;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  align-items: flex-start;
+}
+
+.assinar-check {
+  color: var(--pine);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.assinar-nota {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.assinar-link { color: var(--pine); }
+
+@media (max-width: 640px) {
+  .assinar-planos { grid-template-columns: 1fr; max-width: 360px; }
+  .assinar-titulo { font-size: 1.7rem; }
+  .conta-plano-card { flex-direction: column; align-items: flex-start; }
+  .conta-header { flex-direction: column; }
+  .usermenu-cadastrar { display: none; }
+  .auth-card { padding: 28px 20px; }
+}

@@ -32,8 +32,8 @@ function formatarMoedaPdf(valor: number): string {
 
 export async function gerarPdfBolao(dados: DadosPdfBolao): Promise<Uint8Array> {
   const pdfDoc = await PDFDocument.create();
-  pdfDoc.setTitle(`Bolão ${dados.nomeLoteria} — LotoMetrics`);
-  pdfDoc.setProducer("LotoMetrics");
+  pdfDoc.setTitle(`Bolão ${dados.nomeLoteria} — LotoAnalítica`);
+  pdfDoc.setProducer("LotoAnalítica");
 
   const fontRegular = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -43,7 +43,7 @@ export async function gerarPdfBolao(dados: DadosPdfBolao): Promise<Uint8Array> {
   let numeroPagina = 1;
 
   function rodape() {
-    page.drawText(`LotoMetrics — gerado em ${new Date().toLocaleDateString("pt-BR")} — página ${numeroPagina}`, {
+    page.drawText(`LotoAnalítica — gerado em ${new Date().toLocaleDateString("pt-BR")} — página ${numeroPagina}`, {
       x: MARGIN,
       y: 24,
       size: 7,
@@ -76,7 +76,7 @@ export async function gerarPdfBolao(dados: DadosPdfBolao): Promise<Uint8Array> {
   }
 
   // ---------- Cabeçalho ----------
-  texto("LotoMetrics", { size: 18, font: fontBold, color: COR_PINE });
+  texto("LotoAnalítica", { size: 18, font: fontBold, color: COR_PINE });
   y -= 8;
   page.drawLine({
     start: { x: MARGIN, y },

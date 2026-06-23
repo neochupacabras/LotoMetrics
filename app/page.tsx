@@ -7,12 +7,12 @@ import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 export const revalidate = 3600; // Revalida a cada hora
 
 export const metadata: Metadata = {
-  title: "LotoMetrics — Resultados e estatísticas de Lotofácil e Mega-Sena",
+  title: "LotoAnalítica — Resultados e estatísticas de Lotofácil e Mega-Sena",
   description:
     "Resultados oficiais, tabelas estatísticas, analisador de jogos, simulador histórico, heatmap e 19 artigos educacionais sobre Lotofácil e Mega-Sena.",
   alternates: { canonical: SITE_URL },
   openGraph: {
-    title: "LotoMetrics — Resultados e estatísticas de loteria",
+    title: "LotoAnalítica — Resultados e estatísticas de loteria",
     description:
       "Resultados oficiais e estatísticas de Lotofácil e Mega-Sena: frequência, atraso, ciclos, gerador de jogos e mais.",
     url: SITE_URL,
@@ -169,7 +169,7 @@ export default async function HomePage() {
         <section className="home-hero">
           <div className="container">
             <div className="home-hero-texto">
-              <p className="eyebrow">LotoMetrics</p>
+              <p className="eyebrow">LotoAnalítica</p>
               <h1 className="home-hero-titulo">
                 Resultados e estatísticas,<br />sem enrolação.
               </h1>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CodigoLoteria } from "@/lib/types";
 import { LOTERIAS } from "@/lib/format";
+import UserMenu from "@/components/auth/UserMenu";
 
 export default function Masthead({
   loteriaAtiva,
@@ -16,7 +17,7 @@ export default function Masthead({
       <div className="container masthead__inner">
         <div>
           <Link href="/" className="masthead__title">
-            Loto<span>Metrics</span>
+            Loto<span>Analítica</span>
           </Link>
           <div className="masthead__tagline">Resultados &amp; estatísticas de loteria</div>
         </div>
@@ -38,6 +39,8 @@ export default function Masthead({
             Quiz
           </Link>
         </nav>
+
+        <UserMenu />
       </div>
     </header>
   );

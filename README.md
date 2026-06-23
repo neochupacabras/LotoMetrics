@@ -1,4 +1,4 @@
-# LotoMetrics — Frontend (Next.js)
+# LotoAnalítica — Frontend (Next.js)
 
 Página de resultados de Lotofácil e Mega-Sena, consultando diretamente o
 Postgres que você já populou com `setup_banco.sql` + `importador.py`.

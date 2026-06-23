@@ -4,12 +4,12 @@ import Masthead from "@/components/Masthead";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Sobre o LotoMetrics — de onde vêm os dados",
+  title: "Sobre o LotoAnalítica — de onde vêm os dados",
   description:
-    "O LotoMetrics reúne resultados oficiais e o comportamento histórico das dezenas de Lotofácil e Mega-Sena com tabelas estatísticas, gerador de jogos, fechamentos, conferidor e probabilidades reais.",
+    "O LotoAnalítica reúne resultados oficiais e o comportamento histórico das dezenas de Lotofácil e Mega-Sena com tabelas estatísticas, gerador de jogos, fechamentos, conferidor e probabilidades reais.",
   alternates: { canonical: `${SITE_URL}/sobre` },
   openGraph: {
-    title: "Sobre o LotoMetrics — de onde vêm os dados",
+    title: "Sobre o LotoAnalítica — de onde vêm os dados",
     description:
       "Resultados oficiais e comportamento histórico de Lotofácil e Mega-Sena num só lugar, com ferramentas pra explorar esses dados.",
     url: `${SITE_URL}/sobre`,
@@ -26,10 +26,10 @@ export default function SobrePage() {
       <Masthead />
       <main className="container secao" style={{ maxWidth: 700 }}>
         <p className="eyebrow">Sobre</p>
-        <h1 className="titulo-edicao">O que é o LotoMetrics</h1>
+        <h1 className="titulo-edicao">O que é o LotoAnalítica</h1>
 
         <p className="subtitulo-edicao" style={{ maxWidth: 700 }}>
-          O LotoMetrics reúne os resultados oficiais e o comportamento histórico das
+          O LotoAnalítica reúne os resultados oficiais e o comportamento histórico das
           dezenas de Lotofácil e Mega-Sena num só lugar, com ferramentas pra explorar
           esses dados — tabelas estatísticas, gerador de jogos, fechamentos, conferidor
           e cálculo de probabilidades reais.
@@ -40,7 +40,7 @@ export default function SobrePage() {
         </h2>
         <p className="subtitulo-edicao" style={{ maxWidth: 700 }}>
           Os resultados vêm da API pública de loterias da Caixa Econômica Federal e são
-          atualizados automaticamente após cada sorteio. O LotoMetrics não é afiliado,
+          atualizados automaticamente após cada sorteio. O LotoAnalítica não é afiliado,
           patrocinado ou endossado pela Caixa — é um projeto independente que apenas
           organiza e analisa dados públicos.
         </p>

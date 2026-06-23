@@ -26,7 +26,7 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "LotoMetrics — Resultados e estatísticas de loteria",
+  title: "LotoAnalítica — Resultados e estatísticas de loteria",
   description:
     "Resultados oficiais e estatísticas de Lotofácil e Mega-Sena: frequência, atraso, ciclos e mais.",
   robots: { index: true, follow: true },

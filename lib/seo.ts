@@ -1,12 +1,12 @@
 // Configuração central usada por metadados, sitemap.xml e robots.txt.
 // NEXT_PUBLIC_SITE_URL deve ser configurada no Vercel apontando pro
-// domínio de produção (ex.: https://loto-metrics.vercel.app, ou um
+// domínio de produção (ex.: https://lotoanalitica.com.br, ou um
 // domínio próprio se você configurar um depois) — sem isso, URLs
 // canônicas, Open Graph e o sitemap caem no valor padrão abaixo.
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://loto-metrics.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://lotoanalitica.com.br";
 
-export const SITE_NAME = "LotoMetrics";
+export const SITE_NAME = "LotoAnalítica";
 
 export const NOME_LOTERIA: Record<string, string> = {
   lotofacil: "Lotofácil",

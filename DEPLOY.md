@@ -1,4 +1,4 @@
-# Deploy do LotoMetrics — Vercel + Supabase
+# Deploy do LotoAnalítica — Vercel + Supabase
 
 Guia passo a passo para colocar o site no ar de verdade: banco gerenciado no
 Supabase, frontend no Vercel. Pressupõe que você já tem o projeto rodando
@@ -113,7 +113,7 @@ conectar os dois.
 cd loterias-web
 git init
 git add .
-git commit -m "LotoMetrics"
+git commit -m "LotoAnalítica"
 git branch -M main
 git remote add origin https://github.com/SEU-USUARIO/SEU-REPOSITORIO.git
 git push -u origin main
@@ -175,7 +175,7 @@ por página automaticamente — mas duas coisas dependem de você:
 
 **1. Variável `NEXT_PUBLIC_SITE_URL`** — todo o sitemap, as tags
 canonical e o Open Graph usam essa URL como base. Sem ela, o código cai
-num valor padrão (`https://loto-metrics.vercel.app`, o domínio atual),
+num valor padrão (`https://lotoanalitica.com.br`, o domínio atual),
 então não é estritamente obrigatório agora — mas se você configurar um
 domínio próprio depois, **adicione essa variável no Vercel** (mesma tela
 de Environment Variables onde está `DATABASE_URL`) apontando pro domínio
@@ -187,7 +187,7 @@ adicione a propriedade do seu domínio, verifique a posse (o Search
 Console guia esse passo), e em Sitemaps, envie:
 
 ```
-https://loto-metrics.vercel.app/sitemap.xml
+https://lotoanalitica.com.br/sitemap.xml
 ```
 
 Isso acelera a descoberta das páginas pelo Google — sem isso, ele
@@ -233,3 +233,56 @@ chamando a API e escrevendo no Supabase.
 - [ ] Deploy concluído, páginas testadas na URL do Vercel
 - [ ] (Opcional) domínio próprio configurado em Project Settings → Domains
 - [ ] Plano para manter os concursos em dia (`importador.py` incremental, agendado)
+
+---
+
+## Parte 6 — Fase 0: Auth + Stripe (Premium)
+
+### 6.1 Supabase Auth
+
+No painel do Supabase:
+
+1. Vá em **Authentication → Providers → Email** — confirme que está ativo.
+2. Em **Authentication → URL Configuration**, configure:
+   - **Site URL**: `https://lotoanalitica.com.br` (ou seu domínio)
+   - **Redirect URLs**: adicione `https://lotoanalitica.com.br/auth/callback`
+3. Em **Project Settings → API**, copie:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY` (aba "Service role" — nunca exponha)
+
+### 6.2 Rodar setup_premium.sql
+
+No SQL Editor do Supabase, rode o arquivo `setup_premium.sql` (está na raiz do projeto). Cria: `profiles`, `subscriptions`, `user_games`, `alert_preferences`, triggers e RLS.
+
+### 6.3 Stripe
+
+1. Crie uma conta em [stripe.com](https://stripe.com) e ative o modo "Live" quando estiver pronto para cobrar de verdade. Durante desenvolvimento, use "Test mode".
+2. Crie um produto **LotoAnalítica Premium** com 3 preços:
+   - Mensal recorrente: R$14,90/mês
+   - Semestral recorrente: R$79,90/semestre (6 meses)
+   - Anual recorrente: R$129,90/ano
+3. Copie os `price_xxx` de cada preço para as variáveis `NEXT_PUBLIC_STRIPE_PRICE_*`.
+4. Em **Developers → API Keys**, copie `STRIPE_SECRET_KEY`.
+5. Para o webhook (local, durante desenvolvimento):
+   ```
+   stripe login
+   stripe listen --forward-to localhost:3000/api/stripe/webhook --print-secret
+   ```
+   Copie o `whsec_...` para `STRIPE_WEBHOOK_SECRET`.
+6. Em produção (Vercel), crie o webhook no painel do Stripe apontando para:
+   `https://lotoanalitica.com.br/api/stripe/webhook`
+   Eventos necessários: `customer.subscription.created`, `customer.subscription.updated`,
+   `customer.subscription.deleted`, `invoice.payment_failed`.
+
+### 6.4 Variáveis de ambiente no Vercel
+
+Adicione todas as variáveis do `.env.local.example` em **Project Settings → Environment Variables**. As que começam com `NEXT_PUBLIC_` são seguras de marcar em Production, Preview e Development. As outras (`STRIPE_SECRET_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `STRIPE_WEBHOOK_SECRET`) marque apenas em Production e Preview.
+
+### 6.5 Instalar dependências
+
+```bash
+npm install
+```
+
+Novos pacotes: `@supabase/ssr`, `@supabase/supabase-js`, `stripe`.
