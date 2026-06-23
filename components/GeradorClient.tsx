@@ -205,7 +205,7 @@ export default function GeradorClient({
             uma combinação pré-definida dos filtros do modo avançado — não aumenta sua chance
             real de ganhar (veja a aba Probabilidades).
           </p>
-        ) : (
+        ) : modoAvancadoLiberado ? (
           <>
             <div className="campo-filtro">
               <label htmlFor="qtdDezenas">Dezenas no jogo</label>
@@ -372,9 +372,10 @@ export default function GeradorClient({
               </label>
             ))}
           </>
-        )}
+        ) : null}
 
-        <button type="button" className="botao-gerar" onClick={handleGerar}>
+        <button type="button" className="botao-gerar" onClick={handleGerar}
+          disabled={modo === "avancado" && !modoAvancadoLiberado}>
           Gerar {qtdJogos > 1 ? `${qtdJogos} jogos` : "jogo"}
         </button>
       </div>
