@@ -2900,6 +2900,18 @@ footer.rodape {
   .assinar-titulo { font-size: 1.7rem; }
   .conta-plano-card { flex-direction: column; align-items: flex-start; }
   .conta-header { flex-direction: column; }
-  .usermenu-cadastrar { display: none; }
   .auth-card { padding: 28px 20px; }
+
+  /* Margens laterais no mobile */
+  .container { padding: 0 16px; }
+  .masthead__inner { padding: 20px 16px 16px; }
+
+  /* "Criar conta" no mobile: compacto em vez de escondido */
+  .usermenu-cadastrar {
+    font-size: 0.75rem;
+    padding: 5px 9px;
+    background: transparent;
+    color: var(--pine);
+    border: 1px solid var(--pine);
+  }
 }
