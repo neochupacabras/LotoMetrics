@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       .eq("id", user.id);
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lotoanalitica.com.br";
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,

@@ -2906,12 +2906,9 @@ footer.rodape {
   .container { padding: 0 16px; }
   .masthead__inner { padding: 20px 16px 16px; }
 
-  /* "Criar conta" no mobile: compacto em vez de escondido */
+  /* "Criar conta" no mobile: compacto mas mantém fundo verde */
   .usermenu-cadastrar {
     font-size: 0.75rem;
     padding: 5px 9px;
-    background: transparent;
-    color: var(--pine);
-    border: 1px solid var(--pine);
   }
 }
