@@ -6,7 +6,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-05-27.dahlia",
 });
 
-// O webhook precisa ler o body como raw bytes para validar a assinatura
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
@@ -98,10 +97,15 @@ export async function POST(request: Request) {
 
     case "invoice.payment_failed": {
       const invoice = event.data.object as Stripe.Invoice;
+      // Na Stripe API v22, subscription foi movido para invoice.parent.subscription_details.subscription
+      const parent = invoice.parent;
+      const subRef =
+        parent?.type === "subscription_details"
+          ? parent.subscription_details?.subscription
+          : null;
       const subId =
-        typeof invoice.subscription === "string"
-          ? invoice.subscription
-          : invoice.subscription?.id ?? null;
+        typeof subRef === "string" ? subRef : (subRef as Stripe.Subscription | null)?.id ?? null;
+
       if (subId) {
         await supabase
           .from("subscriptions")
