@@ -31,7 +31,6 @@ export async function POST(request: Request) {
 
   const supabase = createAdminClient();
 
-  // ── Eventos relevantes ────────────────────────────────────────────────────
   switch (event.type) {
     case "customer.subscription.created":
     case "customer.subscription.updated": {
@@ -39,14 +38,21 @@ export async function POST(request: Request) {
       const userId = sub.metadata?.supabase_user_id;
 
       if (!userId) {
-        console.error("supabase_user_id ausente no metadata da subscription:", sub.id);
+        console.error("supabase_user_id ausente no metadata:", sub.id);
         break;
       }
 
       const isAtivo = ["active", "trialing"].includes(sub.status);
-      const periodoFim = new Date(sub.current_period_end * 1000).toISOString();
 
-      // Atualizar profile
+      // Na Stripe API v22, current_period_start/end estão no item, não no objeto raiz
+      const item = sub.items.data[0];
+      const periodoFim = item?.current_period_end
+        ? new Date(item.current_period_end * 1000).toISOString()
+        : null;
+      const periodoInicio = item?.current_period_start
+        ? new Date(item.current_period_start * 1000).toISOString()
+        : null;
+
       await supabase
         .from("profiles")
         .update({
@@ -55,14 +61,13 @@ export async function POST(request: Request) {
         })
         .eq("id", userId);
 
-      // Upsert na tabela de subscriptions
       await supabase.from("subscriptions").upsert(
         {
           user_id: userId,
           stripe_subscription_id: sub.id,
-          stripe_price_id: (sub.items.data[0]?.price?.id) ?? null,
+          stripe_price_id: item?.price?.id ?? null,
           status: sub.status,
-          current_period_start: new Date(sub.current_period_start * 1000).toISOString(),
+          current_period_start: periodoInicio,
           current_period_end: periodoFim,
           canceled_at: sub.canceled_at
             ? new Date(sub.canceled_at * 1000).toISOString()
@@ -93,9 +98,10 @@ export async function POST(request: Request) {
 
     case "invoice.payment_failed": {
       const invoice = event.data.object as Stripe.Invoice;
-      const subId = typeof invoice.subscription === "string"
-        ? invoice.subscription
-        : invoice.subscription?.id ?? null;
+      const subId =
+        typeof invoice.subscription === "string"
+          ? invoice.subscription
+          : invoice.subscription?.id ?? null;
       if (subId) {
         await supabase
           .from("subscriptions")
@@ -106,7 +112,6 @@ export async function POST(request: Request) {
     }
 
     default:
-      // Evento não tratado — ignorar
       break;
   }
 
