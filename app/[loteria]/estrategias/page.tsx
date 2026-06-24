@@ -2,7 +2,6 @@ export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import ComparadorEstrategiasClient from "@/components/ComparadorEstrategiasClient";
-import Subnav from "@/components/Subnav";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -71,9 +70,7 @@ export default async function EstrategiasPage({
   };
 
   return (
-    <>
-      <Subnav codigoLoteria={codigoLoteria} ativa="estrategias" />
-      <div className="container secao">
+    <div className="container secao">
         <p className="eyebrow">Ferramentas de {loteria.nome}</p>
         <h1 className="titulo-edicao">Comparador de estratégias</h1>
         <p className="subtitulo-edicao" style={{ maxWidth: 620 }}>
@@ -103,7 +100,6 @@ export default async function EstrategiasPage({
           limiteHistorico={premium ? null : LIMITE_FREE}
           distribuicoes={distribuicoes}
         />
-      </div>
-    </>
+    </div>
   );
 }
