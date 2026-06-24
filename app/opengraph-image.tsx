@@ -44,7 +44,7 @@ export default async function Image() {
           </div>
           <div style={{ display: "flex", fontSize: 116, fontWeight: 700 }}>
             <span style={{ color: INK }}>Loto</span>
-            <span style={{ color: PINE }}>Metrics</span>
+            <span style={{ color: PINE }}>Analítica</span>
           </div>
           <div
             style={{

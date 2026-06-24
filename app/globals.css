@@ -3269,6 +3269,18 @@ footer.rodape {
 @media (max-width: 640px) {
   .simulador-comparar-grid { grid-template-columns: 1fr; }
   .simulador-comparar-resultados { grid-template-columns: 1fr; }
+
+  /* Dezenas menores no comparador mobile para não ultrapassar a margem */
+  .simulador-comparar-grid .grade-dezenas {
+    grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+    gap: 5px;
+    max-width: 100%;
+  }
+  .simulador-comparar-grid .dezena-selecionavel {
+    width: 36px;
+    height: 36px;
+    font-size: 0.75rem;
+  }
   .simulador-hist-jogo-acoes { margin-left: 0; width: 100%; }
 }
 
