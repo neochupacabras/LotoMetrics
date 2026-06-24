@@ -7,6 +7,10 @@ import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import { getPlanoPremium } from "@/lib/plano";
+import {
+  getSoma, getParesImpares, getSequencias,
+  getPrimosDistribuicao, getFibonacciDistribuicao, getMultiplos3Distribuicao,
+} from "@/lib/estatisticas";
 
 export async function generateMetadata({
   params,
@@ -40,6 +44,32 @@ export default async function EstrategiasPage({
   ]);
   if (!loteria) notFound();
 
+  // Buscar distribuições históricas para validação em tempo real no client
+  const [
+    { histograma: histSoma },
+    distribuicaoPares,
+    { distribuicao: distribuicaoSeq },
+    distribuicaoPrimos,
+    distribuicaoFibs,
+    distribuicaoMult3,
+  ] = await Promise.all([
+    getSoma(loteria.id),
+    getParesImpares(loteria.id),
+    getSequencias(loteria.id),
+    getPrimosDistribuicao(loteria.id),
+    getFibonacciDistribuicao(loteria.id),
+    getMultiplos3Distribuicao(loteria.id),
+  ]);
+
+  const distribuicoes = {
+    soma: histSoma.map(h => ({ min: h.faixaInicio, max: h.faixaFim, ocorrencias: h.ocorrencias })),
+    pares: distribuicaoPares.map(p => ({ valor: p.pares, ocorrencias: p.ocorrencias })),
+    sequencia: distribuicaoSeq.map(s => ({ valor: s.maiorSequencia, ocorrencias: s.ocorrencias })),
+    primos: distribuicaoPrimos.map(p => ({ valor: p.quantidade, ocorrencias: p.ocorrencias })),
+    fibonacci: distribuicaoFibs.map(f => ({ valor: f.quantidade, ocorrencias: f.ocorrencias })),
+    multiplos3: distribuicaoMult3.map(m => ({ valor: m.quantidade, ocorrencias: m.ocorrencias })),
+  };
+
   return (
     <>
       <Subnav codigoLoteria={codigoLoteria} ativa="estrategias" />
@@ -71,6 +101,7 @@ export default async function EstrategiasPage({
           premium={premium}
           logado={logado}
           limiteHistorico={premium ? null : LIMITE_FREE}
+          distribuicoes={distribuicoes}
         />
       </div>
     </>

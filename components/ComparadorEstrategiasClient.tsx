@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useMemo } from "react";
+import { useState, useTransition, useMemo, useEffect } from "react";
 import {
   ResponsiveContainer, LineChart, Line,
   XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid, Legend,
@@ -11,6 +11,104 @@ import {
   type ResultadoEstrategia,
   type ResultadoComparacao,
 } from "@/lib/estrategia-actions";
+
+// ── Tipos de distribuição ─────────────────────────────────────────────────────
+
+export interface Distribuicoes {
+  soma: { min: number; max: number; ocorrencias: number }[];
+  pares: { valor: number; ocorrencias: number }[];
+  sequencia: { valor: number; ocorrencias: number }[];
+  primos: { valor: number; ocorrencias: number }[];
+  fibonacci: { valor: number; ocorrencias: number }[];
+  multiplos3: { valor: number; ocorrencias: number }[];
+}
+
+// Estima a cobertura de um filtro cruzando as distribuições históricas.
+// Retorna um número de 0 a 100 (percentual estimado de concursos cobertos).
+// É uma estimativa de independência — não calcula correlações entre filtros,
+// mas é suficiente para detectar configurações impossíveis ou muito restritivas.
+function estimarCobertura(filtro: FiltroEstrategia, dist: Distribuicoes): number {
+  const total = dist.pares.reduce((s, p) => s + p.ocorrencias, 0);
+  if (total === 0) return 100;
+
+  let fator = 1;
+
+  // Soma
+  if (filtro.somaMin !== undefined || filtro.somaMax !== undefined) {
+    const min = filtro.somaMin ?? -Infinity;
+    const max = filtro.somaMax ?? Infinity;
+    const cobertos = dist.soma
+      .filter(b => b.max >= min && b.min <= max)
+      .reduce((s, b) => {
+        // Interpolar parcialmente se a faixa cruza o limite
+        const overlap = Math.min(b.max, max) - Math.max(b.min, min);
+        const tamanho = b.max - b.min || 1;
+        return s + b.ocorrencias * (overlap / tamanho);
+      }, 0);
+    fator *= Math.max(0, cobertos / total);
+  }
+
+  // Pares
+  if (filtro.paresMin !== undefined || filtro.paresMax !== undefined) {
+    const min = filtro.paresMin ?? 0;
+    const max = filtro.paresMax ?? Infinity;
+    const cobertos = dist.pares.filter(p => p.valor >= min && p.valor <= max).reduce((s, p) => s + p.ocorrencias, 0);
+    fator *= Math.max(0, cobertos / total);
+  }
+
+  // Sequência
+  if (filtro.maxSequenciaMax !== undefined) {
+    const cobertos = dist.sequencia.filter(s => s.valor <= filtro.maxSequenciaMax!).reduce((s, p) => s + p.ocorrencias, 0);
+    fator *= Math.max(0, cobertos / total);
+  }
+
+  // Primos
+  if (filtro.primosMin !== undefined || filtro.primosMax !== undefined) {
+    const min = filtro.primosMin ?? 0;
+    const max = filtro.primosMax ?? Infinity;
+    const cobertos = dist.primos.filter(p => p.valor >= min && p.valor <= max).reduce((s, p) => s + p.ocorrencias, 0);
+    fator *= Math.max(0, cobertos / total);
+  }
+
+  // Fibonacci
+  if (filtro.fibonacciMin !== undefined || filtro.fibonacciMax !== undefined) {
+    const min = filtro.fibonacciMin ?? 0;
+    const max = filtro.fibonacciMax ?? Infinity;
+    const cobertos = dist.fibonacci.filter(f => f.valor >= min && f.valor <= max).reduce((s, f) => s + f.ocorrencias, 0);
+    fator *= Math.max(0, cobertos / total);
+  }
+
+  // Múltiplos de 3
+  if (filtro.multiplos3Min !== undefined || filtro.multiplos3Max !== undefined) {
+    const min = filtro.multiplos3Min ?? 0;
+    const max = filtro.multiplos3Max ?? Infinity;
+    const cobertos = dist.multiplos3.filter(m => m.valor >= min && m.valor <= max).reduce((s, m) => s + m.ocorrencias, 0);
+    fator *= Math.max(0, cobertos / total);
+  }
+
+  return Math.round(fator * 100 * 10) / 10;
+}
+
+function StatusCobertura({ cobertura, temFiltro }: { cobertura: number; temFiltro: boolean }) {
+  if (!temFiltro) return null;
+
+  const { cor, label, descricao } = cobertura === 0
+    ? { cor: "#991b1b", label: "Impossível", descricao: "Nenhum concurso histórico atende esses filtros." }
+    : cobertura < 5
+    ? { cor: "#b45309", label: "Muito restritivo", descricao: `Apenas ~${cobertura}% dos concursos seriam cobertos.` }
+    : cobertura < 20
+    ? { cor: "#92400e", label: "Restritivo", descricao: `~${cobertura}% dos concursos cobertos.` }
+    : { cor: "#166534", label: "OK", descricao: `~${cobertura}% dos concursos cobertos.` };
+
+  return (
+    <div className="estrategia-cobertura" style={{ borderColor: cor }}>
+      <span className="estrategia-cobertura__badge" style={{ background: cor }}>
+        {label}
+      </span>
+      <span className="estrategia-cobertura__desc">{descricao}</span>
+    </div>
+  );
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -204,11 +302,13 @@ interface Props {
   premium: boolean;
   logado: boolean;
   limiteHistorico?: number | null;
+  distribuicoes?: Distribuicoes;
 }
 
 export default function ComparadorEstrategiasClient({
   codigoLoteria, nomeLoteria, dezenaMin, dezenaMax,
   qtdDezenasSorteadas, premium, logado, limiteHistorico = null,
+  distribuicoes,
 }: Props) {
   const [nomeA, setNomeA] = useState("Estratégia A");
   const [nomeB, setNomeB] = useState("Estratégia B");
@@ -238,6 +338,19 @@ export default function ComparadorEstrategiasClient({
 
   const temFiltroA = Object.values(filtroA).some(v => v !== undefined);
   const temFiltroB = Object.values(filtroB).some(v => v !== undefined);
+
+  const coberturaA = useMemo(() =>
+    distribuicoes && temFiltroA ? estimarCobertura(filtroA, distribuicoes) : null,
+    [filtroA, distribuicoes, temFiltroA]
+  );
+  const coberturaB = useMemo(() =>
+    distribuicoes && temFiltroB ? estimarCobertura(filtroB, distribuicoes) : null,
+    [filtroB, distribuicoes, temFiltroB]
+  );
+
+  const bloqueadoPorFiltroImpossivel =
+    (coberturaA !== null && coberturaA === 0) ||
+    (coberturaB !== null && coberturaB === 0);
 
   const yMin = useMemo(() => {
     if (!resultado) return 0;
@@ -386,31 +499,43 @@ export default function ComparadorEstrategiasClient({
       )}
 
       <div className="estrategia-formularios">
-        <FormEstrategia
-          id="A" cor="#b9802c"
-          nome={nomeA} setNome={setNomeA}
-          filtro={filtroA} setFiltro={setFiltroA}
-          dezenaMin={dezenaMin} dezenaMax={dezenaMax} qtd={qtdDezenasSorteadas}
-        />
-        <FormEstrategia
-          id="B" cor="#1e4b3c"
-          nome={nomeB} setNome={setNomeB}
-          filtro={filtroB} setFiltro={setFiltroB}
-          dezenaMin={dezenaMin} dezenaMax={dezenaMax} qtd={qtdDezenasSorteadas}
-        />
+        <div>
+          <FormEstrategia
+            id="A" cor="#b9802c"
+            nome={nomeA} setNome={setNomeA}
+            filtro={filtroA} setFiltro={setFiltroA}
+            dezenaMin={dezenaMin} dezenaMax={dezenaMax} qtd={qtdDezenasSorteadas}
+          />
+          <StatusCobertura cobertura={coberturaA ?? 100} temFiltro={temFiltroA} />
+        </div>
+        <div>
+          <FormEstrategia
+            id="B" cor="#1e4b3c"
+            nome={nomeB} setNome={setNomeB}
+            filtro={filtroB} setFiltro={setFiltroB}
+            dezenaMin={dezenaMin} dezenaMax={dezenaMax} qtd={qtdDezenasSorteadas}
+          />
+          <StatusCobertura cobertura={coberturaB ?? 100} temFiltro={temFiltroB} />
+        </div>
       </div>
 
       {erro && <p className="simulador-erro">{erro}</p>}
 
-      <div style={{ display:"flex", gap:12, marginTop:24 }}>
+      <div style={{ display:"flex", gap:12, marginTop:24, alignItems:"center", flexWrap:"wrap" }}>
         <button
           type="button"
           className="botao-gerar"
           onClick={handleComparar}
-          disabled={pending}
+          disabled={pending || bloqueadoPorFiltroImpossivel}
+          title={bloqueadoPorFiltroImpossivel ? "Corrija os filtros impossíveis antes de comparar" : undefined}
         >
           {pending ? "Comparando…" : "Comparar estratégias →"}
         </button>
+        {bloqueadoPorFiltroImpossivel && (
+          <span style={{ fontSize:"0.82rem", color:"#991b1b", fontFamily:"var(--font-mono)" }}>
+            ✕ Corrija os filtros marcados em vermelho
+          </span>
+        )}
       </div>
 
       {!temFiltroA && !temFiltroB && (

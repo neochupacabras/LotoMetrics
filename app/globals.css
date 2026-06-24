@@ -4095,3 +4095,31 @@ footer.rodape {
   .estrategia-resultado-card { flex: 1; min-width: 120px; border-bottom: none; border-right: 1px solid var(--line); }
   .estrategia-resultado-card:last-child { border-right: none; }
 }
+
+/* ── Estratégias — indicador de cobertura em tempo real ──── */
+.estrategia-cobertura {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1px solid;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.5);
+}
+
+.estrategia-cobertura__badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.estrategia-cobertura__desc {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
