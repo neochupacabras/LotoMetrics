@@ -327,14 +327,16 @@ export default function ComparadorEstrategiasClient({
               <h3 className="bloco__titulo" style={{ fontSize:"0.95rem", color: cor }}>{r.nome} — faixas</h3>
               <div className="tabela-scroll">
                 <table className="tabela-dados">
-                  <thead><tr><th>Faixa</th><th className="num">Vezes</th><th className="num">Total</th></tr></thead>
+                  <thead><tr><th>Faixa</th><th className="num">Premiações esperadas</th><th className="num">Ganho esperado</th></tr></thead>
                   <tbody>
                     {r.porFaixa.map(f => (
                       <tr key={f.descricao}>
                         <td>{f.descricao}</td>
-                        <td className="num" style={{ fontFamily:"var(--font-mono)" }}>{f.qtd > 0 ? f.qtd : "—"}</td>
+                        <td className="num" style={{ fontFamily:"var(--font-mono)" }}>
+                          {f.qtd > 0.001 ? f.qtd.toFixed(3) : "—"}
+                        </td>
                         <td className="num" style={{ fontFamily:"var(--font-mono)", color: f.ganhoTotal > 0 ? "var(--pine)" : "var(--ink-faint)" }}>
-                          {f.ganhoTotal > 0 ? formatarReaisSimples(f.ganhoTotal) : "—"}
+                          {f.ganhoTotal > 0.01 ? formatarReaisSimples(f.ganhoTotal) : "—"}
                         </td>
                       </tr>
                     ))}

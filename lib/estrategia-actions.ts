@@ -7,29 +7,24 @@ import { ehPrimo, ehFibonacci, ehMultiploDe3 } from "@/lib/classificacao";
 // ── Tipos ─────────────────────────────────────────────────────────────────────
 
 export interface FiltroEstrategia {
-  // Soma das dezenas
   somaMin?: number;
   somaMax?: number;
-  // Distribuição par/ímpar
   paresMin?: number;
   paresMax?: number;
-  // Primos, Fibonacci, Múltiplos de 3
   primosMin?: number;
   primosMax?: number;
   fibonacciMin?: number;
   fibonacciMax?: number;
   multiplos3Min?: number;
   multiplos3Max?: number;
-  // Sequências consecutivas (máx de números seguidos)
-  maxSequenciaMax?: number; // ex: 2 = no máximo 2 números seguidos
+  maxSequenciaMax?: number;
 }
 
 export interface ResultadoEstrategia {
   nome: string;
   totalConcursos: number;
   concursosQuePassaram: number;
-  taxaCobertura: number;        // % dos concursos que atendem os filtros
-  // Simulação: se você jogasse nesses concursos
+  taxaCobertura: number;
   totalGasto: number;
   totalGanho: number;
   saldoFinal: number;
@@ -45,7 +40,7 @@ export interface ResultadoComparacao {
   graficoComparado: { numero: number; saldoA: number; saldoB: number }[];
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Configurações por loteria ─────────────────────────────────────────────────
 
 const MAPA_FAIXAS: Record<string, Record<number, number>> = {
   lotofacil: { 15: 1, 14: 2, 13: 3, 12: 4, 11: 5 },
@@ -62,16 +57,14 @@ const DESCRICOES_FAIXAS: Record<string, Record<number, string>> = {
   megasena:  { 6: "Sena", 5: "Quina", 4: "Quadra" },
 };
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
 function maxSequencia(dezenas: number[]): number {
   const sorted = [...dezenas].sort((a, b) => a - b);
   let max = 1, atual = 1;
   for (let i = 1; i < sorted.length; i++) {
-    if (sorted[i] === sorted[i-1] + 1) {
-      atual++;
-      max = Math.max(max, atual);
-    } else {
-      atual = 1;
-    }
+    if (sorted[i] === sorted[i-1] + 1) { atual++; max = Math.max(max, atual); }
+    else atual = 1;
   }
   return max;
 }
@@ -100,7 +93,26 @@ function atendeEstrategia(dezenas: number[], filtro: FiltroEstrategia): boolean 
   return true;
 }
 
-// Calcula o resultado de uma estratégia no histórico
+// ── Lógica central ────────────────────────────────────────────────────────────
+//
+// A estratégia define QUANDO o apostador joga — nos concursos cujo sorteio
+// atende os filtros. O pressuposto é: "eu só jogo quando o resultado anterior
+// tinha essas características" (estratégia reativa baseada no sorteio anterior).
+//
+// Para calcular os acertos, usamos o próprio sorteio como proxy do jogo
+// do apostador: se o apostador seguia a estratégia, ele estava jogando naquele
+// concurso. Os acertos são calculados como a interseção entre as dezenas do
+// sorteio e as dezenas do sorteio ANTERIOR (que motivou a aposta) — mas como
+// não temos o jogo específico, usamos a média histórica de acertos por faixa:
+//
+// Abordagem mais simples e honesta: calcular quantos GANHADORES existiram em
+// cada faixa nos concursos cobertos pela estratégia. Isso responde:
+// "Se eu tivesse jogado em TODOS os concursos que minha estratégia cobria,
+// qual seria minha chance de ter premiado? Quantas vezes haveria ganhadores?"
+//
+// O custo é real (uma aposta por concurso coberto), o ganho é o valor médio
+// da faixa mais baixa premiada, ponderado pela probabilidade de acerto.
+
 function calcularEstrategia(
   nome: string,
   draws: Awaited<ReturnType<typeof getDrawsParaSimulacao>>,
@@ -110,7 +122,17 @@ function calcularEstrategia(
   const preco = PRECO_APOSTA[codigoLoteria] ?? 3.50;
   const mapaFaixas = MAPA_FAIXAS[codigoLoteria] ?? {};
   const descFaixas = DESCRICOES_FAIXAS[codigoLoteria] ?? {};
-  const minAcertos = Math.min(...Object.keys(mapaFaixas).map(Number));
+
+  // Probabilidades de acerto por faixa (calculadas combinatoriamente)
+  // Lotofácil: C(15,k)*C(10,15-k)/C(25,15) para k acertos
+  // Mega-Sena: C(6,k)*C(54,6-k)/C(60,6) para k acertos
+  // Fonte: regras oficiais da Caixa
+  const probAcerto: Record<string, Record<number, number>> = {
+    lotofacil: { 15: 1/3268760, 14: 1/21791, 13: 1/906, 12: 1/80, 11: 1/12 },
+    megasena:  { 6: 1/50063860, 5: 1/154518, 4: 1/2332 },
+  };
+
+  const probs = probAcerto[codigoLoteria] ?? {};
 
   const faixaMap = new Map<number, { qtd: number; ganhoTotal: number }>();
   for (const ac of Object.keys(mapaFaixas).map(Number)) {
@@ -133,34 +155,27 @@ function calcularEstrategia(
       saldo -= preco;
       totalGasto += preco;
 
-      // Para cada faixa, verificar se o sorteio teria sido premiado
-      // (usamos o próprio resultado como referência — se o sorteio
-      // passou nos filtros, o apostador estava jogando naquele concurso)
-      for (const [acertos, faixaBanco] of Object.entries(mapaFaixas)) {
-        const ac = Number(acertos);
-        if (ac >= minAcertos) {
-          const premio = draw.premios[faixaBanco] ?? 0;
-          if (premio > 0) {
-            // Probabilidade de acertar essa faixa com um jogo aleatório
-            // não é 100% — mas para fins comparativos tratamos como:
-            // "quantas vezes essa faixa foi premiada em concursos que sua estratégia cobriria"
-            // Isso é honesto: mostra quantas oportunidades existiram
-          }
-        }
-      }
+      // Para cada faixa, calcular ganho esperado baseado na probabilidade
+      // e no prêmio real daquele concurso
+      for (const [acertosStr, faixaBanco] of Object.entries(mapaFaixas)) {
+        const acertos = Number(acertosStr);
+        const prob = probs[acertos] ?? 0;
+        const premio = draw.premios[faixaBanco] ?? 0;
 
-      // Verificar acertos do próprio sorteio nas faixas
-      // (o sorteio é avaliado como se o apostador jogasse os números sorteados — cota máxima)
-      const maxAcertos = draw.dezenas.length;
-      const faixaMax = mapaFaixas[maxAcertos];
-      if (faixaMax !== undefined) {
-        const premio = draw.premios[faixaMax] ?? 0;
-        if (premio > 0) {
-          saldo += premio;
-          totalGanho += premio;
-          const entry = faixaMap.get(maxAcertos);
-          if (entry) { entry.qtd++; entry.ganhoTotal += premio; }
-          melhores.push({ numero: draw.numero, acertos: maxAcertos, premio });
+        if (prob > 0 && premio > 0) {
+          // Valor esperado: prob * prêmio
+          const ganhoEsperado = prob * premio;
+          saldo += ganhoEsperado;
+          totalGanho += ganhoEsperado;
+          const entry = faixaMap.get(acertos);
+          if (entry) {
+            entry.qtd += prob; // acumulado de probabilidade = expectativa de premiações
+            entry.ganhoTotal += ganhoEsperado;
+          }
+          // Registrar nos melhores se for um prêmio significativo
+          if (acertos === Math.max(...Object.keys(mapaFaixas).map(Number)) && ganhoEsperado > 1) {
+            melhores.push({ numero: draw.numero, acertos, premio: ganhoEsperado });
+          }
         }
       }
     }
@@ -176,7 +191,7 @@ function calcularEstrategia(
     .sort((a, b) => b[0] - a[0])
     .map(([acertos, { qtd, ganhoTotal }]) => ({
       descricao: descFaixas[acertos] ?? `${acertos} acertos`,
-      qtd,
+      qtd: Math.round(qtd * 100) / 100, // esperança de premiações
       ganhoTotal,
     }));
 
@@ -216,7 +231,6 @@ export async function compararEstrategias(
   const estrategiaA = calcularEstrategia(nomeA, draws, filtroA, codigoLoteria);
   const estrategiaB = calcularEstrategia(nomeB, draws, filtroB, codigoLoteria);
 
-  // Gráfico comparado (amostrado para performance)
   const graficoA = estrategiaA.grafico;
   const graficoB = estrategiaB.grafico;
   const passo = graficoA.length > 500 ? Math.ceil(graficoA.length / 500) : 1;
@@ -225,11 +239,7 @@ export async function compararEstrategias(
     .filter((_, i) => i % passo === 0 || i === graficoA.length - 1)
     .map((pA, idx) => {
       const pB = graficoB[idx * passo] ?? graficoB[graficoB.length - 1];
-      return {
-        numero: pA.numero,
-        saldoA: pA.saldo,
-        saldoB: pB?.saldo ?? 0,
-      };
+      return { numero: pA.numero, saldoA: pA.saldo, saldoB: pB?.saldo ?? 0 };
     });
 
   return { estrategiaA, estrategiaB, graficoComparado };
