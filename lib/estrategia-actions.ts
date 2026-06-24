@@ -212,6 +212,22 @@ function calcularEstrategia(
 
 // ── Action principal ──────────────────────────────────────────────────────────
 
+function validarFiltro(filtro: FiltroEstrategia, qtd: number): string | null {
+  if (filtro.paresMin !== undefined && filtro.paresMin > qtd)
+    return `Pares mínimo (${filtro.paresMin}) não pode ser maior que o total de dezenas (${qtd}).`;
+  if (filtro.paresMax !== undefined && filtro.paresMax > qtd)
+    return `Pares máximo (${filtro.paresMax}) não pode ser maior que o total de dezenas (${qtd}).`;
+  if (filtro.primosMin !== undefined && filtro.primosMin > qtd)
+    return `Primos mínimo (${filtro.primosMin}) não pode ser maior que o total de dezenas (${qtd}).`;
+  if (filtro.fibonacciMin !== undefined && filtro.fibonacciMin > qtd)
+    return `Fibonacci mínimo (${filtro.fibonacciMin}) não pode ser maior que o total de dezenas (${qtd}).`;
+  if (filtro.multiplos3Min !== undefined && filtro.multiplos3Min > qtd)
+    return `Múltiplos de 3 mínimo (${filtro.multiplos3Min}) não pode ser maior que o total de dezenas (${qtd}).`;
+  if (filtro.somaMin !== undefined && filtro.somaMax !== undefined && filtro.somaMin > filtro.somaMax)
+    return `Soma mínima não pode ser maior que a soma máxima.`;
+  return null;
+}
+
 export async function compararEstrategias(
   codigoLoteria: string,
   nomeA: string,
@@ -224,6 +240,12 @@ export async function compararEstrategias(
 
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) return { erro: "Loteria não encontrada" };
+
+  // Validar filtros antes de rodar
+  const erroA = validarFiltro(filtroA, loteria.qtdDezenasSorteadas);
+  if (erroA) return { erro: `Estratégia A — ${erroA}` };
+  const erroB = validarFiltro(filtroB, loteria.qtdDezenasSorteadas);
+  if (erroB) return { erro: `Estratégia B — ${erroB}` };
 
   const todosDraws = await getDrawsParaSimulacao(loteria.id);
   const draws = limiteHistorico ? todosDraws.slice(-limiteHistorico) : todosDraws;

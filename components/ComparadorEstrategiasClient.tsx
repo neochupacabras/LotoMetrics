@@ -60,7 +60,7 @@ function FormEstrategia({ id, cor, nome, setNome, filtro, setFiltro, dezenaMin, 
   function campo(label: string, minKey: keyof FiltroEstrategia, maxKey: keyof FiltroEstrategia, minPossivel: number, maxPossivel: number) {
     return (
       <div className="estrategia-campo">
-        <label className="estrategia-label">{label}</label>
+        <label className="estrategia-label">{label} <span style={{color:"var(--ink-faint)",fontWeight:400}}>(0–{maxPossivel})</span></label>
         <div className="estrategia-range">
           <input
             type="number"
@@ -68,7 +68,10 @@ function FormEstrategia({ id, cor, nome, setNome, filtro, setFiltro, dezenaMin, 
             min={minPossivel}
             max={maxPossivel}
             value={filtro[minKey] ?? ""}
-            onChange={e => setFiltro({ ...filtro, [minKey]: e.target.value ? Number(e.target.value) : undefined })}
+            onChange={e => {
+              const v = e.target.value ? Math.min(Number(e.target.value), maxPossivel) : undefined;
+              setFiltro({ ...filtro, [minKey]: v });
+            }}
             className="estrategia-input"
           />
           <span className="estrategia-range-sep">–</span>
@@ -78,7 +81,10 @@ function FormEstrategia({ id, cor, nome, setNome, filtro, setFiltro, dezenaMin, 
             min={minPossivel}
             max={maxPossivel}
             value={filtro[maxKey] ?? ""}
-            onChange={e => setFiltro({ ...filtro, [maxKey]: e.target.value ? Number(e.target.value) : undefined })}
+            onChange={e => {
+              const v = e.target.value ? Math.min(Number(e.target.value), maxPossivel) : undefined;
+              setFiltro({ ...filtro, [maxKey]: v });
+            }}
             className="estrategia-input"
           />
         </div>
@@ -146,6 +152,11 @@ function FormEstrategia({ id, cor, nome, setNome, filtro, setFiltro, dezenaMin, 
 function CardsResultado({ r, cor }: { r: ResultadoEstrategia; cor: string }) {
   return (
     <div className="estrategia-resultado-cards">
+      {r.concursosQuePassaram === 0 && (
+        <div style={{ gridColumn:"1/-1", padding:"10px 12px", background:"#fef9ef", border:"1px solid var(--ochre)", borderRadius:"4px", fontSize:"0.82rem", color:"var(--ink-soft)", marginBottom:8 }}>
+          ⚠ Nenhum sorteio atendeu esses filtros. Verifique se os valores são compatíveis com a quantidade de dezenas da loteria.
+        </div>
+      )}
       <div className="estrategia-resultado-card">
         <span className="estrategia-resultado-rotulo">Cobertura</span>
         <span className="estrategia-resultado-valor" style={{ color: cor }}>
