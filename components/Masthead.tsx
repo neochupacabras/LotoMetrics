@@ -7,10 +7,12 @@ export default function Masthead({
   loteriaAtiva,
   dicasAtiva,
   quizAtivo,
+  premiumAtivo,
 }: {
   loteriaAtiva?: CodigoLoteria;
   dicasAtiva?: boolean;
   quizAtivo?: boolean;
+  premiumAtivo?: boolean;
 }) {
   return (
     <header className="masthead">
@@ -37,6 +39,9 @@ export default function Masthead({
           </Link>
           <Link href="/quiz" data-ativo={quizAtivo}>
             Quiz
+          </Link>
+          <Link href="/premium" data-ativo={premiumAtivo} className="masthead__premium-link">
+            ✦ Premium
           </Link>
         </nav>
 
