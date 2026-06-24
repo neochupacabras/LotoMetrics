@@ -111,6 +111,16 @@ img {
   border-radius: 4px;
   padding: 3px;
   background: var(--paper);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .nav-loterias {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    max-width: calc(100vw - 32px);
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 .nav-loterias a {
@@ -5053,6 +5063,8 @@ footer.rodape {
   font-size: 1rem;
   padding: 12px 28px;
   margin-bottom: 14px;
+  display: inline-block;
+  text-align: center;
 }
 
 .premium-cta-final__btn:hover { background: #a0701f; }

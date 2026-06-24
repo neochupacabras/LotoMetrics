@@ -3,7 +3,8 @@ import type { SetAllCookies } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const ROTAS_AUTH = ["/conta"];
-const ROTAS_PREMIUM = ["/premium"];
+// /premium é a página PÚBLICA de apresentação dos planos — sem proteção
+const ROTAS_PREMIUM: string[] = [];
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });

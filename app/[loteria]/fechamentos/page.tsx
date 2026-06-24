@@ -16,20 +16,17 @@ export async function generateMetadata({
   return metadataPagina(
     codigoLoteria,
     "/fechamentos",
-    `Fechamento de dezenas ${nome} — reduzido e completo`,
-    `Monte um fechamento de dezenas da ${nome} com garantia matemática de pontuação mínima, no modo reduzido (menos jogos) ou completo (todas as combinações).`
+    `Fechamento de dezenas — ${nome}`,
+    `O que é fechamento, como funciona e o que ele não faz — explicado de forma simples, com exemplos.`
   );
 }
 
-// Exemplos concretos (números já validados nos testes de performance) só
-// pra tornar a explicação tangível — não são usados em nenhum cálculo,
-// são puramente ilustrativos.
 const EXEMPLOS: Record<
   string,
-  { pool: number; completo: number; reduzido: number; k: number; minimo: number; sorteadas: number }
+  { pool: number; completo: number; reduzido: number; k: number; sorteadas: number }
 > = {
-  lotofacil: { pool: 18, completo: 816, reduzido: 164, k: 12, minimo: 15, sorteadas: 15 },
-  megasena: { pool: 10, completo: 210, reduzido: 27, k: 4, minimo: 6, sorteadas: 6 },
+  lotofacil: { pool: 18, completo: 816, reduzido: 164, k: 12, sorteadas: 15 },
+  megasena:  { pool: 10, completo: 210, reduzido: 27,  k: 4,  sorteadas: 6  },
 };
 
 export default async function FechamentosPage({
@@ -38,40 +35,75 @@ export default async function FechamentosPage({
   params: Promise<{ loteria: string }>;
 }) {
   const { loteria: codigoLoteria } = await params;
-
-  if (!isCodigoLoteriaValido(codigoLoteria)) {
-    notFound();
-  }
+  if (!isCodigoLoteriaValido(codigoLoteria)) notFound();
 
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
-  if (!loteria) {
-    notFound();
-  }
+  if (!loteria) notFound();
 
   const ex = EXEMPLOS[codigoLoteria];
 
   return (
     <div className="container secao">
       <p className="eyebrow">{loteria.nome}</p>
-      <h1 className="titulo-edicao">Fechamentos garantidos</h1>
+      <h1 className="titulo-edicao">Fechamentos</h1>
 
-      <div className="bloco" style={{ maxWidth: 700 }}>
-        <p className="subtitulo-edicao" style={{ maxWidth: 700 }}>
-          Normalmente você escolhe só as {ex.minimo} dezenas mínimas e faz um jogo. Um
-          fechamento deixa você escolher mais dezenas que isso — e, em vez de cobrir
-          manualmente todas as combinações possíveis entre elas (o que fica caro rápido),
-          calcula um conjunto menor de jogos que ainda garante um resultado mínimo, desde
-          que dezenas suficientes da sua escolha sejam sorteadas.
+      <div className="bloco fechamento-explicacao" style={{ maxWidth: 680 }}>
+
+        <h2 className="bloco__titulo">O que é um fechamento?</h2>
+        <p>
+          Imagine que você está de olho em 18 dezenas da Lotofácil, mas só pode
+          jogar algumas delas em cada bilhete. O problema é: e se as 15 dezenas
+          sorteadas caírem espalhadas no meio do seu grupo de 18? Você pode ter
+          escolhido certo, mas se elas ficaram divididas entre bilhetes diferentes,
+          nenhum bilhete individual acerta muitos pontos.
         </p>
-        <p className="subtitulo-edicao" style={{ maxWidth: 700 }}>
-          Exemplo: escolhendo {ex.pool} dezenas, cobrir todas as combinações possíveis
-          exigiria {ex.completo} jogos (isso é o "fechamento completo", logo abaixo).
-          Um fechamento reduzido entrega a garantia de {ex.k} pontos com só{" "}
-          {ex.reduzido} jogos — desde que pelo menos {ex.k} das suas {ex.pool} dezenas
-          estejam entre as {ex.sorteadas} sorteadas. O "X" da garantia (aqui, {ex.k}) é
-          sempre um número fixo que você escolhe antes de gerar — não é "qualquer
-          quantidade".
+        <p>
+          O fechamento resolve exatamente isso. Ele organiza as combinações de
+          jogos de um jeito inteligente, para que, <strong>se as dezenas sorteadas
+          estiverem dentro do grupo que você escolheu</strong>, pelo menos um dos
+          seus bilhetes vai ter uma boa pontuação — independente de como elas
+          aparecerem espalhadas.
         </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: 28 }}>
+          Como funciona na prática?
+        </h2>
+        <p>
+          Pensa assim: você escolheu {ex.pool} dezenas. Para cobrir{" "}
+          <em>absolutamente todas</em> as combinações de {ex.sorteadas} dezenas
+          possíveis dentro desse grupo, precisaria de {ex.completo} jogos. Isso é
+          o <strong>fechamento completo</strong> — caro, mas não deixa nenhum buraco.
+        </p>
+        <p>
+          O <strong>fechamento reduzido</strong> é a versão inteligente: em vez de
+          jogar todas as {ex.completo} combinações possíveis, o sistema escolhe
+          apenas {ex.reduzido} jogos. Com esses {ex.reduzido} jogos, se pelo menos{" "}
+          {ex.k} das suas {ex.pool} dezenas estiverem entre as sorteadas, um dos
+          seus bilhetes vai ter pelo menos {ex.k} pontos — mesmo que as dezenas
+          estejam espalhadas de formas diferentes.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: 28 }}>
+          O que o fechamento <em>não</em> faz
+        </h2>
+        <p>
+          Isso é a parte mais importante. O fechamento <strong>não aumenta a
+          chance de as suas dezenas serem sorteadas</strong>. Escolher 18 dezenas
+          não faz com que elas apareçam mais no sorteio — a probabilidade é
+          exatamente a mesma que qualquer outra combinação de 18 dezenas teria.
+        </p>
+        <p>
+          O que o fechamento faz é simples: <strong>organiza seus bilhetes</strong>{" "}
+          para que você não desperdice um bom resultado por azar de distribuição.
+          Se suas dezenas saírem, você vai capturar isso. Se não saírem, nenhum
+          sistema no mundo ajudaria.
+        </p>
+        <p>
+          Outra coisa importante: o fechamento reduzido cobre faixas de premiação
+          menores, não o prêmio máximo. Para cobrir o máximo, precisaria do
+          fechamento completo — com todos os {ex.completo} jogos.
+        </p>
+
       </div>
 
       <FechamentoClient
@@ -82,20 +114,9 @@ export default async function FechamentosPage({
       />
 
       <div className="aviso-legal">
-        <strong>O que essa garantia significa:</strong> se pelo menos a quantidade
-        combinada das suas dezenas escolhidas sair no sorteio, então pelo menos um dos
-        seus jogos vai acertar essa faixa de prêmio. Isso é matemática de combinação —
-        testamos e verificamos cada fechamento gerado, um por um, antes de mostrar o
-        resultado.
-        <br />
-        <br />
-        <strong>O que ela NÃO significa:</strong> ela não aumenta a chance de as suas
-        dezenas serem sorteadas — essa chance é exatamente a mesma de qualquer aposta
-        (veja o número exato logo acima, depois de escolher suas dezenas). O fechamento
-        só evita desperdiçar o acerto se ele vier; não influencia se vai vir. E o
-        fechamento reduzido nunca garante o prêmio máximo, só faixas menores — para
-        cobrir o prêmio máximo, só apostando em todas as combinações possíveis
-        (o fechamento completo), que custa proporcionalmente mais.
+        O fechamento é uma técnica de organização de bilhetes — não uma forma de
+        prever sorteios ou aumentar a probabilidade de acerto. A probabilidade de
+        qualquer dezena ser sorteada é sempre a mesma, independente do sistema usado.
       </div>
     </div>
   );

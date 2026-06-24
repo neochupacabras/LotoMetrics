@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 
-const TITULO = "Fechamento: a matemática real por trás da técnica";
+const TITULO = "Fechamento: o que é, como funciona e o que ele não faz";
 const DESCRICAO =
-  "Fechamento não prevê números — garante cobertura. Veja a diferença com um exemplo pequeno que dá pra conferir na mão, número por número.";
+  "Explicação clara e simples de fechamento de dezenas — sem jargão, sem promessas, com exemplos que qualquer pessoa consegue conferir.";
 
 export const metadata: Metadata = {
   title: TITULO,
@@ -30,104 +30,131 @@ export default function ArtigoFechamentoPage() {
         <p className="eyebrow">Dicas e estratégias</p>
         <h1 className="titulo-edicao">{TITULO}</h1>
         <p className="subtitulo-edicao">
-          Fechamento é provavelmente a técnica de loteria mais mal-entendida que existe
-          — não porque seja complicada, mas porque costuma ser vendida como se fosse
-          mágica. Não é. É combinatória pura, e dá pra entender o princípio inteiro com
-          um exemplo de quatro números. O mesmo princípio se aplica tanto à Lotofácil
-          quanto à Mega-Sena; o que muda é só a escala (pool maior, mais combinações,
-          mais jogos necessários).
+          Fechamento é provavelmente a técnica de loteria mais mal-entendida que existe.
+          Não porque seja complicada — é porque quase sempre é vendida com promessas que
+          ela não pode cumprir. Este artigo explica o que fechamento realmente faz, com
+          um exemplo tão pequeno que dá pra conferir com os dedos.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
-          O que fechamento NÃO faz
+          Começa com um problema simples
         </h2>
         <p>
-          Fechamento não aumenta a chance de as dezenas que você escolheu serem as
-          dezenas sorteadas. Escolher um conjunto de 18 dezenas não te dá mais chance de
-          "acertar o pool" do que escolher qualquer outro conjunto de 18 dezenas — isso
-          é determinado só pela combinatória, igual pra todo mundo. Se alguém te vender
-          fechamento como "técnica que aumenta sua sorte", já pode desconfiar.
+          Imagine que você está apostando numa loteria que sorteia 2 bolas entre os
+          números 1, 2, 3 e 4. Só existem 6 resultados possíveis nessa loteria:
         </p>
-
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
-          O que fechamento realmente faz
-        </h2>
-        <p>
-          Fechamento garante cobertura <em>dado que</em> uma parte do que você escolheu
-          estava certa. A diferença é sutil mas é tudo: ele não muda a chance de você
-          ter escolhido certo, mas garante que, se você tiver escolhido certo (ainda que
-          parcialmente), isso vai aparecer em pelo menos um dos seus jogos — em vez de
-          depender de sorte adicional pra essa parte certa cair concentrada num único
-          bilhete.
-        </p>
-
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
-          O exemplo menor possível
-        </h2>
-        <p>
-          Imagine uma loteria de brinquedo que sorteia 2 números entre 1, 2, 3 e 4.
-          Existem exatamente 6 sorteios possíveis:
-        </p>
-        <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.95rem" }}>
+        <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.95rem", margin: "12px 0" }}>
           (1,2) — (1,3) — (1,4) — (2,3) — (2,4) — (3,4)
         </p>
         <p>
-          Se você jogasse um único bilhete com 2 números, sua chance de acertar os dois
-          seria 1 em 6. Agora, em vez de escolher só um par, escolha um{" "}
-          <strong>pool de 3 números</strong> — digamos, 1, 2 e 3 — e jogue{" "}
-          <strong>todos os pares possíveis dentro desse pool</strong>: (1,2), (1,3) e
-          (2,3). Três bilhetes em vez de um.
+          Se você comprar um único bilhete com 2 números, sua chance de acertar os dois
+          é 1 em 6. Simples.
         </p>
         <p>
-          Repare o que acontece: dos 6 sorteios possíveis, exatamente 3 têm os dois
-          números dentro do seu pool de 3 — são justamente (1,2), (1,3) e (2,3), os
-          mesmos 3 que você jogou. Ou seja: <strong>sempre que o sorteio sai inteiro
-          dentro do seu pool, um dos seus bilhetes acerta os dois números</strong>,
-          garantido, sem depender de sorte extra. Os outros 3 sorteios possíveis — (1,4),
-          (2,4) e (3,4) — envolvem o número 4, que está fora do seu pool, então nenhum
-          fechamento do mundo ajudaria nesses casos.
-        </p>
-        <p>
-          A chance de o sorteio cair inteiro dentro do seu pool de 3 continua sendo
-          exatamente o que a combinatória diz que deveria ser (50%, nesse exemplo
-          pequeno) — fechamento não mexeu nisso. O que ele garantiu foi que,{" "}
-          <em>quando</em> isso acontece, você não depende de mais nenhuma sorte pra
-          converter isso num acerto.
+          Mas agora suponha que, em vez de apostar num par, você queira apostar num{" "}
+          <strong>grupo de 3 números</strong> — digamos, 1, 2 e 3. Você acredita que os
+          números sorteados vão estar dentro desse grupo de 3. O problema é: um bilhete
+          só tem espaço pra 2 números. Como você cobre todas as possibilidades dentro do
+          seu grupo?
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
-          Escalando pro tamanho real
+          A solução é jogar todas as combinações do grupo
         </h2>
         <p>
-          A Lotofácil sorteia 15 dezenas entre 1 e 25 — bem maior que o exemplo acima,
-          mas o princípio é idêntico. Se você escolhe um pool de, digamos, 18 dezenas e
-          joga <strong>todas</strong> as combinações de 15 dezenas possíveis dentro
-          desse pool (o fechamento "completo"), você garante o prêmio máximo sempre que
-          as 15 dezenas sorteadas estiverem dentro do seu pool de 18 — só que isso já dá
-          milhares de jogos, e fica caro rápido.
+          Dentro do grupo {"{"}1, 2, 3{"}"}, existem exatamente 3 pares possíveis:
+        </p>
+        <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.95rem", margin: "12px 0" }}>
+          (1,2) — (1,3) — (2,3)
         </p>
         <p>
-          É aí que entra o fechamento <strong>reduzido</strong>: em vez de jogar todas
-          as combinações possíveis do pool, ele usa desenhos combinatórios (uma área de
-          matemática focada exatamente nesse tipo de problema de cobertura) pra
-          selecionar um subconjunto bem menor de jogos que ainda garante uma pontuação
-          mínima — não o prêmio máximo, mas, por exemplo, "pelo menos 13 pontos em algum
-          jogo, se pelo menos 13 das suas dezenas escolhidas estiverem entre as
-          sorteadas". É uma troca: menos garantia por muito menos jogos.
+          Se você jogar esses 3 bilhetes, olha o que acontece: dos 6 resultados possíveis
+          da loteria, exatamente 3 deles têm os dois números dentro do seu grupo de 3 —
+          são justamente (1,2), (1,3) e (2,3), os mesmos que você apostou.
         </p>
         <p>
-          Calcular manualmente qual conjunto mínimo de jogos garante qual nível de
-          pontuação é um problema combinatório difícil de resolver à mão pra pools
-          grandes — é exatamente o que a calculadora de{" "}
+          <strong>Resultado:</strong> toda vez que o sorteio sair com os dois números
+          dentro do seu grupo, um dos seus bilhetes vai acertar os dois. Não importa em
+          qual ordem nem qual combinação específica — você está coberto.
+        </p>
+        <p>
+          Os outros 3 resultados — (1,4), (2,4) e (3,4) — envolvem o número 4, que não
+          está no seu grupo. Nesses casos, nenhum bilhete seu acerta, e não tem nada que
+          você possa fazer a respeito.
+        </p>
+        <p>
+          Isso é um fechamento completo: você jogou todas as combinações possíveis do
+          seu grupo.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          O que o fechamento faz — e o que ele não faz
+        </h2>
+        <p>
+          O fechamento faz uma coisa só: <strong>organiza seus bilhetes</strong> para que,{" "}
+          <em>se o sorteio cair dentro do seu grupo</em>, você capture isso.
+        </p>
+        <p>
+          O fechamento <strong>não faz</strong> o sorteio cair dentro do seu grupo. A
+          chance de o resultado estar dentro do seu grupo de 3 números ainda é exatamente
+          o que a matemática diz que deveria ser — 50% nesse exemplo pequeno, porque 3
+          dos 6 resultados possíveis têm os dois números dentro do grupo {"{"}1, 2, 3{"}"}.
+          O fechamento não mexeu nisso.
+        </p>
+        <p>
+          Em outras palavras: fechamento é sobre <strong>não desperdiçar</strong> um bom
+          resultado quando ele acontece. Não é sobre fazer o bom resultado acontecer mais.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          E na vida real, na Lotofácil?
+        </h2>
+        <p>
+          O princípio é exatamente o mesmo — o tamanho é que muda muito. A Lotofácil
+          sorteia 15 dezenas entre 1 e 25. Se você escolhe um grupo de, digamos, 18
+          dezenas, o fechamento completo teria que cobrir todas as combinações de 15
+          dezenas dentro desse grupo de 18 — o que dá 816 jogos. Caro, mas sem nenhum
+          buraco na cobertura.
+        </p>
+        <p>
+          É aí que entra o <strong>fechamento reduzido</strong>. Em vez de jogar os 816
+          bilhetes, o sistema escolhe um número menor de jogos — por exemplo, 164 — que
+          ainda cobre uma pontuação mínima. O que muda é o seguinte: em vez de cobrir o
+          prêmio máximo, você cobre uma faixa menor. Por exemplo: "se pelo menos 12 das
+          suas 18 dezenas estiverem entre as sorteadas, pelo menos um bilhete seu vai
+          ter 12 pontos." Não é o prêmio máximo, mas é uma cobertura real com muito
+          menos bilhetes.
+        </p>
+        <p>
+          A calculadora de{" "}
           <Link href="/lotofacil/fechamentos">fechamentos</Link> e o{" "}
-          <Link href="/lotofacil/bolao">otimizador de bolão</Link> deste site fazem por
-          você.
+          <Link href="/lotofacil/bolao">otimizador de bolão</Link>{" "}
+          deste site fazem esses cálculos por você — você escolhe o grupo de dezenas e
+          a pontuação mínima que quer cobrir, e o sistema gera os bilhetes.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          Resumindo em três frases
+        </h2>
+        <p>
+          <strong>1.</strong> Fechamento organiza seus bilhetes para que, se as dezenas
+          que você escolheu aparecerem no sorteio, você não perca por má distribuição.
+        </p>
+        <p>
+          <strong>2.</strong> Fechamento não aumenta a chance de as suas dezenas serem
+          sorteadas. Essa probabilidade é fixa e igual pra todo mundo.
+        </p>
+        <p>
+          <strong>3.</strong> O fechamento reduzido cobre faixas menores de premiação com
+          menos bilhetes. O fechamento completo cobre o máximo, mas custa proporcional
+          mais caro.
         </p>
 
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
-          Este artigo é conteúdo educativo. Fechamento é uma técnica de cobertura
-          combinatória, não uma forma de aumentar a probabilidade de acertar as dezenas
-          certas — essa continua sendo a mesma, qualquer que seja o pool escolhido.
+          Este artigo é conteúdo educativo. Fechamento é uma técnica de organização de
+          bilhetes, não uma forma de aumentar a probabilidade de acerto. Qualquer sistema
+          que prometa aumentar suas chances de acertar o sorteio está errado — a
+          probabilidade é determinada pela combinatória, e não muda com nenhuma técnica.
         </div>
 
         <p style={{ marginTop: "24px" }}>
