@@ -26,6 +26,12 @@ const plexMono = IBM_Plex_Mono({
   weight: ["400", "500", "700"],
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover", // necessário para env(safe-area-inset-bottom) no iPhone
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "LotoAnalítica — Resultados e estatísticas de loteria",

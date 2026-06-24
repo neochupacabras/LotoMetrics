@@ -4,6 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import Masthead from "@/components/Masthead";
 import JogosListaClient from "@/components/conta/JogosListaClient";
+import BotaoRelatorio from "@/components/conta/BotaoRelatorio";
 import { createClient } from "@/lib/supabase/server";
 import { formatarDezena } from "@/lib/format";
 
@@ -85,7 +86,42 @@ export default async function ContaJogosPage() {
             isPremium={isPremium}
           />
         )}
+        {/* Seção de relatórios — só para premium com jogos */}
+        {isPremium && (jogos?.length ?? 0) > 0 && (
+          <section className="conta-secao" style={{ marginTop: 40 }}>
+            <h2 className="conta-secao-titulo">Relatórios mensais</h2>
+            <p className="conta-alertas-desc">
+              Baixe o relatório completo de qualquer mês com o desempenho dos seus jogos.
+            </p>
+            <RelatorioBotoes />
+          </section>
+        )}
       </main>
     </>
+  );
+}
+
+function RelatorioBotoes() {
+  const agora = new Date();
+  const meses = [];
+
+  for (let i = 1; i <= 3; i++) {
+    const d = new Date(agora.getFullYear(), agora.getMonth() - i, 1);
+    meses.push({ mes: d.getMonth() + 1, ano: d.getFullYear() });
+  }
+
+  const NOMES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+
+  return (
+    <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+      {meses.map(({ mes, ano }) => (
+        <BotaoRelatorio
+          key={`${mes}-${ano}`}
+          mes={mes}
+          ano={ano}
+          label={`${NOMES[mes - 1]}/${ano}`}
+        />
+      ))}
+    </div>
   );
 }

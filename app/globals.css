@@ -426,6 +426,8 @@ footer.rodape {
 
 .rodape__inner {
   padding: 28px 24px 36px;
+  /* env(safe-area-inset-bottom) cobre a barra de navegação do iPhone */
+  padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px));
 }
 
 .rodape__aviso {
@@ -3883,4 +3885,11 @@ footer.rodape {
 @media (max-width: 640px) {
   .ocr-dropzone { padding: 28px 16px; }
   .ocr-preview__imagem-wrapper { max-height: 220px; }
+}
+
+/* ── Relatório PDF ────────────────────────────────────────── */
+.relatorio-btn {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  white-space: nowrap;
 }
