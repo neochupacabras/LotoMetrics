@@ -132,7 +132,7 @@ export default function PrivacidadePage() {
           </ul>
           <p>
             Para exercer qualquer desses direitos, entre em contato pelo e-mail{" "}
-            <a href="mailto:privacidade@lotoanalitica.com.br">privacidade@lotoanalitica.com.br</a>.
+            <a href="mailto:contato@lotoanalitica.com.br">contato@lotoanalitica.com.br</a>.
           </p>
 
           <h2>6. Retenção de dados</h2>
@@ -163,7 +163,7 @@ export default function PrivacidadePage() {
           <p>
             Dúvidas sobre esta política ou sobre o tratamento dos seus dados:
             <br />
-            <a href="mailto:privacidade@lotoanalitica.com.br">privacidade@lotoanalitica.com.br</a>
+            <a href="mailto:contato@lotoanalitica.com.br">contato@lotoanalitica.com.br</a>
           </p>
         </div>
       </main>
