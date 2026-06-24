@@ -3893,3 +3893,205 @@ footer.rodape {
   font-size: 0.78rem;
   white-space: nowrap;
 }
+
+/* ==========================================================
+   COMPARADOR DE ESTRATÉGIAS
+   ========================================================== */
+
+.estrategia-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.estrategia-formularios {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── Card de formulário ──────────────────────────────────── */
+.estrategia-form {
+  border: 2px solid var(--line-strong);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.estrategia-form__header {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.estrategia-form__id {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.estrategia-form__body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Campo individual ────────────────────────────────────── */
+.estrategia-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.estrategia-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.estrategia-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.estrategia-range-sep {
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+
+.estrategia-input {
+  width: 72px;
+  padding: 7px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  background: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+
+.estrategia-input:focus {
+  outline: none;
+  border-color: var(--pine);
+}
+
+.estrategia-nome-input {
+  width: 100% !important;
+  padding: 8px 10px !important;
+  font-family: var(--font-plex-sans) !important;
+  font-size: 0.88rem !important;
+}
+
+.estrategia-limpar-btn {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+  margin-top: 4px;
+}
+
+.estrategia-limpar-btn:hover { color: var(--rust); }
+
+.estrategia-dica {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── Resultados ──────────────────────────────────────────── */
+.estrategia-resultados {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.estrategia-resultados__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.estrategia-resultados__periodo {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+
+.estrategia-colunas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.estrategia-coluna {
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.estrategia-coluna[data-cor="a"] { border-color: #b9802c; }
+.estrategia-coluna[data-cor="b"] { border-color: #1e4b3c; }
+
+.estrategia-coluna__titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1rem;
+  margin: 0 0 16px;
+}
+
+.estrategia-resultado-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.estrategia-resultado-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.estrategia-resultado-card:last-child { border-bottom: none; }
+
+.estrategia-resultado-rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-soft);
+}
+
+.estrategia-resultado-valor {
+  font-family: var(--font-fraunces);
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.estrategia-resultado-detalhe {
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+}
+
+@media (max-width: 640px) {
+  .estrategia-formularios { grid-template-columns: 1fr; }
+  .estrategia-colunas { grid-template-columns: 1fr; }
+  .estrategia-resultado-cards { flex-direction: row; flex-wrap: wrap; }
+  .estrategia-resultado-card { flex: 1; min-width: 120px; border-bottom: none; border-right: 1px solid var(--line); }
+  .estrategia-resultado-card:last-child { border-right: none; }
+}

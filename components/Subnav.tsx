@@ -7,7 +7,7 @@ import type { CodigoLoteria } from "@/lib/types";
 type AbaAtiva =
   | "resultados" | "tabelas" | "gerador" | "simulador" | "probabilidades"
   | "fechamentos" | "conferidor" | "destaques" | "bolao" | "analisador"
-  | "heatmap" | "acumulos";
+  | "heatmap" | "acumulos" | "estrategias";
 
 const ABAS: { slug: AbaAtiva; label: string }[] = [
   { slug: "resultados",    label: "Resultados" },
@@ -22,6 +22,7 @@ const ABAS: { slug: AbaAtiva; label: string }[] = [
   { slug: "heatmap",       label: "Heatmap" },
   { slug: "acumulos",      label: "Acúmulos" },
   { slug: "probabilidades",label: "Probabilidades" },
+  { slug: "estrategias",   label: "Estratégias ✦" },
 ];
 
 export default function Subnav({
