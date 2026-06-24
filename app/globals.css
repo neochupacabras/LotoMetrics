@@ -4075,3 +4075,184 @@ footer.rodape {
   .projecao-barra-label { width: 120px; font-size: 0.68rem; }
   .projecao-barra-pct { width: 44px; font-size: 0.75rem; }
 }
+
+/* ==========================================================
+   API DE DADOS — /conta/api
+   ========================================================== */
+
+.api-instrucoes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  max-width: 680px;
+}
+
+.api-code-block {
+  background: #1c1b17;
+  color: #efeee6;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 14px 16px;
+  border-radius: 4px;
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.6;
+}
+
+/* ── Chave nova ─────────────────────────────────────── */
+.api-nova-chave {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.api-nova-chave__titulo {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: #166534;
+  font-weight: 700;
+  margin: 0;
+}
+
+.api-nova-chave__valor {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.api-nova-chave__code {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  background: #fff;
+  border: 1px solid #86efac;
+  border-radius: 3px;
+  padding: 8px 12px;
+  word-break: break-all;
+  flex: 1;
+  color: #166534;
+}
+
+.api-nova-chave__copiar { flex-shrink: 0; }
+
+.api-nova-chave__fechar {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #166534;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-align: left;
+}
+
+/* ── Lista de chaves ─────────────────────────────── */
+.api-keys-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 640px;
+}
+
+.api-keys-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.api-key-card {
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.api-key-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.api-key-card__label {
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 4px;
+  font-size: 0.92rem;
+}
+
+.api-key-card__prefixo {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 360px;
+}
+
+.api-key-card__uso {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.api-key-card__uso-barra {
+  flex: 1;
+  height: 6px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.api-key-card__uso-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.api-key-card__uso-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.api-key-card__meta {
+  display: flex;
+  gap: 20px;
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+}
+
+/* ── Criar chave ─────────────────────────────────── */
+.api-criar-chave {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.api-criar-chave__titulo {
+  font-family: var(--font-fraunces);
+  font-size: 0.95rem;
+  color: var(--ink);
+  margin: 0;
+}
+
+.api-criar-chave__form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}

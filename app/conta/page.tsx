@@ -83,6 +83,22 @@ export default async function ContaPage({
           </div>
         </section>
 
+        {/* ── API de dados ─────────────────────────────────────────── */}
+        {isPremium && (
+          <section className="conta-secao">
+            <div className="conta-secao-header">
+              <h2 className="conta-secao-titulo">API de dados</h2>
+              <Link href="/conta/api" className="conta-link-acao">
+                Gerenciar chaves →
+              </Link>
+            </div>
+            <p className="conta-alertas-desc">
+              Acesse resultados e estatísticas processadas via REST API com autenticação por chave.
+              1.000 requisições/mês incluídas no plano Premium.
+            </p>
+          </section>
+        )}
+
         {/* ── Jogos salvos ──────────────────────────────────────────── */}
         <section className="conta-secao">
           <div className="conta-secao-header">
