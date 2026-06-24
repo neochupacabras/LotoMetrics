@@ -223,7 +223,8 @@ export default function ComparadorEstrategiasClient({
     startTransition(async () => {
       const res = await compararEstrategias(
         codigoLoteria, nomeA, filtroA, nomeB, filtroB,
-        limiteHistorico ?? undefined
+        limiteHistorico ?? undefined,
+        dezenaMin, dezenaMax, qtdDezenasSorteadas
       );
       if ("erro" in res) setErro(res.erro);
       else setResultado(res);
