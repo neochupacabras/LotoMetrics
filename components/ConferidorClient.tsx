@@ -2,9 +2,13 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Dezenas from "./Dezenas";
+import dynamic from "next/dynamic";
 import { conferirJogoAction, calcularRetornoFinanceiroAction, ConferidorActionResult } from "@/lib/conferidor-actions";
 import { formatarData, formatarDezena } from "@/lib/format";
 import GraficoBarras from "./GraficoBarras";
+
+// Importação dinâmica para não incluir no bundle inicial
+const ConferidorFoto = dynamic(() => import("./ConferidorFoto"), { ssr: false });
 
 export default function ConferidorClient({
   codigoLoteria,
@@ -13,20 +17,31 @@ export default function ConferidorClient({
   qtdDezenasSorteadas,
   jogoUnico = false,
   logado = false,
+  isPremium = false,
 }: {
   codigoLoteria: string;
   dezenaMin: number;
   dezenaMax: number;
   qtdDezenasSorteadas: number;
-  jogoUnico?: boolean;   // free: bloqueia novo jogo após conferir
+  jogoUnico?: boolean;
   logado?: boolean;
+  isPremium?: boolean;
 }) {
+  const [aba, setAba] = useState<"manual" | "foto">("manual");
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
   const [textoColar, setTextoColar] = useState("");
   const [resultado, setResultado] = useState<ConferidorActionResult | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [jogoUsado, setJogoUsado] = useState(false); // controle do limite free
+
+  // Callback chamado quando OCR detecta dezenas — preenche o seletor
+  function handleDezenasDetectadas(dezenas: number[]) {
+    setSelecionadas(new Set(dezenas));
+    setAba("manual"); // volta para a aba manual para o usuário confirmar
+    setResultado(null);
+    setErro(null);
+  }
 
   const todasDezenas = useMemo(
     () => Array.from({ length: dezenaMax - dezenaMin + 1 }, (_, i) => dezenaMin + i),
@@ -86,6 +101,41 @@ export default function ConferidorClient({
 
   return (
     <div>
+      {/* Toggle Manual / Foto */}
+      <div className="modo-toggle" style={{ alignSelf: "flex-start", marginBottom: 20 }}>
+        <button
+          type="button"
+          className="modo-toggle__botao"
+          data-ativo={aba === "manual"}
+          onClick={() => setAba("manual")}
+        >
+          Digitar dezenas
+        </button>
+        <button
+          type="button"
+          className="modo-toggle__botao"
+          data-ativo={aba === "foto"}
+          onClick={() => setAba("foto")}
+        >
+          📷 Foto do bilhete
+          {!isPremium && <span className="modo-toggle__lock">✦ Premium</span>}
+        </button>
+      </div>
+
+      {/* Aba Foto */}
+      {aba === "foto" && (
+        <ConferidorFoto
+          codigoLoteria={codigoLoteria}
+          qtdDezenasSorteadas={qtdDezenasSorteadas}
+          isPremium={isPremium}
+          logado={logado}
+          onDezenasDetectadas={handleDezenasDetectadas}
+        />
+      )}
+
+      {/* Aba Manual */}
+      {aba === "manual" && (
+      <>
       <p className="bloco__nota">
         Selecione as {qtdDezenasSorteadas} dezenas do seu jogo, ou cole abaixo (aceita
         qualquer formato, inclusive o que o gerador de jogos copia).
@@ -143,6 +193,9 @@ export default function ConferidorClient({
 
       {resultado?.ok && resultado.dados && (
         <ResultadoConferidor dados={resultado.dados} codigoLoteria={codigoLoteria} />
+      )}
+
+      </>
       )}
 
       {jogoUnico && jogoUsado && (

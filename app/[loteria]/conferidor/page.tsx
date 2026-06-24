@@ -58,6 +58,7 @@ export default async function ConferidorPage({
         qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
         jogoUnico={!premium}
         logado={logado}
+        isPremium={premium}
       />
     </div>
   );
