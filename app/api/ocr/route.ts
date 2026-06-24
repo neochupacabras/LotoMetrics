@@ -4,43 +4,58 @@ import { createClient } from "@/lib/supabase/server";
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
-// Limites por loteria
-const LIMITES: Record<string, { min: number; max: number; qtd: number }> = {
-  lotofacil: { min: 1,  max: 25, qtd: 15 },
-  megasena:  { min: 1,  max: 60, qtd: 6  },
+const LIMITE_DIARIO = 50;
+
+const LIMITES_LOTERIA: Record<string, { min: number; max: number; qtd: number }> = {
+  lotofacil: { min: 1, max: 25, qtd: 15 },
+  megasena:  { min: 1, max: 60, qtd: 6  },
 };
 
-// Extrai números válidos do texto retornado pelo Vision
 function extrairDezenas(
   texto: string,
   loteria: string
 ): { dezenas: number[]; confianca: "alta" | "media" | "baixa" } {
-  const { min, max, qtd } = LIMITES[loteria] ?? LIMITES.lotofacil;
-
-  // Remove tudo que não é número ou separador
-  // Aceita formatos: "01 02 03", "01-02-03", "01/02/03", "01,02,03"
+  const { min, max, qtd } = LIMITES_LOTERIA[loteria] ?? LIMITES_LOTERIA.lotofacil;
   const numeros = (texto.match(/\b\d{1,2}\b/g) ?? [])
     .map(Number)
     .filter(n => n >= min && n <= max);
-
-  // Remover duplicatas mantendo a ordem
   const unicos = [...new Set(numeros)];
-
-  // Confiança baseada em quantos números válidos foram encontrados
   const confianca =
     unicos.length === qtd ? "alta" :
     unicos.length >= qtd - 2 ? "media" : "baixa";
+  return { dezenas: unicos.slice(0, qtd).sort((a, b) => a - b), confianca };
+}
 
-  // Se encontrou mais que o esperado, pega os primeiros (ordem do bilhete)
-  // Se encontrou menos, retorna o que tem para o usuário corrigir
-  return {
-    dezenas: unicos.slice(0, qtd).sort((a, b) => a - b),
-    confianca,
-  };
+// ── Rate limiting via coluna ocr_usage no profile ─────────────────────────────
+async function verificarEIncrementarLimite(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  userId: string
+): Promise<{ permitido: boolean; restantes: number }> {
+  const hoje = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("ocr_usage")
+    .eq("id", userId)
+    .single();
+
+  const uso = profile?.ocr_usage as { data: string; count: number } | null;
+  const usageHoje = uso?.data === hoje ? uso.count : 0;
+
+  if (usageHoje >= LIMITE_DIARIO) {
+    return { permitido: false, restantes: 0 };
+  }
+
+  // Incrementar
+  await supabase
+    .from("profiles")
+    .update({ ocr_usage: { data: hoje, count: usageHoje + 1 } })
+    .eq("id", userId);
+
+  return { permitido: true, restantes: LIMITE_DIARIO - usageHoje - 1 };
 }
 
 export async function POST(request: Request) {
-  // Verificar autenticação e plano premium
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -68,9 +83,29 @@ export async function POST(request: Request) {
     );
   }
 
-  // Ler a imagem e a loteria do form data
+  // ── Rate limiting ────────────────────────────────────────────────────────────
+  const { permitido, restantes } = await verificarEIncrementarLimite(supabase, user.id);
+
+  if (!permitido) {
+    return NextResponse.json(
+      {
+        erro: `Limite diário de ${LIMITE_DIARIO} leituras atingido. Renova amanhã.`,
+        limiteDiario: LIMITE_DIARIO,
+        restantes: 0,
+      },
+      {
+        status: 429,
+        headers: {
+          "X-RateLimit-Limit": String(LIMITE_DIARIO),
+          "X-RateLimit-Remaining": "0",
+          "Retry-After": "86400",
+        },
+      }
+    );
+  }
+
+  // ── Processar imagem ─────────────────────────────────────────────────────────
   let imageBase64: string;
-  let mimeType: string;
   let loteria: string;
 
   try {
@@ -81,8 +116,6 @@ export async function POST(request: Request) {
     if (!arquivo) {
       return NextResponse.json({ erro: "Nenhuma imagem enviada." }, { status: 400 });
     }
-
-    // Validar tipo e tamanho (máx 10MB)
     if (!arquivo.type.startsWith("image/")) {
       return NextResponse.json({ erro: "O arquivo precisa ser uma imagem." }, { status: 400 });
     }
@@ -92,18 +125,13 @@ export async function POST(request: Request) {
 
     const buffer = await arquivo.arrayBuffer();
     imageBase64 = Buffer.from(buffer).toString("base64");
-    mimeType = arquivo.type;
   } catch {
     return NextResponse.json({ erro: "Erro ao processar a imagem." }, { status: 400 });
   }
 
-  // Chamar Google Cloud Vision API
   const apiKey = process.env.GOOGLE_CLOUD_VISION_API_KEY;
   if (!apiKey) {
-    return NextResponse.json(
-      { erro: "Serviço de OCR não configurado." },
-      { status: 503 }
-    );
+    return NextResponse.json({ erro: "Serviço de OCR não configurado." }, { status: 503 });
   }
 
   try {
@@ -113,29 +141,17 @@ export async function POST(request: Request) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          requests: [
-            {
-              image: {
-                content: imageBase64,
-              },
-              features: [
-                {
-                  type: "DOCUMENT_TEXT_DETECTION", // Melhor para textos impressos
-                  maxResults: 1,
-                },
-              ],
-              imageContext: {
-                languageHints: ["pt"], // Português para melhor precisão
-              },
-            },
-          ],
+          requests: [{
+            image: { content: imageBase64 },
+            features: [{ type: "DOCUMENT_TEXT_DETECTION", maxResults: 1 }],
+            imageContext: { languageHints: ["pt"] },
+          }],
         }),
       }
     );
 
     if (!visionRes.ok) {
-      const err = await visionRes.text();
-      console.error("Vision API error:", err);
+      console.error("Vision API error:", await visionRes.text());
       return NextResponse.json(
         { erro: "Não foi possível processar a imagem. Tente com melhor iluminação." },
         { status: 502 }
@@ -143,36 +159,40 @@ export async function POST(request: Request) {
     }
 
     const visionData = await visionRes.json();
-    const textoCompleto =
-      visionData.responses?.[0]?.fullTextAnnotation?.text ?? "";
+    const textoCompleto = visionData.responses?.[0]?.fullTextAnnotation?.text ?? "";
 
     if (!textoCompleto) {
       return NextResponse.json({
         dezenas: [],
         confianca: "baixa",
-        textoDetectado: "",
+        restantes,
         aviso: "Não foi possível ler texto na imagem. Tente com melhor iluminação e enquadramento.",
       });
     }
 
     const { dezenas, confianca } = extrairDezenas(textoCompleto, loteria);
 
-    return NextResponse.json({
-      dezenas,
-      confianca,
-      textoDetectado: textoCompleto.slice(0, 500), // debug limitado
-      aviso:
-        confianca === "baixa"
-          ? "Poucas dezenas foram lidas com segurança. Verifique e corrija manualmente."
-          : confianca === "media"
-          ? "Algumas dezenas podem estar faltando. Confirme antes de conferir."
-          : null,
-    });
+    return NextResponse.json(
+      {
+        dezenas,
+        confianca,
+        restantes,
+        aviso:
+          confianca === "baixa"
+            ? "Poucas dezenas foram lidas com segurança. Verifique e corrija manualmente."
+            : confianca === "media"
+            ? "Algumas dezenas podem estar faltando. Confirme antes de conferir."
+            : null,
+      },
+      {
+        headers: {
+          "X-RateLimit-Limit": String(LIMITE_DIARIO),
+          "X-RateLimit-Remaining": String(restantes),
+        },
+      }
+    );
   } catch (err) {
     console.error("OCR error:", err);
-    return NextResponse.json(
-      { erro: "Erro ao processar a imagem. Tente novamente." },
-      { status: 500 }
-    );
+    return NextResponse.json({ erro: "Erro ao processar a imagem. Tente novamente." }, { status: 500 });
   }
 }

@@ -7,6 +7,7 @@ interface ResultadoOCR {
   confianca: "alta" | "media" | "baixa";
   aviso: string | null;
   erro?: string;
+  restantes?: number;
 }
 
 interface Props {
@@ -185,6 +186,14 @@ export default function ConferidorFoto({
                   {resultado.dezenas.length > 0 && resultado.confianca !== "baixa" && (
                     <p className="ocr-resultado__ok">
                       As dezenas foram preenchidas no conferidor abaixo. Verifique e confirme.
+                    </p>
+                  )}
+
+                  {resultado.restantes !== undefined && resultado.restantes <= 10 && (
+                    <p className="ocr-resultado__aviso" style={{ marginTop: 4 }}>
+                      ⚠ {resultado.restantes === 0
+                        ? "Limite diário atingido. Renova amanhã."
+                        : `${resultado.restantes} leitura${resultado.restantes !== 1 ? "s" : ""} restante${resultado.restantes !== 1 ? "s" : ""} hoje.`}
                     </p>
                   )}
                 </>

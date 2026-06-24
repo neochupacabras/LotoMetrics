@@ -153,3 +153,8 @@ CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id  ON public.subscriptions(us
 CREATE INDEX IF NOT EXISTS idx_subscriptions_stripe_id ON public.subscriptions(stripe_subscription_id);
 CREATE INDEX IF NOT EXISTS idx_user_games_user_id      ON public.user_games(user_id);
 CREATE INDEX IF NOT EXISTS idx_alert_prefs_user_id     ON public.alert_preferences(user_id);
+
+-- Adicionar coluna para rate limiting do OCR (contador diário)
+-- Formato: { "data": "2026-06-24", "count": 3 }
+ALTER TABLE public.profiles
+  ADD COLUMN IF NOT EXISTS ocr_usage JSONB NOT NULL DEFAULT '{"data":"","count":0}'::jsonb;
