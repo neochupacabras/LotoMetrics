@@ -4256,3 +4256,446 @@ footer.rodape {
   gap: 10px;
   flex-wrap: wrap;
 }
+
+/* ==========================================================
+   PÁGINA DE APRESENTAÇÃO DA API
+   ========================================================== */
+
+/* ── Hero ────────────────────────────────────────────────── */
+.api-hero {
+  background: var(--pine);
+  padding: 72px 0 64px;
+  margin-bottom: 0;
+}
+
+.api-hero__titulo {
+  font-family: var(--font-fraunces);
+  font-size: 2.6rem;
+  color: var(--paper);
+  line-height: 1.15;
+  margin: 12px 0 16px;
+}
+
+.api-hero__sub {
+  font-size: 1rem;
+  color: rgba(239,238,230,0.75);
+  max-width: 560px;
+  line-height: 1.6;
+  margin: 0 0 28px;
+}
+
+.api-hero__acoes {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.api-hero .eyebrow {
+  color: var(--ochre);
+}
+
+.api-hero__cta {
+  background: var(--ochre);
+  border-color: var(--ochre);
+}
+
+.api-hero__cta:hover {
+  background: #a0701f;
+  border-color: #a0701f;
+}
+
+.api-hero .botao-copiar {
+  color: var(--paper);
+  border-color: rgba(239,238,230,0.4);
+  background: transparent;
+}
+
+.api-hero .botao-copiar:hover {
+  border-color: var(--paper);
+  background: rgba(239,238,230,0.1);
+}
+
+/* ── Seções ──────────────────────────────────────────────── */
+.api-secao {
+  padding: 56px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.api-secao:last-child { border-bottom: none; }
+
+.api-secao__titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1.6rem;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.api-secao__sub {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  margin: 0 0 28px;
+  max-width: 560px;
+}
+
+/* ── Exemplo rápido ──────────────────────────────────────── */
+.api-exemplo-rapido { max-width: 740px; }
+
+.api-code-block--destaque {
+  border-left: 3px solid var(--ochre);
+}
+
+/* ── Endpoints ───────────────────────────────────────────── */
+.api-endpoint-card {
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.api-endpoint-card__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.api-endpoint-card__metodo {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--pine);
+  color: var(--paper);
+  padding: 3px 8px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.api-endpoint-card__path {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.api-endpoint-card__descricao {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+}
+
+.api-endpoint-card__params {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+
+.api-endpoint-card__exemplos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.api-endpoint-card__label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  margin: 0 0 6px;
+}
+
+/* ── Tipos de estatística ────────────────────────────────── */
+.api-tipos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.api-tipo-card {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.api-tipo-card__tipo {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--pine);
+  font-weight: 700;
+}
+
+.api-tipo-card__descricao {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.api-tipos-nota {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.api-tipos-nota code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  background: var(--paper-raised);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+/* ── Casos de uso ────────────────────────────────────────── */
+.api-casos-secao {
+  background: var(--paper-raised);
+  padding: 56px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.api-casos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 28px;
+}
+
+.api-caso-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 20px;
+}
+
+.api-caso-card__icone {
+  font-size: 1.6rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.api-caso-card__titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1rem;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+
+.api-caso-card__descricao {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Preço ───────────────────────────────────────────────── */
+.api-preco-card {
+  border: 2px solid var(--ochre);
+  border-radius: 6px;
+  padding: 28px;
+  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+.api-preco-card__nome {
+  font-family: var(--font-fraunces);
+  font-size: 1.2rem;
+  color: var(--ochre);
+  margin: 0 0 8px;
+}
+
+.api-preco-card__preco {
+  font-size: 1rem;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.api-preco-card__nota {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.api-preco-card__limites {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.api-preco-card__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.api-preco-card__item-valor {
+  font-family: var(--font-fraunces);
+  font-size: 1.4rem;
+  color: var(--pine);
+}
+
+.api-preco-card__item-label {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+
+.api-preco-incluso {
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 24px 28px;
+}
+
+.api-preco-incluso__titulo {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 14px;
+}
+
+.api-preco-incluso__lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.api-preco-incluso__lista li {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  padding-left: 18px;
+  position: relative;
+}
+
+.api-preco-incluso__lista li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--pine);
+  font-weight: 700;
+}
+
+/* ── Comparativo ─────────────────────────────────────────── */
+.api-comparativo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.api-comparativo__coluna {
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 20px 24px;
+}
+
+.api-comparativo__titulo {
+  font-family: var(--font-fraunces);
+  font-size: 1rem;
+  margin: 0 0 16px;
+}
+
+.api-comparativo__titulo--caixa { color: var(--ink-soft); }
+.api-comparativo__titulo--loto  { color: var(--pine); }
+
+.api-comparativo__lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.api-comparativo__lista li {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.4;
+}
+
+.api-comparativo__lista--neg li::before {
+  content: "✕";
+  position: absolute;
+  left: 0;
+  color: var(--rust);
+}
+
+.api-comparativo__lista--pos li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--pine);
+  font-weight: 700;
+}
+
+/* ── CTA final ───────────────────────────────────────────── */
+.api-cta-final {
+  background: var(--pine);
+  padding: 64px 0;
+}
+
+.api-cta-final__inner {
+  text-align: center;
+}
+
+.api-cta-final__titulo {
+  font-family: var(--font-fraunces);
+  font-size: 2rem;
+  color: var(--paper);
+  margin: 0 0 12px;
+}
+
+.api-cta-final__sub {
+  font-size: 0.95rem;
+  color: rgba(239,238,230,0.75);
+  margin: 0 0 28px;
+}
+
+.api-cta-final__link {
+  color: var(--ochre);
+  text-decoration: none;
+}
+
+.api-cta-final__link:hover { text-decoration: underline; }
+
+.api-cta-final__acoes {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.api-cta-final .botao-gerar {
+  background: var(--ochre);
+  border-color: var(--ochre);
+}
+
+.api-cta-final .botao-copiar {
+  color: var(--paper);
+  border-color: rgba(239,238,230,0.4);
+  background: transparent;
+}
+
+.api-cta-final .botao-copiar:hover {
+  border-color: var(--paper);
+}
+
+/* ── Responsivo ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .api-hero__titulo { font-size: 1.8rem; }
+  .api-endpoint-card__exemplos { grid-template-columns: 1fr; }
+  .api-preco-card { grid-template-columns: 1fr; gap: 20px; }
+  .api-preco-card__limites { grid-template-columns: 1fr 1fr; }
+  .api-comparativo { grid-template-columns: 1fr; }
+  .api-cta-final__titulo { font-size: 1.5rem; }
+  .api-casos-grid { grid-template-columns: 1fr; }
+}
