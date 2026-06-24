@@ -196,7 +196,7 @@ export async function GET(request: Request) {
 
   const nomeArquivo = `lotoanalitica-relatorio-${String(mes).padStart(2, "0")}-${ano}.pdf`;
 
-  return new NextResponse(pdfBytes, {
+  return new NextResponse(Buffer.from(pdfBytes), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="${nomeArquivo}"`,
