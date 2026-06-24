@@ -1,8 +1,10 @@
+export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import ProbabilidadesClient from "@/components/ProbabilidadesClient";
-import { getLoteriaPorCodigo } from "@/lib/queries";
-import { FAIXAS_PREMIADAS } from "@/lib/probabilidades";
+import ProjecaoAcumuloCard from "@/components/ProjecaoAcumuloCard";
+import { getLoteriaPorCodigo, getUltimoConcurso, getConcursosAcumulados } from "@/lib/queries";
+import { FAIXAS_PREMIADAS, calcularProjecao, PARAMS_LOTERIA } from "@/lib/probabilidades";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 
@@ -28,17 +30,35 @@ export default async function ProbabilidadesPage({
   params: Promise<{ loteria: string }>;
 }) {
   const { loteria: codigoLoteria } = await params;
-
-  if (!isCodigoLoteriaValido(codigoLoteria)) {
-    notFound();
-  }
+  if (!isCodigoLoteriaValido(codigoLoteria)) notFound();
 
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
-  if (!loteria) {
-    notFound();
-  }
+  if (!loteria) notFound();
 
   const faixasPremiadas = FAIXAS_PREMIADAS[codigoLoteria] ?? [];
+
+  // Dados para a projeção de acúmulo (só se a loteria tiver params configurados)
+  const temProjecao = codigoLoteria in PARAMS_LOTERIA;
+  let projecao = null;
+  let ultimoConcurso = null;
+
+  if (temProjecao) {
+    const [ultimo, acumulados] = await Promise.all([
+      getUltimoConcurso(loteria.id),
+      getConcursosAcumulados(loteria.id),
+    ]);
+    ultimoConcurso = ultimo;
+
+    if (ultimo) {
+      projecao = calcularProjecao(
+        codigoLoteria as keyof typeof PARAMS_LOTERIA,
+        ultimo.valorAcumuladoProximo,
+        ultimo.valorEstimadoProximo,
+        ultimo.valorArrecadado,
+        acumulados
+      );
+    }
+  }
 
   return (
     <div className="container secao">
@@ -47,10 +67,21 @@ export default async function ProbabilidadesPage({
       <p className="subtitulo-edicao" style={{ maxWidth: 620 }}>
         As chances matemáticas exatas de cada faixa de premiação — calculadas por
         combinatória, sem depender de nenhum dado histórico. Isso não muda com
-        frequência, atraso ou qualquer outra tabela estatística do site: é a mesma
-        chance em todo concurso, sempre.
+        frequência, atraso ou qualquer outra tabela estatística do site.
       </p>
 
+      {/* ── Projeção de acúmulo ao vivo ─────────────────────────────────── */}
+      {projecao && ultimoConcurso && (
+        <ProjecaoAcumuloCard
+          projecao={projecao}
+          nomeLoteria={loteria.nome}
+          numeroConcurso={ultimoConcurso.numero + 1}
+          dataProximo={ultimoConcurso.dataProximoConcurso}
+          acumulado={ultimoConcurso.acumulado}
+        />
+      )}
+
+      {/* ── Tabela de probabilidades ─────────────────────────────────────── */}
       <ProbabilidadesClient
         dezenaMax={loteria.dezenaMax}
         qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}

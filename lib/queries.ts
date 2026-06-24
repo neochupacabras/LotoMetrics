@@ -252,3 +252,25 @@ export async function getDrawsParaSimulacao(
     ),
   }));
 }
+
+// Conta quantos concursos seguidos a faixa 1 ficou acumulada (sem ganhador)
+export async function getConcursosAcumulados(loteriaId: number): Promise<number> {
+  const { rows } = await pool.query(
+    `SELECT COUNT(*) AS total
+     FROM (
+       SELECT c.id
+       FROM concurso c
+       JOIN premiacao_faixa pf ON pf.concurso_id = c.id AND pf.faixa = 1
+       WHERE c.loteria_id = $1
+         AND pf.qtd_ganhadores = 0
+         AND c.numero > (
+           SELECT COALESCE(MAX(c2.numero), 0)
+           FROM concurso c2
+           JOIN premiacao_faixa pf2 ON pf2.concurso_id = c2.id AND pf2.faixa = 1
+           WHERE c2.loteria_id = $1 AND pf2.qtd_ganhadores > 0
+         )
+     ) sub`,
+    [loteriaId]
+  );
+  return Number(rows[0]?.total ?? 0);
+}

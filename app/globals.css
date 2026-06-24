@@ -3895,231 +3895,183 @@ footer.rodape {
 }
 
 /* ==========================================================
-   COMPARADOR DE ESTRATÉGIAS
+   PROJEÇÃO DE ACÚMULO AO VIVO
    ========================================================== */
 
-.estrategia-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.estrategia-formularios {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  align-items: start;
-}
-
-/* ── Card de formulário ──────────────────────────────────── */
-.estrategia-form {
-  border: 2px solid var(--line-strong);
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.estrategia-form__header {
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.estrategia-form__id {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.estrategia-form__body {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* ── Campo individual ────────────────────────────────────── */
-.estrategia-campo {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.estrategia-label {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ink-soft);
-}
-
-.estrategia-range {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.estrategia-range-sep {
-  font-size: 0.85rem;
-  color: var(--ink-faint);
-  flex-shrink: 0;
-}
-
-.estrategia-input {
-  width: 72px;
-  padding: 7px 8px;
+.projecao-card {
   border: 1px solid var(--line-strong);
-  border-radius: 3px;
-  background: #fff;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  color: var(--ink);
-}
-
-.estrategia-input:focus {
-  outline: none;
-  border-color: var(--pine);
-}
-
-.estrategia-nome-input {
-  width: 100% !important;
-  padding: 8px 10px !important;
-  font-family: var(--font-plex-sans) !important;
-  font-size: 0.88rem !important;
-}
-
-.estrategia-limpar-btn {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--ink-faint);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  text-align: left;
-  margin-top: 4px;
-}
-
-.estrategia-limpar-btn:hover { color: var(--rust); }
-
-.estrategia-dica {
-  font-size: 0.82rem;
-  color: var(--ink-soft);
-  font-style: italic;
-  margin: 0;
-}
-
-/* ── Resultados ──────────────────────────────────────────── */
-.estrategia-resultados {
+  border-radius: 6px;
+  padding: 24px 28px;
+  margin-bottom: 40px;
+  background: var(--paper);
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 20px;
 }
 
-.estrategia-resultados__header {
+.projecao-card--acumulado {
+  border-color: var(--ochre);
+  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+}
+
+.projecao-card__header {
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-start;
   gap: 16px;
   flex-wrap: wrap;
 }
 
-.estrategia-resultados__periodo {
+.projecao-card__eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--ink-soft);
-}
-
-.estrategia-colunas {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-
-.estrategia-coluna {
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
-  padding: 20px;
-}
-
-.estrategia-coluna[data-cor="a"] { border-color: #b9802c; }
-.estrategia-coluna[data-cor="b"] { border-color: #1e4b3c; }
-
-.estrategia-coluna__titulo {
-  font-family: var(--font-fraunces);
-  font-size: 1rem;
-  margin: 0 0 16px;
-}
-
-.estrategia-resultado-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.estrategia-resultado-card {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.estrategia-resultado-card:last-child { border-bottom: none; }
-
-.estrategia-resultado-rotulo {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.08em;
   color: var(--ink-soft);
+  margin: 0 0 4px;
 }
 
-.estrategia-resultado-valor {
-  font-family: var(--font-fraunces);
-  font-size: 1.15rem;
-  color: var(--ink);
+.projecao-card__data {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin: 0;
 }
 
-.estrategia-resultado-detalhe {
-  font-size: 0.75rem;
-  color: var(--ink-faint);
-}
-
-@media (max-width: 640px) {
-  .estrategia-formularios { grid-template-columns: 1fr; }
-  .estrategia-colunas { grid-template-columns: 1fr; }
-  .estrategia-resultado-cards { flex-direction: row; flex-wrap: wrap; }
-  .estrategia-resultado-card { flex: 1; min-width: 120px; border-bottom: none; border-right: 1px solid var(--line); }
-  .estrategia-resultado-card:last-child { border-right: none; }
-}
-
-/* ── Estratégias — indicador de cobertura em tempo real ──── */
-.estrategia-cobertura {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  padding: 8px 12px;
-  border: 1px solid;
-  border-radius: 4px;
-  background: rgba(255,255,255,0.5);
-}
-
-.estrategia-cobertura__badge {
+.projecao-card__badge-acumulo {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  background: var(--ochre);
   color: #fff;
-  padding: 2px 7px;
+  padding: 4px 10px;
   border-radius: 3px;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-.estrategia-cobertura__desc {
-  font-size: 0.78rem;
+/* ── Prêmio estimado ─────────────────────────────────────── */
+.projecao-card__premio {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.projecao-card__premio-valor {
+  font-family: var(--font-fraunces);
+  font-size: 2.8rem;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.projecao-card__premio-label {
+  font-size: 0.85rem;
   color: var(--ink-soft);
+}
+
+.projecao-card__minimo {
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+/* ── Seções ──────────────────────────────────────────────── */
+.projecao-card__secao {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+
+.projecao-card__secao--menor { }
+
+.projecao-card__secao-titulo {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+}
+
+.projecao-card__tickets-nota {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin: 0 0 14px;
+}
+
+/* ── Barras de probabilidade ─────────────────────────────── */
+.projecao-barras {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.projecao-barra-linha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.projecao-barra-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.projecao-barra-track {
+  flex: 1;
+  height: 8px;
+  background: var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.projecao-barra-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.projecao-barra-pct {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  width: 54px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── Um ticket ───────────────────────────────────────────── */
+.projecao-card__um-ticket {
+  font-family: var(--font-fraunces);
+  font-size: 1.6rem;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+
+.projecao-card__um-ticket-nota {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Nota ────────────────────────────────────────────────── */
+.projecao-card__nota {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.projecao-card__link {
+  color: var(--pine);
+  text-decoration: none;
+}
+.projecao-card__link:hover { text-decoration: underline; }
+
+@media (max-width: 640px) {
+  .projecao-card { padding: 20px 16px; }
+  .projecao-card__premio-valor { font-size: 2rem; }
+  .projecao-barra-label { width: 120px; font-size: 0.68rem; }
+  .projecao-barra-pct { width: 44px; font-size: 0.75rem; }
 }

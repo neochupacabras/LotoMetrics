@@ -62,3 +62,88 @@ export function probabilidadeAoMenosK(n: number, m: number, b: number, k: number
   }
   return combinacoesFavoraveis / binomial(n, b);
 }
+
+// ── Probabilidades de acúmulo ─────────────────────────────────────────────────
+
+// Parâmetros estruturais das loterias (fonte: Caixa)
+export const PARAMS_LOTERIA = {
+  lotofacil: {
+    n: 25, m: 15,                    // universo e sorteadas
+    percFaixa1: 0.35,                // % da arrecadação para a faixa 1
+    precoAposta: 3.00,               // preço base (15 dezenas)
+    ticketsMedios: 60_000_000,       // estimativa de apostas por concurso
+  },
+  megasena: {
+    n: 60, m: 6,
+    percFaixa1: 0.3565,
+    precoAposta: 5.00,
+    ticketsMedios: 80_000_000,
+  },
+} as const;
+
+export interface ProjecaoAcumulo {
+  // Próximo concurso
+  premioEstimado: number;
+  premioMinimo: number;              // acumulado garantido mesmo sem ganhador anterior
+  // Probabilidade de haver ganhador
+  probGanhadorUmTicket: number;      // prob de 1 ticket ganhar a faixa 1
+  probAoMenosUmGanhador: number;     // prob de pelo menos 1 ganhador dado volume estimado
+  ticketsEstimados: number;          // estimativa de bilhetes no próximo concurso
+  // Histórico de acúmulo
+  concursosAcumulados: number;       // quantos concursos seguidos sem ganhador na faixa 1
+  // Cenários
+  probGanhadorSeVenderMais: number;  // se vender 50% mais tickets
+  probGanhadorSeVenderMenos: number; // se vender 50% menos tickets
+}
+
+// Calcula a probabilidade de pelo menos 1 ganhador na faixa 1
+// dado que N tickets foram vendidos, cada um com prob p de ganhar.
+// Usa P(ao menos 1) = 1 - (1-p)^N
+export function probAoMenosUmGanhador(p: number, n: number): number {
+  return 1 - Math.pow(1 - p, n);
+}
+
+// Estima o número de tickets com base na arrecadação do último concurso
+export function estimarTickets(
+  valorArrecadado: number | null,
+  codigoLoteria: keyof typeof PARAMS_LOTERIA
+): number {
+  const params = PARAMS_LOTERIA[codigoLoteria];
+  if (!valorArrecadado || valorArrecadado <= 0) return params.ticketsMedios;
+  return Math.round(valorArrecadado / params.precoAposta);
+}
+
+export function calcularProjecao(
+  codigoLoteria: keyof typeof PARAMS_LOTERIA,
+  valorAcumuladoProximo: number | null,
+  valorEstimadoProximo: number | null,
+  valorArrecadado: number | null,
+  concursosAcumulados: number
+): ProjecaoAcumulo {
+  const params = PARAMS_LOTERIA[codigoLoteria];
+
+  // Probabilidade de 1 ticket ganhar a faixa 1
+  const totalComb = binomial(params.n, params.m);
+  const p = 1 / totalComb;
+
+  // Estimativa de tickets no próximo concurso
+  // Quando acumula, a arrecadação tende a crescer (mais interesse)
+  const ticketsBase = estimarTickets(valorArrecadado, codigoLoteria);
+  // Fator de crescimento por acúmulo: cada concurso acumulado aumenta ~20% o interesse
+  const fatorAcumulo = Math.min(1 + concursosAcumulados * 0.20, 5);
+  const ticketsEstimados = Math.round(ticketsBase * fatorAcumulo);
+
+  const premioMinimo = valorAcumuladoProximo ?? 0;
+  const premioEstimado = valorEstimadoProximo ?? premioMinimo;
+
+  return {
+    premioEstimado,
+    premioMinimo,
+    probGanhadorUmTicket: p,
+    probAoMenosUmGanhador: probAoMenosUmGanhador(p, ticketsEstimados),
+    ticketsEstimados,
+    concursosAcumulados,
+    probGanhadorSeVenderMais: probAoMenosUmGanhador(p, Math.round(ticketsEstimados * 1.5)),
+    probGanhadorSeVenderMenos: probAoMenosUmGanhador(p, Math.round(ticketsEstimados * 0.5)),
+  };
+}
