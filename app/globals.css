@@ -162,11 +162,7 @@ main {
   padding-bottom: 40px;
 }
 
-/* Garante espaço após o subnav em páginas que não usam .secao */
-.subnav + main > *:first-child,
-.subnav + div > .container:first-child {
-  padding-top: 32px;
-}
+
 
 .secao + .secao {
   border-top: 1px solid var(--line);
@@ -637,7 +633,13 @@ footer.rodape {
 .subnav {
   border-bottom: 1px solid var(--line);
   background: var(--paper);
-  margin-bottom: 8px;
+}
+
+/* Espaço entre o subnav e o conteúdo da página */
+/* Espaço garantido entre subnav e conteúdo — funciona pq são irmãos em <main> */
+.subnav + .container.secao,
+.subnav + div.container {
+  padding-top: 32px !important;
 }
 
 /* Wrapper com largura máxima do container, relativo para as setas */
@@ -4857,8 +4859,12 @@ footer.rodape {
 
 /* ── Tabela comparativa ──────────────────────────────────── */
 .premium-comparativo-secao {
-  padding: 56px 0;
+  padding: 56px 24px;
   border-bottom: 1px solid var(--line);
+}
+
+@media (max-width: 640px) {
+  .premium-comparativo-secao { padding-left: 16px; padding-right: 16px; }
 }
 
 .premium-comparativo__titulo {
@@ -4872,14 +4878,6 @@ footer.rodape {
   overflow-x: auto;
   margin: 0 -4px;
   padding: 0 4px;
-}
-
-@media (max-width: 640px) {
-  .premium-comparativo-secao,
-  .premium-faq-secao {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
 }
 
 .premium-comparativo__tabela {
@@ -4952,8 +4950,12 @@ footer.rodape {
 
 /* ── FAQ ─────────────────────────────────────────────────── */
 .premium-faq-secao {
-  padding: 56px 0;
+  padding: 56px 24px;
   border-bottom: 1px solid var(--line);
+}
+
+@media (max-width: 640px) {
+  .premium-faq-secao { padding-left: 16px; padding-right: 16px; }
 }
 
 .premium-faq {
