@@ -287,6 +287,13 @@ export async function compararJogos(
         })),
       melhores: melhores.sort((a, b) => b.premio - a.premio).slice(0, 5),
       grafico: [],
+      // O comparador não calcula drawdown individual — campo vazio
+      drawdown: {
+        maiorSeca: 0,
+        maiorDrawdown: 0,
+        concursoInicioSeca: null,
+        concursoFimSeca: null,
+      },
     };
   }
 
