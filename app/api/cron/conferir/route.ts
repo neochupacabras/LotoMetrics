@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import pool from "@/lib/db";
+import { emailResultadoConcurso } from "@/lib/email-templates";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -53,41 +54,7 @@ function minAcertos(codigo: string): number {
   return codigo === "megasena" ? 4 : 11;
 }
 
-// Monta o corpo do e-mail
-function montarEmail(
-  nomeUsuario: string,
-  loteria: string,
-  nomeLoteria: string,
-  concurso: number,
-  dataSorteio: string,
-  jogos: { label: string | null; dezenas: number[]; acertos: number; faixa: string | null; premio: number | null }[]
-): string {
-  const data = new Date(dataSorteio).toLocaleDateString("pt-BR", {
-    weekday: "long", day: "numeric", month: "long",
-  });
-
-  const linhasJogos = jogos.map((j, i) => {
-    const nome = j.label ?? `Jogo ${i + 1}`;
-    const dezenas = j.dezenas.map(d => String(d).padStart(2, "0")).join(" ");
-    const resultado = j.faixa
-      ? `✓ ${j.faixa}${j.premio ? ` — R$${j.premio.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : ""}`
-      : `${j.acertos} acerto${j.acertos !== 1 ? "s" : ""}`;
-    return `${nome}: ${dezenas}\n   → ${resultado}`;
-  }).join("\n\n");
-
-  return `Olá, ${nomeUsuario}!
-
-Resultado do concurso ${concurso} da ${nomeLoteria} — ${data}
-
-${linhasJogos}
-
----
-Acesse sua conta em lotoanalitica.com.br/conta/jogos para gerenciar seus jogos.
-
-LotoAnalítica — lotoanalitica.com.br
-Este e-mail foi enviado porque você tem jogos rastreados. Para parar de receber, desative o rastreamento em Minha conta.
-`;
-}
+// montarEmail substituído por emailResultadoConcurso em lib/email-templates.ts
 
 export async function GET(request: Request) {
   if (!autorizado(request)) {
@@ -177,18 +144,22 @@ export async function GET(request: Request) {
       const temPremio = resultados.some(r => r.acertos >= minAc);
 
       // Enviar e-mail via Resend
-      const corpo = montarEmail(
-        profile.display_name ?? email.split("@")[0],
-        loteria,
-        nomeLoteria,
-        concurso.numero,
-        concurso.data_sorteio,
-        resultados
-      );
+      const dezenasOficiais = (concurso.dezenas as number[])
+        .map((d: number) => String(d).padStart(2, "0")).join("  ");
 
       const assunto = temPremio
         ? `🎉 Você ganhou no concurso ${concurso.numero} da ${nomeLoteria}!`
-        : `Resultado do concurso ${concurso.numero} da ${nomeLoteria}`;
+        : `Resultado ${nomeLoteria} ${concurso.numero} — ${new Date(concurso.data_sorteio).toLocaleDateString("pt-BR", { day: "numeric", month: "short" })}`;
+
+      const htmlCorpo = emailResultadoConcurso(
+        profile.display_name ?? email.split("@")[0],
+        nomeLoteria,
+        concurso.numero,
+        concurso.data_sorteio,
+        dezenasOficiais,
+        resultados,
+        temPremio
+      );
 
       try {
         const resendKey = process.env.RESEND_API_KEY;
@@ -207,7 +178,7 @@ export async function GET(request: Request) {
             from: "LotoAnalítica <noreply@lotoanalitica.com.br>",
             to: [email],
             subject: assunto,
-            text: corpo,
+            html: htmlCorpo,
           }),
         });
 

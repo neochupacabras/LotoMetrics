@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { gerarRelatorioPdf, type DadosRelatorio, type JogoRelatorio, type ResumoLoteria } from "@/lib/relatorio-pdf";
+import { emailRelatorioMensal } from "@/lib/email-templates";
 import pool from "@/lib/db";
 
 export const runtime = "nodejs";
@@ -193,6 +194,18 @@ export async function GET(request: Request) {
     const nomeMes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho",
       "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][mes - 1];
 
+    const loterias = loteriasCom.map(lc => lc === "lotofacil" ? "Lotofácil" : "Mega-Sena");
+    const totalJogos = jogosRelatorio.length;
+
+    const htmlCorpo = emailRelatorioMensal(
+      profile.display_name ?? userAuth.email.split("@")[0],
+      nomeMes,
+      ano,
+      totalJogos,
+      loterias,
+      "https://lotoanalitica.com.br/conta/jogos"
+    );
+
     try {
       const resp = await fetch("https://api.resend.com/emails", {
         method: "POST",
@@ -203,8 +216,8 @@ export async function GET(request: Request) {
         body: JSON.stringify({
           from: "LotoAnalítica <noreply@lotoanalitica.com.br>",
           to: [userAuth.email],
-          subject: `Seu relatório de ${nomeMes} ${ano} está pronto — LotoAnalítica`,
-          text: `Olá, ${profile.display_name ?? ""}!\n\nSegue em anexo seu relatório mensal de ${nomeMes} ${ano} com o desempenho de todos os seus jogos cadastrados.\n\nVocê também pode baixar relatórios anteriores a qualquer momento em:\nhttps://lotoanalitica.com.br/conta/jogos\n\nBoa sorte!\nEquipe LotoAnalítica`,
+          subject: `Seu relatório de ${nomeMes} de ${ano} está pronto — LotoAnalítica`,
+          html: htmlCorpo,
           attachments: [
             {
               filename: nomeArquivo,
