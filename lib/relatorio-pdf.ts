@@ -198,7 +198,16 @@ export async function gerarRelatorioPdf(dados: DadosRelatorio): Promise<Uint8Arr
       x: M, y, size: 8, font: regular, color: INK_SOFT,
     });
 
-    y -= 28;
+    y -= 18;
+
+    // Nota metodológica sobre o cálculo de gasto
+    pg.drawRectangle({ x: M, y: y - 28, width: W - 2*M, height: 36, color: rgb(0.97, 0.96, 0.92) });
+    pg.drawText("Como os valores sao calculados:", { x: M + 8, y: y - 8, size: 7, font: bold, color: INK_SOFT });
+    pg.drawText(`O sistema confere cada jogo cadastrado contra as dezenas de cada concurso do mes, conta os acertos,`, { x: M + 8, y: y - 18, size: 7, font: regular, color: INK_SOFT });
+    pg.drawText(`identifica a faixa premiada e soma o premio real. O gasto pressupoe que voce jogou em todos os`, { x: M + 8, y: y - 27, size: 7, font: regular, color: INK_SOFT });
+    pg.drawText(`${r.concursosNoMes} concursos do mes com todos os ${r.totalJogos} jogos ativos. Se jogou em menos concursos, o gasto real foi menor.`, { x: M + 8, y: y - 36, size: 7, font: regular, color: INK_SOFT });
+
+    y -= 52;
     linha(pg, y);
     y -= 20;
 
@@ -311,6 +320,20 @@ export async function gerarRelatorioPdf(dados: DadosRelatorio): Promise<Uint8Arr
   const avisos = [
     "Este relatorio foi gerado automaticamente pela plataforma LotoAnalitica e destina-se",
     "exclusivamente ao uso pessoal do titular da conta.",
+    "",
+    "METODOLOGIA DOS CALCULOS",
+    "",
+    "Os valores de gasto e ganho sao calculados da seguinte forma:",
+    "- Para cada concurso realizado no periodo, o sistema confere cada jogo cadastrado",
+    "  contra as dezenas sorteadas, conta os acertos, identifica a faixa premiada",
+    "  e soma o premio real daquele concurso.",
+    "- O total gasto pressupoe que voce apostou em TODOS os concursos do mes com",
+    "  TODOS os jogos ativos na conta. Se na realidade voce jogou apenas em alguns",
+    "  concursos, o gasto real foi proporcionalmente menor do que o valor indicado.",
+    "- Os premios sao os valores reais pagos pela Caixa Economica Federal em cada",
+    "  concurso — nao sao estimativas.",
+    "",
+    "AVISO LEGAL",
     "",
     "As informacoes apresentadas sao baseadas em resultados historicos oficiais das loterias",
     "da Caixa Economica Federal. Nenhuma analise estatistica, metodo ou ferramenta desta",
