@@ -132,6 +132,7 @@ img {
   padding: 7px 14px;
   border-radius: 3px;
   color: var(--ink-soft);
+  white-space: nowrap;
 }
 
 .nav-loterias a[data-ativo="true"] {
@@ -159,6 +160,12 @@ main {
   */
   padding-top: 40px;
   padding-bottom: 40px;
+}
+
+/* Garante espaço após o subnav em páginas que não usam .secao */
+.subnav + main > *:first-child,
+.subnav + div > .container:first-child {
+  padding-top: 32px;
 }
 
 .secao + .secao {
@@ -630,6 +637,7 @@ footer.rodape {
 .subnav {
   border-bottom: 1px solid var(--line);
   background: var(--paper);
+  margin-bottom: 8px;
 }
 
 /* Wrapper com largura máxima do container, relativo para as setas */
@@ -4718,6 +4726,7 @@ footer.rodape {
 .masthead__premium-link {
   color: var(--ochre) !important;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .masthead__premium-link[data-ativo="true"] {
@@ -4861,6 +4870,16 @@ footer.rodape {
 
 .premium-comparativo__tabela-wrapper {
   overflow-x: auto;
+  margin: 0 -4px;
+  padding: 0 4px;
+}
+
+@media (max-width: 640px) {
+  .premium-comparativo-secao,
+  .premium-faq-secao {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }
 
 .premium-comparativo__tabela {
