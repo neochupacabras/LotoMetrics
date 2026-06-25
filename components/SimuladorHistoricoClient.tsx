@@ -385,6 +385,28 @@ export default function SimuladorHistoricoClient({
 
           <CardsResumo r={resultado} />
 
+          {/* Card drawdown */}
+          <div className="simulador-drawdown-card">
+            <div className="simulador-drawdown-item simulador-drawdown-item--destaque">
+              <span className="simulador-drawdown-rotulo">Maior seca</span>
+              <span className="simulador-drawdown-valor">{resultado.drawdown.maiorSeca} concursos</span>
+              <span className="simulador-drawdown-detalhe">
+                {resultado.drawdown.maiorSeca > 0 && resultado.drawdown.concursoInicioSeca
+                  ? `do #${resultado.drawdown.concursoInicioSeca} ao #${resultado.drawdown.concursoFimSeca} — ${formatarReaisSimples(resultado.drawdown.maiorSeca * resultado.precoAposta)} gastos sem retorno`
+                  : "sem seca registrada"}
+              </span>
+            </div>
+            <div className="simulador-drawdown-item">
+              <span className="simulador-drawdown-rotulo">Maior drawdown</span>
+              <span className="simulador-drawdown-valor" style={{ color: "var(--rust)" }}>
+                {formatarReaisSimples(resultado.drawdown.maiorDrawdown)}
+              </span>
+              <span className="simulador-drawdown-detalhe">
+                maior queda acumulada antes de recuperar
+              </span>
+            </div>
+          </div>
+
           <div className="simulador-hist-chart-section">
             <h2 className="bloco__titulo">Evolução do saldo</h2>
             <p className="simulador-hist-chart-nota">

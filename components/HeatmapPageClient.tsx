@@ -63,6 +63,7 @@ function insightTexto(periodo: PeriodoData, loteria: Loteria): string {
 
 export default function HeatmapPageClient({ loteria, periodos, premium = false, logado = false }: Props) {
   const [periodoId, setPeriodoId] = useState(periodos[0].id);
+  const [invertido, setInvertido] = useState(false);
   const [hoverId, setHoverId] = useState<number | null>(null);
 
   const periodo = periodos.find((p) => p.id === periodoId) ?? periodos[0];
@@ -165,6 +166,34 @@ export default function HeatmapPageClient({ loteria, periodos, premium = false, 
         )}
       </div>
 
+      {/* Toggle quente / frio */}
+      <div className="heatmap-toggle-wrapper">
+        <div className="modo-toggle" style={{ alignSelf: "flex-start", marginBottom: 12 }}>
+          <button
+            type="button"
+            className="modo-toggle__botao"
+            data-ativo={!invertido}
+            onClick={() => setInvertido(false)}
+          >
+            🔥 Mais frequentes
+          </button>
+          <button
+            type="button"
+            className="modo-toggle__botao"
+            data-ativo={invertido}
+            onClick={() => setInvertido(true)}
+          >
+            🧊 Menos frequentes
+          </button>
+        </div>
+        {invertido && (
+          <p className="heatmap-invertido-aviso">
+            Dezenas frias não têm mais chance de sair do que quentes —
+            a loteria não tem memória. Isso mostra o passado recente, não o futuro.
+          </p>
+        )}
+      </div>
+
       {/* Grade do heatmap */}
       <div
         className="heatmap-grade"
@@ -173,7 +202,8 @@ export default function HeatmapPageClient({ loteria, periodos, premium = false, 
       >
         {todasDezenas.map((d) => {
           const f = freqMap.get(d) ?? 0;
-          const t = (f - minF) / intervalo;
+          const tBase = (f - minF) / intervalo;
+          const t = invertido ? 1 - tBase : tBase;
           const bg = interpolarCor(t);
           const active = d === hoverId;
           return (
@@ -196,8 +226,10 @@ export default function HeatmapPageClient({ loteria, periodos, premium = false, 
 
       {/* Legenda da escala de cores */}
       <div className="heatmap-legenda">
-        <span className="heatmap-legenda-label">Menos frequente</span>
-        <div className="heatmap-legenda-barra" />
+        <span className="heatmap-legenda-label">
+          {invertido ? "Mais frequente" : "Menos frequente"}
+        </span>
+        <div className="heatmap-legenda-barra" style={{ filter: invertido ? "hue-rotate(180deg)" : undefined }} />
         <span className="heatmap-legenda-label">Mais frequente</span>
         <span className="heatmap-legenda-media">
           Média esperada: {esperadoPorDezena.toFixed(0)} aparições ({(taxaSorteio * 100).toFixed(0)}% dos sorteios)

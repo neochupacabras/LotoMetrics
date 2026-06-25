@@ -5082,3 +5082,80 @@ footer.rodape {
   .premium-cta-final__planos { gap: 10px; }
   .premium-cta-plano { min-width: 120px; padding: 14px 16px; }
 }
+
+/* ==========================================================
+   MELHORIAS — Drawdown, Heatmap invertido, Fechamento exportar
+   ========================================================== */
+
+/* ── Drawdown card no simulador ──────────────────────────── */
+.simulador-drawdown-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.simulador-drawdown-item {
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.simulador-drawdown-item--destaque {
+  border-color: var(--rust);
+  background: #fef9f9;
+}
+
+.simulador-drawdown-rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-soft);
+}
+
+.simulador-drawdown-valor {
+  font-family: var(--font-fraunces);
+  font-size: 1.3rem;
+  color: var(--ink);
+}
+
+.simulador-drawdown-detalhe {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+
+/* ── Heatmap toggle quente/frio ──────────────────────────── */
+.heatmap-toggle-wrapper {
+  margin-bottom: 16px;
+}
+
+.heatmap-invertido-aviso {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  font-style: italic;
+  margin: 0 0 8px;
+  max-width: 480px;
+}
+
+/* ── Fechamento exportar ─────────────────────────────────── */
+.fechamento-exportar {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fechamento-exportar__nota {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .simulador-drawdown-card { grid-template-columns: 1fr; }
+}

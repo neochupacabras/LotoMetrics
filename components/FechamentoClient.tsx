@@ -3,6 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import Dezenas from "./Dezenas";
 import { calcularFechamentoAction, FechamentoActionResult } from "@/lib/fechamento-actions";
+import { salvarJogoAction } from "@/lib/jogo-actions";
 import { probabilidadeAoMenosK } from "@/lib/probabilidades";
 import { formatarDezena } from "@/lib/format";
 import { FECHAMENTO_CONFIG } from "@/lib/fechamento-config";
@@ -26,6 +27,25 @@ export default function FechamentoClient({
   const [tipo, setTipo] = useState<"reduzido" | "completo">("reduzido");
   const [k, setK] = useState<number | null>(null);
   const [resultado, setResultado] = useState<FechamentoActionResult | null>(null);
+  const [salvando, setSalvando] = useState(false);
+  const [salvoStatus, setSalvoStatus] = useState<"idle"|"ok"|"erro"|"login">("idle");
+
+  async function exportarParaRastreador() {
+    if (!resultado?.tickets) return;
+    setSalvando(true);
+    setSalvoStatus("idle");
+    let salvos = 0;
+    let erroLogin = false;
+    for (const ticket of resultado.tickets) {
+      const res = await salvarJogoAction(codigoLoteria, ticket, `Fechamento #${salvos + 1}`);
+      if (!res.ok && res.erro?.includes("login")) { erroLogin = true; break; }
+      if (res.ok) salvos++;
+    }
+    setSalvando(false);
+    if (erroLogin) { setSalvoStatus("login"); return; }
+    setSalvoStatus(salvos > 0 ? "ok" : "erro");
+    setTimeout(() => setSalvoStatus("idle"), 4000);
+  }
   const [erro, setErro] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -213,6 +233,30 @@ export default function FechamentoClient({
           <button type="button" className="botao-baixar" onClick={baixarTodos}>
             Baixar todos os {resultado.totalTickets} jogos (.txt)
           </button>
+
+          <div className="fechamento-exportar">
+            <button
+              type="button"
+              className="botao-copiar"
+              onClick={exportarParaRastreador}
+              disabled={salvando}
+            >
+              {salvando ? "Salvando…" :
+               salvoStatus === "ok" ? `✓ ${resultado.totalTickets} jogos salvos na conta` :
+               salvoStatus === "erro" ? "Erro ao salvar" :
+               `Salvar ${resultado.totalTickets} jogos no Rastreador →`}
+            </button>
+            {salvoStatus === "login" && (
+              <p className="fechamento-exportar__nota">
+                <a href="/entrar" className="conta-link-gerenciar">Faça login</a> para salvar jogos na conta.
+              </p>
+            )}
+            {salvoStatus === "ok" && (
+              <p className="fechamento-exportar__nota">
+                Jogos salvos! Acesse <a href="/conta/jogos" className="conta-link-gerenciar">Meus jogos</a> para ver.
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>

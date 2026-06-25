@@ -94,6 +94,15 @@ curl -H "Authorization: Bearer la_suachave" \\
                     /api/v1/docs
                   </a>.
                 </p>
+                <p style={{ fontSize:"0.82rem", color:"var(--ink-soft)", marginTop: 8 }}>
+                  Precisa de mais requisições para um bot ou painel robusto?{" "}
+                  <a
+                    href={`mailto:contato@lotoanalitica.com.br?subject=${encodeURIComponent("API — Volume maior")}&body=${encodeURIComponent("Olá, preciso de um volume maior de requisições na API. Meu uso estimado é de ______ requisições/mês.")}`}
+                    className="conta-link-gerenciar"
+                  >
+                    Fale com a gente →
+                  </a>
+                </p>
               </div>
             </section>
 

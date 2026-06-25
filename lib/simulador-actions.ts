@@ -17,6 +17,13 @@ export interface ResultadoSimulacao {
   totalGanho: number;
   saldoFinal: number;
   retornoPct: number;
+  // Drawdown: pior sequência sem prêmio
+  drawdown: {
+    maiorSeca: number;
+    maiorDrawdown: number;
+    concursoInicioSeca: number | null;
+    concursoFimSeca: number | null;
+  };
   porFaixa: {
     acertos: number;
     descricao: string;
@@ -28,7 +35,6 @@ export interface ResultadoSimulacao {
     acertos: number;
     premio: number;
   }[];
-  // Saldo cumulativo para o gráfico (amostrado: 1 ponto por concurso)
   grafico: { numero: number; saldo: number }[];
 }
 
@@ -65,6 +71,15 @@ export async function simularHistorico(
   const melhores: { numero: number; acertos: number; premio: number }[] = [];
   const grafico: { numero: number; saldo: number }[] = [];
 
+  // Drawdown tracking
+  let secaAtual = 0;
+  let maiorSeca = 0;
+  let inicioSecaAtual = 0;
+  let inicioMaiorSeca: number | null = null;
+  let fimMaiorSeca: number | null = null;
+  let picoSaldo = 0;
+  let maiorDrawdown = 0;
+
   for (const acertos of Object.keys(mapaFaixas).map(Number)) {
     porFaixaMap.set(acertos, { qtd: 0, ganhoTotal: 0 });
   }
@@ -91,6 +106,26 @@ export async function simularHistorico(
         }
       }
     }
+
+    // Drawdown: rastrear seca (concursos sem prêmio)
+    const temPremio = acertos >= minAcertos && (mapaFaixas[acertos] !== undefined) &&
+      ((draw.premios[mapaFaixas[acertos]] ?? 0) > 0);
+    if (!temPremio) {
+      secaAtual++;
+      if (secaAtual === 1) inicioSecaAtual = draw.numero;
+      if (secaAtual > maiorSeca) {
+        maiorSeca = secaAtual;
+        inicioMaiorSeca = inicioSecaAtual;
+        fimMaiorSeca = draw.numero;
+      }
+    } else {
+      secaAtual = 0;
+    }
+
+    // Drawdown: maior queda do pico
+    if (saldoCumulativo > picoSaldo) picoSaldo = saldoCumulativo;
+    const quedaAtual = saldoCumulativo - picoSaldo;
+    if (quedaAtual < maiorDrawdown) maiorDrawdown = quedaAtual;
 
     grafico.push({ numero: draw.numero, saldo: Math.round(saldoCumulativo * 100) / 100 });
   }
@@ -123,6 +158,12 @@ export async function simularHistorico(
     totalGanho,
     saldoFinal: saldoCumulativo,
     retornoPct: totalGasto > 0 ? (totalGanho / totalGasto) * 100 : 0,
+    drawdown: {
+      maiorSeca,
+      maiorDrawdown: Math.round(maiorDrawdown * 100) / 100,
+      concursoInicioSeca: inicioMaiorSeca,
+      concursoFimSeca: fimMaiorSeca,
+    },
     porFaixa,
     melhores: melhoresOrdenados,
     grafico,

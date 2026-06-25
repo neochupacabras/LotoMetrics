@@ -28,12 +28,14 @@ export default function HeatmapVolante({
   gridColunas,
   valores,
   rotuloValor,
+  invertido = false,
 }: {
   dezenaMin: number;
   dezenaMax: number;
   gridColunas: number;
   valores: Record<number, number>;
   rotuloValor: string;
+  invertido?: boolean;
 }) {
   const todasDezenas = Array.from({ length: dezenaMax - dezenaMin + 1 }, (_, i) => dezenaMin + i);
   const valoresNumeros = todasDezenas.map((d) => valores[d] ?? 0);
@@ -54,7 +56,8 @@ export default function HeatmapVolante({
       >
         {todasDezenas.map((d) => {
           const valor = valores[d] ?? 0;
-          const t = (valor - min) / intervalo;
+          const tBase = (valor - min) / intervalo;
+          const t = invertido ? 1 - tBase : tBase;
           return (
             <div
               key={d}
