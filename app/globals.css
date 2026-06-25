@@ -5063,7 +5063,9 @@ footer.rodape {
   font-size: 1rem;
   padding: 12px 28px;
   margin-bottom: 14px;
-  display: inline-block;
+  display: block;
+  width: fit-content;
+  align-self: center;
   text-align: center;
 }
 

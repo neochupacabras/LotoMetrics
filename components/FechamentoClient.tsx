@@ -214,9 +214,7 @@ export default function FechamentoClient({
               {resultado.totalTickets} jogos — garante pelo menos {resultado.pontosGarantidos}{" "}
               pontos
             </span>
-            {resultado.garantiaVerificada && (
-              <span className="chip chip--destaque chip--bloco">garantia verificada</span>
-            )}
+
           </h2>
           <p className="bloco__nota">
             Mostrando {Math.min(PREVIEW_MAX, resultado.tickets.length)} de {resultado.totalTickets}{" "}
