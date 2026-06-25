@@ -7,14 +7,14 @@ import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 export const dynamic = "force-dynamic"; // Depende do banco e de auth em runtime
 
 export const metadata: Metadata = {
-  title: "LotoAnalítica — Resultados e estatísticas de Lotofácil e Mega-Sena",
+  title: "LotoAnalítica — Resultado Lotofácil e Mega-Sena hoje, estatísticas e ferramentas",
   description:
-    "Resultados oficiais, tabelas estatísticas, analisador de jogos, simulador histórico, heatmap e 19 artigos educacionais sobre Lotofácil e Mega-Sena.",
+    "Resultado de hoje da Lotofácil e Mega-Sena, com dezenas sorteadas, premiação e análise completa. Conferidor, gerador de jogos, simulador histórico, heatmap e 19 artigos educacionais gratuitos.",
   alternates: { canonical: SITE_URL },
   openGraph: {
-    title: "LotoAnalítica — Resultados e estatísticas de loteria",
+    title: "LotoAnalítica — Resultado Lotofácil e Mega-Sena hoje",
     description:
-      "Resultados oficiais e estatísticas de Lotofácil e Mega-Sena: frequência, atraso, ciclos, gerador de jogos e mais.",
+      "Resultado de hoje da Lotofácil e Mega-Sena. Conferidor por foto, gerador de jogos, simulador histórico e estatísticas completas — tudo gratuito.",
     url: SITE_URL,
     siteName: SITE_NAME,
     locale: "pt_BR",

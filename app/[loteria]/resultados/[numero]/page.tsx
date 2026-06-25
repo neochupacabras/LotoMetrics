@@ -31,8 +31,9 @@ export async function generateMetadata({
     ? "Acumulou — não teve ganhador na faixa principal."
     : "Teve ganhador na faixa principal.";
 
-  const titulo = `${nomeLoteria} concurso ${concurso.numero}: resultado de ${data}`;
-  const descricao = `Dezenas sorteadas no concurso ${concurso.numero} da ${nomeLoteria} (${data}): ${dezenasStr}. ${statusPremio} Veja a premiação completa e a análise estatística do sorteio.`;
+  // Título otimizado para buscas como "resultado lotofácil 3200" e "lotofácil 3200 dezenas"
+  const titulo = `Resultado ${nomeLoteria} ${concurso.numero} — ${data} — Dezenas: ${dezenasStr}`;
+  const descricao = `Resultado do concurso ${concurso.numero} da ${nomeLoteria} sorteado em ${data}. Dezenas: ${dezenasStr}. ${statusPremio} Confira a premiação por faixa, ganhadores e análise estatística completa.`;
   const url = `${SITE_URL}/${codigoLoteria}/resultados/${concurso.numero}`;
   const imagem = `${SITE_URL}/opengraph-image`;
 

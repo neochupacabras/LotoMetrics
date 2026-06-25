@@ -17,12 +17,24 @@ export async function generateMetadata({
   const { loteria: codigoLoteria } = await params;
   if (!isCodigoLoteriaValido(codigoLoteria)) return {};
   const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
-  return metadataPagina(
-    codigoLoteria,
-    "/resultados",
-    `Resultados ${nome} — últimos concursos e histórico completo`,
-    `Todos os resultados já sorteados da ${nome}, com dezenas, premiação por faixa e análise estatística de cada concurso.`
-  );
+
+  // Buscar último concurso para enriquecer título e descrição
+  const loteria = await getLoteriaPorCodigo(codigoLoteria);
+  const ultimo = loteria ? await getUltimoConcurso(loteria.id) : null;
+
+  const tituloBase = ultimo
+    ? `Resultado ${nome} hoje — Concurso ${ultimo.numero} (${formatarData(ultimo.dataSorteio)})`
+    : `Resultados ${nome} — últimos concursos e histórico completo`;
+
+  const dezenasStr = ultimo
+    ? ultimo.dezenas.map((d: number) => String(d).padStart(2, "0")).join(", ")
+    : "";
+
+  const descricao = ultimo
+    ? `Resultado do último concurso da ${nome}: ${ultimo.numero} sorteado em ${formatarData(ultimo.dataSorteio)}. Dezenas: ${dezenasStr}. Histórico completo com todos os concursos, premiações e análise estatística.`
+    : `Todos os resultados já sorteados da ${nome}, com dezenas, premiação por faixa e análise estatística de cada concurso.`;
+
+  return metadataPagina(codigoLoteria, "/resultados", tituloBase, descricao);
 }
 
 export default async function ResultadosPage({

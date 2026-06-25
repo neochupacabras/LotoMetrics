@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 const LOTERIAS = ["lotofacil", "megasena"] as const;
 
 const ABAS: [string, number, MetadataRoute.Sitemap[number]["changeFrequency"]][] = [
+  ["resultado", 1.0, "daily"],   // alias para o último concurso — alta prioridade SEO
   ["resultados", 0.9, "daily"],
   ["destaques", 0.7, "daily"],
   ["tabelas", 0.6, "weekly"],
