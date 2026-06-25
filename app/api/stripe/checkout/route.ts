@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 export async function POST(request: Request) {
   // Instanciar dentro da função — evita erro no build quando a env não está disponível
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2026-05-27.dahlia",
+    apiVersion: "2026-06-24.dahlia",
   });
 
   const supabase = await createClient();
