@@ -5182,3 +5182,158 @@ footer.rodape {
 @media (max-width: 640px) {
   .simulador-drawdown-card { grid-template-columns: 1fr; }
 }
+
+/* ==========================================================
+   ÍNDICE DE EQUILÍBRIO
+   ========================================================== */
+
+.equilibrio-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ── Link cruzado ────────────────────────────────────────── */
+.equilibrio-crosslink {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin: 0 0 24px;
+}
+
+.equilibrio-crosslink__link {
+  color: var(--pine);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.equilibrio-crosslink__link:hover { text-decoration: underline; }
+
+/* ── Gauge ───────────────────────────────────────────────── */
+.equilibrio-gauge-section {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.equilibrio-gauge {
+  width: 240px;
+  height: 140px;
+  flex-shrink: 0;
+}
+
+.equilibrio-classificacao {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.equilibrio-classificacao__badge {
+  display: inline-block;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 3px;
+  width: fit-content;
+}
+
+.equilibrio-classificacao__desc {
+  font-family: var(--font-fraunces);
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.equilibrio-classificacao__base {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin: 0;
+}
+
+/* ── Resultado ───────────────────────────────────────────── */
+.equilibrio-resultado {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ── Métricas ────────────────────────────────────────────── */
+.equilibrio-metricas-secao { }
+
+.equilibrio-metricas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.equilibrio-metrica {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.equilibrio-metrica__header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.equilibrio-metrica__nome {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.equilibrio-metrica__descricao {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  flex: 1;
+}
+
+.equilibrio-metrica__score {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  min-width: 28px;
+  text-align: right;
+}
+
+.equilibrio-metrica__barra-track {
+  height: 6px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.equilibrio-metrica__barra-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.equilibrio-metrica__pct {
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}
+
+@media (max-width: 640px) {
+  .equilibrio-gauge-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .equilibrio-gauge { width: 200px; height: 116px; }
+}

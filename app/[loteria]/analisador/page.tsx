@@ -44,6 +44,12 @@ export default async function AnalisadorPage({
       <div className="container secao">
       <p className="eyebrow">Estatísticas de {loteria.nome}</p>
       <h1 className="titulo-edicao">Analisador de jogo</h1>
+      <p className="equilibrio-crosslink">
+          Quer uma nota única que combine todos os critérios?{" "}
+          <a href={`/${codigoLoteria}/equilibrio`} className="equilibrio-crosslink__link">
+            Experimente o Índice de Equilíbrio →
+          </a>
+        </p>
       <p className="subtitulo-edicao" style={{ maxWidth: 600 }}>
         Selecione as dezenas do seu jogo e veja instantaneamente o perfil estatístico
         de cada combinação — comparado com todas as combinações possíveis da{" "}
