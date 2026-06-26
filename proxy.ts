@@ -5,6 +5,12 @@ import { NextResponse, type NextRequest } from "next/server";
 const ROTAS_AUTH = ["/conta"];
 // /premium é a página PÚBLICA de apresentação dos planos — sem proteção
 const ROTAS_PREMIUM: string[] = [];
+// Rotas sempre públicas — nunca redirecionar, mesmo que o matcher as capture
+const ROTAS_PUBLICAS = [
+  "/contato", "/sobre", "/privacidade", "/premium",
+  "/api-dados", "/dicas", "/quiz", "/assinar",
+  "/entrar", "/cadastrar", "/esqueci-senha",
+];
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -35,6 +41,10 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
+
+  // Rotas explicitamente públicas — retornar imediatamente sem verificação
+  const ePublica = ROTAS_PUBLICAS.some((r) => pathname.startsWith(r));
+  if (ePublica) return supabaseResponse;
 
   const precisaAuth = ROTAS_AUTH.some((r) => pathname.startsWith(r));
   if (precisaAuth && !user) {

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
