@@ -10,7 +10,7 @@ import {
   getPrimosDistribuicao, getFibonacciDistribuicao,
   getMultiplos3Distribuicao, getMolduraCentro,
 } from "@/lib/estatisticas";
-import { analisarJogo } from "@/lib/classificacao";
+import { classificarJogo } from "@/lib/classificacao";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 
 // ── Tipos ─────────────────────────────────────────────────────────────────────
@@ -115,7 +115,7 @@ export async function calcularEquilibrio(
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) return { erro: "Loteria não encontrada." };
 
-  const analise = analisarJogo(dezenas, codigoLoteria);
+  const analise = classificarJogo(dezenas, codigoLoteria);
 
   // Buscar todas as distribuições históricas em paralelo
   const [
