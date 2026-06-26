@@ -7,88 +7,30 @@ import { formatarDezena } from "@/lib/format";
 
 // ── Gauge SVG semicircular ────────────────────────────────────────────────────
 
-function Gauge({ nota, cor }: { nota: number; cor: string }) {
-  // Geometria: cx=120, cy=96, r=80, strokeW=16
-  // viewBox 0 0 240 162 garante que topo (y=8) e texto (y~155) ficam visíveis
-  const cx = 120, cy = 96, r = 80, sw = 16;
-
-  function pt(angRad: number, raio: number) {
-    return { x: cx + raio * Math.cos(angRad), y: cy + raio * Math.sin(angRad) };
-  }
-
-  // Arco de 180° (esquerda) a 0° (direita) — semicírculo superior
-  const ps   = pt(Math.PI, r);                                // ponto esquerdo
-  const pe   = pt(0, r);                                      // ponto direito
-  const ang  = Math.PI - (Math.PI * nota / 100);             // ângulo da nota
-  const pf   = pt(ang, r);                                    // ponto do arco preenchido
-  const big  = nota > 50 ? 1 : 0;
-
-  const track = `M ${ps.x} ${ps.y} A ${r} ${r} 0 0 1 ${pe.x} ${pe.y}`;
-  const fill  = `M ${ps.x} ${ps.y} A ${r} ${r} 0 ${big} 1 ${pf.x} ${pf.y}`;
-
-  // Agulha
-  const tip  = pt(ang, r - 6);
-  const b1   = pt(ang + Math.PI / 2, 9);
-  const b2   = pt(ang - Math.PI / 2, 9);
-
-  // Marcadores de zona nos limites das classificações
-  const zonas = [35, 55, 75].map(v => {
-    const a = Math.PI - (Math.PI * v / 100);
-    return { i: pt(a, r - sw / 2 - 2), o: pt(a, r + sw / 2 + 2) };
-  });
+function ScoreCard({ nota, cor, classificacao, descricao }: {
+  nota: number;
+  cor: string;
+  classificacao: string;
+  descricao: string;
+}) {
+  const labels: Record<string, string> = {
+    tipico:      "Muito típico",
+    equilibrado: "Equilibrado",
+    razoavel:    "Razoável",
+    atipico:     "Atípico",
+  };
 
   return (
-    <svg
-      viewBox="0 0 240 162"
-      className="equilibrio-gauge"
-      aria-label={`Nota ${nota} de 100`}
-      overflow="visible"
-    >
-      {/* Trilha cinza */}
-      <path d={track} fill="none" stroke="#e8e6dc" strokeWidth={sw} strokeLinecap="round" />
-
-      {/* Arco colorido */}
-      {nota > 0 && (
-        <path
-          d={fill} fill="none" stroke={cor} strokeWidth={sw} strokeLinecap="round"
-          style={{ transition: "stroke 0.5s ease" }}
-        />
-      )}
-
-      {/* Divisores de zona */}
-      {zonas.map((z, i) => (
-        <line key={i} x1={z.i.x} y1={z.i.y} x2={z.o.x} y2={z.o.y} stroke="#fff" strokeWidth={2.5} />
-      ))}
-
-      {/* Agulha */}
-      <polygon
-        points={`${tip.x},${tip.y} ${b1.x},${b1.y} ${b2.x},${b2.y}`}
-        fill={cor}
-        style={{ transition: "all 0.5s ease" }}
-      />
-      <circle cx={cx} cy={cy} r={8} fill={cor} />
-      <circle cx={cx} cy={cy} r={4} fill="#fff" />
-
-      {/* Nota numérica abaixo do centro */}
-      <text
-        x={cx} y={cy + 34}
-        textAnchor="middle" fontSize="34" fontWeight="bold"
-        fontFamily="Georgia,serif" fill={cor}
-        style={{ transition: "fill 0.4s" }}
-      >
+    <div className="equilibrio-scorecard">
+      <div className="equilibrio-scorecard__nota" style={{ color: cor }}>
         {nota}
-      </text>
-      <text
-        x={cx} y={cy + 50}
-        textAnchor="middle" fontSize="10" fontFamily="monospace" fill="#8c8874"
-      >
-        de 100
-      </text>
-
-      {/* Labels extremos */}
-      <text x={ps.x + 6}  y={cy + 20} fontSize="9" fill="#8c8874" fontFamily="monospace">0</text>
-      <text x={pe.x - 6}  y={cy + 20} fontSize="9" fill="#8c8874" fontFamily="monospace" textAnchor="end">100</text>
-    </svg>
+        <span className="equilibrio-scorecard__de100">/100</span>
+      </div>
+      <div className="equilibrio-scorecard__badge" style={{ background: cor }}>
+        {labels[classificacao] ?? classificacao}
+      </div>
+      <p className="equilibrio-scorecard__desc">{descricao}</p>
+    </div>
   );
 }
 
@@ -236,26 +178,17 @@ export default function EquilibrioClient({
       {resultado && (
         <div className="equilibrio-resultado">
 
-          {/* Gauge + nota */}
-          <div className="equilibrio-gauge-section">
-            <Gauge nota={resultado.nota} cor={resultado.cor} />
-            <div className="equilibrio-classificacao">
-              <span
-                className="equilibrio-classificacao__badge"
-                style={{ background: resultado.cor }}
-              >
-                {resultado.classificacao === "tipico"      && "Muito típico"}
-                {resultado.classificacao === "equilibrado" && "Equilibrado"}
-                {resultado.classificacao === "razoavel"    && "Razoável"}
-                {resultado.classificacao === "atipico"     && "Atípico"}
-              </span>
-              <p className="equilibrio-classificacao__desc">
-                {resultado.descricaoClassificacao}
-              </p>
-              <p className="equilibrio-classificacao__base">
-                Baseado em {resultado.totalConcursosHistorico.toLocaleString("pt-BR")} concursos históricos da {nomeLoteria}
-              </p>
-            </div>
+          {/* Score card */}
+          <div className="equilibrio-score-section">
+            <ScoreCard
+              nota={resultado.nota}
+              cor={resultado.cor}
+              classificacao={resultado.classificacao}
+              descricao={resultado.descricaoClassificacao}
+            />
+            <p className="equilibrio-classificacao__base">
+              Baseado em {resultado.totalConcursosHistorico.toLocaleString("pt-BR")} concursos históricos da {nomeLoteria}
+            </p>
           </div>
 
           {/* Detalhamento por métrica */}

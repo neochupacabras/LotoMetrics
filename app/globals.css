@@ -5208,51 +5208,57 @@ footer.rodape {
 
 .equilibrio-crosslink__link:hover { text-decoration: underline; }
 
-/* ── Gauge ───────────────────────────────────────────────── */
-.equilibrio-gauge-section {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  flex-wrap: wrap;
-}
-
-.equilibrio-gauge {
-  width: 240px;
-  height: 162px;
-  flex-shrink: 0;
-}
-
-.equilibrio-classificacao {
-  flex: 1;
-  min-width: 200px;
+/* ── Score card ──────────────────────────────────────────── */
+.equilibrio-score-section {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.equilibrio-classificacao__badge {
-  display: inline-block;
+.equilibrio-scorecard {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.equilibrio-scorecard__nota {
+  font-family: var(--font-fraunces);
+  font-size: 5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -2px;
+  transition: color 0.3s ease;
+}
+
+.equilibrio-scorecard__de100 {
+  font-size: 1.6rem;
+  opacity: 0.5;
+  letter-spacing: 0;
+}
+
+.equilibrio-scorecard__badge {
   color: #fff;
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 4px 10px;
+  letter-spacing: 0.1em;
+  padding: 5px 12px;
   border-radius: 3px;
-  width: fit-content;
+  align-self: center;
 }
 
-.equilibrio-classificacao__desc {
-  font-family: var(--font-fraunces);
-  font-size: 1.05rem;
-  color: var(--ink);
+.equilibrio-scorecard__desc {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.5;
+  flex-basis: 100%;
 }
 
 .equilibrio-classificacao__base {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--ink-faint);
   margin: 0;
 }
@@ -5335,5 +5341,5 @@ footer.rodape {
     align-items: flex-start;
     gap: 16px;
   }
-  .equilibrio-gauge { width: 200px; height: 135px; }
+
 }
