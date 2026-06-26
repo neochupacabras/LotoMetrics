@@ -1,9 +1,8 @@
 "use server";
 
-import { calcularEquilibrio, type ResultadoEquilibrio } from "@/lib/equilibrio";
+import { calcularEquilibrio } from "@/lib/equilibrio";
 import { isCodigoLoteriaValido } from "@/lib/format";
-
-export type { ResultadoEquilibrio };
+import type { ResultadoEquilibrio } from "@/lib/equilibrio";
 
 export async function calcularEquilibrioAction(
   codigoLoteria: string,

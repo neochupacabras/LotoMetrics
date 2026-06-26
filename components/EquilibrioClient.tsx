@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition, useMemo } from "react";
-import { calcularEquilibrioAction, type ResultadoEquilibrio } from "@/lib/equilibrio-actions";
+import { calcularEquilibrioAction } from "@/lib/equilibrio-actions";
+import type { ResultadoEquilibrio } from "@/lib/equilibrio";
 import { formatarDezena } from "@/lib/format";
 
 // ── Gauge SVG semicircular ────────────────────────────────────────────────────
