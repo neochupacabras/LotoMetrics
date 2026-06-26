@@ -5343,3 +5343,94 @@ footer.rodape {
   }
 
 }
+
+/* ==========================================================
+   PÁGINA DE CONTATO
+   ========================================================== */
+
+.contato-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin-bottom: 32px;
+  background: var(--paper);
+}
+
+.contato-card__icone {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.contato-card__titulo {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-soft);
+  margin: 0 0 4px;
+}
+
+.contato-card__email {
+  font-family: var(--font-fraunces);
+  font-size: 1.2rem;
+  color: var(--pine);
+  text-decoration: none;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.contato-card__email:hover { text-decoration: underline; }
+
+.contato-card__nota {
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+  margin: 0;
+}
+
+.contato-topicos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.contato-topico {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contato-topico__titulo {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--ink);
+  margin: 0;
+}
+
+.contato-topico__desc {
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  margin: 0;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.contato-topico__link {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--pine);
+  text-decoration: none;
+  margin-top: 4px;
+}
+
+.contato-topico__link:hover { text-decoration: underline; }
+
+@media (max-width: 640px) {
+  .contato-topicos { grid-template-columns: 1fr; }
+}
