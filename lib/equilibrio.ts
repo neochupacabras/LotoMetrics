@@ -115,7 +115,8 @@ export async function calcularEquilibrio(
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) return { erro: "Loteria não encontrada." };
 
-  const analise = classificarJogo(dezenas, codigoLoteria);
+  const config = { dezenaMax: loteria.dezenaMax, gridColunas: loteria.dezenaMax <= 25 ? 5 : 10 };
+  const analise = classificarJogo(dezenas, config);
 
   // Buscar todas as distribuições históricas em paralelo
   const [
