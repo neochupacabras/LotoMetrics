@@ -3,8 +3,9 @@ import { ImageResponse } from "next/og";
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
-const PINE = "#1e4b3c";
-const PAPER = "#efeee6";
+const PINE  = "#1e4b3c";
+const OCHRE = "#b9802c";
+const WHITE = "#ffffff";
 
 export default function Icon() {
   return new ImageResponse(
@@ -17,13 +18,16 @@ export default function Icon() {
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: PINE,
-          borderRadius: 7,
-          color: PAPER,
-          fontSize: 22,
-          fontWeight: 700,
+          borderRadius: 6,
         }}
       >
-        L
+        {/* "L" em branco + "A" em ocre — iniciais de LotoAnalítica */}
+        <span style={{ color: WHITE, fontSize: 16, fontWeight: 800, letterSpacing: -1, lineHeight: 1 }}>
+          L
+        </span>
+        <span style={{ color: OCHRE, fontSize: 16, fontWeight: 800, letterSpacing: -1, lineHeight: 1 }}>
+          A
+        </span>
       </div>
     ),
     { ...size }
