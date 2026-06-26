@@ -8,127 +8,86 @@ import { formatarDezena } from "@/lib/format";
 // ── Gauge SVG semicircular ────────────────────────────────────────────────────
 
 function Gauge({ nota, cor }: { nota: number; cor: string }) {
-  const cx = 120, cy = 120, r = 90;
-  const strokeW = 16;
+  // Geometria: cx=120, cy=96, r=80, strokeW=16
+  // viewBox 0 0 240 162 garante que topo (y=8) e texto (y~155) ficam visíveis
+  const cx = 120, cy = 96, r = 80, sw = 16;
 
-  // Semicírculo: de 180° (esquerda) até 0° (direita), passando pelo topo
-  // Em SVG: ângulo 0 = direita, crescente clockwise
-  // Queremos de -180° a 0° (metade superior)
-  const angStart = Math.PI;       // 180° = esquerda
-  const angEnd   = 0;             // 0° = direita
-
-  function polar(angRad: number, raio: number) {
-    return {
-      x: cx + raio * Math.cos(angRad),
-      y: cy + raio * Math.sin(angRad),
-    };
+  function pt(angRad: number, raio: number) {
+    return { x: cx + raio * Math.cos(angRad), y: cy + raio * Math.sin(angRad) };
   }
 
-  // Trilha de fundo (semicírculo cinza)
-  const ps = polar(angStart, r);
-  const pe = polar(angEnd, r);
-  const trackPath = `M ${ps.x} ${ps.y} A ${r} ${r} 0 0 1 ${pe.x} ${pe.y}`;
+  // Arco de 180° (esquerda) a 0° (direita) — semicírculo superior
+  const ps   = pt(Math.PI, r);                                // ponto esquerdo
+  const pe   = pt(0, r);                                      // ponto direito
+  const ang  = Math.PI - (Math.PI * nota / 100);             // ângulo da nota
+  const pf   = pt(ang, r);                                    // ponto do arco preenchido
+  const big  = nota > 50 ? 1 : 0;
 
-  // Arco preenchido proporcional à nota
-  const angFill = angStart + (angEnd - angStart) * (nota / 100); // de 180° → 0°, angEnd < angStart
-  const fillAngle = Math.PI - (Math.PI * nota / 100); // de 180° até 0°
-  const pFill = polar(fillAngle, r);
-  const largeArc = nota > 50 ? 1 : 0;
-  const fillPath = `M ${ps.x} ${ps.y} A ${r} ${r} 0 ${largeArc} 1 ${pFill.x} ${pFill.y}`;
+  const track = `M ${ps.x} ${ps.y} A ${r} ${r} 0 0 1 ${pe.x} ${pe.y}`;
+  const fill  = `M ${ps.x} ${ps.y} A ${r} ${r} 0 ${big} 1 ${pf.x} ${pf.y}`;
 
-  // Marcadores de zona (0, 35, 55, 75, 100)
-  const marcadores = [0, 35, 55, 75, 100].map(v => {
-    const ang = Math.PI - (Math.PI * v / 100);
-    const inner = polar(ang, r - strokeW / 2 - 4);
-    const outer = polar(ang, r + strokeW / 2 + 4);
-    return { inner, outer, v };
+  // Agulha
+  const tip  = pt(ang, r - 6);
+  const b1   = pt(ang + Math.PI / 2, 9);
+  const b2   = pt(ang - Math.PI / 2, 9);
+
+  // Marcadores de zona nos limites das classificações
+  const zonas = [35, 55, 75].map(v => {
+    const a = Math.PI - (Math.PI * v / 100);
+    return { i: pt(a, r - sw / 2 - 2), o: pt(a, r + sw / 2 + 2) };
   });
 
-  // Ponteiro (agulha)
-  const angAgulha = Math.PI - (Math.PI * nota / 100);
-  const pAgulhaTip = polar(angAgulha, r - 4);
-  const pAgulhaBase1 = polar(angAgulha + Math.PI / 2, 8);
-  const pAgulhaBase2 = polar(angAgulha - Math.PI / 2, 8);
-
   return (
-    <svg viewBox="0 0 240 140" className="equilibrio-gauge" aria-label={`Nota ${nota} de 100`}>
-      {/* Definições de gradiente */}
-      <defs>
-        <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="#8e3a2a" />
-          <stop offset="35%"  stopColor="#b9802c" />
-          <stop offset="55%"  stopColor="#1e4b3c" />
-          <stop offset="100%" stopColor="#166534" />
-        </linearGradient>
-      </defs>
-
-      {/* Trilha de fundo */}
-      <path
-        d={trackPath}
-        fill="none"
-        stroke="#e8e6dc"
-        strokeWidth={strokeW}
-        strokeLinecap="round"
-      />
+    <svg
+      viewBox="0 0 240 162"
+      className="equilibrio-gauge"
+      aria-label={`Nota ${nota} de 100`}
+      overflow="visible"
+    >
+      {/* Trilha cinza */}
+      <path d={track} fill="none" stroke="#e8e6dc" strokeWidth={sw} strokeLinecap="round" />
 
       {/* Arco colorido */}
       {nota > 0 && (
         <path
-          d={fillPath}
-          fill="none"
-          stroke={cor}
-          strokeWidth={strokeW}
-          strokeLinecap="round"
-          style={{ transition: "all 0.6s ease" }}
+          d={fill} fill="none" stroke={cor} strokeWidth={sw} strokeLinecap="round"
+          style={{ transition: "stroke 0.5s ease" }}
         />
       )}
 
-      {/* Marcadores de zona */}
-      {marcadores.slice(1, -1).map(({ inner, outer, v }) => (
-        <line
-          key={v}
-          x1={inner.x} y1={inner.y}
-          x2={outer.x} y2={outer.y}
-          stroke="#ffffff"
-          strokeWidth={2}
-        />
+      {/* Divisores de zona */}
+      {zonas.map((z, i) => (
+        <line key={i} x1={z.i.x} y1={z.i.y} x2={z.o.x} y2={z.o.y} stroke="#fff" strokeWidth={2.5} />
       ))}
 
       {/* Agulha */}
       <polygon
-        points={`${pAgulhaTip.x},${pAgulhaTip.y} ${pAgulhaBase1.x},${pAgulhaBase1.y} ${pAgulhaBase2.x},${pAgulhaBase2.y}`}
+        points={`${tip.x},${tip.y} ${b1.x},${b1.y} ${b2.x},${b2.y}`}
         fill={cor}
-        style={{ transition: "all 0.6s ease" }}
+        style={{ transition: "all 0.5s ease" }}
       />
-      <circle cx={cx} cy={cy} r={7} fill={cor} />
-      <circle cx={cx} cy={cy} r={4} fill="#ffffff" />
+      <circle cx={cx} cy={cy} r={8} fill={cor} />
+      <circle cx={cx} cy={cy} r={4} fill="#fff" />
 
-      {/* Nota central */}
+      {/* Nota numérica abaixo do centro */}
       <text
-        x={cx} y={cy + 30}
-        textAnchor="middle"
-        fontSize="32"
-        fontWeight="bold"
-        fontFamily="Georgia, serif"
-        fill={cor}
-        style={{ transition: "fill 0.4s ease" }}
+        x={cx} y={cy + 34}
+        textAnchor="middle" fontSize="34" fontWeight="bold"
+        fontFamily="Georgia,serif" fill={cor}
+        style={{ transition: "fill 0.4s" }}
       >
         {nota}
       </text>
       <text
-        x={cx} y={cy + 46}
-        textAnchor="middle"
-        fontSize="10"
-        fontFamily="monospace"
-        fill="#8c8874"
-        textDecoration="none"
+        x={cx} y={cy + 50}
+        textAnchor="middle" fontSize="10" fontFamily="monospace" fill="#8c8874"
       >
         de 100
       </text>
 
-      {/* Labels das zonas */}
-      <text x="14"  y={cy + 20} fontSize="9" fill="#8c8874" fontFamily="monospace">0</text>
-      <text x="218" y={cy + 20} fontSize="9" fill="#8c8874" fontFamily="monospace" textAnchor="end">100</text>
+      {/* Labels extremos */}
+      <text x={ps.x + 6}  y={cy + 20} fontSize="9" fill="#8c8874" fontFamily="monospace">0</text>
+      <text x={pe.x - 6}  y={cy + 20} fontSize="9" fill="#8c8874" fontFamily="monospace" textAnchor="end">100</text>
     </svg>
   );
 }

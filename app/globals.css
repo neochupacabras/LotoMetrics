@@ -5218,7 +5218,7 @@ footer.rodape {
 
 .equilibrio-gauge {
   width: 240px;
-  height: 140px;
+  height: 162px;
   flex-shrink: 0;
 }
 
@@ -5335,5 +5335,5 @@ footer.rodape {
     align-items: flex-start;
     gap: 16px;
   }
-  .equilibrio-gauge { width: 200px; height: 116px; }
+  .equilibrio-gauge { width: 200px; height: 135px; }
 }
