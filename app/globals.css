@@ -2586,13 +2586,16 @@ footer.rodape {
 }
 
 .usermenu-conta {
-  font-size: 0.83rem;
-  color: var(--ink-soft);
+  font-size: 0.82rem;
+  color: var(--paper);
+  background: var(--pine);
   text-decoration: none;
   white-space: nowrap;
+  padding: 6px 14px;
+  border-radius: 3px;
 }
 
-.usermenu-conta:hover { color: var(--pine); }
+.usermenu-conta:hover { background: var(--pine-dark, #163829); color: var(--paper); }
 
 .usermenu-badge-inline {
   font-size: 0.7rem;
