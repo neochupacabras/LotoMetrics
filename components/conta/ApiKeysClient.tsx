@@ -34,12 +34,12 @@ function KeyCard({ k, onRevogar }: { k: ApiKey; onRevogar: (id: string) => void 
         </div>
         <button
           type="button"
-          className="jogo-card__btn-remover"
+          className="botao-copiar"
           onClick={handleRevogar}
           disabled={pending}
-          title="Revogar chave"
+          style={{ color: "var(--rust)", borderColor: "var(--rust)", whiteSpace: "nowrap" }}
         >
-          {pending ? "…" : "✕"}
+          {pending ? "Revogando…" : "Revogar chave"}
         </button>
       </div>
 
