@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { salvarAlertaAction } from "@/lib/jogo-actions";
+import { salvarAlertaAction, desativarAlertaAction } from "@/lib/jogo-actions";
 
 interface Alerta {
   loteria: string;
@@ -14,6 +14,46 @@ const LOTERIAS = [
   { codigo: "lotofacil", nome: "Lotofácil" },
   { codigo: "megasena",  nome: "Mega-Sena"  },
 ];
+
+function AlertaAtivoCard({ alerta }: { alerta: Alerta }) {
+  const [removido, setRemovido] = useState(false);
+  const [pending, startTransition] = useTransition();
+
+  if (removido) return null;
+
+  function handleDesativar() {
+    if (!confirm(`Desativar alerta de ${alerta.loteria === "lotofacil" ? "Lotofácil" : "Mega-Sena"}?`)) return;
+    startTransition(async () => {
+      const res = await desativarAlertaAction(alerta.loteria);
+      if (res.ok) setRemovido(true);
+    });
+  }
+
+  return (
+    <div className="alertas-ativos__item">
+      <div className="alertas-ativos__info">
+        <span className="alertas-ativos__loteria">
+          {alerta.loteria === "lotofacil" ? "Lotofácil" : "Mega-Sena"}
+        </span>
+        {alerta.threshold_brl && (
+          <span>Prêmio acima de R${alerta.threshold_brl.toLocaleString("pt-BR")}</span>
+        )}
+        {alerta.sorteios_sem_ganhador && (
+          <span>{alerta.sorteios_sem_ganhador}+ sorteios sem ganhador</span>
+        )}
+      </div>
+      <button
+        type="button"
+        className="botao-copiar"
+        onClick={handleDesativar}
+        disabled={pending}
+        style={{ color: "var(--rust)", borderColor: "var(--rust)", fontSize: "0.78rem" }}
+      >
+        {pending ? "Desativando…" : "Desativar"}
+      </button>
+    </div>
+  );
+}
 
 export default function AlertasForm({ alertasExistentes }: { alertasExistentes: Alerta[] }) {
   const [loteria, setLoteria] = useState("megasena");
@@ -47,17 +87,7 @@ export default function AlertasForm({ alertasExistentes }: { alertasExistentes: 
         <div className="alertas-ativos">
           <p className="alertas-ativos__titulo">Alertas ativos:</p>
           {alertasExistentes.filter(a => a.ativo).map(a => (
-            <div key={a.loteria} className="alertas-ativos__item">
-              <span className="alertas-ativos__loteria">
-                {a.loteria === "lotofacil" ? "Lotofácil" : "Mega-Sena"}
-              </span>
-              {a.threshold_brl && (
-                <span>Prêmio acima de R${a.threshold_brl.toLocaleString("pt-BR")}</span>
-              )}
-              {a.sorteios_sem_ganhador && (
-                <span>{a.sorteios_sem_ganhador}+ sorteios sem ganhador</span>
-              )}
-            </div>
+            <AlertaAtivoCard key={a.loteria} alerta={a} />
           ))}
         </div>
       )}

@@ -133,3 +133,23 @@ export async function salvarAlertaAction(formData: FormData): Promise<{ ok: bool
   revalidatePath("/conta");
   return { ok: true };
 }
+
+// ── Desativar alerta ──────────────────────────────────────────────────────────
+export async function desativarAlertaAction(
+  loteria: string
+): Promise<{ ok: boolean; erro?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, erro: "Não autenticado." };
+
+  const { error } = await supabase
+    .from("alert_preferences")
+    .update({ ativo: false })
+    .eq("user_id", user.id)
+    .eq("loteria", loteria);
+
+  if (error) return { ok: false, erro: "Não foi possível desativar o alerta." };
+
+  revalidatePath("/conta");
+  return { ok: true };
+}

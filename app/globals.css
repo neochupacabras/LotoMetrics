@@ -3630,8 +3630,17 @@ footer.rodape {
   display: flex;
   gap: 12px;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
   color: var(--ink-soft);
+  padding: 4px 0;
+}
+
+.alertas-ativos__info {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .alertas-ativos__loteria {
