@@ -52,28 +52,31 @@ jobs:
       - name: Instalar dependências Python
         run: pip install psycopg2-binary requests
 
-      - name: Resolver host para IPv4
-        # O GitHub Actions usa IPv6 por padrão mas o Supabase pooler
-        # só aceita IPv4. Este passo resolve o hostname e adiciona
-        # o IP ao /etc/hosts forçando conexão IPv4.
+      - name: Forçar IPv4 para o host do Supabase
+        # O GitHub Actions pode tentar IPv6, mas o Supabase só aceita IPv4.
+        # Passamos o host via variável de ambiente (não interpolado no código Python)
+        # para evitar que o shell trate '$PGHOST' como literal.
         env:
           PGHOST: ${{ secrets.PGHOST }}
         run: |
-          IPV4=$(python3 -c "
-          import socket
-          host = '$PGHOST'
-          # Forçar resolução IPv4
+          IPV4=$(python3 - <<'PYEOF'
+          import socket, os, sys
+          host = os.environ.get("PGHOST", "").strip()
+          if not host:
+              print("ERRO: secret PGHOST está vazio", file=sys.stderr)
+              sys.exit(1)
           results = socket.getaddrinfo(host, None, socket.AF_INET)
           print(results[0][4][0])
-          ")
-          echo "IP IPv4 resolvido: $IPV4"
+          PYEOF
+          )
+          echo "Host: $PGHOST  →  IPv4: $IPV4"
           echo "$IPV4 $PGHOST" | sudo tee -a /etc/hosts
-          echo "PGHOST_IPV4=$IPV4" >> $GITHUB_ENV
+          echo "PGHOST_RESOLVED=$PGHOST" >> $GITHUB_ENV
 
       - name: Executar importador (modo agendado)
         if: github.event_name == 'schedule'
         env:
-          PGHOST: ${{ env.PGHOST_IPV4 }}
+          PGHOST: ${{ secrets.PGHOST }}
           PGPORT: ${{ secrets.PGPORT }}
           PGDATABASE: ${{ secrets.PGDATABASE }}
           PGUSER: ${{ secrets.PGUSER }}
@@ -84,7 +87,7 @@ jobs:
       - name: Executar importador (modo manual)
         if: github.event_name == 'workflow_dispatch'
         env:
-          PGHOST: ${{ env.PGHOST_IPV4 }}
+          PGHOST: ${{ secrets.PGHOST }}
           PGPORT: ${{ secrets.PGPORT }}
           PGDATABASE: ${{ secrets.PGDATABASE }}
           PGUSER: ${{ secrets.PGUSER }}

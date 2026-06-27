@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import Footer from "@/components/Footer";
 import { SITE_URL } from "@/lib/seo";
 import { getPlanoPremium } from "@/lib/plano";
@@ -59,6 +60,7 @@ export default async function RootLayout({
         {children}
         <Footer />
         <Analytics />
+        <SpeedInsights />
 
         {/* Script do AdSense — NUNCA carregado para usuários premium */}
         {!premium && (

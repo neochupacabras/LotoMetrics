@@ -1,5 +1,4 @@
 import Subnav from "@/components/Subnav";
-import Masthead from "@/components/Masthead";
 import { CodigoLoteria } from "@/lib/types";
 
 export default async function EstrategiasLayout({
@@ -12,7 +11,7 @@ export default async function EstrategiasLayout({
   const { loteria } = await params;
   return (
     <>
-      <Masthead loteriaAtiva={loteria as CodigoLoteria} />
+      <Subnav codigoLoteria={loteria as CodigoLoteria} ativa="estrategias" />
       <main>{children}</main>
     </>
   );
