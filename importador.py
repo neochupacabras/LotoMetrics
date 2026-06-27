@@ -55,6 +55,8 @@ DB_CONFIG = {
     "dbname": os.environ.get("PGDATABASE", "loterias"),
     "user": os.environ.get("PGUSER", "postgres"),
     "password": os.environ.get("PGPASSWORD", ""),
+    # SSL obrigatório para conexão via pooler do Supabase (porta 6543)
+    "sslmode": os.environ.get("PGSSLMODE", "require"),
 }
 
 logging.basicConfig(
