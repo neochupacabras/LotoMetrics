@@ -27,7 +27,6 @@ Configuracao do banco via variaveis de ambiente:
 import argparse
 import logging
 import os
-import socket
 import sys
 import time
 from datetime import datetime
@@ -50,28 +49,16 @@ LOTERIAS_CODIGO_API = {
     "megasena": "megasena",
 }
 
-def _resolver_ipv4(hostname: str) -> str:
-    """Resolve o hostname forçando IPv4. Retorna o IP ou o hostname original."""
-    try:
-        resultados = socket.getaddrinfo(hostname, None, socket.AF_INET)
-        return resultados[0][4][0]
-    except Exception:
-        return hostname  # fallback: deixa o SO resolver
-
-_PGHOST = os.environ.get("PGHOST", "localhost")
-_PGHOST_IPV4 = _resolver_ipv4(_PGHOST)
-
 DB_CONFIG = {
-    "host": _PGHOST,          # usado pelo psycopg2 para o SNI (SSL handshake)
-    "hostaddr": _PGHOST_IPV4, # IP real para conexão TCP — garante IPv4
+    "host": os.environ.get("PGHOST", "localhost"),
     "port": os.environ.get("PGPORT", "5432"),
     "dbname": os.environ.get("PGDATABASE", "loterias"),
     "user": os.environ.get("PGUSER", "postgres"),
     "password": os.environ.get("PGPASSWORD", ""),
     # SSL obrigatório para conexão via pooler do Supabase (porta 6543)
+    # PGUSER deve ser no formato postgres.PROJECTREF para o pooler identificar o tenant
     "sslmode": os.environ.get("PGSSLMODE", "require"),
 }
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
