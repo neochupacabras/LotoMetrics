@@ -52,32 +52,39 @@ function minAcertos(codigo: string): number {
   return codigo === "megasena" ? 4 : 11;
 }
 
-async function enviarEmail(to: string, subject: string, html: string): Promise<boolean> {
-  const resendKey = process.env.RESEND_API_KEY;
-  if (!resendKey) return false;
-
-  const resp = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${resendKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from: "LotoAnalítica <noreply@lotoanalitica.com.br>",
-      to: [to],
-      subject,
-      html,
-    }),
-  });
-  return resp.ok;
-}
-
 export async function GET(request: Request) {
   if (!autorizado(request)) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 
   const supabase = createAdminClient();
+
+  // Buscar todos os usuários premium com jogos ativos
+  const { data: jogosAtivos } = await supabase
+    .from("user_games")
+    .select(`
+      id, user_id, loteria, dezenas, label,
+      profiles!inner(plan, plan_expires_at, display_name),
+      auth_user:user_id(email)
+    `)
+    .eq("ativo", true);
+
+  if (!jogosAtivos || jogosAtivos.length === 0) {
+    return NextResponse.json({ message: "Nenhum jogo ativo encontrado." });
+  }
+
+  // Filtrar só usuários premium
+  const jogosPremium = jogosAtivos.filter(j => {
+    const profile = j.profiles as any;
+    return (
+      profile?.plan === "premium" &&
+      (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date())
+    );
+  });
+
+  if (jogosPremium.length === 0) {
+    return NextResponse.json({ message: "Nenhum usuário premium com jogos ativos." });
+  }
 
   // Buscar último concurso de cada loteria
   const loteriaIds: Record<string, number | null> = {};
@@ -88,51 +95,34 @@ export async function GET(request: Request) {
     if (id) ultimosConcursos[loteria] = await getUltimoConcurso(id);
   }
 
-  // ── 1. Jogos com monitorar_proximo = true ─────────────────────────────────
-  // Enviamos e-mail de resultado e resetamos o flag independente de acertos
-  const { data: jogosMonitorados } = await supabase
-    .from("user_games")
-    .select(`
-      id, user_id, loteria, dezenas, label,
-      profiles!inner(plan, plan_expires_at, display_name),
-      auth_user:user_id(email)
-    `)
-    .eq("monitorar_proximo", true)
-    .eq("ativo", true);
+  // Agrupar jogos por usuário
+  const porUsuario = new Map<string, typeof jogosPremium>();
+  for (const jogo of jogosPremium) {
+    const lista = porUsuario.get(jogo.user_id) ?? [];
+    lista.push(jogo);
+    porUsuario.set(jogo.user_id, lista);
+  }
 
-  let emailsMonitorados = 0;
+  let enviados = 0;
+  const erros: string[] = [];
 
-  if (jogosMonitorados && jogosMonitorados.length > 0) {
-    // Filtrar premium
-    const monitoradosPremium = jogosMonitorados.filter(j => {
-      const p = j.profiles as any;
-      return p?.plan === "premium" && (!p.plan_expires_at || new Date(p.plan_expires_at) > new Date());
-    });
+  for (const [, jogos] of porUsuario) {
+    const profile = jogos[0].profiles as any;
+    const email = (jogos[0] as any).auth_user?.email;
+    if (!email) continue;
 
-    // Agrupar por usuário + loteria
-    type JogoRow = typeof monitoradosPremium[0];
-    const porUsuarioLoteria = new Map<string, JogoRow[]>();
-    for (const jogo of monitoradosPremium) {
-      const chave = `${jogo.user_id}::${jogo.loteria}`;
-      const lista = porUsuarioLoteria.get(chave) ?? [];
-      lista.push(jogo);
-      porUsuarioLoteria.set(chave, lista);
-    }
+    const loterias = [...new Set(jogos.map(j => j.loteria))];
 
-    for (const [chave, jogos] of porUsuarioLoteria) {
-      const loteria = chave.split("::")[1];
+    for (const loteria of loterias) {
       const concurso = ultimosConcursos[loteria];
       if (!concurso) continue;
 
-      const profile = jogos[0].profiles as any;
-      const email = (jogos[0] as any).auth_user?.email;
-      if (!email) continue;
-
+      const jogosDaLoteria = jogos.filter(j => j.loteria === loteria);
       const nomeLoteria = loteria === "lotofacil" ? "Lotofácil" : "Mega-Sena";
       const sorteio = concurso.dezenas as number[];
       const minAc = minAcertos(loteria);
 
-      const resultados = jogos.map(j => {
+      const resultados = jogosDaLoteria.map(j => {
         const acertos = calcularAcertos(j.dezenas as number[], sorteio);
         const faixa = nomeFaixa(loteria, acertos);
         return { label: j.label, dezenas: j.dezenas as number[], acertos, faixa, premio: null };
@@ -143,104 +133,44 @@ export async function GET(request: Request) {
       const nomeUsuario = profile.display_name ?? email.split("@")[0];
 
       const assunto = temPremio
-        ? `🎉 Seu jogo monitorado ganhou! Concurso ${concurso.numero} — ${nomeLoteria}`
-        : `🔔 Resultado do seu jogo monitorado — ${nomeLoteria} ${concurso.numero}`;
+        ? `🎉 Você ganhou no concurso ${concurso.numero} da ${nomeLoteria}!`
+        : `Resultado ${nomeLoteria} ${concurso.numero} — ${new Date(concurso.data_sorteio).toLocaleDateString("pt-BR", { day: "numeric", month: "short" })}`;
 
       const html = emailResultadoConcurso(
         nomeUsuario, nomeLoteria, concurso.numero,
         concurso.data_sorteio, dezenasOficiais, resultados, temPremio
       );
 
-      const ok = await enviarEmail(email, assunto, html);
-      if (ok) emailsMonitorados++;
-    }
+      try {
+        const resendKey = process.env.RESEND_API_KEY;
+        if (!resendKey) { erros.push("RESEND_API_KEY não configurada"); continue; }
 
-    // Resetar monitorar_proximo = false para todos os jogos processados
-    const ids = monitoradosPremium.map(j => j.id);
-    if (ids.length > 0) {
-      await supabase
-        .from("user_games")
-        .update({ monitorar_proximo: false })
-        .in("id", ids);
-    }
-  }
-
-  // ── 2. E-mail regular de resultado para todos os premium com jogos ativos ──
-  const { data: jogosAtivos } = await supabase
-    .from("user_games")
-    .select(`
-      id, user_id, loteria, dezenas, label,
-      profiles!inner(plan, plan_expires_at, display_name),
-      auth_user:user_id(email)
-    `)
-    .eq("ativo", true);
-
-  let emailsRegulares = 0;
-  const erros: string[] = [];
-
-  if (jogosAtivos && jogosAtivos.length > 0) {
-    const jogosPremium = jogosAtivos.filter(j => {
-      const p = j.profiles as any;
-      return p?.plan === "premium" && (!p.plan_expires_at || new Date(p.plan_expires_at) > new Date());
-    });
-
-    const porUsuario = new Map<string, typeof jogosPremium>();
-    for (const jogo of jogosPremium) {
-      const lista = porUsuario.get(jogo.user_id) ?? [];
-      lista.push(jogo);
-      porUsuario.set(jogo.user_id, lista);
-    }
-
-    for (const [, jogos] of porUsuario) {
-      const profile = jogos[0].profiles as any;
-      const email = (jogos[0] as any).auth_user?.email;
-      if (!email) continue;
-
-      const loterias = [...new Set(jogos.map(j => j.loteria))];
-
-      for (const loteria of loterias) {
-        const concurso = ultimosConcursos[loteria];
-        if (!concurso) continue;
-
-        const jogosDaLoteria = jogos.filter(j => j.loteria === loteria);
-        const nomeLoteria = loteria === "lotofacil" ? "Lotofácil" : "Mega-Sena";
-        const sorteio = concurso.dezenas as number[];
-        const minAc = minAcertos(loteria);
-
-        const resultados = jogosDaLoteria.map(j => {
-          const acertos = calcularAcertos(j.dezenas as number[], sorteio);
-          const faixa = nomeFaixa(loteria, acertos);
-          return { label: j.label, dezenas: j.dezenas as number[], acertos, faixa, premio: null };
+        const resp = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${resendKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "LotoAnalítica <noreply@lotoanalitica.com.br>",
+            to: [email],
+            subject: assunto,
+            html,
+          }),
         });
 
-        const temPremio = resultados.some(r => r.acertos >= minAc);
-        const dezenasOficiais = sorteio.map((d: number) => String(d).padStart(2, "0")).join("  ");
-        const nomeUsuario = profile.display_name ?? email.split("@")[0];
-
-        const assunto = temPremio
-          ? `🎉 Você ganhou no concurso ${concurso.numero} da ${nomeLoteria}!`
-          : `Resultado ${nomeLoteria} ${concurso.numero} — ${new Date(concurso.data_sorteio).toLocaleDateString("pt-BR", { day: "numeric", month: "short" })}`;
-
-        const html = emailResultadoConcurso(
-          nomeUsuario, nomeLoteria, concurso.numero,
-          concurso.data_sorteio, dezenasOficiais, resultados, temPremio
-        );
-
-        try {
-          const ok = await enviarEmail(email, assunto, html);
-          if (ok) emailsRegulares++;
-          else erros.push(`${email}: falha no Resend`);
-        } catch (err) {
-          erros.push(`${email}: ${String(err)}`);
-        }
+        if (resp.ok) enviados++;
+        else erros.push(`${email}: ${await resp.text()}`);
+      } catch (err) {
+        erros.push(`${email}: ${String(err)}`);
       }
     }
   }
 
   return NextResponse.json({
     ok: true,
-    emailsMonitorados,
-    emailsRegulares,
+    usuariosProcessados: porUsuario.size,
+    emailsEnviados: enviados,
     erros: erros.length > 0 ? erros : undefined,
   });
 }

@@ -3508,12 +3508,6 @@ footer.rodape {
   border-color: var(--line-strong);
 }
 
-.jogo-card__toggle--monitorar {
-  background: var(--ochre);
-  border-color: var(--ochre);
-  color: #fff;
-}
-
 .jogo-card__btn-remover {
   font-size: 0.78rem;
   color: var(--ink-faint);
