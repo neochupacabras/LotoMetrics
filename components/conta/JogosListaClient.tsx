@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { removerJogoAction, atualizarLabelAction, toggleAtivoAction } from "@/lib/jogo-actions";
+import { removerJogoAction, atualizarLabelAction, toggleAtivoAction, toggleMonitorarAction } from "@/lib/jogo-actions";
 
 interface Jogo {
   id: string;
@@ -9,6 +9,7 @@ interface Jogo {
   dezenas: number[];
   label: string | null;
   ativo: boolean;
+  monitorar: boolean;
   criadoEm: string;
 }
 
@@ -24,6 +25,7 @@ function JogoCard({ jogo, isPremium }: { jogo: Jogo; isPremium: boolean }) {
   const [editando, setEditando] = useState(false);
   const [label, setLabel] = useState(jogo.label ?? "");
   const [ativo, setAtivo] = useState(jogo.ativo);
+  const [monitorar, setMonitorar] = useState(jogo.monitorar);
   const [removido, setRemovido] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -34,6 +36,14 @@ function JogoCard({ jogo, isPremium }: { jogo: Jogo; isPremium: boolean }) {
     setAtivo(novoAtivo);
     startTransition(async () => {
       await toggleAtivoAction(jogo.id, novoAtivo);
+    });
+  }
+
+  function handleMonitorar() {
+    const novo = !monitorar;
+    setMonitorar(novo);
+    startTransition(async () => {
+      await toggleMonitorarAction(jogo.id, novo);
     });
   }
 
@@ -69,6 +79,17 @@ function JogoCard({ jogo, isPremium }: { jogo: Jogo; isPremium: boolean }) {
               title={ativo ? "Desativar rastreamento" : "Ativar rastreamento"}
             >
               {ativo ? "Ativo" : "Pausado"}
+            </button>
+          )}
+          {isPremium && ativo && (
+            <button
+              type="button"
+              className={`jogo-card__toggle ${monitorar ? "jogo-card__toggle--monitorar" : ""}`}
+              onClick={handleMonitorar}
+              disabled={pending}
+              title={monitorar ? "Cancelar monitoramento do próximo sorteio" : "Monitorar próximo sorteio"}
+            >
+              {monitorar ? "🔔 Monitorando" : "🔕 Monitorar"}
             </button>
           )}
           <button

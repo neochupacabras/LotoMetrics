@@ -153,3 +153,24 @@ export async function desativarAlertaAction(
   revalidatePath("/conta");
   return { ok: true };
 }
+
+// ── Ativar/desativar monitoramento do próximo sorteio ─────────────────────────
+export async function toggleMonitorarAction(
+  jogoId: string,
+  monitorar: boolean
+): Promise<{ ok: boolean; erro?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, erro: "Não autenticado." };
+
+  const { error } = await supabase
+    .from("user_games")
+    .update({ monitorar_proximo: monitorar })
+    .eq("id", jogoId)
+    .eq("user_id", user.id);
+
+  if (error) return { ok: false, erro: "Não foi possível atualizar o monitoramento." };
+
+  revalidatePath("/conta/jogos");
+  return { ok: true };
+}

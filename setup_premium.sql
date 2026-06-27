@@ -158,3 +158,15 @@ CREATE INDEX IF NOT EXISTS idx_alert_prefs_user_id     ON public.alert_preferenc
 -- Formato: { "data": "2026-06-24", "count": 3 }
 ALTER TABLE public.profiles
   ADD COLUMN IF NOT EXISTS ocr_usage JSONB NOT NULL DEFAULT '{"data":"","count":0}'::jsonb;
+
+-- =============================================================
+-- Migração: monitorar_proximo_sorteio em user_games
+-- Rodar no SQL Editor do Supabase
+-- =============================================================
+
+ALTER TABLE public.user_games
+  ADD COLUMN IF NOT EXISTS monitorar_proximo BOOLEAN NOT NULL DEFAULT false;
+
+CREATE INDEX IF NOT EXISTS idx_user_games_monitorar
+  ON public.user_games(monitorar_proximo)
+  WHERE monitorar_proximo = true;

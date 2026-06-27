@@ -20,7 +20,7 @@ export default async function ContaJogosPage() {
 
   const { data: jogos } = await supabase
     .from("user_games")
-    .select("id, loteria, dezenas, label, ativo, created_at")
+    .select("id, loteria, dezenas, label, ativo, monitorar_proximo, created_at")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -79,6 +79,7 @@ export default async function ContaJogosPage() {
               dezenas: j.dezenas as number[],
               label: j.label ?? null,
               ativo: j.ativo,
+              monitorar: (j as any).monitorar_proximo ?? false,
               criadoEm: new Date(j.created_at).toLocaleDateString("pt-BR", {
                 day: "numeric", month: "short", year: "numeric",
               }),
