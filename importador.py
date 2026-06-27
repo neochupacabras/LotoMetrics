@@ -27,6 +27,7 @@ Configuracao do banco via variaveis de ambiente:
 import argparse
 import logging
 import os
+import socket
 import sys
 import time
 from datetime import datetime
@@ -49,8 +50,20 @@ LOTERIAS_CODIGO_API = {
     "megasena": "megasena",
 }
 
+def _resolver_ipv4(hostname: str) -> str:
+    """Resolve o hostname forçando IPv4. Retorna o IP ou o hostname original."""
+    try:
+        resultados = socket.getaddrinfo(hostname, None, socket.AF_INET)
+        return resultados[0][4][0]
+    except Exception:
+        return hostname  # fallback: deixa o SO resolver
+
+_PGHOST = os.environ.get("PGHOST", "localhost")
+_PGHOST_IPV4 = _resolver_ipv4(_PGHOST)
+
 DB_CONFIG = {
-    "host": os.environ.get("PGHOST", "localhost"),
+    "host": _PGHOST,          # usado pelo psycopg2 para o SNI (SSL handshake)
+    "hostaddr": _PGHOST_IPV4, # IP real para conexão TCP — garante IPv4
     "port": os.environ.get("PGPORT", "5432"),
     "dbname": os.environ.get("PGDATABASE", "loterias"),
     "user": os.environ.get("PGUSER", "postgres"),
