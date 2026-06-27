@@ -35,9 +35,8 @@ export default async function UserMenu() {
           ✦ Premium
         </Link>
       )}
-      <Link href="/conta" className="usermenu-avatar" title="Minha conta">
-        {inicial}
-        {isPremium && <span className="usermenu-badge" aria-label="Premium" />}
+      <Link href="/conta" className="usermenu-conta">
+        Minha conta{isPremium && <span className="usermenu-badge-inline" aria-label="Premium">✦</span>}
       </Link>
     </div>
   );

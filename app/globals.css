@@ -2585,6 +2585,22 @@ footer.rodape {
   color: #fff;
 }
 
+.usermenu-conta {
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.usermenu-conta:hover { color: var(--pine); }
+
+.usermenu-badge-inline {
+  font-size: 0.7rem;
+  color: var(--ochre);
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
 .usermenu-avatar {
   width: 32px;
   height: 32px;
