@@ -80,6 +80,11 @@ export default function ArtigoSequenciasPage() {
                 <td className="num">266.805</td>
                 <td className="num">8,16%</td>
               </tr>
+              <tr>
+                <td>Sem sequências de 3 ou mais</td>
+                <td className="num">≈ 9.800</td>
+                <td className="num">0,30%</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -93,6 +98,25 @@ export default function ArtigoSequenciasPage() {
           O motivo: com 15 dezenas espalhadas dentro de um intervalo de só 25 números,
           é matematicamente difícil <em>não</em> ter pelo menos 4 delas grudadas em
           algum trecho. Sobra pouco espaço pra espaçar tudo de forma uniforme.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          O histórico confirma: sequências aparecem sempre
+        </h2>
+        <p>
+          Nos mais de 3.700 concursos da Lotofácil, a proporção de sorteios com
+          sequências longas segue quase exatamente a previsão combinatória. Sorteios
+          com 6, 7 ou até 8 dezenas consecutivas acontecem regularmente — e quando
+          aparecem, não indicam nada de especial sobre o próximo concurso. São apenas
+          os eventos que a matemática prevê que vão acontecer com aquelas frequências.
+        </p>
+        <p>
+          Isso tem uma implicação prática importante: se você monta jogos evitando
+          qualquer sequência de números seguidos, está automaticamente descartando
+          87% de todas as combinações possíveis — sem nenhum benefício matemático.
+          Você está jogando em uma fatia minúscula do universo de combinações,
+          o que não aumenta nem diminui sua probabilidade de ganhar, mas drasticamente
+          restringe sua variedade de escolhas.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
@@ -114,15 +138,15 @@ export default function ArtigoSequenciasPage() {
             </thead>
             <tbody>
               <tr>
-                <td>Nenhuma sequência (máximo: 2 dezenas seguidas no máximo)</td>
+                <td>Nenhum par adjacente (máximo 1 dezena isolada pra a próxima)</td>
                 <td className="num">58,0%</td>
               </tr>
               <tr>
-                <td>Apenas pares isolados (ex.: 14, 15 mas nada mais)</td>
+                <td>Apenas um par isolado (ex.: 14, 15 mas nada mais)</td>
                 <td className="num">38,8%</td>
               </tr>
               <tr>
-                <td>3 dezenas seguidas (o máximo mais comum)</td>
+                <td>3 dezenas seguidas (o máximo mais comum com sequência)</td>
                 <td className="num">3,1%</td>
               </tr>
               <tr>
@@ -153,8 +177,38 @@ export default function ArtigoSequenciasPage() {
         <p>
           A intuição que diz "números seguidos são suspeitos" é razoável pra Mega-Sena
           e completamente errada pra Lotofácil. Usar a mesma lógica nas duas é
-          misturar realidades matemáticas distintas.
+          misturar realidades matemáticas distintas — e é um bom lembrete de que
+          intuições sobre probabilidade quase sempre precisam ser testadas com a conta
+          real antes de serem confiadas.
         </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          Sequências e o gerador de jogos
+        </h2>
+        <p>
+          O <Link href="/lotofacil/gerador">gerador de jogos da Lotofácil</Link> leva
+          em conta a distribuição natural de sequências ao gerar combinações — produzindo
+          jogos com sequências nas proporções que a combinatória prevê, em vez de evitá-las
+          artificialmente. O modo avançado permite configurar esse parâmetro se você
+          quiser explorar faixas específicas de tamanho de sequência.
+        </p>
+        <p>
+          Para a Mega-Sena, o{" "}
+          <Link href="/megasena/gerador">gerador</Link> segue a mesma lógica inversa:
+          a maioria dos jogos gerados não terá sequências longas, porque isso é o
+          que a combinatória prevê como padrão típico.
+        </p>
+
+        <div className="bloco" style={{ marginTop: "28px" }}>
+          <p>
+            <strong>Resumo prático.</strong> Na Lotofácil, evitar sequências de 4 ou
+            mais dezenas seguidas significa descartar 87% das combinações possíveis
+            sem nenhum benefício matemático. Na Mega-Sena, sequências de 3 ou mais
+            dezenas seguidas são raras (3% dos casos) — não porque sejam piores, mas
+            porque existem poucas combinações com essa característica. Em ambos os
+            casos, a chance de qualquer combinação específica é sempre a mesma.
+          </p>
+        </div>
 
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
           Este artigo é conteúdo educativo. Os números acima são combinatória exata

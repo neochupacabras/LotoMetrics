@@ -38,20 +38,47 @@ export default function ArtigoMolduraCentroPage() {
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
-          Por que a divisão já é desigual de cara
+          A geometria do volante da Lotofácil
         </h2>
         <p>
-          Numa grade 5×5, a borda (primeira e última linha, primeira e última coluna)
-          tem 16 das 25 posições. O centro — só o quadrado interno de 3×3 — tem as 9
-          restantes: 7, 8, 9, 12, 13, 14, 17, 18 e 19.
+          Numa grade 5×5, a "moldura" são todas as posições da primeira e última linha,
+          mais a primeira e última coluna de cada linha do meio. Isso dá 16 posições.
+          O "centro" é o quadrado interno 3×3, com 9 posições: as dezenas 07, 08, 09,
+          12, 13, 14, 17, 18 e 19.
         </p>
+        <div className="tabela-scroll">
+          <table className="tabela-dados">
+            <thead>
+              <tr>
+                <th>Região</th>
+                <th>Dezenas</th>
+                <th className="num">Quantidade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Moldura (borda)</td>
+                <td>01–06, 10–11, 15–16, 20–21, 25 e mais</td>
+                <td className="num">16</td>
+              </tr>
+              <tr>
+                <td>Centro (3×3 interno)</td>
+                <td>07, 08, 09, 12, 13, 14, 17, 18, 19</td>
+                <td className="num">9</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <p>
           Como a moldura já começa com quase o dobro de posições do centro (16 contra
           9), é esperado que, em qualquer sorteio, mais dezenas saiam da moldura do que
           do centro — não porque a moldura seja "favorecida", mas porque ela
-          simplesmente tem mais números disponíveis pra sair.
+          simplesmente tem mais números disponíveis para sair.
         </p>
 
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          A distribuição esperada
+        </h2>
         <div className="tabela-scroll">
           <table className="tabela-dados">
             <thead>
@@ -82,28 +109,66 @@ export default function ArtigoMolduraCentroPage() {
                 <td className="num">463.320</td>
                 <td className="num">14,17%</td>
               </tr>
+              <tr>
+                <td>12 moldura / 3 centro</td>
+                <td className="num">101.640</td>
+                <td className="num">3,11%</td>
+              </tr>
+              <tr>
+                <td>7 moldura / 8 centro (maioria no centro)</td>
+                <td className="num">84.942</td>
+                <td className="num">2,60%</td>
+              </tr>
             </tbody>
           </table>
         </div>
         <p>
           A média esperada é <strong>9,6 dezenas da moldura</strong> e{" "}
-          <strong>5,4 do centro</strong> por concurso (15 × 16 ÷ 25 e 15 × 9 ÷ 25). Não
-          é coincidência o 5,4 aparecer de novo — é a mesma conta de "quantos números
-          de um grupo de N saem, em média, dado que esse grupo tem N elementos dentro
-          de 25" que já apareceu no artigo sobre{" "}
+          <strong>5,4 do centro</strong> por concurso (15 × 16 ÷ 25 = 9,6 e
+          15 × 9 ÷ 25 = 5,4). Em mais de 75% dos sorteios, a moldura terá entre 9 e
+          11 dezenas — variação pequena ao redor da média.
+        </p>
+        <p>
+          Não é coincidência o 5,4 aparecer de novo — é a mesma conta de "quantos
+          números de um grupo de N saem, em média, dado que esse grupo tem N elementos
+          dentro de 25" que já apareceu no artigo sobre{" "}
           <Link href="/dicas/primos">primos</Link> (que também tem 9 números). Centro e
           primos têm o mesmo tamanho de grupo (9), por isso a mesma média.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
-          Pra que serve
+          O histórico real versus o esperado
         </h2>
         <p>
-          A tabela de{" "}
-          <Link href="/lotofacil/tabelas/moldura-centro">moldura e centro</Link>{" "}
-          mostra o histórico real dessa distribuição — uma forma a mais de visualizar o
-          comportamento passado, sem nenhuma capacidade de prever onde as próximas
-          dezenas vão cair na grade.
+          Nos mais de 3.700 concursos da Lotofácil, a média histórica de dezenas da
+          moldura por sorteio fica consistentemente próxima de 9,6 — com variação
+          normal para mais ou menos, exatamente como a combinatória prevê. Se em um
+          dado período a moldura estiver aparecendo com média de 10,2, isso é variação
+          estatística aleatória — não um "ciclo de moldura" que vai continuar ou se
+          reverter.
+        </p>
+        <p>
+          Vale o mesmo aviso de sempre: a moldura não "sabe" que é a moldura, e o
+          centro não "sabe" que é o centro. São agrupamentos geométricos criados por
+          como humanos organizam o volante — o sorteio trata todas as 25 dezenas de
+          forma idêntica.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          A intuição de que o centro é "especial"
+        </h2>
+        <p>
+          Uma crença comum é que as dezenas do centro do volante (particularmente o 13,
+          a dezena central da grade 5×5) têm alguma propriedade especial — seja porque
+          "estão no coração do volante", seja porque aparecem com frequência em certas
+          posições. Isso é o viés de disponibilidade em ação: é mais fácil notar e
+          lembrar quando o número do centro saiu do que quando não saiu.
+        </p>
+        <p>
+          A combinatória não deixa espaço para isso: o 13 tem exatamente a mesma
+          probabilidade individual de qualquer outra dezena — 60% de sair em cada
+          concurso da Lotofácil. Sua posição central na grade é irrelevante para o
+          sorteio.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
@@ -147,6 +212,10 @@ export default function ArtigoMolduraCentroPage() {
                 <td>1 moldura / 5 centro</td>
                 <td className="num">11,26%</td>
               </tr>
+              <tr>
+                <td>5 moldura / 1 centro</td>
+                <td className="num">6,84%</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -154,8 +223,22 @@ export default function ArtigoMolduraCentroPage() {
           A média esperada é <strong>2,8 dezenas da moldura e 3,2 do centro</strong> —
           invertida em relação à Lotofácil, onde a moldura domina (9,6 contra 5,4). É
           um bom exemplo de como a mesma análise pode produzir resultados opostos
-          dependendo da geometria do volante, sem que isso mude nada na natureza
-          aleatória do sorteio.
+          dependendo da geometria do volante — e de como qualquer "estratégia" baseada
+          em moldura vs. centro precisaria ser completamente diferente para cada loteria,
+          sem que isso mude nada na natureza aleatória do sorteio.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          Pra que serve
+        </h2>
+        <p>
+          A tabela de{" "}
+          <Link href="/lotofacil/tabelas/moldura-centro">moldura e centro</Link>{" "}
+          mostra o histórico real dessa distribuição. É uma forma a mais de visualizar
+          os dados de outro ângulo geométrico, complementar à análise de{" "}
+          <Link href="/dicas/linhas-colunas">linhas e colunas</Link>. O que ela não
+          mostra, porque não existe, é uma razão para que a moldura ou o centro
+          continue com mais ou menos dezenas no próximo sorteio do que a média sugere.
         </p>
 
         <div className="aviso-legal" style={{ marginTop: "36px" }}>

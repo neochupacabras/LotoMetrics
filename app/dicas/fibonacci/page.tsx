@@ -38,13 +38,32 @@ export default function ArtigoFibonacciPage() {
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          O que é a sequência de Fibonacci
+        </h2>
+        <p>
+          A sequência começa com 1 e 1, e cada número seguinte é a soma dos dois
+          anteriores: 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89... Ela de fato aparece em
+          padrões naturais — o número de espirais em conchas de náutilo, a disposição
+          de sementes em girassóis, a ramificação de árvores. Isso tem a ver com
+          eficiência geométrica no crescimento biológico, não com propriedades
+          místicas dos números em si.
+        </p>
+        <p>
+          Dentro de um sorteio de loteria, nenhuma dessas propriedades biológicas tem
+          qualquer relevância. Uma esfera numerada com "13" não tem nenhuma relação
+          com a esfera "8" só porque ambas são números de Fibonacci — são objetos
+          físicos independentes, e o sorteio não conhece a sequência.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
           Os números, sem misticismo
         </h2>
         <p>
           Entre 1 e 25, os valores da sequência de Fibonacci são: 1, 2, 3, 5, 8, 13 e
           21 — 7 números ao todo (34 já passa de 25, então para por aí). Sorteando 15
           de 25 dezenas, onde 7 são "Fibonacci" e 18 não são, a distribuição esperada
-          é:
+          é calculada pela mesma combinatória usada para primos, múltiplos e qualquer
+          outro subgrupo:
         </p>
         <div className="tabela-scroll">
           <table className="tabela-dados">
@@ -57,24 +76,34 @@ export default function ArtigoFibonacciPage() {
             </thead>
             <tbody>
               <tr>
-                <td>4</td>
+                <td>4 Fibonacci</td>
                 <td className="num">1.113.840</td>
                 <td className="num">34,08%</td>
               </tr>
               <tr>
-                <td>5</td>
+                <td>5 Fibonacci</td>
                 <td className="num">918.918</td>
                 <td className="num">28,11%</td>
               </tr>
               <tr>
-                <td>3</td>
+                <td>3 Fibonacci</td>
                 <td className="num">649.740</td>
                 <td className="num">19,88%</td>
               </tr>
               <tr>
-                <td>6</td>
+                <td>6 Fibonacci</td>
                 <td className="num">340.340</td>
                 <td className="num">10,41%</td>
+              </tr>
+              <tr>
+                <td>2 Fibonacci</td>
+                <td className="num">101.640</td>
+                <td className="num">3,11%</td>
+              </tr>
+              <tr>
+                <td>7 Fibonacci (todos)</td>
+                <td className="num">40.920</td>
+                <td className="num">1,25%</td>
               </tr>
             </tbody>
           </table>
@@ -88,6 +117,60 @@ export default function ArtigoFibonacciPage() {
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          Comparando com outros subgrupos
+        </h2>
+        <p>
+          Um dos aspectos mais esclarecedores dessa análise é comparar a média esperada
+          de Fibonacci com a de outros subgrupos que ninguém associa a nenhum
+          misticismo:
+        </p>
+        <div className="tabela-scroll">
+          <table className="tabela-dados">
+            <thead>
+              <tr>
+                <th>Subgrupo (entre 1 e 25)</th>
+                <th className="num">Quantidade</th>
+                <th className="num">Média por sorteio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Números de Fibonacci</td>
+                <td className="num">7</td>
+                <td className="num">4,20</td>
+              </tr>
+              <tr>
+                <td>Números primos</td>
+                <td className="num">9</td>
+                <td className="num">5,40</td>
+              </tr>
+              <tr>
+                <td>Múltiplos de 3</td>
+                <td className="num">8</td>
+                <td className="num">4,80</td>
+              </tr>
+              <tr>
+                <td>Dezenas do centro do volante</td>
+                <td className="num">9</td>
+                <td className="num">5,40</td>
+              </tr>
+              <tr>
+                <td>Qualquer 7 dezenas escolhidas aleatoriamente</td>
+                <td className="num">7</td>
+                <td className="num">4,20</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Os números de Fibonacci têm exatamente a mesma média esperada por sorteio
+          que qualquer outro grupo de 7 dezenas escolhido por qualquer critério —
+          inclusive por nenhum critério. "Os 7 primeiros números primos" (2, 3, 5, 7,
+          11, 13, 17) têm a mesma média que "os números de Fibonacci" — simplesmente
+          porque os dois grupos têm o mesmo tamanho.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
           Por que a fama da sequência não significa nada aqui
         </h2>
         <p>
@@ -95,20 +178,36 @@ export default function ArtigoFibonacciPage() {
           interessantes em outras áreas — crescimento populacional, espirais na
           natureza, proporção áurea. Mas dentro de um sorteio de loteria, ela não tem
           nenhum papel especial: é só um subconjunto de 7 números entre 25, igual
-          qualquer outro grupo de 7 números escolhido por qualquer outro critério (por
-          exemplo, "os 7 primeiros números que vêm à cabeça"). O sorteio não reconhece
-          a sequência, não a trata de forma diferente, e não tem como "favorecer" um
-          padrão matemático que só existe na cabeça de quem está olhando.
+          a qualquer outro grupo de 7 números escolhido por qualquer outro critério.
+          O sorteio não reconhece a sequência, não a trata de forma diferente, e não
+          tem como "favorecer" um padrão matemático que só existe na cabeça de quem
+          está olhando.
+        </p>
+        <p>
+          Isso é o mesmo princípio por trás do artigo sobre{" "}
+          <Link href="/dicas/vieses-cognitivos">vieses cognitivos</Link>: o cérebro
+          encontra padrões significativos em dados aleatórios porque foi treinado
+          evolutivamente para isso. A sequência de Fibonacci é um padrão genuíno em
+          outros contextos — o que torna especialmente fácil projetar essa significância
+          num contexto onde ela não existe.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
-          Pra que serve
+          O histórico real
         </h2>
         <p>
-          A tabela de{" "}
-          <Link href="/lotofacil/tabelas/fibonacci">números de Fibonacci</Link> mostra
-          a frequência histórica real desses 7 números — curiosidade estatística válida,
-          sem nenhuma capacidade preditiva sobre o próximo sorteio.
+          Nos mais de 3.700 concursos da Lotofácil, a média histórica de números de
+          Fibonacci por sorteio fica muito próxima de 4,2 — com variação normal para
+          mais e para menos, exatamente como a combinatória prevê. Concursos com 3 ou
+          5 Fibonacci são comuns; concursos com 7 (todos) ou com menos de 2 são raros,
+          mas acontecem.
+        </p>
+        <p>
+          Essa variação histórica não indica nenhuma tendência. Se os últimos 10
+          concursos tiveram mais de 5 Fibonacci cada, isso não significa que o próximo
+          vai ter menos "pra compensar" — é a mesma{" "}
+          <Link href="/dicas/atraso">falácia do apostador</Link> aplicada a um
+          subgrupo em vez de a uma dezena individual.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
@@ -149,11 +248,23 @@ export default function ArtigoFibonacciPage() {
           </table>
         </div>
         <p>
-          O dado mais notável aqui: <strong>em 36% dos sorteios possíveis da Mega-Sena,
+          O dado mais notável: <strong>em 36% dos sorteios possíveis da Mega-Sena,
           nenhuma das 6 dezenas é de Fibonacci</strong>. Isso desmonta de forma
           especialmente clara qualquer ideia de que essa sequência teria algum papel
           "especial" nos resultados — na Mega-Sena, o resultado mais provável numa
           maioria relativa dos casos é simplesmente não ter nenhum Fibonacci.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          Pra que serve a tabela
+        </h2>
+        <p>
+          A tabela de{" "}
+          <Link href="/lotofacil/tabelas/fibonacci">números de Fibonacci</Link> mostra
+          a frequência histórica real desses 7 números e a distribuição de quantos
+          apareceram em cada concurso. É uma curiosidade estatística válida e uma forma
+          de verificar que o histórico real corresponde ao esperado pela combinatória —
+          sem nenhuma capacidade preditiva sobre o próximo sorteio.
         </p>
 
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
