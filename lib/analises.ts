@@ -505,206 +505,6 @@ export const ANALISES: Analise[] = [
   },
 
   {
-    slug: "copa-do-mundo-2026-loteria-coincidencias",
-    titulo: "Copa do Mundo 2026 e loteria: o que as probabilidades do futebol ensinam sobre sorteios",
-    resumo:
-      "Brasil no Grupo C da Copa 2026, 48 seleções, odds de apostas — o universo do futebol é cheio de probabilidades. Algumas lições valem para entender a Lotofácil também.",
-    data: "2026-07-06",
-    categoria: "educativo" as const,
-    tempoLeitura: 6,
-    corpo: `
-      <p>
-        A Copa do Mundo FIFA 2026 está em andamento — 48 seleções, 104 jogos, três
-        países-sede (EUA, México e Canadá), e o Brasil em busca do hexacampeonato no
-        Grupo C. O torneio é um evento enorme de probabilidades: odds de apostas,
-        chances de classificação, simulações de chaveamento. E algumas dessas ideias
-        têm paralelos diretos com o que acontece em sorteios de loteria.
-      </p>
-
-      <h2>A diferença fundamental: dependência vs. independência</h2>
-      <p>
-        Em futebol, os resultados de partidas anteriores <em>importam</em> para estimar
-        resultados futuros. O desempenho do Brasil nos grupos, o nível de fadiga dos
-        jogadores, o histórico do adversário, o estado físico do Vinícius Júnior — tudo
-        isso é informação genuinamente útil para prever a probabilidade de vitória no
-        próximo jogo.
-      </p>
-      <p>
-        Em loteria, nada disso existe. Cada concurso é completamente independente dos
-        anteriores — as esferas não têm memória, não ficam cansadas, não têm "forma" do
-        dia. A dezena 10 que saiu nos últimos três concursos não tem nenhuma probabilidade
-        diferente de sair no próximo. Esse é o motivo pelo qual modelos preditivos funcionam
-        razoavelmente em futebol mas são completamente ineficazes em loteria.
-      </p>
-
-      <h2>Odds de futebol vs. probabilidades de loteria</h2>
-      <p>
-        Uma odd de 2.50 para o Brasil vencer um jogo significa que, na visão da casa
-        de apostas, a probabilidade de vitória é aproximadamente 40%. Essa estimativa
-        incorpora dados reais: qualidade do elenco, histórico contra o adversário,
-        condições do torneio.
-      </p>
-      <p>
-        Uma odd equivalente na Lotofácil seria apostas na probabilidade de sair uma
-        dezena específica (digamos, o número 10). A probabilidade é fixa em 60% —
-        independente de qualquer análise histórica. Não existe odd "melhor" ou "pior"
-        para dezenas individuais, porque a probabilidade não muda com o contexto.
-        Toda análise de "dezenas quentes" é equivalente a apostar no Brasil "porque
-        o uniforme é amarelo" — o argumento parece ter lógica, mas não tem relação
-        causal com o resultado.
-      </p>
-
-      <h2>O novo formato da Copa e a Lei dos Grandes Números</h2>
-      <p>
-        Com 48 seleções e 104 jogos (contra 32 seleções e 64 jogos na edição anterior),
-        a Copa 2026 tem uma amostra maior de resultados. Em estatística, amostras maiores
-        tendem a produzir distribuições mais próximas do esperado — é a Lei dos Grandes
-        Números. Com mais jogos, é esperado que o melhor time do mundo ganhe com mais
-        consistência do que num torneio mais curto.
-      </p>
-      <p>
-        O mesmo princípio se aplica à Lotofácil: com mais de 3.700 concursos no
-        histórico, a frequência de cada dezena está muito próxima do esperado (60%).
-        Com apenas 100 concursos, a variação seria bem maior. Isso explica por que
-        análises de "frequência nos últimos 20 concursos" produzem conclusões muito
-        mais instáveis do que o histórico completo — a amostra é pequena demais para
-        dizer qualquer coisa confiável.
-      </p>
-
-      <h2>Surpresas são esperadas — em ambos</h2>
-      <p>
-        Uma das grandes atrações de ambos os eventos é a possibilidade de surpresa.
-        Na Copa, times considerados zebras vencem favoritos — e isso é estatisticamente
-        esperado quando há incerteza real. Na Lotofácil, a combinação mais improvável
-        pode sair no próximo concurso — porque toda combinação específica tem a mesma
-        probabilidade de 1 em 3.268.760.
-      </p>
-      <p>
-        A diferença é que, no futebol, "surpresa" significa que o time com menor
-        probabilidade ganhou. Na loteria, não existe time com menor probabilidade —
-        todas as combinações são igualmente prováveis. O conceito de "surpresa" na
-        loteria é uma ilusão criada pela nossa dificuldade de aceitar o aleatório puro.
-      </p>
-
-      <h2>O que o futebol tem que a loteria não tem: habilidade</h2>
-      <p>
-        A principal distinção é simples: futebol envolve habilidade, treino, tática e
-        trabalho de equipe. Esses fatores podem ser melhorados e fazem diferença real
-        nos resultados. Loteria é um sorteio puro — não há habilidade que aumente sua
-        probabilidade de ganhar. Você pode ser o melhor analista de dados do mundo e
-        sua chance de acertar a Mega-Sena continua sendo 1 em 50.063.860.
-      </p>
-      <p>
-        Isso não torna a loteria pior ou melhor que futebol — são propostas diferentes.
-        Mas confundir os dois (achar que "analisar bem" os dados históricos da loteria
-        melhora suas chances) é o principal erro que os artigos desta seção tentam
-        evitar.
-      </p>
-      <p>
-        Acompanhe os dados históricos da Lotofácil e Mega-Sena nas
-        <a href="/lotofacil/tabelas/frequencia">tabelas de frequência</a> e use o
-        <a href="/lotofacil/simulador">simulador histórico</a> para ver como qualquer
-        combinação teria se saído ao longo do histórico real.
-      </p>
-    `,
-  },
-
-  {
-    slug: "copa-do-mundo-2026-loteria-coincidencias",
-    titulo: "Copa do Mundo 2026 e loteria: o que as probabilidades do futebol ensinam sobre sorteios",
-    resumo:
-      "Brasil no Grupo C da Copa 2026, 48 seleções, odds de apostas — o universo do futebol é cheio de probabilidades. Algumas lições valem para entender a Lotofácil também.",
-    data: "2026-07-06",
-    categoria: "educativo" as const,
-    tempoLeitura: 6,
-    corpo: `
-      <p>
-        A Copa do Mundo FIFA 2026 está em andamento — 48 seleções, 104 jogos, três
-        países-sede (EUA, México e Canadá), e o Brasil em busca do hexacampeonato.
-        O torneio é um evento enorme de probabilidades: odds de apostas, chances de
-        classificação, simulações de chaveamento. E algumas dessas ideias têm paralelos
-        diretos com o que acontece em sorteios de loteria.
-      </p>
-
-      <h2>A diferença fundamental: dependência vs. independência</h2>
-      <p>
-        Em futebol, os resultados de partidas anteriores <em>importam</em> para estimar
-        resultados futuros. O desempenho do Brasil nos grupos, o nível de fadiga dos
-        jogadores, o histórico do adversário — tudo isso é informação genuinamente útil
-        para prever a probabilidade de vitória no próximo jogo.
-      </p>
-      <p>
-        Em loteria, nada disso existe. Cada concurso é completamente independente dos
-        anteriores — as esferas não têm memória, não ficam cansadas, não têm "forma" do
-        dia. A dezena 10 que saiu nos últimos três concursos não tem nenhuma probabilidade
-        diferente de sair no próximo. Esse é o motivo pelo qual modelos preditivos funcionam
-        razoavelmente em futebol mas são completamente ineficazes em loteria.
-      </p>
-
-      <h2>Odds de futebol vs. probabilidades de loteria</h2>
-      <p>
-        Uma odd de 2.50 para o Brasil vencer um jogo significa que, na visão da casa
-        de apostas, a probabilidade de vitória é aproximadamente 40%. Essa estimativa
-        incorpora dados reais: qualidade do elenco, histórico contra o adversário,
-        condições do torneio.
-      </p>
-      <p>
-        Uma análise equivalente na Lotofácil seria estimar a probabilidade de uma dezena
-        específica sair. Mas ela é fixa em 60% — independente de qualquer análise histórica.
-        Não existe odd "melhor" ou "pior" para dezenas individuais porque a probabilidade
-        não muda com o contexto. Toda análise de "dezenas quentes" é equivalente a apostar
-        no Brasil "porque o uniforme é amarelo" — o argumento parece ter lógica, mas não
-        tem relação causal com o resultado.
-      </p>
-
-      <h2>O novo formato da Copa e a Lei dos Grandes Números</h2>
-      <p>
-        Com 48 seleções e 104 jogos (contra 32 seleções e 64 jogos na edição anterior),
-        a Copa 2026 tem uma amostra maior de resultados. Em estatística, amostras maiores
-        tendem a produzir distribuições mais próximas do esperado — é a Lei dos Grandes
-        Números. Com mais jogos, o melhor time tende a ganhar com mais consistência.
-      </p>
-      <p>
-        O mesmo princípio se aplica à Lotofácil: com mais de 3.700 concursos no
-        histórico, a frequência de cada dezena está muito próxima do esperado (60%).
-        Com apenas 20 concursos, a variação seria enorme. Isso explica por que análises
-        de "frequência nos últimos 20 concursos" produzem conclusões muito mais instáveis
-        do que o histórico completo — a amostra é pequena demais para dizer algo confiável.
-      </p>
-
-      <h2>Surpresas são esperadas — em ambos</h2>
-      <p>
-        Uma das grandes atrações de ambos os eventos é a possibilidade de surpresa.
-        Na Copa, times considerados zebras vencem favoritos — e isso é estatisticamente
-        esperado quando há incerteza real. Na Lotofácil, a combinação mais improvável
-        pode sair no próximo concurso — porque toda combinação específica tem a mesma
-        probabilidade de 1 em 3.268.760.
-      </p>
-      <p>
-        A diferença é que no futebol a "surpresa" é relativa às probabilidades estimadas.
-        Na loteria, não existe combinação com maior ou menor probabilidade — todas são
-        iguais. O conceito de "surpresa" na loteria é uma ilusão criada pela nossa
-        dificuldade de aceitar o aleatório puro.
-      </p>
-
-      <h2>O que o futebol tem que a loteria não tem: habilidade</h2>
-      <p>
-        Futebol envolve habilidade, treino, tática e trabalho de equipe. Esses fatores
-        podem ser melhorados e fazem diferença real nos resultados. Loteria é um sorteio
-        puro — não há habilidade que aumente sua probabilidade de ganhar. Você pode ser
-        o melhor analista de dados do mundo e sua chance de acertar a Mega-Sena continua
-        sendo 1 em 50.063.860.
-      </p>
-      <p>
-        Isso não torna a loteria pior ou melhor que futebol — são propostas diferentes.
-        Mas confundir os dois (achar que "analisar bem" os dados históricos da loteria
-        melhora suas chances) é o principal erro que os artigos desta seção tentam evitar.
-        Confira os dados históricos nas
-        <a href="/lotofacil/tabelas/frequencia">tabelas de frequência</a>.
-      </p>
-    `,
-  },
-  {
     slug: "eleicoes-2026-loteria-numeros-sorte",
     titulo: "Eleições 2026 e números da sorte: o que viés cognitivo e política têm em comum",
     resumo:
@@ -872,6 +672,1094 @@ export const ANALISES: Analise[] = [
         Acompanhe o histórico de todos os acúmulos da Mega-Sena, incluindo as edições
         anteriores da Mega da Virada, na
         <a href="/megasena/acumulos">linha do tempo de acúmulos</a>.
+      </p>
+    `,
+  },
+
+  {
+    slug: "lotofacil-como-ler-destaques-concurso",
+    titulo: "Lotofácil: como ler os destaques de um concurso e o que cada número significa",
+    resumo:
+      "A página de destaques mostra muito mais que o resultado bruto — ganhadores por faixa, prêmio médio, acúmulo e estimativa do próximo. Guia completo de leitura.",
+    data: "2026-07-08",
+    categoria: "lotofacil" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        Depois de cada sorteio da Lotofácil, a página de
+        <a href="/lotofacil/destaques">destaques</a> é atualizada com um resumo
+        do concurso. Parece simples à primeira vista, mas tem vários números que
+        merecem uma explicação mais detalhada.
+      </p>
+
+      <h2>Número do concurso e data</h2>
+      <p>
+        O número do concurso é sequencial desde o primeiro sorteio da Lotofácil,
+        em setembro de 2003. Ele é útil para localizar um concurso específico no
+        histórico — o conferidor e o simulador permitem filtrar por número de
+        concurso para ver o que aconteceu naquele dia exato.
+      </p>
+
+      <h2>Dezenas sorteadas</h2>
+      <p>
+        As 15 dezenas do resultado, ordenadas do menor para o maior. Elas são
+        sorteadas por uma máquina física de bolas certificada pelo INMETRO e
+        auditada pela Caixa. A ordem de saída não importa para fins de premiação —
+        só a combinação final conta.
+      </p>
+
+      <h2>Ganhadores por faixa</h2>
+      <p>
+        Esse é o número mais importante para entender o prêmio real. A Lotofácil
+        tem 5 faixas de premiação: 15, 14, 13, 12 e 11 acertos. O prêmio das
+        faixas 14 e 15 é rateado — dividido igualmente entre todos os ganhadores
+        daquela faixa. As faixas 11, 12 e 13 têm valores fixos (R$5, R$10 e R$25).
+      </p>
+      <p>
+        Um concurso com 2 ganhadores de 15 acertos e prêmio total de R$4 milhões
+        paga R$2 milhões para cada. Um concurso com 50 ganhadores de 15 acertos
+        e mesmo prêmio total paga R$80 mil para cada. O número de ganhadores
+        importa tanto quanto o tamanho do prêmio.
+      </p>
+
+      <h2>Prêmio acumulado</h2>
+      <p>
+        Quando nenhum apostador acerta 15 dezenas, o valor destinado a essa faixa
+        não desaparece — é somado ao fundo do próximo concurso. A coluna de
+        "acumulado" mostra se houve acúmulo e quanto foi transferido. Concursos
+        com acúmulo tendem a ter mais apostadores (o que reduz o prêmio por
+        ganhador se houver mais de um).
+      </p>
+
+      <h2>Estimativa do próximo prêmio</h2>
+      <p>
+        A Caixa divulga uma estimativa do prêmio do próximo concurso baseada na
+        arrecadação histórica de concursos equivalentes. É uma previsão — o valor
+        real depende de quantas apostas forem feitas no próximo concurso, que só
+        é conhecido após o encerramento das apostas.
+      </p>
+
+      <h2>A linha do tempo dos acúmulos</h2>
+      <p>
+        Para ver o histórico completo de quando houve acúmulo, quantos concursos
+        durou cada sequência e os prêmios pagos ao final, a
+        <a href="/lotofacil/acumulos">linha do tempo de acúmulos</a> mostra tudo
+        visualmente desde o primeiro concurso da Lotofácil.
+      </p>
+    `,
+  },
+  {
+    slug: "indice-equilibrio-para-que-serve",
+    titulo: "Índice de Equilíbrio: o que é, como é calculado e para que serve",
+    resumo:
+      "Uma nota de 0 a 100 que mede o quão 'típico' é um jogo em 7 dimensões estatísticas ao mesmo tempo. Entenda o que a nota diz — e o que ela não diz.",
+    data: "2026-07-11",
+    categoria: "educativo" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        O <a href="/lotofacil/equilibrio">Índice de Equilíbrio</a> é uma das
+        ferramentas mais originais do LotoAnalítica — e também uma das que mais
+        precisa de explicação para ser usada corretamente. A ideia central é simples:
+        em vez de olhar para sete métricas estatísticas separadamente, combinar todas
+        em uma única nota de 0 a 100.
+      </p>
+
+      <h2>Os 7 critérios avaliados</h2>
+      <p>
+        Para cada jogo analisado, o índice calcula:
+      </p>
+      <ul>
+        <li><strong>Soma das dezenas</strong> — quão próxima da média de 195</li>
+        <li><strong>Distribuição par/ímpar</strong> — quão próxima de 7-8</li>
+        <li><strong>Maior sequência consecutiva</strong> — quão típica para a Lotofácil</li>
+        <li><strong>Moldura vs. centro</strong> — proporção dentro do esperado</li>
+        <li><strong>Números primos</strong> — quão próximo de 5,4 por jogo</li>
+        <li><strong>Múltiplos de 3</strong> — quão próximo de 4,8 por jogo</li>
+        <li><strong>Números de Fibonacci</strong> — quão próximo de 4,2 por jogo</li>
+      </ul>
+      <p>
+        Cada critério é avaliado individualmente usando combinatória — comparando
+        o valor do jogo com a distribuição de todas as combinações possíveis. Um
+        jogo com soma de 195 exatos recebe nota máxima nesse critério; um jogo
+        com soma de 120 recebe nota próxima de zero (pois quase nenhuma das
+        3.268.760 combinações tem soma tão baixa).
+      </p>
+
+      <h2>Como a nota final é calculada</h2>
+      <p>
+        As notas dos 7 critérios são combinadas com pesos iguais numa média
+        ponderada. Um jogo que está exatamente na mediana em todos os 7 critérios
+        recebe nota 100. Qualquer desvio em qualquer critério reduz a nota
+        proporcionalmente à raridade desse desvio.
+      </p>
+      <p>
+        Importante: a nota é baseada em combinatória pura, não em histórico de
+        concursos. Isso significa que ela é estável — não muda com sorteios
+        recentes, e dois jogos idênticos sempre têm a mesma nota, independente
+        de quando são analisados.
+      </p>
+
+      <h2>O que a nota diz</h2>
+      <p>
+        Nota alta (acima de 70): o jogo tem um perfil estatisticamente próximo
+        do "jogo médio" em todos os critérios. A maioria das combinações possíveis
+        da Lotofácil teria uma nota parecida.
+      </p>
+      <p>
+        Nota baixa (abaixo de 30): o jogo é estatisticamente incomum em pelo menos
+        um critério — soma muito extrema, distribuição par/ímpar muito desbalanceada,
+        ou outra característica rara. Isso não o torna pior para jogar, só mais
+        distante do perfil típico.
+      </p>
+
+      <h2>O que a nota não diz</h2>
+      <p>
+        A nota não tem nenhuma relação com a probabilidade de ganhar. Um jogo com
+        nota 95 tem exatamente a mesma chance de acertar 15 dezenas que um jogo
+        com nota 15: 1 em 3.268.760. O índice mede tipicidade estatística, não
+        sorte. Use-o como ferramenta de curiosidade e caracterização — não como
+        critério de seleção de jogos.
+      </p>
+      <p>
+        Para ver cada critério separado com detalhes, use o
+        <a href="/lotofacil/analisador">Analisador de jogo</a>, que mostra a
+        posição percentil de qualquer jogo em cada dimensão individualmente.
+      </p>
+    `,
+  },
+  {
+    slug: "copa-2026-matematica-zebras-loteria",
+    titulo: "Copa 2026: a matemática das zebras — o que futebol e loteria têm em comum",
+    resumo:
+      "Na Copa 2026 com 48 seleções, zebras são mais prováveis do que nunca. A mesma matemática que explica surpresas no futebol ajuda a entender por que loteria é diferente.",
+    data: "2026-07-14",
+    categoria: "educativo" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        A Copa do Mundo 2026, com 48 seleções e 104 jogos, é a maior edição da
+        história do torneio. Com mais seleções e um formato que avança 32 times
+        para o mata-mata, a probabilidade de zebras — resultados inesperados —
+        aumentou em relação às edições anteriores. A matemática por trás disso
+        tem paralelos interessantes com a forma como probabilidade funciona (e
+        não funciona) em loteria.
+      </p>
+
+      <h2>Por que zebras acontecem em futebol</h2>
+      <p>
+        Uma zebra no futebol acontece quando o time com menor probabilidade estimada
+        vence. Com 48 seleções de nível bem variado, a diferença de qualidade entre
+        os times na fase de grupos é maior do que nas edições com 32 seleções. Mas
+        futebol tem alta variância — o gol aleatório, o erro defensivo no pior momento,
+        as condições do campo. Mesmo com 80% de chance de vitória estimada, o favorito
+        perde 20% das vezes.
+      </p>
+      <p>
+        Com 104 jogos na Copa 2026, estatisticamente espera-se aproximadamente 15 a 20
+        resultados que seriam considerados "zebra" — não por falha no modelo, mas porque
+        variância faz parte de qualquer sistema com incerteza. Isso é esperado,
+        não surpresa.
+      </p>
+
+      <h2>O que é diferente na loteria</h2>
+      <p>
+        Em futebol, "zebra" significa que o time com menor probabilidade ganhou.
+        Em loteria, não existe time com menor probabilidade — toda combinação
+        específica tem exatamente 1 em 3.268.760 de chance. Não há "favorito".
+      </p>
+      <p>
+        Quando um resultado da Lotofácil parece improvável ("como saíram 7 dezenas
+        seguidas?"), não é uma zebra — é só um dos 3.268.760 resultados possíveis,
+        todos igualmente prováveis. A surpresa está na nossa expectativa, não na
+        probabilidade real do evento.
+      </p>
+
+      <h2>O erro de interpretar surpresas como padrão</h2>
+      <p>
+        No futebol, quando uma seleção considerada fraca vai longe na Copa, analistas
+        revisam os modelos: talvez a diferença de qualidade fosse menor do que se
+        pensava, ou houve fatores não modelados. É uma atualização legítima baseada
+        em nova informação.
+      </p>
+      <p>
+        Em loteria, quando uma combinação "improvável" sai (como sequências longas),
+        não há nada a revisar — a probabilidade era igual à de qualquer outra combinação,
+        e continua sendo igual no próximo concurso. Interpretar o resultado inesperado
+        como "sinal" de alguma tendência é o erro central que o artigo sobre
+        <a href="/dicas/vieses-cognitivos">vieses cognitivos</a> descreve.
+      </p>
+
+      <h2>O que dá para aprender com a Copa para jogar melhor</h2>
+      <p>
+        A lição mais útil da Copa para apostadores de loteria não é sobre probabilidade
+        — é sobre diversão. A Copa é seguida apaixonadamente mesmo por quem sabe que
+        não pode prever o resultado. A loteria funciona melhor quando tratada da mesma
+        forma: como entretenimento com incerteza embutida, não como sistema de geração
+        de renda. Defina seu orçamento, jogue com prazer, e use as
+        <a href="/lotofacil/tabelas/frequencia">tabelas do site</a> para curiosidade
+        histórica, não como guia preditivo.
+      </p>
+    `,
+  },
+  {
+    slug: "mega-sena-combinacoes-mais-apostadas",
+    titulo: "Mega-Sena: as combinações mais apostadas — e por que isso pode custar caro",
+    resumo:
+      "Milhões de apostadores escolhem as mesmas combinações sem saber. Se uma dessas combinações sair, o prêmio é dividido entre centenas ou milhares de ganhadores.",
+    data: "2026-07-18",
+    categoria: "megasena" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        A Mega-Sena tem 50.063.860 combinações possíveis — mas não todas são apostadas
+        com a mesma frequência. Alguns padrões são escolhidos por muito mais apostadores
+        do que outros, e isso tem uma consequência direta: se uma dessas combinações
+        populares for sorteada, o prêmio é dividido entre muitos ganhadores.
+      </p>
+
+      <h2>O que faz uma combinação ser popular</h2>
+      <p>
+        A maioria das apostas manuais segue padrões previsíveis ditados pelo cérebro
+        humano, não por aleatoriedade. As combinações mais apostadas tendem a ter:
+      </p>
+      <ul>
+        <li>Números entre 1 e 31 (datas de calendário — aniversários, datas comemorativas)</li>
+        <li>Padrões visuais no volante (diagonais, bordas, formas geométricas)</li>
+        <li>Sequências simples como 5, 10, 15, 20, 25, 30</li>
+        <li>Múltiplos de um número (2, 4, 6, 8, 10, 12)</li>
+        <li>Combinações amplamente divulgadas em grupos de WhatsApp</li>
+      </ul>
+      <p>
+        A Caixa não divulga quais combinações foram mais apostadas em cada concurso,
+        mas a evidência indireta é clara: concursos cujo resultado tem muitos números
+        baixos (abaixo de 31) tendem a ter mais ganhadores do que concursos com
+        números altos — exatamente o que se esperaria se uma grande fatia dos
+        apostadores concentrasse escolhas nessa faixa.
+      </p>
+
+      <h2>O custo real de dividir o prêmio</h2>
+      <p>
+        Imagine um concurso com prêmio acumulado de R$200 milhões. Se a combinação
+        sorteada for uma das mais populares e 500 apostadores tiverem aquele bilhete,
+        cada um recebe R$400.000 — significativo, mas muito diferente de R$200 milhões.
+      </p>
+      <p>
+        Já uma combinação que quase ninguém escolheu — como 33, 41, 47, 52, 58, 59 —
+        tem a mesma probabilidade de ser sorteada, mas se sair, o ganhador único leva
+        os R$200 milhões inteiros. A escolha da combinação não muda sua chance de ganhar,
+        mas pode mudar drasticamente quanto você ganha se ganhar.
+      </p>
+
+      <h2>Como o gerador ajuda</h2>
+      <p>
+        O <a href="/megasena/gerador">gerador de jogos da Mega-Sena</a> produz
+        combinações com distribuição estatisticamente típica, incluindo dezenas
+        distribuídas por toda a faixa de 1 a 60 — não concentradas no intervalo
+        de datas. Isso não aumenta sua chance de ganhar, mas reduz a probabilidade
+        de você estar apostando a mesma combinação que milhares de outras pessoas.
+      </p>
+      <p>
+        Para referência, o artigo sobre
+        <a href="/dicas/numeros-populares">números populares</a> explora esse tema
+        em profundidade — incluindo a evidência histórica de que a distribuição de
+        ganhadores por concurso é consistente com uma concentração de apostas nos
+        números mais "humanos".
+      </p>
+    `,
+  },
+  {
+    slug: "lotofacil-como-gerador-escolhe-dezenas",
+    titulo: "Lotofácil: como o gerador inteligente escolhe dezenas — por dentro do algoritmo",
+    resumo:
+      "O gerador não é um simples sorteador aleatório. Ele aplica filtros de combinatória para produzir jogos com perfil estatístico típico. Veja como funciona cada etapa.",
+    data: "2026-07-21",
+    categoria: "lotofacil" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        O <a href="/lotofacil/gerador">gerador de jogos</a> do LotoAnalítica tem dois
+        modos: simples e avançado. No modo simples, ele gera combinações aleatórias
+        dentro das 3.268.760 possíveis. No modo avançado, aplica filtros configuráveis.
+        Este artigo explica o que acontece por dentro — e por que isso importa
+        (e por que também não importa tanto quanto parece).
+      </p>
+
+      <h2>Modo simples: aleatoriedade real</h2>
+      <p>
+        No modo simples, o gerador usa o gerador de números aleatórios criptográfico
+        do navegador (window.crypto) para selecionar 15 dezenas de 25. Isso garante
+        que cada uma das 3.268.760 combinações tem exatamente a mesma probabilidade
+        de ser gerada — sem viés para números "quentes", sem preferências humanas,
+        sem padrões implícitos.
+      </p>
+      <p>
+        É matematicamente equivalente a um sorteio físico honesto, mas feito em
+        milissegundos. O resultado tem as propriedades estatísticas esperadas: em
+        média, 9 dezenas da moldura e 6 do centro, distribuição par/ímpar próxima
+        de 7-8, soma próxima de 195, e sequências de 4-5 dezenas consecutivas.
+      </p>
+
+      <h2>Modo avançado: filtros de combinatória</h2>
+      <p>
+        No modo avançado, o gerador primeiro gera uma combinação aleatória e depois
+        verifica se ela passa em todos os filtros configurados. Se não passar, gera
+        outra, e repete o processo até encontrar uma que atenda a todos os critérios.
+        Os filtros disponíveis incluem:
+      </p>
+      <ul>
+        <li><strong>Faixa de soma:</strong> aceita só combinações com soma dentro do intervalo especificado (ex: 180-210)</li>
+        <li><strong>Distribuição par/ímpar:</strong> aceita só combinações com exatamente N dezenas pares</li>
+        <li><strong>Primos, Fibonacci, múltiplos de 3:</strong> aceita só combinações com N dezenas de cada tipo</li>
+        <li><strong>Atraso mínimo:</strong> exige que pelo menos N dezenas do jogo não tenham saído nos últimos X concursos</li>
+        <li><strong>Ciclo atual:</strong> pode incluir ou excluir dezenas que já saíram no ciclo atual</li>
+      </ul>
+
+      <h2>O que os filtros fazem de verdade</h2>
+      <p>
+        Cada filtro aplicado reduz o espaço de combinações possíveis. Um filtro de
+        soma 180-210 aceita aproximadamente 58% das combinações; um filtro de
+        distribuição 7-8 pares aceita cerca de 57%. Combinar dois filtros pode
+        aceitar apenas 30-40% das combinações — e cada filtro adicionado reduz
+        mais ainda.
+      </p>
+      <p>
+        O resultado é uma combinação que pertence ao subconjunto filtrado — não
+        necessariamente "melhor", mas diferente das que ficaram de fora. Dentro
+        desse subconjunto, todas as combinações têm a mesma probabilidade de ganhar.
+        Os filtros não identificam combinações "mais prováveis de sair" — identificam
+        combinações com certas características estatísticas.
+      </p>
+
+      <h2>Por que usar o gerador mesmo assim</h2>
+      <p>
+        A vantagem prática não é probabilística — é comportamental. Combinações
+        geradas aleatoriamente tendem a ser diferentes das combinações que a maioria
+        dos apostadores escolhe manualmente, o que reduz a probabilidade de dividir
+        o prêmio com outros ganhadores caso você acerte. Esse é o único argumento
+        concreto para usar um gerador, e ele está explicado em detalhes no artigo
+        sobre <a href="/dicas/numeros-populares">números populares</a>.
+      </p>
+    `,
+  },
+  {
+    slug: "mega-sena-rateio-premio-anunciado",
+    titulo: "O que é rateio — e por que o prêmio da Mega-Sena quase nunca é o valor anunciado",
+    resumo:
+      "O prêmio anunciado é uma estimativa. O que você recebe de verdade depende de quantas pessoas apostaram e quantas ganharam. A diferença pode ser enorme.",
+    data: "2026-07-25",
+    categoria: "megasena" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        "Mega-Sena acumulada em R$150 milhões" — essa manchete leva milhões de
+        brasileiros a apostar. Mas o número que aparece na manchete quase nunca
+        é o que o ganhador recebe. Entender por que é entender como a Mega-Sena
+        realmente funciona.
+      </p>
+
+      <h2>A diferença entre estimativa e prêmio real</h2>
+      <p>
+        O valor anunciado pela Caixa antes do sorteio é uma <em>estimativa</em>
+        baseada no histórico de arrecadação de concursos similares. O prêmio real
+        de qualquer concurso só é conhecido depois que as apostas encerram — porque
+        ele é calculado como uma porcentagem da arrecadação daquele concurso
+        específico, somada aos acúmulos anteriores.
+      </p>
+      <p>
+        Se a Caixa estima R$150 milhões mas o concurso arrecada mais do que o
+        esperado (o que acontece em concursos com prêmio alto, quando mais pessoas
+        apostam), o prêmio real pode ser R$180 milhões. Se arrecada menos, pode
+        ser R$130 milhões. A estimativa tem margem de erro que pode chegar a
+        10-20% para cima ou para baixo.
+      </p>
+
+      <h2>O que é rateio e como ele reduz o prêmio por ganhador</h2>
+      <p>
+        Rateio significa que o valor disponível para a faixa principal é dividido
+        igualmente entre todos os ganhadores daquela faixa. Se o prêmio real é
+        R$150 milhões e há 3 ganhadores de sena, cada um recebe R$50 milhões.
+        Se há 10 ganhadores, cada um recebe R$15 milhões.
+      </p>
+      <p>
+        O número de ganhadores é completamente imprevisível — depende de quantas
+        apostas foram feitas e quais combinações foram escolhidas. Em concursos com
+        prêmio muito alto (que atraem muito mais apostadores), a chance de haver
+        múltiplos ganhadores é bem maior do que em concursos normais.
+      </p>
+
+      <h2>O efeito perverso do prêmio alto</h2>
+      <p>
+        Concursos com prêmio acumulado muito alto atraem um volume enorme de apostas
+        — às vezes 5 ou 10 vezes mais do que um concurso normal. Isso aumenta a
+        arrecadação (e portanto o prêmio real), mas também aumenta drasticamente
+        a probabilidade de múltiplos ganhadores. O prêmio por ganhador pode ser
+        muito menor do que o estimado, mesmo com o prêmio bruto maior.
+      </p>
+      <p>
+        Entender isso ajuda a calibrar expectativas: o "prêmio recorde de R$500
+        milhões" pode resultar em vários ganhadores recebendo R$80 milhões cada —
+        ainda transformador, mas bem diferente dos R$500 milhões da manchete. O
+        histórico completo de prêmios pagos está na
+        <a href="/megasena/acumulos">linha do tempo de acúmulos</a>.
+      </p>
+    `,
+  },
+  {
+    slug: "bolao-como-dividir-apostas-eficientemente",
+    titulo: "Bolão: como dividir as apostas de forma eficiente entre os participantes",
+    resumo:
+      "Um bolão bem organizado não é só juntar dinheiro — é distribuir combinações de forma que cada real apostado cubra o máximo possível. Veja como fazer isso.",
+    data: "2026-07-28",
+    categoria: "educativo" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        Bolão de loteria parece simples: cada um coloca R$20, compram-se bilhetes
+        e dividem-se os prêmios. Mas a forma como os bilhetes são escolhidos
+        e distribuídos faz diferença real na eficiência da cobertura. Este guia
+        explica as principais abordagens.
+      </p>
+
+      <h2>Bolão de apostas independentes</h2>
+      <p>
+        A forma mais comum: cada participante sugere combinações, todas são apostadas,
+        e qualquer prêmio é dividido proporcionalmente à contribuição. Funciona, mas
+        tem um problema: as combinações podem se sobrepor — dois participantes podem
+        sugerir jogos com 12 dezenas iguais, desperdiçando cobertura. Sem coordenação,
+        o grupo acaba cobrindo um espaço menor do que poderia com o mesmo dinheiro.
+      </p>
+
+      <h2>Bolão com fechamento reduzido</h2>
+      <p>
+        A alternativa organizada: o grupo escolhe um pool de dezenas (ex: 18 dezenas)
+        e usa um fechamento reduzido para garantir que, se as dezenas sorteadas
+        estiverem dentro do pool, pelo menos um bilhete do grupo capture uma boa
+        pontuação. O <a href="/lotofacil/bolao">otimizador de bolão</a> faz esse
+        cálculo por você — basta escolher o pool, o orçamento e o nível de cobertura
+        desejado.
+      </p>
+      <p>
+        A vantagem sobre apostas independentes: zero sobreposição desperdiçada,
+        cobertura sistemática do pool escolhido. A desvantagem: depende da qualidade
+        da escolha do pool — se as dezenas sorteadas ficarem fora do pool, nenhum
+        bilhete ganha na faixa principal.
+      </p>
+
+      <h2>Como gerenciar a distribuição entre participantes</h2>
+      <p>
+        Em grupos maiores, é útil documentar formalmente quem participou, quanto
+        cada um contribuiu e quais bilhetes pertencem ao bolão. O
+        <a href="/lotofacil/bolao">gerador de bolão</a> produz um PDF com todos os
+        bilhetes e a lista de participantes — ideal para compartilhar no grupo do
+        WhatsApp antes do sorteio e evitar disputas caso haja ganhador.
+      </p>
+
+      <h2>A regra de ouro do bolão</h2>
+      <p>
+        Independente do formato escolhido, o mais importante é documentar tudo antes
+        do sorteio. Prêmios grandes revelam desentendimentos que não existiam antes —
+        "eu participei sim", "esse bilhete era do bolão sim". Um registro simples com
+        nome, valor contribuído e número dos bilhetes resolve esses problemas antes
+        que eles apareçam.
+      </p>
+    `,
+  },
+  {
+    slug: "lotofacil-independencia-2026-o-que-esperar",
+    titulo: "Lotofácil da Independência 2026: o que esperar do maior prêmio de setembro",
+    resumo:
+      "Todo 7 de setembro a Lotofácil realiza um concurso especial com prêmio inflado pelo acúmulo programático do ano. Entenda como o prêmio é formado e o que diferencia esse concurso.",
+    data: "2026-08-01",
+    categoria: "lotofacil" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        Todo ano, próximo ao 7 de setembro, a Lotofácil realiza o concurso da
+        Independência — um sorteio especial cujo prêmio é inflado por um acúmulo
+        programático acumulado ao longo do ano. Em 2026, o concurso está entre os
+        mais aguardados do calendário.
+      </p>
+
+      <h2>Como o prêmio especial é formado</h2>
+      <p>
+        A Caixa separa automaticamente 15% do fundo de cada concurso regular da
+        Lotofácil ao longo do ano para o concurso da Independência. Isso significa
+        que cada aposta que você faz em qualquer concurso normal da Lotofácil também
+        está contribuindo indiretamente para o prêmio especial de setembro.
+      </p>
+      <p>
+        Ao longo de aproximadamente 9 meses de acúmulo (de janeiro até o concurso),
+        com centenas de concursos regulares e bilhões de reais em arrecadação, o
+        fundo acumulado pode chegar a R$100 milhões ou mais. Combinado com a
+        arrecadação do próprio concurso especial (que tende a ser muito maior que
+        o normal, pois mais pessoas apostam), o prêmio pode ultrapassar R$150 milhões.
+      </p>
+
+      <h2>O que diferencia o concurso especial dos regulares</h2>
+      <p>
+        Do ponto de vista das regras, o concurso da Independência é idêntico a
+        qualquer outro da Lotofácil: 25 dezenas, 15 sorteadas, mesmas faixas de
+        premiação, mesmo processo de rateio. A única diferença é o tamanho do
+        fundo disponível para a faixa principal.
+      </p>
+      <p>
+        Isso tem uma implicação prática: com muito mais apostadores participando
+        (atraídos pelo prêmio alto), a probabilidade de múltiplos ganhadores de
+        15 acertos é muito maior do que num concurso normal. O prêmio por ganhador
+        pode ser bem menor do que o total anunciado.
+      </p>
+
+      <h2>Faz sentido apostar mais no concurso especial?</h2>
+      <p>
+        Do ponto de vista do valor esperado, sim — o fundo maior significa mais
+        retorno esperado por aposta. Mas as mesmas ressalvas do artigo sobre a
+        <a href="/analises/mega-da-virada-2026-matematica-premio">Mega da Virada</a>
+        se aplicam: o volume maior de apostas aumenta a chance de rateio, e o
+        retorno esperado nunca é positivo o suficiente para transformar a loteria
+        em investimento.
+      </p>
+      <p>
+        A forma mais honesta de ver o concurso especial: é um bom momento para
+        jogar se você já joga regularmente, com o mesmo orçamento de sempre. Apostar
+        10 vezes mais "porque o prêmio é maior" não muda a matemática a seu favor.
+      </p>
+    `,
+  },
+  {
+    slug: "simulador-historico-jogar-mesmo-jogo-10-anos",
+    titulo: "O que acontece se você jogar o mesmo jogo na Lotofácil por 10 anos?",
+    resumo:
+      "O simulador histórico responde com dados reais: custo total, prêmios ganhos, faixas acertadas e saldo final de qualquer combinação em todo o histórico.",
+    data: "2026-08-04",
+    categoria: "educativo" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        Uma das dúvidas mais comuns entre apostadores regulares: "se eu jogar sempre
+        o mesmo jogo, eventualmente vou ganhar?" O
+        <a href="/lotofacil/simulador">simulador histórico</a> responde essa pergunta
+        com dados reais — não com estimativas, mas com o resultado concurso por concurso
+        de qualquer combinação em toda a história da Lotofácil.
+      </p>
+
+      <h2>O experimento: jogar sempre o mesmo jogo</h2>
+      <p>
+        Escolha qualquer combinação de 15 dezenas. O simulador vai calcular, para
+        cada um dos 3.700+ concursos da Lotofácil, quantas dezenas desse jogo
+        coincidiram com o resultado e se houve premiação. No final, você vê:
+      </p>
+      <ul>
+        <li>Quantas vezes o jogo teve 11, 12, 13, 14 e 15 acertos</li>
+        <li>O total gasto (número de concursos × R$3,50)</li>
+        <li>O total recebido em prêmios brutos</li>
+        <li>O saldo final (quase sempre negativo)</li>
+        <li>A evolução do saldo ao longo do tempo</li>
+      </ul>
+
+      <h2>O que o resultado típico mostra</h2>
+      <p>
+        Para um jogo típico de 15 dezenas conferido contra todos os 3.720 concursos:
+        o custo total fica em torno de R$13.000. Os prêmios arrecadados somam cerca
+        de R$5.500 a R$6.000 (refletindo o retorno de ~43% da Caixa). O saldo final
+        fica negativo em aproximadamente R$7.000 a R$8.000.
+      </p>
+      <p>
+        Isso inclui dezenas de concursos com 11 acertos (R$5 cada), cerca de 70-90
+        concursos com 12 acertos (R$10 cada), 10-15 concursos com 13 acertos (R$25
+        cada) e provavelmente zero ou um concurso com 14 ou 15 acertos. É um retrato
+        honesto do que acontece na prática.
+      </p>
+
+      <h2>Jogar sempre o mesmo jogo vs. trocar todo concurso</h2>
+      <p>
+        Matematicamente, não faz diferença. A probabilidade de cada concurso é
+        independente — jogar a mesma combinação por 100 concursos não aumenta
+        a chance de acertar no 101º. É o mesmo que comprar 100 bilhetes de rifa
+        diferentes vs. comprar 100 bilhetes com o mesmo número: a probabilidade
+        total é idêntica.
+      </p>
+      <p>
+        A única diferença é emocional: jogar sempre o mesmo jogo cria a sensação
+        de que "o jogo está quase ganhando" quando acerta 13 ou 14 dezenas. Esse
+        apego emocional pode levar a gastar mais do que o planejado. O simulador
+        ajuda a ver esses momentos no contexto do histórico completo, sem o viés
+        da memória seletiva.
+      </p>
+
+      <h2>Como usar o simulador</h2>
+      <p>
+        Acesse <a href="/lotofacil/simulador">Lotofácil → Simulador</a>, selecione
+        as dezenas no volante e clique em simular. A versão gratuita mostra os
+        últimos 100 concursos; assinantes Premium têm acesso ao histórico completo
+        de mais de 3.700 concursos.
+      </p>
+    `,
+  },
+  {
+    slug: "mega-sena-ganhadores-por-concurso-media",
+    titulo: "Mega-Sena: quantos ganhadores por concurso, em média — e o que os dados revelam",
+    resumo:
+      "A distribuição de ganhadores por concurso da Mega-Sena é altamente assimétrica. Na maioria dos sorteios não há ganhador de sena — mas quando há, pode haver vários.",
+    data: "2026-08-08",
+    categoria: "megasena" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        A pergunta parece simples: em média, quantas pessoas ganham a sena por
+        concurso? A resposta revela algo interessante sobre como o volume de apostas
+        afeta a distribuição de prêmios.
+      </p>
+
+      <h2>A distribuição assimétrica</h2>
+      <p>
+        Em um concurso típico da Mega-Sena (sem acúmulo, com volume normal de
+        apostas), a chance de haver pelo menos um ganhador de sena é de
+        aproximadamente 20-30%. Ou seja, em cerca de 70-80% dos concursos, ninguém
+        acerta as 6 dezenas e o prêmio acumula para o próximo.
+      </p>
+      <p>
+        Quando há acúmulo prolongado e o prêmio fica muito alto, o volume de apostas
+        pode multiplicar por 5 ou 10. Isso aumenta a probabilidade de haver um
+        ganhador — mas também aumenta drasticamente a chance de múltiplos ganhadores.
+        Em concursos com prêmio de R$200 milhões ou mais, não é incomum haver 3,
+        5 ou até 10 ganhadores de sena.
+      </p>
+
+      <h2>O paradoxo do prêmio alto</h2>
+      <p>
+        Prêmios altos atraem mais apostadores, o que por si só aumenta a arrecadação
+        e portanto o prêmio bruto. Mas os mesmos apostadores extras aumentam a
+        probabilidade de que alguém escolheu a mesma combinação que você — reduzindo
+        o prêmio por ganhador. É um efeito que vai na direção oposta ao que a
+        intuição sugere.
+      </p>
+      <p>
+        Em termos de valor esperado por aposta, concursos com prêmio acumulado muito
+        grande (acima de ~R$300 milhões) tendem a ter valor esperado positivo mesmo
+        considerando o rateio esperado. Mas a variância é enorme — você pode tanto
+        ganhar R$50 milhões (com outros 5 ganhadores) quanto ganhar R$300 milhões
+        (como único ganhador).
+      </p>
+
+      <h2>O histórico real</h2>
+      <p>
+        Olhando os dados históricos disponíveis na
+        <a href="/megasena/acumulos">linha do tempo de acúmulos</a>, os maiores
+        prêmios individuais da Mega-Sena foram pagos em concursos com ganhador
+        único — o que acontece quando o prêmio é alto mas o volume de apostas
+        não foi grande o suficiente para multiplicar muito a base. Concursos com
+        prêmio muito amplamente divulgado tendem a ter mais ganhadores e portanto
+        prêmio por pessoa menor.
+      </p>
+    `,
+  },
+  {
+    slug: "lotofacil-5-filtros-gerador-avancado",
+    titulo: "Lotofácil: 5 filtros do gerador avançado explicados — o que cada um faz",
+    resumo:
+      "O modo avançado do gerador tem mais de 10 parâmetros configuráveis. Veja os 5 mais usados, o que cada um faz matematicamente e quando faz sentido ativá-los.",
+    data: "2026-08-11",
+    categoria: "lotofacil" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        O <a href="/lotofacil/gerador">gerador de jogos da Lotofácil</a> em modo
+        avançado oferece mais de 10 filtros configuráveis. Para usuários Premium,
+        esses filtros podem ser combinados livremente. Aqui estão os 5 mais usados
+        com explicação de como cada um funciona matematicamente.
+      </p>
+
+      <h2>1. Filtro de soma (180–210)</h2>
+      <p>
+        Aceita apenas combinações cuja soma das 15 dezenas esteja dentro do intervalo
+        configurado. O intervalo padrão de 180-210 cobre aproximadamente 58% de todas
+        as combinações possíveis — excluindo as somas mais extremas que raramente
+        aparecem no histórico real. Como explicado no artigo sobre
+        <a href="/dicas/soma">soma das dezenas</a>, isso não aumenta a chance de
+        ganhar, mas gera jogos com perfil mais "típico".
+      </p>
+
+      <h2>2. Filtro par/ímpar (6-9 pares)</h2>
+      <p>
+        Aceita apenas combinações com entre 6 e 9 dezenas pares (e portanto 6 a 9
+        ímpares). As distribuições 7-8 e 8-7 são as mais comuns historicamente,
+        cobrindo ~57% de todas as combinações. Filtrar para 6-9 pares cobre ~98%
+        das combinações — um filtro amplo que só exclui os extremos mais raros.
+      </p>
+
+      <h2>3. Filtro de primos (4-7 primos)</h2>
+      <p>
+        Aceita apenas combinações com entre 4 e 7 números primos entre as 15 dezenas.
+        Com média esperada de 5,4 primos por jogo, esse intervalo cobre a faixa central
+        da distribuição. Os extremos (0-2 primos ou 8-9 primos) são raros e o filtro
+        os exclui.
+      </p>
+
+      <h2>4. Filtro de atraso mínimo</h2>
+      <p>
+        Exige que pelo menos N dezenas do jogo não tenham saído nos últimos X concursos.
+        Por exemplo: "pelo menos 5 dezenas com atraso maior que 3". Esse filtro é
+        baseado na ideia de incluir dezenas "descansadas" — mas como explicado no
+        artigo sobre <a href="/dicas/atraso">atraso</a>, isso não tem base matemática
+        para prever o próximo concurso. É uma preferência pessoal, não uma estratégia.
+      </p>
+
+      <h2>5. Filtro de ciclo atual</h2>
+      <p>
+        O ciclo atual mostra quais dezenas já saíram desde que o último ciclo fechou
+        (todas as 25 dezenas apareceram pelo menos uma vez). O filtro permite incluir
+        ou excluir dezenas que ainda não saíram no ciclo atual. Matematicamente, isso
+        tem o mesmo problema do filtro de atraso — o ciclo não prevê nada sobre o
+        próximo concurso. Mas é uma forma diferente de organizar a escolha de dezenas
+        se você aprecia essa perspectiva visual.
+      </p>
+
+      <h2>Como combinar filtros sem travar o gerador</h2>
+      <p>
+        Cada filtro adicionado reduz o espaço de combinações válidas. Com muitos filtros
+        restritivos combinados, o gerador pode não encontrar nenhuma combinação válida
+        dentro do limite de tentativas — e vai avisar. A recomendação é começar com 1
+        ou 2 filtros e adicionar mais gradualmente, verificando se o gerador ainda
+        produz resultados. O modo simples sempre funciona como fallback.
+      </p>
+    `,
+  },
+  {
+    slug: "eleicoes-2026-superstição-numeros-candidatos",
+    titulo: "Eleições 2026: números de candidatos, superstição e o que a psicologia diz",
+    resumo:
+      "Com a campanha eleitoral aquecendo, os números dos candidatos viram fetiches e talismãs. A mesma psicologia que cria 'números da sorte' opera aqui — e a ciência explica por quê.",
+    data: "2026-08-15",
+    categoria: "educativo" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        Com as eleições de outubro se aproximando e a propaganda eleitoral começando
+        em 16 de agosto, o Brasil entra no ciclo dos números de candidatos — o 13,
+        o 22, o 45, o 55. Esses números viram parte da identidade política de milhões
+        de pessoas. A psicologia por trás desse fenômeno é a mesma que cria "números
+        da sorte" em loteria — e é fascinante entender por quê.
+      </p>
+
+      <h2>Como números viram símbolos</h2>
+      <p>
+        Em política, o número do partido na urna eletrônica é um identificador
+        técnico — ele diz ao sistema qual candidato você está votando. Mas para o
+        eleitor, esse número rapidamente se carrega de significado emocional: ele
+        está associado a um candidato que você admira, a vitórias passadas, a uma
+        comunidade de pessoas que pensam como você. O número vira símbolo.
+      </p>
+      <p>
+        O mesmo processo acontece em loteria: o número do aniversário, a combinação
+        que "quase ganhou", os números que você joga há anos — todos acumulam
+        significado emocional que vai muito além de sua função matemática (que é
+        zero — nenhum número tem propriedade especial em um sorteio honesto).
+      </p>
+
+      <h2>A psicologia do "meu número"</h2>
+      <p>
+        Pesquisas em psicologia cognitiva mostram que as pessoas atribuem
+        características pessoais a números com os quais têm associações — o número
+        do time, o número do candidato favorito, a data de nascimento. Esse fenômeno
+        é chamado de "efeito de posse" cognitivo: tratamos o número como "nosso",
+        e por isso o percebemos como mais valioso, mais provável, mais especial.
+      </p>
+      <p>
+        Em política, isso é parte legítima do processo democrático — criar identidade
+        em torno de símbolos (incluindo números) ajuda a mobilizar eleitores e
+        construir coesão em torno de causas. Em loteria, o mesmo mecanismo cria
+        uma ilusão de probabilidade que não existe — o "meu número" não tem mais
+        chance de sair do que qualquer outro.
+      </p>
+
+      <h2>O que fazer com essa informação</h2>
+      <p>
+        Em outubro, quando você for votar, o número do candidato vai funcionar
+        perfeitamente como identificador — é para isso que existe. Em loteria,
+        se você quer jogar os números do seu candidato favorito, tudo bem —
+        mas saiba que a motivação é emocional, não matemática. A chance de ganhar
+        é exatamente a mesma de qualquer outra combinação.
+      </p>
+      <p>
+        O artigo sobre <a href="/dicas/vieses-cognitivos">vieses cognitivos</a>
+        explora em profundidade os mecanismos psicológicos que fazem certas
+        combinações parecerem "melhores" do que outras — e por que resistir a
+        esses vieses é difícil mesmo quando você sabe que eles existem.
+      </p>
+    `,
+  },
+  {
+    slug: "conferidor-foto-como-funciona",
+    titulo: "Como funciona o conferidor por foto do bilhete da Lotofácil",
+    resumo:
+      "Fotografe o bilhete físico da lotérica e o conferidor identifica as dezenas automaticamente via OCR. Veja como usar, o que funciona bem e as limitações.",
+    data: "2026-08-18",
+    categoria: "lotofacil" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        Apostou na lotérica, pegou o bilhete físico e quer conferir sem digitar
+        dezena por dezena? O <a href="/lotofacil/conferidor">conferidor por foto</a>
+        faz isso automaticamente — você fotografa o bilhete, o sistema lê as dezenas
+        e confere contra o último resultado (ou qualquer concurso do histórico).
+      </p>
+
+      <h2>Como o reconhecimento funciona</h2>
+      <p>
+        O sistema usa OCR (Optical Character Recognition) via Google Cloud Vision —
+        a mesma tecnologia usada para digitalizar documentos e extrair texto de
+        imagens. A foto é enviada para a API, que retorna o texto reconhecido,
+        e o sistema então interpreta quais números correspondem às dezenas do jogo.
+      </p>
+      <p>
+        Para que o reconhecimento funcione bem, o bilhete precisa estar bem
+        iluminado, sem dobras que distorçam os números, e a câmera precisa
+        estar centralizada sobre o bilhete. Fotos tiradas de lado, com sombra
+        forte ou muito longe do bilhete tendem a ter menor taxa de acerto.
+      </p>
+
+      <h2>O que o sistema faz com o texto reconhecido</h2>
+      <p>
+        Após extrair o texto, o sistema procura padrões numéricos que correspondam
+        a dezenas válidas da Lotofácil (1 a 25). Filtra números fora desse intervalo
+        (como o número do concurso, a data, o valor pago) e monta a lista de dezenas
+        do jogo. Se reconhecer exatamente 15 dezenas válidas sem ambiguidade, confere
+        automaticamente. Se houver dúvida, pede confirmação antes de processar.
+      </p>
+
+      <h2>Limitações importantes</h2>
+      <p>
+        O OCR não é infalível. Bilhetes velhos, amassados, molhados ou com tinta
+        borrada podem produzir erros de reconhecimento. O sistema sempre mostra as
+        dezenas reconhecidas antes de confirmar a conferência — revise se os números
+        batem com o bilhete físico antes de aceitar o resultado.
+      </p>
+      <p>
+        O conferidor por foto está disponível para assinantes Premium. A versão
+        gratuita usa o conferidor manual, onde você seleciona as dezenas no volante
+        digital.
+      </p>
+
+      <h2>Conferência contra o histórico</h2>
+      <p>
+        Além de conferir contra o último concurso, você pode usar as dezenas
+        reconhecidas para verificar o desempenho histórico daquele jogo em todos
+        os concursos — o mesmo recurso do conferidor manual. Útil para ver se
+        aquele bilhete que você guarda há anos "quase ganhou" quantas vezes de
+        verdade (a resposta honesta costuma ser diferente da impressão).
+      </p>
+    `,
+  },
+  {
+    slug: "mega-sena-chance-real-quina-vs-sena",
+    titulo: "Mega-Sena: a chance real de acertar quina vs sena — e o retorno de cada faixa",
+    resumo:
+      "Acertar 5 dezenas na Mega-Sena é 324 vezes mais fácil que acertar 6. Mas o prêmio é também muito menor. Veja a relação entre probabilidade e retorno em cada faixa.",
+    data: "2026-08-22",
+    categoria: "megasena" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        A Mega-Sena tem 3 faixas de premiação: sena (6 acertos), quina (5 acertos)
+        e quadra (4 acertos). A diferença de probabilidade entre elas é enorme —
+        e a relação entre probabilidade e retorno esperado por faixa é uma das
+        análises mais reveladoras sobre como as loterias são estruturadas.
+      </p>
+
+      <h2>As probabilidades exatas</h2>
+      <p>
+        Para uma aposta simples de 6 dezenas:
+      </p>
+      <ul>
+        <li><strong>Sena (6 acertos):</strong> 1 em 50.063.860 — probabilidade de 0,000002%</li>
+        <li><strong>Quina (5 acertos):</strong> 1 em 154.518 — probabilidade de 0,00065%</li>
+        <li><strong>Quadra (4 acertos):</strong> 1 em 2.332 — probabilidade de 0,043%</li>
+      </ul>
+      <p>
+        A quina é 324 vezes mais provável que a sena. A quadra é 21.500 vezes mais
+        provável que a sena. Esses números mostram por que a maioria dos apostadores
+        que alguma vez recebeu algum prêmio da Mega-Sena acertou a quadra — é a faixa
+        acessível em escala humana de apostas.
+      </p>
+
+      <h2>O retorno esperado por faixa</h2>
+      <p>
+        A Caixa destina percentuais fixos da arrecadação para cada faixa: 35% para
+        sena, 19% para quina e 19% para quadra (o restante acumula para concursos
+        especiais). Combinando probabilidade com retorno esperado:
+      </p>
+      <ul>
+        <li>Sena: altíssima variância, prêmio pode ser de milhões a bilhões</li>
+        <li>Quina: prêmio médio histórico de R$30.000 a R$80.000, altamente variável com o rateio</li>
+        <li>Quadra: prêmio médio histórico de R$700 a R$1.500, mais estável</li>
+      </ul>
+      <p>
+        O prêmio da quina e da quadra variam muito porque também são rateados —
+        muitos apostadores acertam essas faixas por concurso, e o fundo disponível
+        é dividido entre todos eles.
+      </p>
+
+      <h2>Faz sentido apostar "para acertar quina"?</h2>
+      <p>
+        Matematicamente não existe estratégia que melhore a chance de acertar
+        qualquer faixa específica — cada dezena tem exatamente a mesma probabilidade.
+        O que você pode fazer é usar apostas com mais dezenas (7, 8, 9 dezenas),
+        que aumentam proporcionalmente a chance de acertar todas as faixas,
+        mas custam proporcionalmente mais. Veja o artigo sobre
+        <a href="/dicas/mais-dezenas-vale-a-pena">apostar mais dezenas</a> para
+        a análise completa de custo vs. probabilidade.
+      </p>
+    `,
+  },
+  {
+    slug: "lotofacil-resultados-mais-improvaveis-historia",
+    titulo: "Lotofácil: os concursos com resultado mais improvável da história",
+    resumo:
+      "Alguns resultados históricos da Lotofácil têm combinações de características estatísticas rarísimas. Quais são e o que eles revelam sobre aleatoriedade.",
+    data: "2026-08-25",
+    categoria: "lotofacil" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        Toda combinação da Lotofácil tem a mesma probabilidade de ser sorteada:
+        1 em 3.268.760. Mas algumas combinações são "improváveis" em outro sentido —
+        elas têm um perfil estatístico muito distante do típico: soma extremamente
+        baixa ou alta, distribuição par/ímpar incomum, sequências longas incomuns.
+        Olhar para esses concursos é uma forma fascinante de entender o que
+        "improvável" realmente significa em um sistema aleatório.
+      </p>
+
+      <h2>O que torna um resultado "improvável"</h2>
+      <p>
+        Um resultado é estatisticamente incomum quando seu perfil cai em regiões
+        raras da distribuição combinatória. Por exemplo: um resultado com soma
+        abaixo de 160 é incomum porque menos de 0,5% de todas as combinações têm
+        essa propriedade. Um resultado com 10 dezenas pares é incomum porque apenas
+        2,6% das combinações têm distribuição 10-5.
+      </p>
+      <p>
+        Mas é importante separar dois tipos de "improvável": improvável de existir
+        (pouquíssimas combinações têm aquela característica) vs. improvável de sair
+        (toda combinação específica tem a mesma chance baixíssima). O resultado com
+        soma 155 não tem menos chance de sair do que o resultado com soma 195 — ele
+        simplesmente tem poucas "irmãs" com a mesma característica.
+      </p>
+
+      <h2>Exemplos históricos notáveis</h2>
+      <p>
+        Ao longo de 3.720+ concursos, a Lotofácil já produziu resultados com:
+      </p>
+      <ul>
+        <li>Somas abaixo de 158 (menos de 0,2% das combinações)</li>
+        <li>Somas acima de 233 (menos de 0,3% das combinações)</li>
+        <li>9 ou mais dezenas pares (apenas 5,2% das combinações têm 9+ pares)</li>
+        <li>Sequências de 8 ou mais dezenas consecutivas (menos de 1% das combinações)</li>
+        <li>Nenhuma dezena prima ou apenas 1 primo (menos de 0,1% das combinações)</li>
+      </ul>
+      <p>
+        Todos esses eventos já aconteceram no histórico real — exatamente na frequência
+        que a combinatória prevê. Isso é, ao mesmo tempo, esperado (a combinatória
+        prevê que eventos raros vão acontecer em uma amostra grande) e revelador
+        (mostra que o sorteio realmente gera todas as combinações, não só as "típicas").
+      </p>
+
+      <h2>O Índice de Equilíbrio dos concursos mais improváveis</h2>
+      <p>
+        Usando o <a href="/lotofacil/equilibrio">Índice de Equilíbrio</a>, você pode
+        calcular a nota de qualquer resultado histórico. Os concursos com resultados
+        mais "improváveis" no sentido estatístico teriam notas muito baixas —
+        indicando que o resultado é incomum em múltiplas dimensões ao mesmo tempo.
+        Mas a nota baixa não os tornou menos prováveis de sair: aconteceram como
+        qualquer outro.
+      </p>
+      <p>
+        Esse é um dos exemplos mais concretos de por que "improvável" em estatística
+        não significa "difícil de acontecer" — significa apenas "raro no espaço de
+        possibilidades". Com 3.720 tentativas, até os eventos com probabilidade de
+        0,1% de existir aparecem várias vezes.
+      </p>
+    `,
+  },
+  {
+    slug: "lotofacil-independencia-2026-guia-completo",
+    titulo: "Lotofácil da Independência 2026: guia completo para o concurso de setembro",
+    resumo:
+      "Data, formato, como o prêmio é formado, estratégias de bolão e o que esperar. Tudo sobre o maior concurso da Lotofácil no ano.",
+    data: "2026-09-01",
+    categoria: "lotofacil" as const,
+    tempoLeitura: 6,
+    corpo: `
+      <p>
+        O concurso da Lotofácil da Independência é o mais esperado do ano para
+        apostadores da Lotofácil. Com prêmio inflado por meses de acúmulo programático,
+        ele concentra um volume de apostas muito maior que o normal — e algumas
+        particularidades que vale entender antes de decidir como participar.
+      </p>
+
+      <h2>Quando acontece</h2>
+      <p>
+        O concurso especial é realizado próximo ao 7 de setembro, Dia da Independência
+        do Brasil — daí o nome. A data exata é definida pela Caixa com algumas semanas
+        de antecedência, sempre em um dia próximo ao feriado. As apostas seguem o
+        mesmo prazo de qualquer concurso regular: encerram até às 19h no dia do sorteio.
+      </p>
+
+      <h2>Como o prêmio especial é formado</h2>
+      <p>
+        Desde janeiro, 15% do fundo de cada concurso regular da Lotofácil é separado
+        automaticamente para o concurso da Independência. Com centenas de concursos
+        regulares e arrecadação total de bilhões de reais, esse acúmulo programático
+        pode chegar a R$100-150 milhões antes do concurso especial começar.
+      </p>
+      <p>
+        Somado à arrecadação do próprio concurso especial (que tende a ser de 3 a 5
+        vezes maior que um concurso normal, porque muitos apostadores que não jogam
+        regularmente participam), o prêmio final pode facilmente ultrapassar
+        R$200 milhões.
+      </p>
+
+      <h2>O que é diferente no concurso especial</h2>
+      <p>
+        As regras são idênticas às de qualquer Lotofácil: 25 dezenas, 15 sorteadas,
+        mesmas faixas de premiação (11 a 15 acertos), mesmo processo de rateio.
+        A única diferença é o tamanho do fundo — e suas consequências:
+      </p>
+      <ul>
+        <li>Muito mais apostadores participam, atraídos pelo prêmio maior</li>
+        <li>A chance de múltiplos ganhadores de 15 acertos é bem maior que no normal</li>
+        <li>O prêmio por ganhador pode ser muito menor que o total anunciado</li>
+        <li>Os prêmios das faixas 11, 12 e 13 continuam fixos (R$5, R$10, R$25)</li>
+      </ul>
+
+      <h2>Estratégias de bolão para o concurso especial</h2>
+      <p>
+        O concurso da Independência é ideal para bolões porque o prêmio maior justifica
+        um investimento maior do grupo. Um bolão com fechamento reduzido de 18 dezenas
+        (cerca de R$350-500 por grupo) cobre sistematicamente o pool escolhido — se
+        as dezenas sorteadas estiverem dentro do pool, pelo menos um bilhete do grupo
+        captura um bom resultado.
+      </p>
+      <p>
+        O <a href="/lotofacil/bolao">otimizador de bolão</a> gera o plano completo:
+        escolha o pool de dezenas, o orçamento do grupo e o nível de cobertura
+        desejado, e o sistema gera os bilhetes otimizados com PDF para distribuir.
+      </p>
+
+      <h2>Quanto apostar: a regra do orçamento fixo</h2>
+      <p>
+        O concurso especial não é uma oportunidade única de enriquecer — é um concurso
+        com prêmio maior, mas com mais competidores e maior probabilidade de rateio.
+        A recomendação financeiramente saudável é: participe com o mesmo orçamento
+        que você usaria em qualquer concurso que te pareça interessante. Apostar 10
+        vezes mais "porque o prêmio é maior" não muda a matemática a seu favor — só
+        aumenta o valor esperado de perda proporcional ao que você apostar.
+      </p>
+      <p>
+        Use o <a href="/lotofacil/simulador">simulador histórico</a> para ver como
+        jogos similares performaram nos concursos especiais anteriores — e o
+        <a href="/lotofacil/acumulos">histórico de acúmulos</a> para ver os prêmios
+        pagos nas edições passadas da Independência.
       </p>
     `,
   },
