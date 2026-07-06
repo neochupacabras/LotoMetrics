@@ -6,11 +6,13 @@ import UserMenu from "@/components/auth/UserMenu";
 export default function Masthead({
   loteriaAtiva,
   dicasAtiva,
+  analisesAtiva,
   quizAtivo,
   premiumAtivo,
 }: {
   loteriaAtiva?: CodigoLoteria;
   dicasAtiva?: boolean;
+  analisesAtiva?: boolean;
   quizAtivo?: boolean;
   premiumAtivo?: boolean;
 }) {
@@ -36,6 +38,9 @@ export default function Masthead({
           ))}
           <Link href="/dicas" data-ativo={dicasAtiva}>
             Dicas
+          </Link>
+          <Link href="/analises" data-ativo={analisesAtiva}>
+            Análises
           </Link>
           <Link href="/quiz" data-ativo={quizAtivo}>
             Quiz

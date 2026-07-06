@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getLoteriaPorCodigo, getNumerosConcursos } from "@/lib/queries";
 import { CATEGORIAS } from "@/lib/categorias";
 import { ARTIGOS } from "@/lib/artigos";
+import { ANALISES } from "@/lib/analises";
 import { SITE_URL } from "@/lib/seo";
 
 // Forçar geração em runtime (não em build time) — o sitemap depende do banco
@@ -30,11 +31,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entradas: MetadataRoute.Sitemap = [
     { url: SITE_URL, changeFrequency: "daily", priority: 1 },
     { url: `${SITE_URL}/dicas`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${SITE_URL}/analises`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${SITE_URL}/sobre`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/contato`, changeFrequency: "yearly", priority: 0.4 },
     { url: `${SITE_URL}/api-dados`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/premium`, changeFrequency: "monthly", priority: 0.8 },
   ];
+
+  for (const analise of ANALISES) {
+    entradas.push({
+      url: `${SITE_URL}/analises/${analise.slug}`,
+      lastModified: new Date(analise.data),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    });
+  }
 
   for (const artigo of ARTIGOS) {
     entradas.push({

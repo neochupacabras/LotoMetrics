@@ -5462,3 +5462,172 @@ footer.rodape {
 @media (max-width: 640px) {
   .contato-topicos { grid-template-columns: 1fr; }
 }
+
+/* ── Seção de Análises ────────────────────────────────────────────────── */
+
+.analises-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.analise-card {
+  display: block;
+  padding: 24px;
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  background: var(--paper);
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.analise-card:hover {
+  border-color: var(--pine);
+  box-shadow: 0 2px 8px rgba(30, 75, 60, 0.08);
+}
+
+.analise-card--compacta {
+  padding: 16px;
+}
+
+.analise-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.analise-card__badge {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+  color: var(--paper);
+}
+
+.analise-card__badge--lotofacil { background: var(--pine); }
+.analise-card__badge--megasena  { background: var(--ochre); }
+.analise-card__badge--ambas     { background: var(--rust); }
+.analise-card__badge--educativo { background: var(--ink-soft); }
+
+.analise-card__data,
+.analise-card__tempo {
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+.analise-card__titulo {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+
+.analise-card--compacta .analise-card__titulo {
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.analise-card__resumo {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.analise-post__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.analise-post__corpo {
+  margin-top: 32px;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--ink);
+  max-width: 680px;
+}
+
+.analise-post__corpo h2 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--pine);
+  margin-top: 36px;
+  margin-bottom: 12px;
+}
+
+.analise-post__corpo p {
+  margin-bottom: 16px;
+}
+
+.analise-post__corpo ul {
+  margin: 0 0 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.analise-post__corpo li {
+  line-height: 1.6;
+}
+
+.analise-post__corpo a {
+  color: var(--pine);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.analise-post__corpo a:hover {
+  color: var(--ochre);
+}
+
+.analise-post__corpo strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Texto explicativo nas páginas de ferramentas */
+.ferramenta-explicacao {
+  background: var(--paper);
+  border-left: 3px solid var(--pine);
+  padding: 20px 24px;
+  border-radius: 0 4px 4px 0;
+}
+
+.ferramenta-explicacao p {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin-bottom: 12px;
+}
+
+.ferramenta-explicacao p:last-child {
+  margin-bottom: 0;
+}
+
+.ferramenta-explicacao a {
+  color: var(--pine);
+}
+
+.ferramenta-explicacao a:hover {
+  color: var(--ochre);
+}
+
+@media (max-width: 600px) {
+  .analise-card {
+    padding: 16px;
+  }
+
+  .analise-card__titulo {
+    font-size: 1rem;
+  }
+}
