@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import { getAnalisesRecentes } from "@/lib/analises";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 
 export const dynamic = "force-dynamic"; // Depende do banco e de auth em runtime
@@ -150,7 +151,9 @@ const ARTIGOS_DESTAQUE = [
 // ─── Página ───────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  // Buscar últimos resultados em paralelo
+  // Buscar análises recentes e últimos resultados em paralelo
+  const analisesRecentes = getAnalisesRecentes(3);
+
   const [loteriaLF, loteriaMS] = await Promise.all([
     getLoteriaPorCodigo("lotofacil"),
     getLoteriaPorCodigo("megasena"),
@@ -279,6 +282,47 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
+
+        {/* ── Últimas análises ─────────────────────────────────── */}
+        <section className="container home-secao">
+          <div className="home-analises-header">
+            <div>
+              <h2 className="home-secao-titulo">Últimas análises</h2>
+              <p className="home-secao-subtitulo">
+                Análises de concursos recentes, comparativos e curiosidades históricas — atualizado regularmente.
+              </p>
+            </div>
+            <Link href="/analises" className="home-analises-ver-todas">
+              Ver todas →
+            </Link>
+          </div>
+          <div className="home-analises-grid">
+            {analisesRecentes.map((a) => {
+              const BADGE: Record<string, string> = {
+                lotofacil: "Lotofácil",
+                megasena: "Mega-Sena",
+                ambas: "Comparativo",
+                educativo: "Educativo",
+              };
+              const data = new Date(a.data + "T12:00:00").toLocaleDateString("pt-BR", {
+                day: "numeric",
+                month: "short",
+              });
+              return (
+                <Link key={a.slug} href={`/analises/${a.slug}`} className="home-analise-card">
+                  <div className="home-analise-meta">
+                    <span className={`analise-card__badge analise-card__badge--${a.categoria}`}>
+                      {BADGE[a.categoria]}
+                    </span>
+                    <span className="home-analise-data">{data}</span>
+                  </div>
+                  <p className="home-analise-titulo">{a.titulo}</p>
+                  <p className="home-analise-resumo">{a.resumo}</p>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
 
         {/* ── Artigos em destaque ───────────────────────────────── */}
         <section className="container home-secao">
