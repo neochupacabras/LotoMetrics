@@ -89,6 +89,35 @@ export default async function ProbabilidadesPage({
         faixasPremiadas={faixasPremiadas}
       />
 
+      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 40, marginBottom: 24 }}>
+        <h2 className="bloco__titulo">Por que as probabilidades não mudam</h2>
+        <p>
+          As chances que aparecem nessa página são calculadas pela combinatória — o ramo
+          da matemática que conta quantas combinações possíveis existem. Para a Lotofácil,
+          o total é C(25,15) = 3.268.760 combinações possíveis. A chance de acertar as
+          15 dezenas é sempre 1 em 3.268.760 — não importa quais dezenas você escolheu,
+          quais saíram nos últimos concursos, ou qual estratégia você usou para montar
+          o jogo.
+        </p>
+        <p>
+          Isso é diferente de outros jogos onde a probabilidade pode mudar com o
+          contexto. Em poker, sua chance de vencer depende das cartas dos outros
+          jogadores. Aqui não: o sorteio não sabe e não se importa com o que você
+          escolheu. A chance é sempre a mesma fração — 1 dividido pelo número total
+          de combinações possíveis.
+        </p>
+        <p>
+          A única forma de melhorar a probabilidade matematicamente é comprar mais
+          combinações — seja jogando mais bilhetes separados, seja jogando apostas com
+          mais dezenas (que incluem múltiplas combinações). Mas como explicado no artigo
+          sobre{" "}
+          <a href={`/${codigoLoteria}/dicas/mais-dezenas-vale-a-pena`} className="breadcrumb">
+            apostar mais dezenas
+          </a>, o custo sobe na exata mesma proporção que a probabilidade — a
+          probabilidade por real gasto nunca muda.
+        </p>
+      </div>
+
       <div className="aviso-legal">
         <strong>Por que mostrar isso:</strong> nenhuma tabela estatística do site —
         frequência, atraso, ciclos, ou qualquer filtro do gerador de jogos — altera os

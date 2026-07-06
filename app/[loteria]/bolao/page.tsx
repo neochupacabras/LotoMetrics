@@ -50,6 +50,38 @@ export default async function BolaoPage({
         </p>
       </div>
 
+      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
+        <h2 className="bloco__titulo">Como montar um bolão com fechamento</h2>
+        <p>
+          Um bolão com fechamento funciona assim: o grupo escolhe um conjunto maior de
+          dezenas ("o pool") — por exemplo, 18 dezenas que o grupo acredita serem boas
+          candidatas para o próximo sorteio. O sistema então gera um conjunto de bilhetes
+          que cobre esse pool de forma sistemática, garantindo que se as dezenas sorteadas
+          estiverem dentro do pool, pelo menos um bilhete vai capturar uma boa pontuação.
+        </p>
+        <p>
+          A vantagem em relação a jogar bilhetes avulsos é a cobertura: ao invés de
+          vários bilhetes com dezenas sobrepostas por acaso, o fechamento distribui as
+          combinações de forma a não deixar "buracos" na cobertura do pool. Em um bolão
+          bem configurado, se 15 das 18 dezenas do pool aparecerem no sorteio, pelo menos
+          um bilhete acerta 15 pontos.
+        </p>
+        <p>
+          O otimizador abaixo gera planos de bolão por orçamento: diga quanto o grupo
+          quer gastar, escolha as dezenas do pool e o sistema seleciona o fechamento mais
+          eficiente para aquele orçamento — com o maior nível de cobertura possível pelo
+          valor disponível. No final, um PDF com todos os bilhetes pode ser gerado para
+          compartilhar com os participantes.
+        </p>
+        <p>
+          Para entender a fundo como funciona o fechamento e o que ele pode e não pode
+          fazer, veja o{" "}
+          <a href={`/${codigoLoteria}/dicas/fechamento`} className="breadcrumb">
+            artigo explicativo sobre fechamentos
+          </a>.
+        </p>
+      </div>
+
       <BolaoClient
         codigoLoteria={codigoLoteria}
         nomeLoteria={loteria.nome}

@@ -90,6 +90,43 @@ export default async function HeatmapPage({
           aleatoriedade.
         </p>
 
+        <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
+          <h2 className="bloco__titulo">Como ler o heatmap</h2>
+          <p>
+            O heatmap colore cada dezena do volante de acordo com sua frequência no
+            período selecionado — quanto mais escura a célula, mais vezes aquela dezena
+            saiu. É uma forma visual de ver a distribuição de frequências que complementa
+            as tabelas numéricas, tornando padrões de variação mais fáceis de perceber
+            à primeira vista.
+          </p>
+          <p>
+            A interpretação correta é importante: as diferenças de intensidade que você
+            vê não indicam dezenas "melhores" ou "piores" para jogar. Como explicado no
+            artigo sobre{" "}
+            <a href={`/${codigoLoteria}/dicas/frequencia`} className="breadcrumb">
+              frequência
+            </a>, a variação observada está dentro do intervalo esperado por pura
+            aleatoriedade — qualquer sorteio honesto produz esse tipo de distribuição
+            desigual naturalmente. O heatmap descreve o passado, não prevê o futuro.
+          </p>
+          <p>
+            O recurso mais interessante do heatmap é comparar períodos diferentes:
+            selecione "todo o histórico" e depois "últimos 50 concursos" e observe
+            como as dezenas que parecem "mais quentes" mudam completamente. Isso
+            ilustra visualmente que frequências de curto prazo são muito mais voláteis
+            do que as de longo prazo — e que nenhuma delas prevê o próximo concurso.
+          </p>
+          <h3 style={{ fontWeight: 600, marginTop: 16, marginBottom: 8, fontSize: "0.95rem" }}>
+            Períodos disponíveis (Premium)
+          </h3>
+          <p>
+            A versão gratuita mostra o heatmap do histórico completo. Assinantes Premium
+            também podem ver os períodos dos últimos 500, 100 e 50 concursos, permitindo
+            a comparação entre o comportamento histórico de longo prazo e o comportamento
+            recente.
+          </p>
+        </div>
+
         <HeatmapPageClient
           loteria={loteria}
           periodos={periodosData}

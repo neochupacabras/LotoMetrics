@@ -53,6 +53,38 @@ export default async function GeradorPage({
         estatísticas desta loteria.
       </p>
 
+      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
+        <h2 className="bloco__titulo">Como o gerador funciona</h2>
+        <p>
+          O gerador sorteia combinações aleatórias dentro do universo de dezenas da
+          {" "}{loteria.nome}. No modo simples, a escolha é puramente aleatória — qualquer
+          combinação tem a mesma probabilidade de ser gerada. No modo avançado, você
+          pode aplicar filtros baseados nas tabelas estatísticas do histórico: dezenas
+          por faixa de atraso, quantidade de números primos, distribuição par/ímpar,
+          soma das dezenas, dezenas que fazem parte do ciclo atual e mais.
+        </p>
+        <p>
+          Os filtros não aumentam a probabilidade de ganhar — cada combinação específica
+          tem sempre a mesma chance, independente de quais critérios foram usados para
+          gerá-la. O que eles fazem é restringir o espaço de combinações geradas a um
+          subconjunto de sua preferência. Por exemplo, filtrar por distribuição par/ímpar
+          próxima de 7-8 exclui as combinações extremas (0-15 ou 15-0), que existem mas
+          são raras historicamente — como explicado no artigo sobre{" "}
+          <a href={`/${codigoLoteria}/dicas/par-impar`} className="breadcrumb">
+            distribuição par/ímpar
+          </a>.
+        </p>
+        <h3 style={{ fontWeight: 600, marginTop: 16, marginBottom: 8, fontSize: "0.95rem" }}>
+          Modo avançado (Premium)
+        </h3>
+        <p>
+          Assinantes Premium têm acesso ao modo avançado, que permite configurar até
+          dez parâmetros de filtro simultaneamente. O gerador gera combinações
+          aleatórias que atendam a todos os critérios selecionados — se nenhuma
+          combinação for possível com os filtros definidos, o sistema avisa.
+        </p>
+      </div>
+
       <GeradorClient
         dezenaMin={loteria.dezenaMin}
         dezenaMax={loteria.dezenaMax}
