@@ -55,6 +55,43 @@ export default async function EquilibrioPage({
           </Link>
         </p>
 
+        <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
+          <h2 className="bloco__titulo">O que é o Índice de Equilíbrio</h2>
+          <p>
+            O Índice de Equilíbrio combina 7 critérios estatísticos em uma única nota
+            de 0 a 100, indicando o quão "típico" é o seu jogo em relação ao histórico
+            da {loteria.nome}. Uma nota próxima de 100 significa que o jogo tem um perfil
+            próximo da mediana histórica em todos os critérios; notas mais baixas indicam
+            que o jogo se afasta do perfil típico em alguma ou várias dimensões.
+          </p>
+          <p>
+            Os 7 critérios avaliados são: soma das dezenas, distribuição par/ímpar,
+            tamanho da maior sequência consecutiva, divisão moldura/centro do volante,
+            quantidade de números primos, múltiplos de 3 e números de Fibonacci. Para
+            cada critério, o jogo é comparado com a distribuição de todas as combinações
+            possíveis — não com o histórico de resultados. Isso significa que a nota é
+            baseada em combinatória pura, e não muda com o tempo ou com concursos recentes.
+          </p>
+          <p>
+            Para entender qualquer um desses critérios individualmente, o{" "}
+            <Link href={`/${codigoLoteria}/analisador`} className="breadcrumb">
+              Analisador de jogo
+            </Link>{" "}
+            mostra cada métrica separadamente com sua posição no percentil de todas as
+            combinações possíveis.
+          </p>
+          <h3 style={{ fontWeight: 600, marginTop: 16, marginBottom: 8, fontSize: "0.95rem" }}>
+            A nota alta garante mais chance de ganhar?
+          </h3>
+          <p>
+            Não. O Índice de Equilíbrio mede tipicidade estatística — o quão próximo
+            o jogo está do perfil médio historicamente observado. Ele não mede nem
+            prediz probabilidade de premiação. Um jogo com nota 20 tem exatamente a
+            mesma chance de ganhar que um jogo com nota 95: 1 em {loteria.nome === "Lotofácil" ? "3.268.760" : "50.063.860"}.
+            O índice é uma ferramenta de caracterização, não de predição.
+          </p>
+        </div>
+
         <EquilibrioClient
           codigoLoteria={codigoLoteria}
           nomeLoteria={loteria.nome}
