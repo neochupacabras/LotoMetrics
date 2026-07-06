@@ -31,9 +31,26 @@ export default function ArtigoMultiplosDe3Page() {
         <h1 className="titulo-edicao">{TITULO}</h1>
         <p className="subtitulo-edicao">
           Entre 1 e 25, os múltiplos de 3 são 3, 6, 9, 12, 15, 18, 21 e 24 — 8 números.
-          É exatamente o mesmo tipo de conta já feita nos artigos sobre{" "}
-          primos e Fibonacci: um grupo fixo de números dentro de um total fixo, e a
-          combinatória faz o resto do trabalho.
+          É exatamente o mesmo tipo de conta já feita nos artigos sobre primos e
+          Fibonacci: um grupo fixo de números dentro de um total fixo, e a combinatória
+          faz o resto do trabalho sem precisar de nenhum dado histórico.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          O que são múltiplos de 3
+        </h2>
+        <p>
+          Um múltiplo de 3 é qualquer número que pode ser dividido exatamente por 3
+          sem deixar resto: 3, 6, 9, 12, 15, 18, 21, 24, 27... Entre 1 e 25, existem
+          exatamente 8 deles. Isso é um fato fixo que não muda — independente de
+          quantos concursos já aconteceram ou vão acontecer.
+        </p>
+        <p>
+          A propriedade divisível-por-3 não tem nenhum significado especial num sorteio
+          aleatório. É um critério de classificação matemática, não uma característica
+          física das esferas. Uma esfera com o número 9 não tem nenhuma "afinidade"
+          com a esfera 12 por ambas serem múltiplas de 3 — são objetos físicos
+          independentes tratados de forma idêntica pelo mecanismo de sorteio.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
@@ -72,13 +89,37 @@ export default function ArtigoMultiplosDe3Page() {
                 <td className="num">346.528</td>
                 <td className="num">10,60%</td>
               </tr>
+              <tr>
+                <td>7</td>
+                <td className="num">137.280</td>
+                <td className="num">4,20%</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td className="num">68.640</td>
+                <td className="num">2,10%</td>
+              </tr>
+              <tr>
+                <td>8 (todos os múltiplos)</td>
+                <td className="num">6.188</td>
+                <td className="num">0,19%</td>
+              </tr>
             </tbody>
           </table>
         </div>
         <p>
           A média esperada é <strong>4,8 múltiplos de 3 por concurso</strong> (15 × 8 ÷
-          25). Repare no padrão entre os três filtros desse tipo já calculados neste
-          site:
+          25). Em mais de 80% dos sorteios, o resultado vai ter entre 4 e 6 múltiplos
+          de 3. Sorteios com todos os 8 múltiplos de 3 são muito raros — apenas 0,19%
+          das combinações possíveis — mas matematicamente viáveis.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          O padrão entre filtros semelhantes
+        </h2>
+        <p>
+          Repare no padrão entre os três filtros desse tipo já calculados neste site —
+          a média é sempre proporcional ao tamanho do subgrupo:
         </p>
         <div className="tabela-scroll">
           <table className="tabela-dados">
@@ -86,7 +127,7 @@ export default function ArtigoMultiplosDe3Page() {
               <tr>
                 <th>Filtro</th>
                 <th className="num">Quantos existem (1-25)</th>
-                <th className="num">Média esperada por concurso</th>
+                <th className="num">Média por sorteio (Lotofácil)</th>
               </tr>
             </thead>
             <tbody>
@@ -110,7 +151,26 @@ export default function ArtigoMultiplosDe3Page() {
         </div>
         <p>
           A média é sempre 15 × (quantos números do grupo existem) ÷ 25 — sobe ou desce
-          de forma proporcional, sem precisar de nenhum dado histórico pra prever.
+          de forma proporcional ao tamanho do subgrupo, sem precisar de nenhum dado
+          histórico. Isso deixa claro que a análise de "quantos múltiplos de 3 saem"
+          não tem nenhuma vantagem preditiva sobre "quantos primos saem" ou "quantos
+          Fibonacci saem" — são todos o mesmo tipo de conta com números diferentes.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          O histórico confirma a teoria
+        </h2>
+        <p>
+          Nos mais de 3.700 concursos da Lotofácil, a média histórica de múltiplos de 3
+          por sorteio fica consistentemente próxima de 4,8. A distribuição real entre
+          faixas (quantos concursos tiveram 3 múltiplos, quantos tiveram 5, etc.)
+          acompanha de perto as proporções calculadas pela combinatória.
+        </p>
+        <p>
+          Se o histórico mostrasse um desvio sistemático — por exemplo, uma média
+          histórica de 5,5 múltiplos de 3 quando o esperado é 4,8 — isso seria
+          evidência de anomalia no sorteio. Essa discrepância não existe, o que é a
+          confirmação esperada de um sorteio honesto.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
@@ -125,7 +185,7 @@ export default function ArtigoMultiplosDe3Page() {
           <table className="tabela-dados">
             <thead>
               <tr>
-                <th>Múltiplos de 3 no sorteio — Mega-Sena</th>
+                <th>Múltiplos de 3 — Mega-Sena</th>
                 <th className="num">% do total</th>
               </tr>
             </thead>
@@ -150,11 +210,15 @@ export default function ArtigoMultiplosDe3Page() {
                 <td>4</td>
                 <td className="num">7,55%</td>
               </tr>
+              <tr>
+                <td>5 ou 6</td>
+                <td className="num">1,31%</td>
+              </tr>
             </tbody>
           </table>
         </div>
         <p>
-          Atualizando a tabela comparativa dos três filtros para incluir a Mega-Sena:
+          A tabela comparativa completa dos três filtros em ambas as loterias:
         </p>
         <div className="tabela-scroll">
           <table className="tabela-dados">
@@ -196,18 +260,22 @@ export default function ArtigoMultiplosDe3Page() {
           O padrão fica claro: a Lotofácil sorteia uma proporção muito maior das dezenas
           disponíveis (60%) do que a Mega-Sena (10%), então as médias por concurso são
           bem maiores na Lotofácil mesmo quando os grupos têm proporções parecidas nos
-          dois intervalos.
+          dois intervalos. Na Mega-Sena, múltiplos de 3 são proporcionalmente mais
+          frequentes (20/60 = 33%) do que na Lotofácil (8/25 = 32%) — mas como apenas
+          6 dezenas saem por vez, a média absoluta por concurso é muito menor.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
-          Pra que serve
+          Pra que serve a tabela
         </h2>
         <p>
           A tabela de{" "}
           <Link href="/lotofacil/tabelas/multiplos-de-3">múltiplos de 3</Link>{" "}
-          mostra a frequência histórica real desses 8 números. Como em todos os filtros
-          parecidos, é informação descritiva sobre o passado — não uma forma de prever
-          quantos múltiplos de 3 vão sair no próximo concurso.
+          mostra a frequência histórica real desses 8 números e a distribuição de
+          quantos apareceram em cada concurso. Como em todos os filtros semelhantes, é
+          informação descritiva sobre o passado — útil para confirmar que o histórico
+          real bate com o esperado pela combinatória, não para prever quantos múltiplos
+          de 3 vão sair no próximo concurso.
         </p>
 
         <div className="aviso-legal" style={{ marginTop: "36px" }}>

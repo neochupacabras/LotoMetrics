@@ -151,6 +151,57 @@ export default function ArtigoViesesPage() {
           </p>
         </div>
 
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          Por que é impossível "escolher números aleatoriamente" de forma manual
+        </h2>
+        <p>
+          Um resultado interessante da psicologia cognitiva é que humanos são péssimos em
+          gerar sequências verdadeiramente aleatórias — mesmo quando tentam. Quando
+          pedidos para "escolher números aleatoriamente", as pessoas sistematicamente
+          evitam números repetidos, evitam sequências consecutivas, evitam os números
+          extremos (1, 2, 24, 25 na Lotofácil) e preferem uma distribuição "bem
+          espaçada" visualmente. Todas essas tendências criam padrões que se desviam
+          do aleatório.
+        </p>
+        <p>
+          Ironicamente, uma combinação verdadeiramente aleatória vai, em média, incluir
+          sequências consecutivas, pode repetir "padrões" e vai ter uma distribuição
+          que parece "menos balanceada" do que a que humanos escolheriam manualmente.
+          Isso é exatamente o que os artigos sobre{" "}
+          <Link href="/dicas/sequencias">sequências</Link> e{" "}
+          <Link href="/dicas/par-impar">distribuição par/ímpar</Link> mostram: os
+          padrões que parecem "mais aleatórios" pro cérebro humano são, na verdade,
+          estatisticamente raros.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          O que fazer com esse conhecimento
+        </h2>
+        <p>
+          Conhecer os vieses não os elimina automaticamente — é preciso criar sistemas
+          externos que compensem. Algumas abordagens práticas:
+        </p>
+        <p>
+          Usar o <Link href="/lotofacil/gerador">gerador de jogos</Link> em vez de
+          escolher manualmente elimina a maioria dos vieses de seleção — o gerador
+          produz combinações com as proporções estatísticas corretas de sequências,
+          distribuição par/ímpar e soma, sem os padrões que o cérebro tende a criar.
+        </p>
+        <p>
+          Registrar sistematicamente todos os resultados de uma estratégia (não apenas
+          os que confirmam que ela "funciona") combate o viés de confirmação. O{" "}
+          <Link href="/lotofacil/conferidor">conferidor</Link> e o{" "}
+          <Link href="/lotofacil/simulador">simulador histórico</Link> permitem ver
+          o desempenho completo de qualquer jogo em todo o histórico — sem filtro.
+        </p>
+        <p>
+          Definir um orçamento fixo antes de começar a jogar, não depois de uma
+          sequência de derrotas, é a principal defesa contra a falácia do custo
+          irrecuperável e o viés de disponibilidade. O artigo sobre{" "}
+          <Link href="/dicas/retorno-ao-apostador">retorno ao apostador</Link> fornece
+          os números concretos para essa decisão.
+        </p>
+
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
           Este artigo é conteúdo educativo sobre psicologia cognitiva aplicada a contextos
           de apostas. Os vieses descritos são bem documentados na literatura acadêmica

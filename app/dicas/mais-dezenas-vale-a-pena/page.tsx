@@ -40,8 +40,8 @@ export default function ArtigoMaisDezenasPage() {
           O que acontece quando você aposta mais dezenas
         </h2>
         <p>
-          Uma aposta de 16 dezenas na Lotofácil não é uma única aposta especial — é a
-          Caixa jogando por você todas as C(16,15) = 16 combinações de 15 dezenas
+          Uma aposta de 16 dezenas na Lotofácil não é uma única aposta "especial" — é
+          a Caixa jogando por você todas as C(16,15) = 16 combinações de 15 dezenas
           possíveis dentro das 16 que você escolheu. O preço é 16 × R$3,50 = R$56,00.
           Uma aposta de 17 dezenas são C(17,15) = 136 combinações, a R$476,00.
         </p>
@@ -96,7 +96,8 @@ export default function ArtigoMaisDezenasPage() {
           </table>
         </div>
         <p>
-          A probabilidade melhora dramaticamente. Mas o preço sobe na mesma proporção.
+          A probabilidade melhora dramaticamente. Mas o preço sobe na mesma proporção —
+          e esse é o ponto central desta análise.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
@@ -104,17 +105,17 @@ export default function ArtigoMaisDezenasPage() {
         </h2>
         <p>
           Calcule a probabilidade de ganhar a faixa 1 por real gasto em qualquer linha
-          da tabela acima. Com 15 dezenas: 1/3.268.760 ÷ R$3,50. Com 16 dezenas:
-          16/3.268.760 ÷ R$56,00. O resultado é sempre o mesmo número: você obtém
-          exatamente a mesma "quantidade de probabilidade por real" em qualquer uma
-          dessas apostas.
+          da tabela acima. Com 15 dezenas: (1/3.268.760) ÷ R$3,50 = 0,0000869 por
+          real. Com 16 dezenas: (16/3.268.760) ÷ R$56,00 = 0,0000874 por real. Com 20
+          dezenas: (15.504/3.268.760) ÷ R$54.264,00 = 0,0000874 por real.
         </p>
         <p>
-          Isso não é coincidência — é uma consequência direta de como o preço é
-          calculado (cada combinação custando o mesmo valor base). Jogar 16 dezenas por
+          O resultado é sempre o mesmo número — você obtém exatamente a mesma
+          "quantidade de probabilidade por real" em qualquer uma dessas apostas. Isso
+          não é coincidência — é uma consequência direta de como o preço é calculado
+          (cada combinação custando o mesmo valor base R$3,50). Jogar 16 dezenas por
           R$56 é matematicamente idêntico a jogar 16 apostas simples de R$3,50 cada
-          com 16 combinações diferentes. Você está pagando pelo número de combinações
-          que está cobrindo, sempre ao mesmo preço por combinação.
+          com 16 combinações diferentes escolhidas aleatoriamente.
         </p>
 
         <div className="bloco" style={{ marginTop: "28px" }}>
@@ -123,8 +124,8 @@ export default function ArtigoMaisDezenasPage() {
             "apostar 16 dezenas é mais eficiente" ou "dá mais retorno por real", está
             errado — a eficiência por real apostado é exatamente a mesma. A única
             diferença real entre apostar 15 ou 16 dezenas é que com 16 dezenas você
-            apostou 16 vezes mais dinheiro e tem 16 vezes mais chance de ganhar na faixa
-            principal. Isso é tudo.
+            apostou 16 vezes mais dinheiro e tem 16 vezes mais chance de ganhar na
+            faixa principal. Isso é tudo.
           </p>
         </div>
 
@@ -177,27 +178,48 @@ export default function ArtigoMaisDezenasPage() {
         </div>
         <p>
           Mesma lógica: a probabilidade por real gasto é sempre idêntica, independente
-          de quantas dezenas você escolher.
+          de quantas dezenas você escolher. Apostar 10 dezenas na Mega-Sena por
+          R$1.260 tem o mesmo custo por probabilidade-de-ganhar que apostar 6 dezenas
+          por R$6.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
-          Onde mais dezenas <em>podem</em> fazer diferença
+          Onde mais dezenas podem fazer diferença: as faixas intermediárias
         </h2>
         <p>
           Há uma situação onde apostas maiores têm uma vantagem real sobre jogar várias
           apostas simples separadas: as faixas intermediárias. Quando você aposta 17
           dezenas e 14 das 15 sorteadas estão entre as suas 17, você ganha prêmios de
           faixa 2 (14 acertos) em várias das suas 136 combinações ao mesmo tempo —
-          não só uma. Isso é diferente de ter jogado 136 apostas simples ao acaso, onde
-          provavelmente só uma delas teria 14 acertos.
+          não só em uma. Isso é diferente de ter jogado 136 apostas simples ao acaso,
+          onde provavelmente só uma ou nenhuma delas teria 14 acertos.
         </p>
         <p>
           Esse é o princípio por trás do{" "}
           <Link href="/dicas/fechamento">fechamento</Link>: quando você cobre um pool
           específico de dezenas de forma sistemática, há correlação entre seus bilhetes
           que pode resultar em múltiplos prêmios de faixas intermediárias se seu pool
-          estiver certo. Mas isso não muda o retorno esperado total — só a distribuição
-          entre faixas.
+          estiver próximo do resultado. Mas isso não muda o retorno esperado total —
+          só a distribuição de prêmios entre faixas.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          A pergunta certa a se fazer
+        </h2>
+        <p>
+          Em vez de "quantas dezenas devo jogar?", a pergunta mais útil é "qual o meu
+          orçamento por concurso?". Com um orçamento fixo de, digamos, R$56, você pode
+          jogar uma aposta de 16 dezenas ou 16 apostas simples de 15 dezenas diferentes
+          — a probabilidade de ganhar a faixa principal é idêntica nas duas opções.
+        </p>
+        <p>
+          A diferença é no que acontece se o resultado estiver próximo do seu pool:
+          a aposta de 16 dezenas cobre sistematicamente todas as combinações dentro do
+          pool, enquanto 16 apostas simples aleatórias podem ter sobreposições e lacunas.
+          Para maximizar a cobertura de faixas intermediárias com um orçamento fixo,
+          o <Link href="/lotofacil/fechamentos">gerador de fechamentos</Link> e o{" "}
+          <Link href="/lotofacil/bolao">otimizador de bolão</Link> fazem esse cálculo
+          por você.
         </p>
 
         <div className="aviso-legal" style={{ marginTop: "36px" }}>

@@ -53,9 +53,9 @@ export default function ArtigoFechamentoPage() {
         <p>
           Mas agora suponha que, em vez de apostar num par, você queira apostar num{" "}
           <strong>grupo de 3 números</strong> — digamos, 1, 2 e 3. Você acredita que os
-          números sorteados vão estar dentro desse grupo de 3. O problema é: um bilhete
-          só tem espaço pra 2 números. Como você cobre todas as possibilidades dentro do
-          seu grupo?
+          números sorteados vão estar dentro desse grupo. O problema é: um bilhete só
+          tem espaço pra 2 números. Como você cobre todas as possibilidades dentro do
+          seu grupo sem desperdiçar combinações?
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
@@ -83,8 +83,8 @@ export default function ArtigoFechamentoPage() {
           você possa fazer a respeito.
         </p>
         <p>
-          Isso é um fechamento completo: você jogou todas as combinações possíveis do
-          seu grupo.
+          Isso é um <strong>fechamento completo</strong>: você jogou todas as combinações
+          possíveis do seu grupo.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
@@ -92,7 +92,8 @@ export default function ArtigoFechamentoPage() {
         </h2>
         <p>
           O fechamento faz uma coisa só: <strong>organiza seus bilhetes</strong> para que,{" "}
-          <em>se o sorteio cair dentro do seu grupo</em>, você capture isso.
+          <em>se o sorteio cair dentro do seu grupo</em>, você capture isso sem deixar
+          combinações descobertas.
         </p>
         <p>
           O fechamento <strong>não faz</strong> o sorteio cair dentro do seu grupo. A
@@ -107,30 +108,104 @@ export default function ArtigoFechamentoPage() {
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          Fechamento completo versus fechamento reduzido
+        </h2>
+        <p>
+          Um fechamento completo cobre todas as combinações do grupo — garante que, se
+          o resultado estiver no grupo, você acerta. O custo é proporcional ao número
+          de combinações: para um grupo de 18 dezenas na Lotofácil, o fechamento
+          completo tem C(18,15) = 816 jogos, a R$2.856.
+        </p>
+        <p>
+          O <strong>fechamento reduzido</strong> resolve isso de forma inteligente: em
+          vez de cobrir tudo, você cobre uma pontuação mínima. Por exemplo: "se pelo
+          menos 15 das 18 dezenas escolhidas estiverem entre as sorteadas, pelo menos
+          um bilhete meu vai ter 15 acertos" — o fechamento completo. Mas com o reduzido:
+          "se pelo menos 13 das 18 dezenas estiverem entre as sorteadas, pelo menos um
+          bilhete meu vai ter 13 acertos" — e isso pode ser coberto com muito menos
+          bilhetes.
+        </p>
+        <div className="tabela-scroll">
+          <table className="tabela-dados">
+            <thead>
+              <tr>
+                <th>Grupo de dezenas</th>
+                <th className="num">Fechamento completo</th>
+                <th className="num">Fechamento reduzido típico</th>
+                <th className="num">Cobertura mínima garantida</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>16 dezenas</td>
+                <td className="num">16 jogos / R$56</td>
+                <td className="num">5–8 jogos</td>
+                <td className="num">14 acertos</td>
+              </tr>
+              <tr>
+                <td>17 dezenas</td>
+                <td className="num">136 jogos / R$476</td>
+                <td className="num">15–20 jogos</td>
+                <td className="num">14 acertos</td>
+              </tr>
+              <tr>
+                <td>18 dezenas</td>
+                <td className="num">816 jogos / R$2.856</td>
+                <td className="num">40–60 jogos</td>
+                <td className="num">13 acertos</td>
+              </tr>
+              <tr>
+                <td>20 dezenas</td>
+                <td className="num">15.504 jogos / R$54.264</td>
+                <td className="num">150–200 jogos</td>
+                <td className="num">13 acertos</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
           E na vida real, na Lotofácil?
         </h2>
         <p>
-          O princípio é exatamente o mesmo — o tamanho é que muda muito. A Lotofácil
-          sorteia 15 dezenas entre 1 e 25. Se você escolhe um grupo de, digamos, 18
-          dezenas, o fechamento completo teria que cobrir todas as combinações de 15
-          dezenas dentro desse grupo de 18 — o que dá 816 jogos. Caro, mas sem nenhum
-          buraco na cobertura.
+          O princípio é exatamente o mesmo do exemplo pequeno — o tamanho é que muda
+          muito. A Lotofácil sorteia 15 dezenas entre 1 e 25. Se você escolhe um grupo
+          de 18 dezenas, e o sorteio tiver pelo menos 15 delas entre as 18 que você
+          escolheu, um dos seus bilhetes vai acertar as 15 — se você tiver feito o
+          fechamento completo.
         </p>
         <p>
-          É aí que entra o <strong>fechamento reduzido</strong>. Em vez de jogar os 816
-          bilhetes, o sistema escolhe um número menor de jogos — por exemplo, 164 — que
-          ainda cobre uma pontuação mínima. O que muda é o seguinte: em vez de cobrir o
-          prêmio máximo, você cobre uma faixa menor. Por exemplo: "se pelo menos 12 das
-          suas 18 dezenas estiverem entre as sorteadas, pelo menos um bilhete seu vai
-          ter 12 pontos." Não é o prêmio máximo, mas é uma cobertura real com muito
-          menos bilhetes.
+          A questão central é a escolha do grupo de dezenas. Um fechamento — completo
+          ou reduzido — só funciona se as dezenas sorteadas realmente estiverem dentro
+          do seu grupo. E isso é um julgamento subjetivo do apostador, não uma
+          previsão baseada em nenhuma análise que aumente a probabilidade. Escolher
+          "as 18 dezenas mais frequentes" não muda a chance de essas 18 aparecerem no
+          próximo sorteio — como discutido no artigo sobre{" "}
+          <Link href="/dicas/frequencia">frequência</Link>, essa informação não prevê
+          o futuro.
         </p>
         <p>
           A calculadora de{" "}
           <Link href="/lotofacil/fechamentos">fechamentos</Link> e o{" "}
           <Link href="/lotofacil/bolao">otimizador de bolão</Link>{" "}
-          deste site fazem esses cálculos por você — você escolhe o grupo de dezenas e
-          a pontuação mínima que quer cobrir, e o sistema gera os bilhetes.
+          deste site fazem os cálculos por você — você escolhe o grupo de dezenas e
+          a pontuação mínima que quer cobrir, e o sistema gera os bilhetes otimizados.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          Fechamento e bolão: a combinação mais comum
+        </h2>
+        <p>
+          Na prática, fechamentos com 17 ou 18 dezenas custam centenas ou milhares de
+          reais — inviável para um apostador solo. Por isso são quase sempre usados em
+          bolões: cada participante paga uma fração do custo total e recebe uma fração
+          proporcional do prêmio caso ganhe.
+        </p>
+        <p>
+          O bolão com fechamento reduzido tem a vantagem de maximizar a cobertura de
+          faixas intermediárias com um orçamento fixo — se o grupo de dezenas estiver
+          próximo do resultado, vários bilhetes podem ganhar prêmios de faixas 13, 14
+          ou 15 simultaneamente. Esse é o valor prático real do fechamento em grupo.
         </p>
 
         <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
@@ -138,16 +213,18 @@ export default function ArtigoFechamentoPage() {
         </h2>
         <p>
           <strong>1.</strong> Fechamento organiza seus bilhetes para que, se as dezenas
-          que você escolheu aparecerem no sorteio, você não perca por má distribuição.
+          que você escolheu aparecerem no sorteio, você não perca por má distribuição
+          das combinações.
         </p>
         <p>
           <strong>2.</strong> Fechamento não aumenta a chance de as suas dezenas serem
           sorteadas. Essa probabilidade é fixa e igual pra todo mundo.
         </p>
         <p>
-          <strong>3.</strong> O fechamento reduzido cobre faixas menores de premiação com
-          menos bilhetes. O fechamento completo cobre o máximo, mas custa proporcional
-          mais caro.
+          <strong>3.</strong> O fechamento reduzido cobre faixas menores de premiação
+          com menos bilhetes. O fechamento completo cobre o máximo mas custa
+          proporcionalmente mais caro — e em ambos os casos, o retorno esperado por
+          real apostado é o mesmo de qualquer outra forma de jogar.
         </p>
 
         <div className="aviso-legal" style={{ marginTop: "36px" }}>

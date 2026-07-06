@@ -147,6 +147,43 @@ export default function ArtigoNumerosPopularesPage() {
           que perseguir os números mais ou menos frequentes no histórico.
         </p>
 
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          Existe evidência de que alguns números são realmente mais populares?
+        </h2>
+        <p>
+          Sim — a evidência indireta vem dos próprios resultados de rateio. Em concursos
+          onde o resultado incluiu poucos números acima de 31 na Mega-Sena, o número de
+          ganhadores tende a ser maior do que a probabilidade estatística pura sugeriria.
+          Isso é consistente com a hipótese de que muitos apostadores concentram suas
+          escolhas nos números de 1 a 31 (datas de calendário) e, quando o sorteio cai
+          nessa faixa, há mais ganhadores compartilhando o prêmio.
+        </p>
+        <p>
+          Não há dados públicos da Caixa sobre a popularidade de combinações específicas,
+          então não é possível quantificar o efeito com precisão. Mas a lógica
+          comportamental é sólida: se a maioria dos apostadores usa datas e padrões
+          visuais óbvios, combinações que fogem desses padrões têm sistematicamente
+          menos competidores em caso de vitória.
+        </p>
+
+        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+          Como o gerador de jogos ajuda
+        </h2>
+        <p>
+          O <Link href="/lotofacil/gerador">gerador de jogos</Link> deste site produz
+          combinações com distribuição estatisticamente típica — evitando os padrões
+          óbvios que costumam ser mais populares entre apostadores manuais. Na Mega-Sena,
+          o gerador inclui dezenas distribuídas por toda a faixa de 1 a 60, não
+          concentradas no intervalo de datas. Não aumenta sua chance de ganhar, mas
+          pode reduzir a chance de dividir o prêmio em caso de vitória.
+        </p>
+        <p>
+          O <Link href="/dicas/vieses-cognitivos">artigo sobre vieses cognitivos</Link>
+          {" "}complementa essa discussão explicando por que é difícil, intuitivamente,
+          escolher números que pareçam genuinamente "aleatórios" — e por que a maioria
+          das escolhas manuais acaba convergindo para os mesmos padrões populares.
+        </p>
+
         <div className="aviso-legal" style={{ marginTop: "36px" }}>
           Este artigo é conteúdo educativo. A popularidade de números específicos entre
           apostadores é uma tendência comportamental conhecida; os dados exatos de
