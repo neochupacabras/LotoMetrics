@@ -46,6 +46,7 @@ function CartaoResultado({
   acumulado,
   href,
   mesSorte,
+  trevos,
 }: {
   loteria: string;
   numero: number;
