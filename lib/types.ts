@@ -41,4 +41,4 @@ export interface ConcursoResumo {
   trevos?: number[] | null;
 }
 
-export type CodigoLoteria = "lotofacil" | "megasena" | "quina" | "lotomania" | "diadesorte" | "maismilionaria";
+export type CodigoLoteria = "lotofacil" | "megasena" | "quina" | "lotomania" | "diadesorte" | "maismilionaria" | "timemania";

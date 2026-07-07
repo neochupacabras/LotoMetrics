@@ -119,7 +119,9 @@ export default async function DetalheConcursoPage({
 
       {concurso.mesSorte && (
         <div className="resultado-mes-sorte">
-          <span className="resultado-mes-sorte__label">Mês da Sorte</span>
+          <span className="resultado-mes-sorte__label">
+            {codigoLoteria === "timemania" ? "Time do Coração" : "Mês da Sorte"}
+          </span>
           <span className="resultado-mes-sorte__valor">{concurso.mesSorte}</span>
         </div>
       )}
