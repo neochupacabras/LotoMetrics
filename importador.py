@@ -167,7 +167,7 @@ def salvar_concurso(conn, loteria_id: int, dados: dict) -> None:
                 dados.get("valorAcumuladoProximoConcurso"),
                 dados.get("valorEstimadoProximoConcurso"),
                 parse_data(dados.get("dataProximoConcurso")),
-                dados.get("mesSorte"),  # campo exclusivo do Dia de Sorte
+                dados.get("nomeTimeCoracaoMesSorte"),  # campo exclusivo do Dia de Sorte
             ),
         )
         concurso_id = cur.fetchone()[0]
