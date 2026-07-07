@@ -4,11 +4,12 @@ export const LOTERIAS: Record<CodigoLoteria, { nome: string; slug: CodigoLoteria
   lotofacil: { nome: "Lotofácil",  slug: "lotofacil"  },
   megasena:  { nome: "Mega-Sena",  slug: "megasena"   },
   quina:     { nome: "Quina",      slug: "quina"      },
-  lotomania: { nome: "Lotomania",  slug: "lotomania"  },
+  lotomania:  { nome: "Lotomania",   slug: "lotomania"  },
+  diadesorte: { nome: "Dia de Sorte", slug: "diadesorte" },
 };
 
 export function isCodigoLoteriaValido(valor: string): valor is CodigoLoteria {
-  return ["lotofacil", "megasena", "quina", "lotomania"].includes(valor);
+  return ["lotofacil", "megasena", "quina", "lotomania", "diadesorte"].includes(valor);
 }
 
 export function formatarData(isoOuDataSql: string | null): string {

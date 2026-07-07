@@ -27,6 +27,7 @@ export interface Concurso {
   valorAcumuladoProximo: number | null;
   valorEstimadoProximo: number | null;
   dataProximoConcurso: string | null;
+  mesSorte: string | null;        // Dia de Sorte: mês sorteado (ex: "MARÇO")
   premiacoes: PremiacaoFaixa[];
 }
 
@@ -35,6 +36,7 @@ export interface ConcursoResumo {
   dataSorteio: string;
   dezenas: number[];
   acumulado: boolean;
+  mesSorte?: string | null;
 }
 
-export type CodigoLoteria = "lotofacil" | "megasena" | "quina" | "lotomania";
+export type CodigoLoteria = "lotofacil" | "megasena" | "quina" | "lotomania" | "diadesorte";

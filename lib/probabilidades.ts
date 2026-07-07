@@ -51,7 +51,9 @@ export const FAIXAS_PREMIADAS: Record<string, number[]> = {
   quina:     [2, 3, 4, 5],
   // Lotomania: apostador marca 50, sorteia 20. Faixas especiais incluem 0 acertos.
   // O cálculo padrão cobre 15,16,17,18,19,20 — 0 acertos é tratado na UI.
-  lotomania: [15, 16, 17, 18, 19, 20],
+  lotomania:  [15, 16, 17, 18, 19, 20],
+  // Dia de Sorte: faixas de 2 a 7 acertos
+  diadesorte: [2, 3, 4, 5, 6, 7],
 };
 
 // Probabilidade de PELO MENOS k das m dezenas sorteadas estarem dentro de
@@ -94,6 +96,12 @@ export const PARAMS_LOTERIA = {
     percFaixa1: 0.35,
     precoAposta: 3.00,
     ticketsMedios: 15_000_000,
+  },
+  diadesorte: {
+    n: 31, m: 7,
+    percFaixa1: 0.35,
+    precoAposta: 2.50,
+    ticketsMedios: 8_000_000,
   },
 } as const;
 

@@ -2105,14 +2105,8 @@ footer.rodape {
 /* Grid de resultados */
 .home-resultados-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 14px;
-}
-
-@media (max-width: 1024px) {
-  .home-resultados-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 @media (max-width: 600px) {
@@ -5734,4 +5728,20 @@ footer.rodape {
     align-items: flex-start;
     gap: 8px;
   }
+}
+
+/* ── Dia de Sorte: mês da sorte no card de resultado ─────────────────── */
+.home-mes-sorte {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  background: color-mix(in srgb, var(--ochre) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ochre) 30%, transparent);
+  border-radius: 3px;
+  padding: 4px 10px;
+  text-align: center;
+}
+
+.home-mes-sorte strong {
+  color: var(--ochre);
+  font-weight: 600;
 }

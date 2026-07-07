@@ -41,8 +41,9 @@ const ABAS_QUINA_LOTOMANIA: { slug: AbaAtiva; label: string }[] = [
 const ABAS_POR_LOTERIA: Record<string, { slug: AbaAtiva; label: string }[]> = {
   lotofacil: ABAS_COMPLETAS,
   megasena:  ABAS_COMPLETAS,
-  quina:     ABAS_QUINA_LOTOMANIA,
-  lotomania: ABAS_QUINA_LOTOMANIA,
+  quina:      ABAS_QUINA_LOTOMANIA,
+  lotomania:  ABAS_QUINA_LOTOMANIA,
+  diadesorte: ABAS_QUINA_LOTOMANIA,
 };
 
 export default function Subnav({
