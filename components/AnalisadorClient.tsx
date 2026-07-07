@@ -11,6 +11,7 @@ interface Props {
   dezenaMin: number;
   dezenaMax: number;
   qtdDezenasSorteadas: number;
+  gridColunas: number;
 }
 
 const LINKS_ARTIGOS: Record<string, string> = {
@@ -152,6 +153,13 @@ export default function AnalisadorClient({
       </div>
 
       {/* ── Painel de análise ────────────────────────────── */}
+      {resultado && !resultado.temDistribuicaoCalibrada && (
+        <div className="aviso-legal" style={{ marginBottom: 16 }}>
+          <strong>Nota:</strong> as distribuições estatísticas de referência (tipicidade das métricas)
+          foram calculadas para Lotofácil e Mega-Sena. Para {nomeLoteria}, os valores de frequência
+          mostrados são aproximações — os contadores (primos, Fibonacci, etc.) são exatos.
+        </div>
+      )}
       {resultado && (
         <>
           {/* Resumo geral */}

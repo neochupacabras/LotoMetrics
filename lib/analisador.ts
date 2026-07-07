@@ -53,6 +53,7 @@ export interface MetricaAnalisador {
 }
 
 export interface ResultadoAnalisador {
+  temDistribuicaoCalibrada: boolean;
   soma: { valor: number; percentil: number } & MetricaAnalisador;
   parImpar: { pares: number; impares: number } & MetricaAnalisador;
   sequencias: { maior: number } & MetricaAnalisador;
@@ -96,18 +97,65 @@ function pctDist(dist: Record<number, number>, chave: number): number {
 
 // ─── Função principal ─────────────────────────────────────────────────────────
 
+// ─── Funções auxiliares para gerar sets dinamicamente ───────────────────────
+
+function gerarPrimos(min: number, max: number): Set<number> {
+  const sieve = new Array(max + 1).fill(true);
+  sieve[0] = sieve[1] = false;
+  for (let i = 2; i <= Math.sqrt(max); i++) {
+    if (sieve[i]) for (let j = i * i; j <= max; j += i) sieve[j] = false;
+  }
+  return new Set(Array.from({ length: max - min + 1 }, (_, i) => i + min).filter(n => n >= 2 && sieve[n]));
+}
+
+function gerarFibonacci(min: number, max: number): Set<number> {
+  const fibs = new Set<number>();
+  let a = 1, b = 1;
+  while (a <= max) { if (a >= min) fibs.add(a); [a, b] = [b, a + b]; }
+  return fibs;
+}
+
+function gerarMultiplos3(min: number, max: number): Set<number> {
+  const s = new Set<number>();
+  for (let i = min; i <= max; i++) if (i !== 0 && i % 3 === 0) s.add(i);
+  return s;
+}
+
+function gerarMoldura(min: number, max: number, gridColunas: number): Set<number> {
+  const s = new Set<number>();
+  const total = max - min + 1;
+  const linhas = Math.ceil(total / gridColunas);
+  for (let d = min; d <= max; d++) {
+    const pos = d - min; // 0-indexed
+    const linha = Math.floor(pos / gridColunas) + 1;
+    const coluna = (pos % gridColunas) + 1;
+    const maxLinhas = linhas;
+    const maxCols = gridColunas;
+    if (linha === 1 || linha === maxLinhas || coluna === 1 || coluna === maxCols) s.add(d);
+  }
+  return s;
+}
+
 export function analisar(
   dezenas: number[],
-  codigoLoteria: string
+  codigoLoteria: string,
+  dezenaMin = 1,
+  dezenaMax = 25,
+  gridColunas = 5
 ): ResultadoAnalisador | null {
   if (dezenas.length === 0) return null;
   const isLF = codigoLoteria === "lotofacil";
+  const isMS = codigoLoteria === "megasena";
+  const temDistribuicaoCalibrada = isLF || isMS;
 
-  const primos_set   = isLF ? PRIMOS_LF   : PRIMOS_MS;
-  const fib_set      = isLF ? FIB_LF      : FIB_MS;
-  const mult3_set    = isLF ? MULT3_LF    : MULT3_MS;
-  const moldura_set  = isLF ? MOLDURA_LF  : MOLDURA_MS;
+  // Sets matemáticos: gerados dinamicamente para qualquer loteria
+  const primos_set  = isLF ? PRIMOS_LF  : isMS ? PRIMOS_MS  : gerarPrimos(dezenaMin, dezenaMax);
+  const fib_set     = isLF ? FIB_LF     : isMS ? FIB_MS     : gerarFibonacci(dezenaMin, dezenaMax);
+  const mult3_set   = isLF ? MULT3_LF   : isMS ? MULT3_MS   : gerarMultiplos3(dezenaMin, dezenaMax);
+  const moldura_set = isLF ? MOLDURA_LF : isMS ? MOLDURA_MS : gerarMoldura(dezenaMin, dezenaMax, gridColunas);
 
+  // Distribuições combinatórias: só calibradas para LF e MS
+  // Para outras loterias, usamos MS como aproximação e sinalizamos ao chamador
   const dist_pi  = isLF ? DIST_PI_LF  : DIST_PI_MS;
   const dist_seq = isLF ? DIST_SEQ_LF : DIST_SEQ_MS;
   const dist_mc  = isLF ? DIST_MC_LF  : DIST_MC_MS;
@@ -115,8 +163,8 @@ export function analisar(
   const dist_fib = isLF ? DIST_FIB_LF : DIST_FIB_MS;
   const dist_m3  = isLF ? DIST_M3_LF  : DIST_M3_MS;
 
-  const cdf_soma  = isLF ? CDF_SOMA_LF  : CDF_SOMA_MS;
-  const cdf_off   = isLF ? CDF_SOMA_LF_OFFSET : CDF_SOMA_MS_OFFSET;
+  const cdf_soma = isLF ? CDF_SOMA_LF : CDF_SOMA_MS;
+  const cdf_off  = isLF ? CDF_SOMA_LF_OFFSET : CDF_SOMA_MS_OFFSET;
 
   const soma = dezenas.reduce((a, b) => a + b, 0);
   const pares = dezenas.filter(d => d % 2 === 0).length;
@@ -155,5 +203,6 @@ export function analisar(
     fibonacci: { qtd: qtdFib, pct: pctDist(dist_fib, qtdFib), label: label(pctDist(dist_fib, qtdFib)) },
     multiplos3: { qtd: qtdM3, pct: pctDist(dist_m3, qtdM3), label: label(pctDist(dist_m3, qtdM3)) },
     tipicas,
+    temDistribuicaoCalibrada,
   };
 }

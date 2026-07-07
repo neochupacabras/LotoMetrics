@@ -89,6 +89,7 @@ export default async function AnalisadorPage({
         dezenaMin={loteria.dezenaMin}
         dezenaMax={loteria.dezenaMax}
         qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        gridColunas={loteria.gridColunas}
       />
     </div>
     </>
