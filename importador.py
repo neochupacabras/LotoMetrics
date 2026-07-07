@@ -51,6 +51,7 @@ LOTERIAS_CODIGO_API = {
     "lotomania":  "lotomania",
     "diadesorte":     "diadesorte",
     "maismilionaria": "maismilionaria",
+    "timemania":     "timemania",
 }
 
 DB_CONFIG = {
@@ -115,6 +116,13 @@ def parse_dezenas(lista):
     return [int(d) for d in lista] if lista else []
 
 
+def sanitizar_texto(valor) -> Optional[str]:
+    """Remove caracteres NUL (\x00) que o PostgreSQL rejeita em campos TEXT."""
+    if valor is None:
+        return None
+    return str(valor).replace("\x00", "").replace("\u0000", "") or None
+
+
 def obter_loteria_id(conn, codigo: str) -> int:
     with conn.cursor() as cur:
         cur.execute("SELECT id FROM loteria WHERE codigo = %s", (codigo,))
@@ -163,13 +171,13 @@ def salvar_concurso(conn, loteria_id: int, dados: dict) -> None:
                 parse_dezenas(dados.get("listaDezenas")),
                 parse_dezenas(dados.get("dezenasSorteadasOrdemSorteio")),
                 dados.get("acumulado", False),
-                dados.get("localSorteio"),
-                dados.get("nomeMunicipioUFSorteio"),
+                sanitizar_texto(dados.get("localSorteio")),
+                sanitizar_texto(dados.get("nomeMunicipioUFSorteio")),
                 dados.get("valorArrecadado"),
                 dados.get("valorAcumuladoProximoConcurso"),
                 dados.get("valorEstimadoProximoConcurso"),
                 parse_data(dados.get("dataProximoConcurso")),
-                dados.get("nomeTimeCoracaoMesSorte"),  # campo exclusivo do Dia de Sorte
+                sanitizar_texto(dados.get("nomeTimeCoracaoMesSorte")),  # campo exclusivo do Dia de Sorte / Timemania
                 parse_dezenas(dados.get("trevosSorteados")),  # campo exclusivo da +Milionária
             ),
         )
@@ -208,8 +216,31 @@ def importar_intervalo(conn, loteria_codigo: str, inicio: int, fim: int) -> None
     total = fim - inicio + 1
     sucesso = 0
     for i, numero in enumerate(range(inicio, fim + 1), start=1):
-        if importar_concurso(conn, loteria_codigo, loteria_id, numero):
-            sucesso += 1
+        # Reconectar a cada 100 concursos para evitar timeout do pooler do Supabase
+        if i > 1 and i % 100 == 1:
+            try:
+                conn.close()
+            except Exception:
+                pass
+            conn = conectar_banco()
+            loteria_id = obter_loteria_id(conn, loteria_codigo)
+            log.info("Reconectado ao banco (concurso %d).", numero)
+
+        for tentativa in range(1, 4):
+            try:
+                if importar_concurso(conn, loteria_codigo, loteria_id, numero):
+                    sucesso += 1
+                break
+            except psycopg2.OperationalError as e:
+                log.warning("Erro de conexao no concurso %d (tentativa %d/3): %s", numero, tentativa, e)
+                try:
+                    conn.close()
+                except Exception:
+                    pass
+                time.sleep(5 * tentativa)
+                conn = conectar_banco()
+                loteria_id = obter_loteria_id(conn, loteria_codigo)
+
         if i % 50 == 0 or i == total:
             log.info("Progresso %s: %d/%d concursos processados (%d ok).", loteria_codigo, i, total, sucesso)
         time.sleep(INTERVALO_ENTRE_CHAMADAS)
@@ -251,14 +282,14 @@ def importar_incremental(conn, loteria_codigo: str) -> None:
 
 def main():
     parser = argparse.ArgumentParser(description="Importador de resultados de loterias da Caixa.")
-    parser.add_argument("--loteria", choices=["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "todas"], default="todas")
+    parser.add_argument("--loteria", choices=["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "todas"], default="todas")
     parser.add_argument("--modo", choices=["incremental", "backfill", "unico"], default="incremental")
     parser.add_argument("--inicio", type=int, help="Numero inicial (modo backfill)")
     parser.add_argument("--fim", type=int, help="Numero final (modo backfill)")
     parser.add_argument("--numero", type=int, help="Numero do concurso (modo unico)")
     args = parser.parse_args()
 
-    loterias = ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria"] if args.loteria == "todas" else [args.loteria]
+    loterias = ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania"] if args.loteria == "todas" else [args.loteria]
 
     conn = conectar_banco()
     try:
