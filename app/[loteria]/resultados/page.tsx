@@ -80,6 +80,13 @@ export default async function ResultadosPage({
 
           <Dezenas dezenas={ultimo.dezenas} />
 
+          {ultimo.mesSorte && (
+            <div className="resultado-mes-sorte">
+              <span className="resultado-mes-sorte__label">Mês da Sorte</span>
+              <span className="resultado-mes-sorte__valor">{ultimo.mesSorte}</span>
+            </div>
+          )}
+
           <dl className="ficha">
             <div>
               <dt>Resultado</dt>

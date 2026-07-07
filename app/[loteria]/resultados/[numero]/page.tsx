@@ -106,6 +106,13 @@ export default async function DetalheConcursoPage({
 
       <Dezenas dezenas={concurso.dezenas} />
 
+      {concurso.mesSorte && (
+        <div className="resultado-mes-sorte">
+          <span className="resultado-mes-sorte__label">Mês da Sorte</span>
+          <span className="resultado-mes-sorte__valor">{concurso.mesSorte}</span>
+        </div>
+      )}
+
       <h2 className="bloco__titulo" style={{ marginTop: "28px" }}>
         Análise estatística deste concurso
       </h2>
