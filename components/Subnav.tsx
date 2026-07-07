@@ -25,7 +25,7 @@ const ABAS_COMPLETAS: { slug: AbaAtiva; label: string }[] = [
   { slug: "equilibrio",     label: "Equilíbrio"     },
 ];
 
-const ABAS_BASICAS: { slug: AbaAtiva; label: string }[] = [
+const ABAS_QUINA_LOTOMANIA: { slug: AbaAtiva; label: string }[] = [
   { slug: "resultados",     label: "Resultados"     },
   { slug: "destaques",      label: "Destaques"      },
   { slug: "tabelas",        label: "Tabelas"        },
@@ -33,6 +33,7 @@ const ABAS_BASICAS: { slug: AbaAtiva; label: string }[] = [
   { slug: "simulador",      label: "Simulador"      },
   { slug: "conferidor",     label: "Conferidor"     },
   { slug: "analisador",     label: "Analisador"     },
+  { slug: "heatmap",        label: "Heatmap"        },
   { slug: "acumulos",       label: "Acúmulos"       },
   { slug: "probabilidades", label: "Probabilidades" },
 ];
@@ -40,8 +41,8 @@ const ABAS_BASICAS: { slug: AbaAtiva; label: string }[] = [
 const ABAS_POR_LOTERIA: Record<string, { slug: AbaAtiva; label: string }[]> = {
   lotofacil: ABAS_COMPLETAS,
   megasena:  ABAS_COMPLETAS,
-  quina:     ABAS_BASICAS,
-  lotomania: ABAS_BASICAS,
+  quina:     ABAS_QUINA_LOTOMANIA,
+  lotomania: ABAS_QUINA_LOTOMANIA,
 };
 
 export default function Subnav({
@@ -51,7 +52,7 @@ export default function Subnav({
   codigoLoteria: CodigoLoteria;
   ativa: AbaAtiva;
 }) {
-  const ABAS = ABAS_POR_LOTERIA[codigoLoteria] ?? ABAS_BASICAS;
+  const ABAS = ABAS_POR_LOTERIA[codigoLoteria] ?? ABAS_QUINA_LOTOMANIA;
   const navRef = useRef<HTMLElement>(null);
   const [canLeft, setCanLeft]   = useState(false);
   const [canRight, setCanRight] = useState(false);

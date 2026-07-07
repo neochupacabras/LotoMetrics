@@ -154,14 +154,18 @@ export default async function HomePage() {
   // Buscar análises recentes e últimos resultados em paralelo
   const analisesRecentes = getAnalisesRecentes(3);
 
-  const [loteriaLF, loteriaMS] = await Promise.all([
+  const [loteriaLF, loteriaMS, loteriaQ, loteriaLM] = await Promise.all([
     getLoteriaPorCodigo("lotofacil"),
     getLoteriaPorCodigo("megasena"),
+    getLoteriaPorCodigo("quina"),
+    getLoteriaPorCodigo("lotomania"),
   ]);
 
-  const [ultimoLF, ultimoMS] = await Promise.all([
+  const [ultimoLF, ultimoMS, ultimoQ, ultimoLM] = await Promise.all([
     loteriaLF ? getUltimoConcurso(loteriaLF.id) : null,
     loteriaMS ? getUltimoConcurso(loteriaMS.id) : null,
+    loteriaQ  ? getUltimoConcurso(loteriaQ.id)  : null,
+    loteriaLM ? getUltimoConcurso(loteriaLM.id) : null,
   ]);
 
   return (
@@ -202,6 +206,26 @@ export default async function HomePage() {
                   dezenas={ultimoMS.dezenas}
                   acumulado={ultimoMS.acumulado}
                   href={`/megasena/resultados/${ultimoMS.numero}`}
+                />
+              )}
+              {ultimoQ && (
+                <CartaoResultado
+                  loteria="Quina"
+                  numero={ultimoQ.numero}
+                  data={ultimoQ.dataSorteio}
+                  dezenas={ultimoQ.dezenas}
+                  acumulado={ultimoQ.acumulado}
+                  href={`/quina/resultados/${ultimoQ.numero}`}
+                />
+              )}
+              {ultimoLM && (
+                <CartaoResultado
+                  loteria="Lotomania"
+                  numero={ultimoLM.numero}
+                  data={ultimoLM.dataSorteio}
+                  dezenas={ultimoLM.dezenas}
+                  acumulado={ultimoLM.acumulado}
+                  href={`/lotomania/resultados/${ultimoLM.numero}`}
                 />
               )}
             </div>
