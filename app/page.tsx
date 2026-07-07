@@ -54,6 +54,7 @@ function CartaoResultado({
   acumulado: boolean;
   href: string;
   mesSorte?: string | null;
+  trevos?: number[] | null;
 }) {
   // data no formato "YYYY-MM-DD" — parse sem timezone
   const [ano, mes, dia] = data.split("T")[0].split("-");
@@ -77,6 +78,16 @@ function CartaoResultado({
           <Dezena key={d} numero={d} />
         ))}
       </div>
+      {trevos && trevos.length > 0 && (
+        <div className="home-trevos">
+          <span className="home-trevos__label">Trevos</span>
+          <div className="home-trevos__bolinhas">
+            {trevos.map((t) => (
+              <span key={t} className="home-trevo-bolinha">{t}</span>
+            ))}
+          </div>
+        </div>
+      )}
       {mesSorte && (
         <p className="home-mes-sorte">
           🗓️ Mês da sorte: <strong>{mesSorte}</strong>
@@ -161,20 +172,22 @@ export default async function HomePage() {
   // Buscar análises recentes e últimos resultados em paralelo
   const analisesRecentes = getAnalisesRecentes(3);
 
-  const [loteriaLF, loteriaMS, loteriaQ, loteriaLM, loteriaDS] = await Promise.all([
+  const [loteriaLF, loteriaMS, loteriaQ, loteriaLM, loteriaDS, loteriaMM] = await Promise.all([
     getLoteriaPorCodigo("lotofacil"),
     getLoteriaPorCodigo("megasena"),
     getLoteriaPorCodigo("quina"),
     getLoteriaPorCodigo("lotomania"),
     getLoteriaPorCodigo("diadesorte"),
+    getLoteriaPorCodigo("maismilionaria"),
   ]);
 
-  const [ultimoLF, ultimoMS, ultimoQ, ultimoLM, ultimoDS] = await Promise.all([
+  const [ultimoLF, ultimoMS, ultimoQ, ultimoLM, ultimoDS, ultimoMM] = await Promise.all([
     loteriaLF ? getUltimoConcurso(loteriaLF.id) : null,
     loteriaMS ? getUltimoConcurso(loteriaMS.id) : null,
     loteriaQ  ? getUltimoConcurso(loteriaQ.id)  : null,
     loteriaLM ? getUltimoConcurso(loteriaLM.id) : null,
     loteriaDS ? getUltimoConcurso(loteriaDS.id) : null,
+    loteriaMM ? getUltimoConcurso(loteriaMM.id) : null,
   ]);
 
   return (
@@ -248,6 +261,17 @@ export default async function HomePage() {
                   mesSorte={ultimoDS.mesSorte}
                 />
               )}
+              {ultimoMM && (
+                <CartaoResultado
+                  loteria="+Milionária"
+                  numero={ultimoMM.numero}
+                  data={ultimoMM.dataSorteio}
+                  dezenas={ultimoMM.dezenas}
+                  acumulado={ultimoMM.acumulado}
+                  href={`/maismilionaria/resultados/${ultimoMM.numero}`}
+                  trevos={ultimoMM.trevos}
+                />
+              )}
             </div>
           </div>
         </section>
@@ -257,7 +281,7 @@ export default async function HomePage() {
           <div className="container home-stats-inner">
             <span><strong>3.700+</strong> concursos analisados</span>
             <span className="home-stats-sep">·</span>
-            <span><strong>5</strong> loterias</span>
+            <span><strong>6</strong> loterias</span>
             <span className="home-stats-sep">·</span>
             <span><strong>12</strong> ferramentas</span>
             <span className="home-stats-sep">·</span>

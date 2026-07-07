@@ -8,7 +8,7 @@ import { SITE_URL } from "@/lib/seo";
 // Forçar geração em runtime (não em build time) — o sitemap depende do banco
 export const dynamic = "force-dynamic";
 
-const LOTERIAS = ["lotofacil", "megasena", "quina", "lotomania", "diadesorte"] as const;
+const LOTERIAS = ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria"] as const;
 
 const ABAS: [string, number, MetadataRoute.Sitemap[number]["changeFrequency"]][] = [
   ["resultado", 1.0, "daily"],   // alias para o último concurso — alta prioridade SEO

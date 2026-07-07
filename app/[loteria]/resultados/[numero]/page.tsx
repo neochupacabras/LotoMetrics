@@ -106,6 +106,17 @@ export default async function DetalheConcursoPage({
 
       <Dezenas dezenas={concurso.dezenas} />
 
+      {concurso.trevos && concurso.trevos.length > 0 && (
+        <div className="resultado-trevos">
+          <span className="resultado-trevos__label">Trevos</span>
+          <div className="resultado-trevos__bolinhas">
+            {concurso.trevos.map((t) => (
+              <span key={t} className="resultado-trevo-bolinha">{t}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {concurso.mesSorte && (
         <div className="resultado-mes-sorte">
           <span className="resultado-mes-sorte__label">Mês da Sorte</span>

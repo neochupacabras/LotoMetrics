@@ -5773,3 +5773,76 @@ footer.rodape {
   color: var(--ochre);
   text-transform: capitalize;
 }
+
+/* ── +Milionária: trevos no card da home ─────────────────────────────── */
+.home-trevos {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-trevos__label {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+
+.home-trevos__bolinhas {
+  display: flex;
+  gap: 4px;
+}
+
+.home-trevo-bolinha {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--rust);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+/* ── +Milionária: trevos nas páginas de resultado ─────────────────────── */
+.resultado-trevos {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: color-mix(in srgb, var(--rust) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rust) 30%, transparent);
+  border-radius: 4px;
+}
+
+.resultado-trevos__label {
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+}
+
+.resultado-trevos__bolinhas {
+  display: flex;
+  gap: 6px;
+}
+
+.resultado-trevo-bolinha {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--rust);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}

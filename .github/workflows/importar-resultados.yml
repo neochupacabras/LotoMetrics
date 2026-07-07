@@ -10,7 +10,7 @@ on:
     - cron: "0 23 * * 1-6"
     # Lotomania: segunda a sábado às 20h BRT
     - cron: "0 23 * * 1-6"
-    # Dia de Sorte: terça, quinta e sábado às 20h BRT (23h UTC)
+    # Dia de Sorte e +Milionária: terça, quinta e sábado às 20h BRT (23h UTC)
     - cron: "0 23 * * 2,4,6"
     # Segurança: todo dia às 6h UTC
     - cron: "0 6 * * *"
@@ -37,6 +37,7 @@ on:
           - quina
           - lotomania
           - diadesorte
+          - maismilionaria
       numero:
         description: "Número do concurso (apenas para modo unico)"
         required: false

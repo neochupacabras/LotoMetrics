@@ -53,7 +53,8 @@ export const FAIXAS_PREMIADAS: Record<string, number[]> = {
   // O cálculo padrão cobre 15,16,17,18,19,20 — 0 acertos é tratado na UI.
   lotomania:  [15, 16, 17, 18, 19, 20],
   // Dia de Sorte: faixas de 2 a 7 acertos
-  diadesorte: [2, 3, 4, 5, 6, 7],
+  diadesorte:     [2, 3, 4, 5, 6, 7],
+  maismilionaria: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 };
 
 // Probabilidade de PELO MENOS k das m dezenas sorteadas estarem dentro de
@@ -102,6 +103,12 @@ export const PARAMS_LOTERIA = {
     percFaixa1: 0.35,
     precoAposta: 2.50,
     ticketsMedios: 8_000_000,
+  },
+  maismilionaria: {
+    n: 50, m: 6,   // 6 dezenas de 1-50 + 2 trevos de 1-6 (tratados separadamente)
+    percFaixa1: 0.35,
+    precoAposta: 6.00,
+    ticketsMedios: 25_000_000,
   },
 } as const;
 
