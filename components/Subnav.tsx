@@ -9,21 +9,40 @@ type AbaAtiva =
   | "fechamentos" | "conferidor" | "destaques" | "bolao" | "analisador"
   | "heatmap" | "acumulos" | "equilibrio";
 
-const ABAS: { slug: AbaAtiva; label: string }[] = [
-  { slug: "resultados",    label: "Resultados" },
-  { slug: "destaques",     label: "Destaques" },
-  { slug: "tabelas",       label: "Tabelas" },
-  { slug: "gerador",       label: "Gerador" },
-  { slug: "simulador",     label: "Simulador" },
-  { slug: "fechamentos",   label: "Fechamentos" },
-  { slug: "bolao",         label: "Bolão" },
-  { slug: "conferidor",    label: "Conferidor" },
-  { slug: "analisador",    label: "Analisador" },
-  { slug: "heatmap",       label: "Heatmap" },
-  { slug: "acumulos",      label: "Acúmulos" },
-  { slug: "probabilidades",label: "Probabilidades" },
-  { slug: "equilibrio",     label: "Equilíbrio" },
+const ABAS_COMPLETAS: { slug: AbaAtiva; label: string }[] = [
+  { slug: "resultados",     label: "Resultados"     },
+  { slug: "destaques",      label: "Destaques"      },
+  { slug: "tabelas",        label: "Tabelas"        },
+  { slug: "gerador",        label: "Gerador"        },
+  { slug: "simulador",      label: "Simulador"      },
+  { slug: "fechamentos",    label: "Fechamentos"    },
+  { slug: "bolao",          label: "Bolão"          },
+  { slug: "conferidor",     label: "Conferidor"     },
+  { slug: "analisador",     label: "Analisador"     },
+  { slug: "heatmap",        label: "Heatmap"        },
+  { slug: "acumulos",       label: "Acúmulos"       },
+  { slug: "probabilidades", label: "Probabilidades" },
+  { slug: "equilibrio",     label: "Equilíbrio"     },
 ];
+
+const ABAS_BASICAS: { slug: AbaAtiva; label: string }[] = [
+  { slug: "resultados",     label: "Resultados"     },
+  { slug: "destaques",      label: "Destaques"      },
+  { slug: "tabelas",        label: "Tabelas"        },
+  { slug: "gerador",        label: "Gerador"        },
+  { slug: "simulador",      label: "Simulador"      },
+  { slug: "conferidor",     label: "Conferidor"     },
+  { slug: "analisador",     label: "Analisador"     },
+  { slug: "acumulos",       label: "Acúmulos"       },
+  { slug: "probabilidades", label: "Probabilidades" },
+];
+
+const ABAS_POR_LOTERIA: Record<string, { slug: AbaAtiva; label: string }[]> = {
+  lotofacil: ABAS_COMPLETAS,
+  megasena:  ABAS_COMPLETAS,
+  quina:     ABAS_BASICAS,
+  lotomania: ABAS_BASICAS,
+};
 
 export default function Subnav({
   codigoLoteria,
@@ -32,6 +51,7 @@ export default function Subnav({
   codigoLoteria: CodigoLoteria;
   ativa: AbaAtiva;
 }) {
+  const ABAS = ABAS_POR_LOTERIA[codigoLoteria] ?? ABAS_BASICAS;
   const navRef = useRef<HTMLElement>(null);
   const [canLeft, setCanLeft]   = useState(false);
   const [canRight, setCanRight] = useState(false);

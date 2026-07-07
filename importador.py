@@ -46,7 +46,9 @@ MAX_TENTATIVAS = 3
 
 LOTERIAS_CODIGO_API = {
     "lotofacil": "lotofacil",
-    "megasena": "megasena",
+    "megasena":  "megasena",
+    "quina":     "quina",
+    "lotomania": "lotomania",
 }
 
 DB_CONFIG = {
@@ -243,14 +245,14 @@ def importar_incremental(conn, loteria_codigo: str) -> None:
 
 def main():
     parser = argparse.ArgumentParser(description="Importador de resultados de loterias da Caixa.")
-    parser.add_argument("--loteria", choices=["lotofacil", "megasena", "todas"], default="todas")
+    parser.add_argument("--loteria", choices=["lotofacil", "megasena", "quina", "lotomania", "todas"], default="todas")
     parser.add_argument("--modo", choices=["incremental", "backfill", "unico"], default="incremental")
     parser.add_argument("--inicio", type=int, help="Numero inicial (modo backfill)")
     parser.add_argument("--fim", type=int, help="Numero final (modo backfill)")
     parser.add_argument("--numero", type=int, help="Numero do concurso (modo unico)")
     args = parser.parse_args()
 
-    loterias = ["lotofacil", "megasena"] if args.loteria == "todas" else [args.loteria]
+    loterias = ["lotofacil", "megasena", "quina", "lotomania"] if args.loteria == "todas" else [args.loteria]
 
     conn = conectar_banco()
     try:

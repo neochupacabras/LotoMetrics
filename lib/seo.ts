@@ -10,7 +10,9 @@ export const SITE_NAME = "LotoAnalítica";
 
 export const NOME_LOTERIA: Record<string, string> = {
   lotofacil: "Lotofácil",
-  megasena: "Mega-Sena",
+  megasena:  "Mega-Sena",
+  quina:     "Quina",
+  lotomania: "Lotomania",
 };
 
 // Helper compartilhado pelas páginas por loteria (Destaques, Tabelas,

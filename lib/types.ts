@@ -37,4 +37,4 @@ export interface ConcursoResumo {
   acumulado: boolean;
 }
 
-export type CodigoLoteria = "lotofacil" | "megasena";
+export type CodigoLoteria = "lotofacil" | "megasena" | "quina" | "lotomania";

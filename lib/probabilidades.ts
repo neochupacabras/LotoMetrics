@@ -47,7 +47,11 @@ export function calcularProbabilidades(
 
 export const FAIXAS_PREMIADAS: Record<string, number[]> = {
   lotofacil: [11, 12, 13, 14, 15],
-  megasena: [4, 5, 6],
+  megasena:  [4, 5, 6],
+  quina:     [2, 3, 4, 5],
+  // Lotomania: apostador marca 50, sorteia 20. Faixas especiais incluem 0 acertos.
+  // O cálculo padrão cobre 15,16,17,18,19,20 — 0 acertos é tratado na UI.
+  lotomania: [15, 16, 17, 18, 19, 20],
 };
 
 // Probabilidade de PELO MENOS k das m dezenas sorteadas estarem dentro de
@@ -78,6 +82,18 @@ export const PARAMS_LOTERIA = {
     percFaixa1: 0.3565,
     precoAposta: 5.00,
     ticketsMedios: 80_000_000,
+  },
+  quina: {
+    n: 80, m: 5,
+    percFaixa1: 0.35,
+    precoAposta: 2.50,
+    ticketsMedios: 40_000_000,
+  },
+  lotomania: {
+    n: 100, m: 20,                   // apostador marca 50 de 100, mas sorteia 20
+    percFaixa1: 0.35,
+    precoAposta: 3.00,
+    ticketsMedios: 15_000_000,
   },
 } as const;
 

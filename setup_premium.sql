@@ -170,3 +170,19 @@ ALTER TABLE public.user_games
 CREATE INDEX IF NOT EXISTS idx_user_games_monitorar
   ON public.user_games(monitorar_proximo)
   WHERE monitorar_proximo = true;
+
+-- =============================================================
+-- Migração: inserir Quina e Lotomania na tabela loteria
+-- Rodar no SQL Editor do Supabase
+-- =============================================================
+
+INSERT INTO public.loteria (codigo, nome, dezena_min, dezena_max, qtd_dezenas_sorteadas, grid_colunas)
+VALUES
+  ('quina',     'Quina',     1, 80, 5,  10),
+  ('lotomania', 'Lotomania', 0, 99, 20, 10)
+ON CONFLICT (codigo) DO UPDATE SET
+  nome                   = EXCLUDED.nome,
+  dezena_min             = EXCLUDED.dezena_min,
+  dezena_max             = EXCLUDED.dezena_max,
+  qtd_dezenas_sorteadas  = EXCLUDED.qtd_dezenas_sorteadas,
+  grid_colunas           = EXCLUDED.grid_colunas;

@@ -213,7 +213,7 @@ export default async function HomePage() {
           <div className="container home-stats-inner">
             <span><strong>3.700+</strong> concursos analisados</span>
             <span className="home-stats-sep">·</span>
-            <span><strong>2</strong> loterias</span>
+            <span><strong>4</strong> loterias</span>
             <span className="home-stats-sep">·</span>
             <span><strong>12</strong> ferramentas</span>
             <span className="home-stats-sep">·</span>

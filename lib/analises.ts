@@ -1763,6 +1763,164 @@ export const ANALISES: Analise[] = [
       </p>
     `,
   },
+
+  {
+    slug: "quina-como-funciona-probabilidades",
+    titulo: "Quina: como funciona, probabilidades e por que é a loteria mais versátil do Brasil",
+    resumo:
+      "5 de 80 dezenas, 5 sorteios por semana, 4 faixas de premiação. A Quina tem a melhor relação entre frequência de sorteios e probabilidade de ganho entre as loterias federais.",
+    data: "2026-07-08",
+    categoria: "educativo" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        A Quina é uma das loterias mais antigas do Brasil — existe desde 1994, antes
+        mesmo da Mega-Sena. Com 5 sorteios por semana (segunda a sábado, exceto domingo),
+        é também a mais frequente entre as loterias federais. E tem algumas características
+        matemáticas que a tornam interessante de analisar.
+      </p>
+
+      <h2>Como funciona</h2>
+      <p>
+        O apostador escolhe entre 5 e 15 números de 1 a 80. A Caixa sorteia 5 dezenas.
+        Há 4 faixas de premiação:
+      </p>
+      <ul>
+        <li><strong>Quina (5 acertos):</strong> 1 em 24.040.016</li>
+        <li><strong>Quadra (4 acertos):</strong> 1 em 65.000</li>
+        <li><strong>Terno (3 acertos):</strong> 1 em 866</li>
+        <li><strong>Duque (2 acertos):</strong> 1 em 37</li>
+      </ul>
+      <p>
+        A faixa do duque (2 acertos) é a mais acessível de todas as loterias federais
+        — com probabilidade de 1 em 37, quem joga regularmente vai acertar essa faixa
+        com relativa frequência. O prêmio é pequeno (geralmente R$4 a R$6), mas é uma
+        faixa com retorno frequente.
+      </p>
+
+      <h2>Comparação com Mega-Sena e Lotofácil</h2>
+      <p>
+        A probabilidade de acertar a Quina completa (1 em 24 milhões) fica entre a
+        Lotofácil (1 em 3,2 milhões) e a Mega-Sena (1 em 50 milhões). Mas o que torna
+        a Quina diferente é a combinação de frequência alta (5 sorteios/semana) e faixas
+        acessíveis (duque e terno com probabilidades razoáveis).
+      </p>
+      <p>
+        O prêmio principal da Quina é consideravelmente menor que o da Mega-Sena —
+        raramente ultrapassa R$10-15 milhões em concursos normais. Mas o acúmulo
+        acontece mais raramente porque a probabilidade de haver ganhador é maior
+        (universo menor de combinações).
+      </p>
+
+      <h2>As probabilidades exatas para aposta simples (5 dezenas)</h2>
+      <p>
+        Com 80 dezenas disponíveis e 5 sorteadas, o total de combinações possíveis é
+        C(80,5) = 24.040.016. As faixas intermediárias:
+      </p>
+      <ul>
+        <li>Terno: C(5,3) × C(75,2) ÷ C(80,5) = 1 em 866</li>
+        <li>Duque: C(5,2) × C(75,3) ÷ C(80,5) = 1 em 37</li>
+      </ul>
+      <p>
+        Em média, quem joga a Quina regularmente acerta o duque a cada 37 concursos —
+        com 5 sorteios por semana, isso é aproximadamente uma vez a cada 7-8 semanas.
+        O terno acontece a cada 866 concursos — cerca de uma vez a cada 3 anos de jogo
+        regular.
+      </p>
+
+      <h2>Acompanhe na plataforma</h2>
+      <p>
+        Os resultados, tabelas estatísticas e ferramentas da Quina estão disponíveis em
+        <a href="/quina/resultados">Quina → Resultados</a>. Use o
+        <a href="/quina/conferidor">conferidor</a> para ver como qualquer combinação
+        teria se saído no histórico completo, ou o
+        <a href="/quina/simulador">simulador</a> para ver o resultado financeiro real
+        de jogar sempre o mesmo jogo.
+      </p>
+    `,
+  },
+  {
+    slug: "lotomania-a-loteria-dos-50-numeros",
+    titulo: "Lotomania: a lógica inversa da loteria que você marca 50 números para acertar 20",
+    resumo:
+      "Na Lotomania, o apostador marca 50 de 100 números — e a Caixa sorteia 20. Você ganha tanto acertando muitos quanto acertando zero. A matemática por trás dessa peculiaridade.",
+    data: "2026-07-11",
+    categoria: "educativo" as const,
+    tempoLeitura: 6,
+    corpo: `
+      <p>
+        A Lotomania tem uma mecânica completamente diferente de todas as outras loterias
+        federais — e por isso é frequentemente mal entendida. Este artigo explica como
+        ela funciona, por que a faixa de "0 acertos" existe e o que os números reais
+        dizem sobre as probabilidades.
+      </p>
+
+      <h2>A mecânica básica</h2>
+      <p>
+        O apostador marca exatamente 50 números de 0 a 99 (100 números no total).
+        A Caixa sorteia 20 números. Você então compara suas 50 marcações com os 20
+        sorteados. As faixas de premiação são:
+      </p>
+      <ul>
+        <li><strong>20 acertos:</strong> suas 50 marcações contêm todos os 20 sorteados</li>
+        <li><strong>19 acertos:</strong> 19 dos 20 sorteados estão entre suas 50 marcações</li>
+        <li><strong>18, 17, 16, 15 acertos:</strong> faixas intermediárias</li>
+        <li><strong>0 acertos:</strong> nenhum dos 20 sorteados está entre suas 50 marcações</li>
+      </ul>
+      <p>
+        A faixa de 0 acertos é a mais peculiar: você ganha um prêmio por não acertar
+        nenhuma das 20 dezenas sorteadas. Isso é possível porque, ao marcar 50 de 100
+        números, há uma chance real de que todos os 20 sorteados caiam nos 50 que você
+        <em>não</em> marcou.
+      </p>
+
+      <h2>Por que a faixa de 0 acertos existe matematicamente</h2>
+      <p>
+        A probabilidade de seus 50 números não incluírem nenhum dos 20 sorteados é
+        calculada assim: dos 100 números, você marcou 50 e deixou 50 de fora. Para
+        que nenhum dos 20 sorteados esteja entre seus 50 marcados, todos os 20 precisam
+        cair nos seus 50 não-marcados.
+      </p>
+      <p>
+        A probabilidade exata: C(50,20) ÷ C(100,20) ≈ 1 em 100.000. Ou seja, em cerca
+        de 1 em cada 100.000 apostas, você acerta a faixa de 0. É rara, mas acontece.
+      </p>
+
+      <h2>Qual faixa é mais provável?</h2>
+      <p>
+        Com 50 marcações e 20 sorteados de 100, a média esperada de acertos é
+        50 × 20 ÷ 100 = 10. A distribuição é centrada em 10 acertos, e as faixas
+        premiadas (15 a 20 acertos) ficam bem acima da média esperada — por isso
+        são raras.
+      </p>
+      <ul>
+        <li>15 acertos: aproximadamente 1 em 1.400</li>
+        <li>16 acertos: aproximadamente 1 em 7.000</li>
+        <li>17 acertos: aproximadamente 1 em 47.000</li>
+        <li>18 acertos: aproximadamente 1 em 400.000</li>
+        <li>19 acertos: aproximadamente 1 em 5.000.000</li>
+        <li>20 acertos: aproximadamente 1 em 75.000.000</li>
+      </ul>
+
+      <h2>A Lotomania é uma boa escolha?</h2>
+      <p>
+        A Lotomania tem menos apostadores que Mega-Sena e Lotofácil, o que significa
+        que quando há ganhador da faixa principal, o prêmio raramente é dividido com
+        muitas pessoas. Por outro lado, o prêmio acumula com frequência e pode chegar
+        a valores altos para uma loteria de menor volume.
+      </p>
+      <p>
+        O retorno ao apostador é o mesmo de qualquer loteria federal (~43% da
+        arrecadação em prêmios). A peculiaridade da faixa de 0 acertos não muda o
+        retorno esperado — é apenas uma forma diferente de distribuir prêmios que
+        torna a mecânica mais interessante.
+      </p>
+      <p>
+        Acompanhe os resultados e estatísticas em
+        <a href="/lotomania/resultados">Lotomania → Resultados</a>.
+      </p>
+    `,
+  },
 ];
 
 export function getAnalise(slug: string): Analise | undefined {
