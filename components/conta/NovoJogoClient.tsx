@@ -5,12 +5,26 @@ import { useRouter } from "next/navigation";
 import { salvarJogoAction } from "@/lib/jogo-actions";
 
 const LOTERIAS = [
-  { codigo: "lotofacil", nome: "Lotofácil", min: 1, max: 25, qtd: 15 },
-  { codigo: "megasena",  nome: "Mega-Sena", min: 1, max: 60, qtd: 6  },
+  { codigo: "lotofacil",     nome: "Lotofácil",   min: 1,  max: 25, qtd: 15 },
+  { codigo: "megasena",      nome: "Mega-Sena",   min: 1,  max: 60, qtd: 6  },
+  { codigo: "quina",         nome: "Quina",        min: 1,  max: 80, qtd: 5  },
+  { codigo: "lotomania",     nome: "Lotomania",    min: 0,  max: 99, qtd: 50 },
+  { codigo: "diadesorte",    nome: "Dia de Sorte", min: 1,  max: 31, qtd: 7  },
+  { codigo: "maismilionaria",nome: "+Milionária",  min: 1,  max: 50, qtd: 6  },
+  { codigo: "timemania",     nome: "Timemania",    min: 1,  max: 80, qtd: 10 },
+  { codigo: "duplasena",     nome: "Dupla Sena",   min: 1,  max: 50, qtd: 6  },
+  { codigo: "supersete",     nome: "Super Sete",   min: 0,  max: 9,  qtd: 7  },
 ];
 
-function formatarDezena(n: number) {
-  return String(n).padStart(2, "0");
+// Loterias com mecânica especial que exige nota na interface
+const NOTAS: Record<string, string> = {
+  lotomania: "Na Lotomania você marca 50 dezenas — a Caixa sorteia 20. Selecione exatamente 50.",
+  supersete: "Na Super Sete cada dezena representa uma coluna (C1 a C7). Dezenas podem se repetir.",
+  maismilionaria: "O jogo tem 6 dezenas (1–50). Os 2 trevos (1–6) são sorteados automaticamente.",
+};
+
+function formatarDezena(n: number, max: number) {
+  return max > 9 ? String(n).padStart(2, "0") : String(n);
 }
 
 export default function NovoJogoClient() {
@@ -60,11 +74,12 @@ export default function NovoJogoClient() {
   }
 
   const completo = selecionadas.size === loteria.qtd;
+  const nota = NOTAS[loteria.codigo];
 
   return (
     <div className="novo-jogo-form">
       {/* Seletor de loteria */}
-      <div className="modo-toggle" style={{ alignSelf: "flex-start", marginBottom: 24 }}>
+      <div className="novo-jogo-loterias">
         {LOTERIAS.map(l => (
           <button
             key={l.codigo}
@@ -78,6 +93,13 @@ export default function NovoJogoClient() {
         ))}
       </div>
 
+      {/* Nota especial */}
+      {nota && (
+        <p className="aviso-legal" style={{ marginBottom: 16, marginTop: 4 }}>
+          {nota}
+        </p>
+      )}
+
       {/* Grade de dezenas */}
       <div className="grade-dezenas">
         {todas.map(d => (
@@ -89,7 +111,7 @@ export default function NovoJogoClient() {
             disabled={!selecionadas.has(d) && selecionadas.size >= loteria.qtd}
             onClick={() => toggle(d)}
           >
-            {formatarDezena(d)}
+            {formatarDezena(d, loteria.max)}
           </button>
         ))}
       </div>

@@ -5917,3 +5917,15 @@ footer.rodape {
   font-family: var(--font-mono);
   color: var(--pine);
 }
+
+/* ── Novo jogo: seletor de loterias com wrap ──────────────────────────── */
+.novo-jogo-loterias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.novo-jogo-loterias .modo-toggle__botao {
+  flex-shrink: 0;
+}

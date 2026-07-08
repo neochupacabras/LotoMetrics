@@ -10,10 +10,34 @@ interface Alerta {
   ativo: boolean;
 }
 
-const LOTERIAS = [
-  { codigo: "lotofacil", nome: "Lotofácil" },
-  { codigo: "megasena",  nome: "Mega-Sena"  },
+const NOMES_LOTERIA: Record<string, string> = {
+  lotofacil:      "Lotofácil",
+  megasena:       "Mega-Sena",
+  quina:          "Quina",
+  lotomania:      "Lotomania",
+  diadesorte:     "Dia de Sorte",
+  maismilionaria: "+Milionária",
+  timemania:      "Timemania",
+  duplasena:      "Dupla Sena",
+  supersete:      "Super Sete",
+};
+
+// Loterias que suportam alertas de acúmulo (têm prêmio acumulado)
+const LOTERIAS_ALERTA = [
+  { codigo: "lotofacil",      nome: "Lotofácil"   },
+  { codigo: "megasena",       nome: "Mega-Sena"   },
+  { codigo: "quina",          nome: "Quina"        },
+  { codigo: "lotomania",      nome: "Lotomania"    },
+  { codigo: "diadesorte",     nome: "Dia de Sorte" },
+  { codigo: "maismilionaria", nome: "+Milionária"  },
+  { codigo: "timemania",      nome: "Timemania"    },
+  { codigo: "duplasena",      nome: "Dupla Sena"   },
+  { codigo: "supersete",      nome: "Super Sete"   },
 ];
+
+function nomeLoteria(codigo: string) {
+  return NOMES_LOTERIA[codigo] ?? codigo;
+}
 
 function AlertaAtivoCard({ alerta }: { alerta: Alerta }) {
   const [removido, setRemovido] = useState(false);
@@ -22,7 +46,7 @@ function AlertaAtivoCard({ alerta }: { alerta: Alerta }) {
   if (removido) return null;
 
   function handleDesativar() {
-    if (!confirm(`Desativar alerta de ${alerta.loteria === "lotofacil" ? "Lotofácil" : "Mega-Sena"}?`)) return;
+    if (!confirm(`Desativar alerta de ${nomeLoteria(alerta.loteria)}?`)) return;
     startTransition(async () => {
       const res = await desativarAlertaAction(alerta.loteria);
       if (res.ok) setRemovido(true);
@@ -33,7 +57,7 @@ function AlertaAtivoCard({ alerta }: { alerta: Alerta }) {
     <div className="alertas-ativos__item">
       <div className="alertas-ativos__info">
         <span className="alertas-ativos__loteria">
-          {alerta.loteria === "lotofacil" ? "Lotofácil" : "Mega-Sena"}
+          {nomeLoteria(alerta.loteria)}
         </span>
         {alerta.threshold_brl && (
           <span>Prêmio acima de R${alerta.threshold_brl.toLocaleString("pt-BR")}</span>
@@ -55,103 +79,110 @@ function AlertaAtivoCard({ alerta }: { alerta: Alerta }) {
   );
 }
 
-export default function AlertasForm({ alertasExistentes }: { alertasExistentes: Alerta[] }) {
+export default function AlertasForm({
+  alertasExistentes,
+}: {
+  alertasExistentes: Alerta[];
+}) {
   const [loteria, setLoteria] = useState("megasena");
-  const [threshold, setThreshold] = useState("");
-  const [sorteios, setSorteios] = useState("");
-  const [mensagem, setMensagem] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
+  const [thresholdBrl, setThresholdBrl] = useState("");
+  const [sorteiosSemGanhador, setSorteiosSemGanhador] = useState("");
+  const [sucesso, setSucesso] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const alertaAtivo = alertasExistentes.find(a => a.loteria === loteria && a.ativo);
+  const alertasAtivos = alertasExistentes.filter(a => a.ativo);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function handleSalvar() {
+    const threshold = thresholdBrl ? parseFloat(thresholdBrl) : null;
+    const sorteios = sorteiosSemGanhador ? parseInt(sorteiosSemGanhador, 10) : null;
+
     if (!threshold && !sorteios) {
-      setMensagem({ tipo: "erro", texto: "Defina pelo menos um critério de alerta." });
+      setErro("Configure pelo menos um critério de alerta.");
       return;
     }
-    const fd = new FormData(e.currentTarget);
+    setErro(null);
     startTransition(async () => {
-      const res = await salvarAlertaAction(fd);
-      setMensagem(res.ok
-        ? { tipo: "ok", texto: "Alerta salvo! Você receberá um e-mail quando o critério for atingido." }
-        : { tipo: "erro", texto: res.erro ?? "Erro ao salvar." }
-      );
+      const res = await salvarAlertaAction(loteria, threshold, sorteios);
+      if (res.ok) {
+        setSucesso(true);
+        setTimeout(() => setSucesso(false), 3000);
+      } else {
+        setErro(res.erro ?? "Erro ao salvar alerta.");
+      }
     });
   }
 
   return (
     <div className="alertas-form">
-      {/* Mostrar alertas ativos */}
-      {alertasExistentes.filter(a => a.ativo).length > 0 && (
+      {alertasAtivos.length > 0 && (
         <div className="alertas-ativos">
           <p className="alertas-ativos__titulo">Alertas ativos:</p>
-          {alertasExistentes.filter(a => a.ativo).map(a => (
+          {alertasAtivos.map(a => (
             <AlertaAtivoCard key={a.loteria} alerta={a} />
           ))}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="alertas-form__campos">
-        <input type="hidden" name="loteria" value={loteria} />
+      <div className="alertas-configurar">
+        <p className="alertas-configurar__titulo">Configurar novo alerta</p>
 
-        <div className="modo-toggle" style={{ alignSelf: "flex-start", marginBottom: 16 }}>
-          {LOTERIAS.map(l => (
-            <button
-              key={l.codigo}
-              type="button"
-              className="modo-toggle__botao"
-              data-ativo={loteria === l.codigo}
-              onClick={() => { setLoteria(l.codigo); setMensagem(null); }}
-            >
-              {l.nome}
-            </button>
-          ))}
+        {/* Seletor de loteria */}
+        <div className="auth-campo">
+          <label className="auth-label">Loteria</label>
+          <select
+            className="auth-input"
+            value={loteria}
+            onChange={e => setLoteria(e.target.value)}
+          >
+            {LOTERIAS_ALERTA.map(l => (
+              <option key={l.codigo} value={l.codigo}>{l.nome}</option>
+            ))}
+          </select>
         </div>
 
-        <div className="alertas-form__linha">
-          <div className="auth-campo">
-            <label className="auth-label">Quando o prêmio acumulado superar</label>
-            <div className="alertas-form__input-prefixo">
-              <span className="alertas-form__prefixo">R$</span>
-              <input
-                type="text"
-                name="threshold"
-                value={threshold}
-                onChange={e => setThreshold(e.target.value)}
-                placeholder="80.000.000"
-                className="auth-input"
-              />
-            </div>
-          </div>
-
-          <div className="alertas-form__separador">ou</div>
-
-          <div className="auth-campo">
-            <label className="auth-label">Quando ficar N sorteios sem ganhador</label>
-            <input
-              type="number"
-              name="sorteios"
-              value={sorteios}
-              onChange={e => setSorteios(e.target.value)}
-              placeholder="5"
-              min={1}
-              max={50}
-              className="auth-input"
-            />
-          </div>
+        <div className="auth-campo">
+          <label className="auth-label">Alertar quando o prêmio estimado superar (R$)</label>
+          <input
+            type="number"
+            className="auth-input"
+            placeholder="ex: 5000000"
+            value={thresholdBrl}
+            onChange={e => setThresholdBrl(e.target.value)}
+            min={0}
+          />
         </div>
 
-        {mensagem && (
-          <p className={`auth-mensagem auth-mensagem--${mensagem.tipo}`}>
-            {mensagem.texto}
+        <div className="auth-campo">
+          <label className="auth-label">Alertar após N sorteios consecutivos sem ganhador</label>
+          <input
+            type="number"
+            className="auth-input"
+            placeholder="ex: 5"
+            value={sorteiosSemGanhador}
+            onChange={e => setSorteiosSemGanhador(e.target.value)}
+            min={1}
+            max={50}
+          />
+        </div>
+
+        {erro && <p className="simulador-erro">{erro}</p>}
+        {sucesso && (
+          <p style={{ color: "var(--pine)", fontSize: "0.85rem", marginTop: 8 }}>
+            ✓ Alerta salvo com sucesso.
           </p>
         )}
 
-        <button type="submit" className="botao-gerar" disabled={pending}>
-          {pending ? "Salvando…" : alertaAtivo ? "Atualizar alerta" : "Ativar alerta"}
+        <button
+          type="button"
+          className="botao-gerar"
+          disabled={pending}
+          onClick={handleSalvar}
+          style={{ marginTop: 16 }}
+        >
+          {pending ? "Salvando…" : "Salvar alerta"}
         </button>
-      </form>
+      </div>
     </div>
   );
 }

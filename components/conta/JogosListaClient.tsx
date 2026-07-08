@@ -16,8 +16,19 @@ function formatarDezena(n: number) {
   return String(n).padStart(2, "0");
 }
 
+const NOMES_LOTERIA: Record<string, string> = {
+  lotofacil:     "Lotofácil",
+  megasena:      "Mega-Sena",
+  quina:         "Quina",
+  lotomania:     "Lotomania",
+  diadesorte:    "Dia de Sorte",
+  maismilionaria:"+Milionária",
+  timemania:     "Timemania",
+  duplasena:     "Dupla Sena",
+  supersete:     "Super Sete",
+};
 function nomeLoteria(codigo: string) {
-  return codigo === "lotofacil" ? "Lotofácil" : "Mega-Sena";
+  return NOMES_LOTERIA[codigo] ?? codigo;
 }
 
 function JogoCard({ jogo, isPremium }: { jogo: Jogo; isPremium: boolean }) {
@@ -138,8 +149,8 @@ export default function JogosListaClient({
   jogos: Jogo[];
   isPremium: boolean;
 }) {
-  const lotofacil = jogos.filter(j => j.loteria === "lotofacil");
-  const megasena  = jogos.filter(j => j.loteria === "megasena");
+  // Agrupar jogos por loteria dinamicamente
+  const loteriasCodigos = [...new Set(jogos.map(j => j.loteria))];
 
   function Grupo({ titulo, lista }: { titulo: string; lista: Jogo[] }) {
     if (lista.length === 0) return null;
