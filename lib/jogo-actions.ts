@@ -134,6 +134,42 @@ export async function salvarAlertaAction(formData: FormData): Promise<{ ok: bool
   return { ok: true };
 }
 
+// ── Salvar alerta com parâmetros diretos (usado pelo AlertasForm novo) ──────────
+export async function salvarAlertaDiretoAction(
+  loteria: string,
+  thresholdBrl: number | null,
+  sorteiosSemGanhador: number | null
+): Promise<{ ok: boolean; erro?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { ok: false, erro: "Não autenticado." };
+
+  const { error } = await supabase.from("alert_preferences").upsert(
+    {
+      user_id: user.id,
+      loteria,
+      threshold_brl: thresholdBrl,
+      sorteios_sem_ganhador: sorteiosSemGanhador,
+      ativo: true,
+    },
+    { onConflict: "user_id,loteria" }
+  );
+
+  if (error) {
+    const { error: insertError } = await supabase.from("alert_preferences").insert({
+      user_id: user.id,
+      loteria,
+      threshold_brl: thresholdBrl,
+      sorteios_sem_ganhador: sorteiosSemGanhador,
+      ativo: true,
+    });
+    if (insertError) return { ok: false, erro: "Não foi possível salvar o alerta." };
+  }
+
+  revalidatePath("/conta");
+  return { ok: true };
+}
+
 // ── Desativar alerta ──────────────────────────────────────────────────────────
 export async function desativarAlertaAction(
   loteria: string

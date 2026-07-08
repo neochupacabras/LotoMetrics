@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { salvarAlertaAction, desativarAlertaAction } from "@/lib/jogo-actions";
+import { salvarAlertaDiretoAction, desativarAlertaAction } from "@/lib/jogo-actions";
 
 interface Alerta {
   loteria: string;
@@ -103,7 +103,7 @@ export default function AlertasForm({
     }
     setErro(null);
     startTransition(async () => {
-      const res = await salvarAlertaAction(loteria, threshold, sorteios);
+      const res = await salvarAlertaDiretoAction(loteria, threshold, sorteios);
       if (res.ok) {
         setSucesso(true);
         setTimeout(() => setSucesso(false), 3000);
