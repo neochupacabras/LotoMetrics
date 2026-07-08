@@ -43,4 +43,4 @@ export interface ConcursoResumo {
   dezenasSegundoSorteio?: number[] | null;
 }
 
-export type CodigoLoteria = "lotofacil" | "megasena" | "quina" | "lotomania" | "diadesorte" | "maismilionaria" | "timemania" | "duplasena";
+export type CodigoLoteria = "lotofacil" | "megasena" | "quina" | "lotomania" | "diadesorte" | "maismilionaria" | "timemania" | "duplasena" | "supersete";

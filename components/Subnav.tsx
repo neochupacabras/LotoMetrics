@@ -47,6 +47,7 @@ const ABAS_POR_LOTERIA: Record<string, { slug: AbaAtiva; label: string }[]> = {
   maismilionaria: ABAS_QUINA_LOTOMANIA,
   timemania:  ABAS_QUINA_LOTOMANIA,
   duplasena:  ABAS_QUINA_LOTOMANIA,
+  supersete:  ABAS_QUINA_LOTOMANIA,
 };
 
 export default function Subnav({

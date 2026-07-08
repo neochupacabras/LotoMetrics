@@ -56,7 +56,8 @@ export const FAIXAS_PREMIADAS: Record<string, number[]> = {
   diadesorte:     [2, 3, 4, 5, 6, 7],
   maismilionaria: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
   timemania:  [3, 4, 5, 6, 7],
-  duplasena:  [1, 2, 3, 4, 5, 6, 7, 8], // 8 faixas: 4 por sorteio
+  duplasena:  [1, 2, 3, 4, 5, 6, 7, 8],
+  supersete:  [3, 4, 5, 6, 7],
 };
 
 // Probabilidade de PELO MENOS k das m dezenas sorteadas estarem dentro de
@@ -123,6 +124,13 @@ export const PARAMS_LOTERIA = {
     percFaixa1: 0.35,
     precoAposta: 2.50,
     ticketsMedios: 6_000_000,
+  },
+  supersete: {
+    // 7 colunas de 0-9: 10^7 = 10.000.000 combinações possíveis
+    n: 10, m: 7,
+    percFaixa1: 0.35,
+    precoAposta: 2.50,
+    ticketsMedios: 5_000_000,
   },
 } as const;
 

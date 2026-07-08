@@ -38,6 +38,51 @@ function Dezena({ numero, destaque }: { numero: number; destaque?: boolean }) {
   );
 }
 
+function CartaoResultadoSuperSete({
+  numero,
+  data,
+  dezenas,
+  acumulado,
+  href,
+}: {
+  numero: number;
+  data: string;
+  dezenas: number[];
+  acumulado: boolean;
+  href: string;
+}) {
+  const [ano, mes, dia] = data.split("T")[0].split("-");
+  const meses = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+  const dataFormatada = `${dia} ${meses[parseInt(mes,10)-1]} ${ano}`;
+  const COLUNAS = ["C1","C2","C3","C4","C5","C6","C7"];
+
+  return (
+    <div className="home-resultado-card">
+      <div className="home-resultado-header">
+        <div>
+          <p className="eyebrow">Super Sete</p>
+          <p className="home-resultado-numero">Concurso {numero.toLocaleString("pt-BR")}</p>
+        </div>
+        <div className="home-resultado-meta">
+          <span>{dataFormatada}</span>
+          {acumulado && <span className="home-acumulado-badge">Acumulou</span>}
+        </div>
+      </div>
+      <div className="supersete-colunas">
+        {dezenas.map((d, i) => (
+          <div key={i} className="supersete-coluna">
+            <span className="supersete-coluna__num">{COLUNAS[i]}</span>
+            <span className="supersete-coluna__dezena">{d}</span>
+          </div>
+        ))}
+      </div>
+      <Link href={href} className="home-resultado-link">
+        Ver resultado completo →
+      </Link>
+    </div>
+  );
+}
+
 function CartaoResultado({
   loteria,
   numero,
@@ -188,7 +233,7 @@ export default async function HomePage() {
   // Buscar análises recentes e últimos resultados em paralelo
   const analisesRecentes = getAnalisesRecentes(3);
 
-  const [loteriaLF, loteriaMS, loteriaQ, loteriaLM, loteriaDS, loteriaMM, loteriaTM, loteriaDuplaSena] = await Promise.all([
+  const [loteriaLF, loteriaMS, loteriaQ, loteriaLM, loteriaDS, loteriaMM, loteriaTM, loteriaDuplaSena, loteriaSS] = await Promise.all([
     getLoteriaPorCodigo("lotofacil"),
     getLoteriaPorCodigo("megasena"),
     getLoteriaPorCodigo("quina"),
@@ -197,9 +242,10 @@ export default async function HomePage() {
     getLoteriaPorCodigo("maismilionaria"),
     getLoteriaPorCodigo("timemania"),
     getLoteriaPorCodigo("duplasena"),
+    getLoteriaPorCodigo("supersete"),
   ]);
 
-  const [ultimoLF, ultimoMS, ultimoQ, ultimoLM, ultimoDS, ultimoMM, ultimoTM, ultimoDS2] = await Promise.all([
+  const [ultimoLF, ultimoMS, ultimoQ, ultimoLM, ultimoDS, ultimoMM, ultimoTM, ultimoDS2, ultimoSS] = await Promise.all([
     loteriaLF ? getUltimoConcurso(loteriaLF.id) : null,
     loteriaMS ? getUltimoConcurso(loteriaMS.id) : null,
     loteriaQ  ? getUltimoConcurso(loteriaQ.id)  : null,
@@ -208,6 +254,7 @@ export default async function HomePage() {
     loteriaMM ? getUltimoConcurso(loteriaMM.id) : null,
     loteriaTM ? getUltimoConcurso(loteriaTM.id) : null,
     loteriaDuplaSena ? getUltimoConcurso(loteriaDuplaSena.id) : null,
+    loteriaSS ? getUltimoConcurso(loteriaSS.id) : null,
   ]);
 
   return (
@@ -315,6 +362,15 @@ export default async function HomePage() {
                   dezenasSegundoSorteio={ultimoDS2.dezenasSegundoSorteio}
                 />
               )}
+              {ultimoSS && (
+                <CartaoResultadoSuperSete
+                  numero={ultimoSS.numero}
+                  data={ultimoSS.dataSorteio}
+                  dezenas={ultimoSS.dezenas}
+                  acumulado={ultimoSS.acumulado}
+                  href={`/supersete/resultados/${ultimoSS.numero}`}
+                />
+              )}
             </div>
           </div>
         </section>
@@ -324,7 +380,7 @@ export default async function HomePage() {
           <div className="container home-stats-inner">
             <span><strong>3.700+</strong> concursos analisados</span>
             <span className="home-stats-sep">·</span>
-            <span><strong>8</strong> loterias</span>
+            <span><strong>9</strong> loterias</span>
             <span className="home-stats-sep">·</span>
             <span><strong>12</strong> ferramentas</span>
             <span className="home-stats-sep">·</span>

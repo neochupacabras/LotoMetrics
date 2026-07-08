@@ -5885,3 +5885,35 @@ footer.rodape {
   color: var(--ink-soft);
   margin-bottom: 10px;
 }
+
+/* ── Super Sete: volante de colunas na home ──────────────────────────── */
+.supersete-colunas {
+  display: flex;
+  gap: 6px;
+}
+
+.supersete-coluna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  background: color-mix(in srgb, var(--pine) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--pine) 20%, transparent);
+  border-radius: 4px;
+  padding: 6px 4px;
+}
+
+.supersete-coluna__num {
+  font-size: 0.62rem;
+  font-family: var(--font-mono);
+  color: var(--ink-faint);
+  letter-spacing: 0.03em;
+}
+
+.supersete-coluna__dezena {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--pine);
+}
