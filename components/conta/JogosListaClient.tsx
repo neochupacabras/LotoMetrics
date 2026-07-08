@@ -168,8 +168,13 @@ export default function JogosListaClient({
 
   return (
     <div className="jogos-lista">
-      <Grupo titulo="Lotofácil" lista={lotofacil} />
-      <Grupo titulo="Mega-Sena" lista={megasena} />
+      {loteriasCodigos.map(codigo => (
+        <Grupo
+          key={codigo}
+          titulo={nomeLoteria(codigo)}
+          lista={jogos.filter(j => j.loteria === codigo)}
+        />
+      ))}
     </div>
   );
 }
