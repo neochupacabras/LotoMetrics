@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   const limite = Math.min(100, Math.max(1, parseInt(searchParams.get("limite") ?? "20")));
 
   if (!isCodigoLoteriaValido(codigoLoteria)) {
-    return apiErro(400, "Loteria inválida. Use 'lotofacil' ou 'megasena'.");
+    return apiErro(400, "Loteria inválida. Valores aceitos: 'lotofacil', 'megasena', 'quina', 'lotomania', 'diadesorte', 'maismilionaria', 'timemania', 'duplasena', 'supersete'.");
   }
 
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
