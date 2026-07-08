@@ -55,7 +55,8 @@ export const FAIXAS_PREMIADAS: Record<string, number[]> = {
   // Dia de Sorte: faixas de 2 a 7 acertos
   diadesorte:     [2, 3, 4, 5, 6, 7],
   maismilionaria: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-  timemania:      [3, 4, 5, 6, 7],  // faixas de acertos de dezenas (time do coração é faixa especial)
+  timemania:  [3, 4, 5, 6, 7],
+  duplasena:  [1, 2, 3, 4, 5, 6, 7, 8], // 8 faixas: 4 por sorteio
 };
 
 // Probabilidade de PELO MENOS k das m dezenas sorteadas estarem dentro de
@@ -116,6 +117,12 @@ export const PARAMS_LOTERIA = {
     percFaixa1: 0.35,
     precoAposta: 3.00,
     ticketsMedios: 10_000_000,
+  },
+  duplasena: {
+    n: 50, m: 6,  // dois sorteios independentes de 6 dezenas de 1-50
+    percFaixa1: 0.35,
+    precoAposta: 2.50,
+    ticketsMedios: 6_000_000,
   },
 } as const;
 

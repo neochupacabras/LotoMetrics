@@ -106,6 +106,13 @@ export default async function DetalheConcursoPage({
 
       <Dezenas dezenas={concurso.dezenas} />
 
+      {concurso.dezenasSegundoSorteio && concurso.dezenasSegundoSorteio.length > 0 && (
+        <div className="resultado-segundo-sorteio">
+          <h3 className="resultado-segundo-sorteio__titulo">2º Sorteio</h3>
+          <Dezenas dezenas={concurso.dezenasSegundoSorteio} />
+        </div>
+      )}
+
       {concurso.trevos && concurso.trevos.length > 0 && (
         <div className="resultado-trevos">
           <span className="resultado-trevos__label">Trevos</span>

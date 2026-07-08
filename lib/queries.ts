@@ -40,6 +40,7 @@ function mapConcursoRow(r: any): Omit<Concurso, "premiacoes"> {
         : r.data_proximo_concurso,
     mesSorte: r.mes_sorte ?? null,
     trevos: r.trevos ?? null,
+    dezenasSegundoSorteio: r.dezenas_segundo_sorteio ?? null,
   };
 }
 
@@ -106,7 +107,7 @@ export async function getConcursosPaginado(
 
   const [{ rows }, { rows: countRows }] = await Promise.all([
     pool.query(
-      `SELECT numero, data_sorteio, dezenas, acumulado, mes_sorte, trevos
+      `SELECT numero, data_sorteio, dezenas, acumulado, mes_sorte, trevos, dezenas_segundo_sorteio
        FROM concurso WHERE loteria_id = $1
        ORDER BY numero DESC
        LIMIT $2 OFFSET $3`,
@@ -124,6 +125,7 @@ export async function getConcursosPaginado(
       acumulado: r.acumulado,
       mesSorte: r.mes_sorte ?? null,
       trevos: r.trevos ?? null,
+      dezenasSegundoSorteio: r.dezenas_segundo_sorteio ?? null,
     })),
     total: Number(countRows[0].count),
   };

@@ -52,6 +52,7 @@ LOTERIAS_CODIGO_API = {
     "diadesorte":     "diadesorte",
     "maismilionaria": "maismilionaria",
     "timemania":     "timemania",
+    "duplasena":     "duplasena",
 }
 
 DB_CONFIG = {
@@ -146,8 +147,8 @@ def salvar_concurso(conn, loteria_id: int, dados: dict) -> None:
                 loteria_id, numero, data_sorteio, dezenas, dezenas_ordem_sorteio,
                 acumulado, local_sorteio, municipio_uf_sorteio,
                 valor_arrecadado, valor_acumulado_proximo, valor_estimado_proximo,
-                data_proximo_concurso, mes_sorte, trevos, atualizado_em
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, now())
+                data_proximo_concurso, mes_sorte, trevos, dezenas_segundo_sorteio, atualizado_em
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, now())
             ON CONFLICT (loteria_id, numero) DO UPDATE SET
                 data_sorteio = EXCLUDED.data_sorteio,
                 dezenas = EXCLUDED.dezenas,
@@ -161,6 +162,7 @@ def salvar_concurso(conn, loteria_id: int, dados: dict) -> None:
                 data_proximo_concurso = EXCLUDED.data_proximo_concurso,
                 mes_sorte = EXCLUDED.mes_sorte,
                 trevos = EXCLUDED.trevos,
+                dezenas_segundo_sorteio = EXCLUDED.dezenas_segundo_sorteio,
                 atualizado_em = now()
             RETURNING id
             """,
@@ -179,6 +181,7 @@ def salvar_concurso(conn, loteria_id: int, dados: dict) -> None:
                 parse_data(dados.get("dataProximoConcurso")),
                 sanitizar_texto(dados.get("nomeTimeCoracaoMesSorte")),  # campo exclusivo do Dia de Sorte / Timemania
                 parse_dezenas(dados.get("trevosSorteados")),  # campo exclusivo da +Milionária
+                parse_dezenas(dados.get("listaDezenasSegundoSorteio")),  # campo exclusivo da Dupla Sena
             ),
         )
         concurso_id = cur.fetchone()[0]
@@ -282,14 +285,14 @@ def importar_incremental(conn, loteria_codigo: str) -> None:
 
 def main():
     parser = argparse.ArgumentParser(description="Importador de resultados de loterias da Caixa.")
-    parser.add_argument("--loteria", choices=["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "todas"], default="todas")
+    parser.add_argument("--loteria", choices=["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "duplasena", "todas"], default="todas")
     parser.add_argument("--modo", choices=["incremental", "backfill", "unico"], default="incremental")
     parser.add_argument("--inicio", type=int, help="Numero inicial (modo backfill)")
     parser.add_argument("--fim", type=int, help="Numero final (modo backfill)")
     parser.add_argument("--numero", type=int, help="Numero do concurso (modo unico)")
     args = parser.parse_args()
 
-    loterias = ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania"] if args.loteria == "todas" else [args.loteria]
+    loterias = ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "duplasena"] if args.loteria == "todas" else [args.loteria]
 
     conn = conectar_banco()
     try:

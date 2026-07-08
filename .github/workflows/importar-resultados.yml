@@ -39,6 +39,7 @@ on:
           - diadesorte
           - maismilionaria
           - timemania
+          - duplasena
       numero:
         description: "Número do concurso (apenas para modo unico)"
         required: false

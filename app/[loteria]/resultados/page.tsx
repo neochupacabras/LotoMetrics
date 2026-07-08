@@ -80,6 +80,13 @@ export default async function ResultadosPage({
 
           <Dezenas dezenas={ultimo.dezenas} />
 
+          {ultimo.dezenasSegundoSorteio && ultimo.dezenasSegundoSorteio.length > 0 && (
+            <div className="resultado-segundo-sorteio">
+              <h3 className="resultado-segundo-sorteio__titulo">2º Sorteio</h3>
+              <Dezenas dezenas={ultimo.dezenasSegundoSorteio} />
+            </div>
+          )}
+
           {ultimo.trevos && ultimo.trevos.length > 0 && (
             <div className="resultado-trevos">
               <span className="resultado-trevos__label">Trevos</span>

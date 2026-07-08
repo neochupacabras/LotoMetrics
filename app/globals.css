@@ -5846,3 +5846,42 @@ footer.rodape {
   font-weight: 700;
   font-family: var(--font-mono);
 }
+
+/* ── Dupla Sena: 2º sorteio na home ──────────────────────────────────── */
+.home-segundo-sorteio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.home-segundo-sorteio__label {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.home-dezenas-lista--pequena .dezena {
+  width: 26px;
+  height: 26px;
+  font-size: 0.72rem;
+}
+
+/* ── Dupla Sena: 2º sorteio nas páginas de resultado ─────────────────── */
+.resultado-segundo-sorteio {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--line-soft);
+}
+
+.resultado-segundo-sorteio__titulo {
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+}
