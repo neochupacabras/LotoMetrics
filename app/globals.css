@@ -5929,3 +5929,55 @@ footer.rodape {
 .novo-jogo-loterias .modo-toggle__botao {
   flex-shrink: 0;
 }
+
+/* ── Conferidor: seletor de trevos (+Milionária) ─────────────────────── */
+.conferidor-trevos {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: color-mix(in srgb, var(--rust) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rust) 25%, transparent);
+  border-radius: 4px;
+}
+
+.conferidor-trevos__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.conferidor-trevos__grade {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.conferidor-trevo-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--line-strong);
+  background: var(--paper);
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.conferidor-trevo-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.conferidor-trevo-btn--ativo {
+  background: var(--rust);
+  border-color: var(--rust);
+  color: #fff;
+}
+
+.conferidor-trevos__info {
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+}

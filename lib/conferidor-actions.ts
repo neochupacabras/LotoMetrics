@@ -1,5 +1,6 @@
 "use server";
 
+import pool from "./db";
 import {
   conferirJogo,
   ResultadoConferidor,
@@ -14,11 +15,22 @@ export interface ConferidorActionResult {
   ok: boolean;
   erro?: string;
   dados?: ResultadoConferidor;
+  trevos?: number[];
 }
+
+// Faixas da +Milionária por (acertos_dezenas, acertos_trevos)
+const FAIXAS_MILIONARIA: Record<string, number> = {
+  "6,2": 1, "6,1": 2, "6,0": 2,
+  "5,2": 3, "5,1": 4, "5,0": 4,
+  "4,2": 5, "4,1": 6, "4,0": 6,
+  "3,2": 7, "3,1": 8,
+  "2,2": 9, "2,1": 10,
+};
 
 export async function conferirJogoAction(
   codigoLoteria: string,
-  dezenas: number[]
+  dezenas: number[],
+  trevos?: number[]
 ): Promise<ConferidorActionResult> {
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) {
@@ -40,8 +52,43 @@ export async function conferirJogoAction(
   }
 
   const faixasPremiadas = FAIXAS_PREMIADAS[codigoLoteria] ?? [];
-  const dados = await conferirJogo(loteria.id, dezenas, faixasPremiadas);
 
+  // +Milionária: ajustar pontos considerando os trevos
+  if (codigoLoteria === "maismilionaria" && trevos && trevos.length === 2) {
+    const dados = await conferirJogo(loteria.id, dezenas, faixasPremiadas);
+
+    // Buscar trevos históricos do banco
+    const { rows } = await pool.query(
+      `SELECT numero, trevos FROM concurso
+       WHERE loteria_id = $1 AND trevos IS NOT NULL
+       ORDER BY numero DESC`,
+      [loteria.id]
+    );
+
+    const trevosPorConcurso = new Map<number, number[]>(
+      rows.map((r: any) => [r.numero, r.trevos as number[]])
+    );
+
+    // Recalcular faixas considerando acertos de trevos
+    const acertosNasFaixas = dados.acertosNasFaixas.map(r => {
+      const trevosSorteados = trevosPorConcurso.get(r.numero) ?? [];
+      const acertosTrevos = trevos.filter(t => trevosSorteados.includes(t)).length;
+      const chave = `${r.pontos},${acertosTrevos}`;
+      const faixa = FAIXAS_MILIONARIA[chave] ?? null;
+      return { ...r, acertosTrevos, faixaMilionaria: faixa };
+    }).filter(r => r.faixaMilionaria !== null);
+
+    return {
+      ok: true,
+      dados: {
+        ...dados,
+        acertosNasFaixas,
+      },
+      trevos,
+    };
+  }
+
+  const dados = await conferirJogo(loteria.id, dezenas, faixasPremiadas);
   return { ok: true, dados };
 }
 

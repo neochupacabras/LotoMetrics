@@ -29,6 +29,7 @@ export default function ConferidorClient({
 }) {
   const [aba, setAba] = useState<"manual" | "foto">("manual");
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
+  const [treVosSelecionados, setTrevosSelecionados] = useState<Set<number>>(new Set());
   const [textoColar, setTextoColar] = useState("");
   const [resultado, setResultado] = useState<ConferidorActionResult | null>(null);
   const [erro, setErro] = useState<string | null>(null);
@@ -74,9 +75,19 @@ export default function ConferidorClient({
 
   function limpar() {
     setSelecionadas(new Set());
+    setTrevosSelecionados(new Set());
     setTextoColar("");
     setResultado(null);
     setErro(null);
+  }
+
+  function toggleTrevo(t: number) {
+    setTrevosSelecionados(prev => {
+      const novo = new Set(prev);
+      if (novo.has(t)) novo.delete(t);
+      else if (novo.size < 2) novo.add(t);
+      return novo;
+    });
   }
 
   function handleConferir() {
