@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CodigoLoteria } from "@/lib/types";
 import { LOTERIAS } from "@/lib/format";
 import UserMenu from "@/components/auth/UserMenu";
+import NavLoterias from "@/components/NavLoterias";
 
 export default function Masthead({
   loteriaAtiva,
@@ -16,6 +17,18 @@ export default function Masthead({
   quizAtivo?: boolean;
   premiumAtivo?: boolean;
 }) {
+  const items = [
+    ...Object.values(LOTERIAS).map((l) => ({
+      href: `/${l.slug}/resultados`,
+      label: l.nome,
+      ativo: loteriaAtiva === l.slug,
+    })),
+    { href: "/dicas",    label: "Dicas",     ativo: !!dicasAtiva    },
+    { href: "/analises", label: "Análises",  ativo: !!analisesAtiva },
+    { href: "/quiz",     label: "Quiz",      ativo: !!quizAtivo     },
+    { href: "/premium",  label: "✦ Premium", ativo: !!premiumAtivo, className: "masthead__premium-link" },
+  ];
+
   return (
     <header className="masthead">
       <div className="container masthead__inner">
@@ -26,29 +39,7 @@ export default function Masthead({
           <div className="masthead__tagline">Resultados &amp; estatísticas de loteria</div>
         </div>
 
-        <nav className="nav-loterias">
-          {Object.values(LOTERIAS).map((l) => (
-            <Link
-              key={l.slug}
-              href={`/${l.slug}/resultados`}
-              data-ativo={loteriaAtiva === l.slug}
-            >
-              {l.nome}
-            </Link>
-          ))}
-          <Link href="/dicas" data-ativo={dicasAtiva}>
-            Dicas
-          </Link>
-          <Link href="/analises" data-ativo={analisesAtiva}>
-            Análises
-          </Link>
-          <Link href="/quiz" data-ativo={quizAtivo}>
-            Quiz
-          </Link>
-          <Link href="/premium" data-ativo={premiumAtivo} className="masthead__premium-link">
-            ✦ Premium
-          </Link>
-        </nav>
+        <NavLoterias items={items} />
 
         <UserMenu />
       </div>

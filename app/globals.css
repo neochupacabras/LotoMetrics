@@ -104,6 +104,61 @@ img {
   margin-top: 4px;
 }
 
+/* Wrapper externo com setas — sempre visível */
+.nav-loterias-outer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0; /* permite encolher dentro do flex do masthead */
+}
+
+/* Setas de navegação */
+.nav-loterias-seta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--ink-soft);
+  padding: 0;
+  transition: opacity 0.15s, color 0.15s;
+  z-index: 3;
+}
+
+.nav-loterias-seta[aria-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  border: none;
+  overflow: hidden;
+}
+
+.nav-loterias-seta:hover {
+  color: var(--pine);
+  border-color: var(--pine);
+}
+
+/* Gradiente à direita */
+.nav-loterias-fade {
+  position: absolute;
+  right: 24px;
+  top: 0;
+  bottom: 0;
+  width: 32px;
+  background: linear-gradient(to left, var(--paper) 30%, transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Nav em si — sempre scroll horizontal */
 .nav-loterias {
   display: flex;
   gap: 4px;
@@ -111,16 +166,16 @@ img {
   border-radius: 4px;
   padding: 3px;
   background: var(--paper);
-  flex-wrap: wrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 
-@media (max-width: 640px) {
-  .nav-loterias {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    max-width: calc(100vw - 32px);
-    -webkit-overflow-scrolling: touch;
-  }
+.nav-loterias::-webkit-scrollbar {
+  display: none;
 }
 
 .nav-loterias a {
