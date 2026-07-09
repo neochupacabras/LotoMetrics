@@ -1921,6 +1921,272 @@ export const ANALISES: Analise[] = [
       </p>
     `,
   },
+
+  {
+    slug: "dia-de-sorte-guia-completo",
+    titulo: "Dia de Sorte: guia completo para entender a loteria do mês",
+    resumo:
+      "Com sorteios 3 vezes por semana e o menor universo de dezenas (1-31), o Dia de Sorte tem as faixas intermediárias mais acessíveis das loterias federais.",
+    data: "2026-07-09",
+    categoria: "educativo" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        O Dia de Sorte foi lançado em maio de 2018 e desde então acumula mais de
+        1.200 concursos. Com dezenas de 1 a 31 e um mês sorteado como elemento extra,
+        tem a mecânica mais diferente entre as loterias de formato simples.
+      </p>
+
+      <h2>O universo pequeno muda tudo</h2>
+      <p>
+        Com apenas 31 dezenas disponíveis e 7 sorteadas por concurso, a proporção
+        é de 22,6% — bem acima dos 10% da Mega-Sena e ainda abaixo dos 60% da
+        Lotofácil. O efeito prático: acertar 4 dezenas tem probabilidade de 1 em 40,
+        o que torna a 5ª faixa bem mais frequente do que na maioria das loterias.
+      </p>
+      <p>
+        Para quem quer ganhar alguma coisa com mais regularidade, o Dia de Sorte
+        oferece as faixas intermediárias mais acessíveis entre as loterias que não
+        são a Lotofácil.
+      </p>
+
+      <h2>O Mês da Sorte na prática</h2>
+      <p>
+        A 6ª faixa paga um prêmio pequeno só por acertar o mês — sem precisar acertar
+        nenhuma dezena. Com probabilidade de 1 em 12, quem joga todo concurso da
+        semana vai acertar o mês em média uma vez por mês. É um detalhe que torna o
+        jogo mais frequentemente "lucrativo" em pequena escala.
+      </p>
+      <p>
+        Os resultados completos, incluindo o Mês da Sorte sorteado, estão disponíveis
+        em <a href="/diadesorte/resultados">Dia de Sorte → Resultados</a>.
+      </p>
+
+      <h2>Acompanhe as estatísticas</h2>
+      <p>
+        O <a href="/diadesorte/heatmap">heatmap do Dia de Sorte</a> mostra a frequência
+        de cada dezena ao longo dos mais de 1.200 concursos. Como em todas as loterias,
+        a variação observada está dentro do esperado por pura aleatoriedade — mas é
+        visualmente interessante comparar o comportamento dos últimos 50 concursos
+        com o histórico completo.
+      </p>
+    `,
+  },
+  {
+    slug: "mais-milionaria-trevos-matematica",
+    titulo: "+Milionária: a matemática dos trevos e por que eles importam mais do que parecem",
+    resumo:
+      "Os 2 trevos da +Milionária têm probabilidade de 1 em 15 de acertar os dois certos. Entenda como eles se combinam com as dezenas para criar as 10 faixas.",
+    data: "2026-07-10",
+    categoria: "maismilionaria" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        A +Milionária é a loteria federal mais nova (lançada em 2022) e a única que
+        combina dois tipos de elemento: dezenas (1-50) e trevos (1-6). Essa combinação
+        cria uma estrutura de premiação com 10 faixas que depende de acertos em ambos
+        os componentes.
+      </p>
+
+      <h2>Por que os trevos importam</h2>
+      <p>
+        Diferente das dezenas, onde acertar 6 de 50 é 1 em 15.890.700, acertar os
+        2 trevos certos de 6 possíveis tem probabilidade de apenas 1 em 15. Isso
+        significa que os trevos têm um impacto desproporcional na probabilidade de
+        cada faixa.
+      </p>
+      <p>
+        Acertar 3 dezenas sem os trevos não paga nada. Acertar 3 dezenas e 1 trevo
+        paga a 8ª faixa. Acertar 3 dezenas e 2 trevos paga a 7ª faixa. Os trevos
+        determinam qual das duas faixas é atingida — e a diferença de prêmio entre
+        elas pode ser de 2 a 5 vezes.
+      </p>
+
+      <h2>A faixa principal mais rara do Brasil</h2>
+      <p>
+        A 1ª faixa da +Milionária (6 dezenas + 2 trevos) tem probabilidade de 1 em
+        238.360.656 — a mais rara entre todas as loterias federais ativas. Por isso
+        o prêmio tende a acumular mais e chegar a valores excepcionalmente altos.
+        O recorde histórico já ultrapassou R$100 milhões.
+      </p>
+
+      <h2>Como conferir seu jogo com trevos</h2>
+      <p>
+        O <a href="/maismilionaria/conferidor">conferidor da +Milionária</a> neste site
+        inclui um seletor de trevos. Além das 6 dezenas, selecione os 2 trevos do seu
+        jogo para que o conferidor calcule corretamente em qual faixa cada concurso
+        histórico teria sido premiado.
+      </p>
+      <p>
+        Os resultados recentes, com os trevos sorteados destacados em vermelho, estão
+        em <a href="/maismilionaria/resultados">+Milionária → Resultados</a>.
+      </p>
+    `,
+  },
+  {
+    slug: "timemania-time-coracao-analise",
+    titulo: "Timemania: análise histórica do Time do Coração e das dezenas de 1 a 80",
+    resumo:
+      "Com mais de 2.400 concursos desde 2008, a Timemania tem um histórico rico. O que os dados dizem sobre distribuição de dezenas, frequência de acúmulos e o Time do Coração.",
+    data: "2026-07-13",
+    categoria: "educativo" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        A Timemania existe desde setembro de 2008 — uma das loterias com maior histórico
+        depois da Mega-Sena e da Quina. Com mais de 2.400 concursos e um universo de
+        80 dezenas, tem características únicas em relação às outras loterias.
+      </p>
+
+      <h2>O maior universo entre as loterias de formato simples</h2>
+      <p>
+        Com 80 dezenas disponíveis e apenas 7 sorteadas, a Timemania tem a menor
+        proporção de dezenas sorteadas por concurso: apenas 8,75%. Isso tem
+        consequências diretas:
+      </p>
+      <ul>
+        <li>Dezenas ficam mais tempo sem sair — atrasos longos são normais</li>
+        <li>Sequências consecutivas são mais raras do que em outras loterias</li>
+        <li>O ciclo completo (todas as 80 dezenas saírem ao menos uma vez) leva muito mais concursos</li>
+      </ul>
+      <p>
+        O <a href="/timemania/tabelas/atraso">histórico de atraso da Timemania</a>
+        mostra os recordes por dezena — valores bem maiores do que os da Lotofácil,
+        o que é esperado pela proporção menor de dezenas sorteadas.
+      </p>
+
+      <h2>O Time do Coração no histórico</h2>
+      <p>
+        O Time do Coração sorteado aparece nos resultados da Timemania da mesma forma
+        que o Mês da Sorte aparece no Dia de Sorte. A lista de times participantes
+        varia ao longo dos anos, conforme clubes entram e saem do programa de
+        arrecadação da Caixa.
+      </p>
+      <p>
+        A faixa do Time do Coração paga um prêmio fixo pequeno independente das
+        dezenas. Quem escolhe seu time e joga regularmente vai acertar essa faixa
+        com uma frequência proporcional ao número de times na lista atual.
+      </p>
+
+      <h2>Explore os dados</h2>
+      <p>
+        O <a href="/timemania/heatmap">heatmap da Timemania</a> mostra a frequência
+        de cada dezena de 1 a 80. Com 2.400+ concursos no histórico, a distribuição
+        está bem próxima da esperada — o que confirma que o sorteio é honesto e que
+        qualquer variação visível é ruído estatístico normal.
+      </p>
+    `,
+  },
+  {
+    slug: "dupla-sena-dois-sorteios-estrategia",
+    titulo: "Dupla Sena: como dois sorteios por concurso afetam sua estratégia",
+    resumo:
+      "Com dois sorteios independentes por aposta, a Dupla Sena dobra aproximadamente suas chances. Mas isso é equivalente a comprar dois bilhetes da Mega-Sena?",
+    data: "2026-07-16",
+    categoria: "educativo" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        A Dupla Sena existe desde 2001 e tem uma mecânica que a diferencia: cada
+        aposta é conferida em dois sorteios distintos realizados no mesmo concurso.
+        O que isso significa na prática para probabilidades e estratégia?
+      </p>
+
+      <h2>Dois sorteios, dobro de chances?</h2>
+      <p>
+        Tecnicamente sim, mas com uma nuance. A probabilidade de acertar a sena em
+        pelo menos um dos dois sorteios é:
+      </p>
+      <p>
+        1 − (1 − 1/15.890.700)² ≈ 1 em 7.945.350
+      </p>
+      <p>
+        Isso é quase o dobro da probabilidade de um único sorteio — e é matematicamente
+        equivalente a jogar dois bilhetes diferentes numa loteria de sorteio único. A
+        diferença real é que você não precisa escolher duas combinações: com um único
+        jogo, você já está coberto nos dois sorteios.
+      </p>
+
+      <h2>Comparação com a Mega-Sena</h2>
+      <p>
+        A Dupla Sena usa dezenas de 1 a 50 (não 1-60 como a Mega-Sena), então o
+        universo é menor e a probabilidade de acertar é maior por sorteio. Um único
+        sorteio da Dupla Sena tem probabilidade de 1 em 15.890.700 — mais de 3 vezes
+        mais provável que a Mega-Sena. Com o segundo sorteio incluído, fica 1 em
+        ~7.945.350 — ainda mais de 6 vezes mais provável que a Mega.
+      </p>
+
+      <h2>As 8 faixas na prática</h2>
+      <p>
+        Com 4 faixas por sorteio (sena, quina, quadra e terno), cada faixa existe
+        em duplicata. É possível, em teoria, ganhar em ambos os sorteios no mesmo
+        concurso — dois prêmios pelo preço de uma aposta.
+      </p>
+      <p>
+        Confira o histórico completo dos dois sorteios em
+        <a href="/duplasena/resultados">Dupla Sena → Resultados</a>, onde o 1º e
+        o 2º sorteio aparecem separados visualmente.
+      </p>
+    `,
+  },
+  {
+    slug: "super-sete-colunas-independentes-curiosidades",
+    titulo: "Super Sete: as curiosidades matemáticas de uma loteria com 7 colunas independentes",
+    resumo:
+      "Com 10 milhões de combinações possíveis e dezenas que podem se repetir, a Super Sete tem propriedades estatísticas completamente diferentes de todas as outras loterias.",
+    data: "2026-07-17",
+    categoria: "educativo" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        A Super Sete foi lançada em outubro de 2020 e já tem quase 900 concursos.
+        Sua mecânica de 7 colunas independentes cria propriedades estatísticas únicas
+        que não aparecem em nenhuma outra loteria federal.
+      </p>
+
+      <h2>O mesmo dígito em múltiplas colunas</h2>
+      <p>
+        Porque cada coluna é sorteada independentemente, o mesmo dígito pode aparecer
+        em várias colunas no mesmo concurso. No concurso 869, o resultado foi
+        [8, 7, 4, 3, 9, 6, 6] — o dígito 6 apareceu nas colunas C6 e C7.
+      </p>
+      <p>
+        No histórico da Super Sete, resultados com dois dígitos iguais são comuns —
+        com probabilidade de exatamente 63% para qualquer par de colunas ter o mesmo
+        dígito (pelo problema do aniversário aplicado a 7 escolhas de 10 opções).
+        Resultados com três ou mais repetições existem mas são mais raros.
+      </p>
+
+      <h2>A soma mais previsível de todas as loterias</h2>
+      <p>
+        Com apenas 22 somas possíveis (de 0+0+0+0+0+0+0=0 a 9+9+9+9+9+9+9=63),
+        a distribuição de somas da Super Sete é a mais compacta entre todas as loterias.
+        A soma média esperada é 31,5 (média de cada coluna × 7 = 4,5 × 7).
+        No <a href="/supersete/tabelas/soma">histograma de somas</a>, você pode ver
+        como a distribuição real se compara com o esperado.
+      </p>
+
+      <h2>O heatmap por coluna</h2>
+      <p>
+        O <a href="/supersete/heatmap">heatmap da Super Sete</a> neste site usa uma
+        visualização especial: em vez de colorir dezenas num volante linear, ele mostra
+        a frequência de cada dígito (0-9) numa grade de 10 × 7. Isso permite ver,
+        por exemplo, se o dígito 9 aparece com mais frequência na coluna C3 do que nas
+        outras — o que seria evidência de viés, mas que (como esperado) não existe
+        nos dados reais.
+      </p>
+
+      <h2>3 números por coluna: quando faz sentido</h2>
+      <p>
+        Escolher 3 números em vez de 1 por coluna aumenta a probabilidade de acertar
+        aquela coluna de 10% para 30% — um aumento de 3 vezes. Mas o custo também
+        aumenta 3 vezes (para uma coluna) ou 3⁷ = 2.187 vezes (para todas as 7
+        colunas com 3 números cada). Como em todas as loterias, a eficiência por real
+        gasto é idêntica independente da estratégia de aposta.
+      </p>
+    `,
+  },
+
 ];
 
 export function getAnalise(slug: string): Analise | undefined {

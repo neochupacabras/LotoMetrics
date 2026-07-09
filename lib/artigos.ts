@@ -119,4 +119,35 @@ export const ARTIGOS: Artigo[] = [
     resumo:
       "Fechamento não prevê números — garante cobertura. Veja a diferença com um exemplo pequeno que dá pra conferir na mão.",
   },
+
+  {
+    slug: "dia-de-sorte",
+    titulo: "Dia de Sorte: como funciona, probabilidades e o Mês da Sorte",
+    resumo:
+      "7 dezenas de 1 a 31 mais um mês sorteado — a mecânica do Dia de Sorte e o papel do Mês da Sorte nas faixas de premiação.",
+  },
+  {
+    slug: "mais-milionaria",
+    titulo: "+Milionária: dezenas, trevos e como as faixas se combinam",
+    resumo:
+      "A única loteria federal com dois componentes: 6 dezenas de 1 a 50 e 2 trevos de 1 a 6. As 10 faixas cruzam acertos de ambos.",
+  },
+  {
+    slug: "timemania",
+    titulo: "Timemania: 7 de 80 dezenas e o Time do Coração",
+    resumo:
+      "A Timemania tem o maior universo de dezenas entre as loterias de formato simples — e uma faixa extra que paga independente das dezenas.",
+  },
+  {
+    slug: "dupla-sena",
+    titulo: "Dupla Sena: dois sorteios por aposta e o que isso muda na prática",
+    resumo:
+      "Cada bilhete da Dupla Sena é conferido em dois sorteios distintos. As chances dobram? Entenda a matemática dos dois sorteios independentes.",
+  },
+  {
+    slug: "super-sete",
+    titulo: "Super Sete: a lógica das 7 colunas independentes de 0 a 9",
+    resumo:
+      "Na Super Sete, cada coluna é um sorteio independente de 0 a 9 — o mesmo dígito pode aparecer em colunas diferentes, o que muda toda a análise.",
+  },
 ];
