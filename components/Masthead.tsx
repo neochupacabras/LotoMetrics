@@ -11,6 +11,7 @@ export default function Masthead({
   quizAtivo,
   premiumAtivo,
   matematicaAtiva,
+  calculadorasAtiva,
 }: {
   loteriaAtiva?: CodigoLoteria;
   dicasAtiva?: boolean;
@@ -18,6 +19,7 @@ export default function Masthead({
   quizAtivo?: boolean;
   premiumAtivo?: boolean;
   matematicaAtiva?: boolean;
+  calculadorasAtiva?: boolean;
 }) {
   const items = [
     ...Object.values(LOTERIAS).map((l) => ({
@@ -26,7 +28,8 @@ export default function Masthead({
       ativo: loteriaAtiva === l.slug,
     })),
     { href: "/dicas",      label: "Dicas",       ativo: !!dicasAtiva     },
-    { href: "/matematica", label: "Matemática", ativo: !!matematicaAtiva },
+    { href: "/matematica",    label: "Matemática",    ativo: !!matematicaAtiva    },
+    { href: "/calculadoras",  label: "Calculadoras",  ativo: !!calculadorasAtiva  },
     { href: "/analises",   label: "Análises",   ativo: !!analisesAtiva  },
     { href: "/quiz",       label: "Quiz",        ativo: !!quizAtivo      },
     { href: "/premium",  label: "✦ Premium", ativo: !!premiumAtivo, className: "masthead__premium-link" },
