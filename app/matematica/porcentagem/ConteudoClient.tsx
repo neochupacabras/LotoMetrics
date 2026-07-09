@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-function SimuladorDesconto() {
+export function SimuladorDesconto() {
   const [preco, setPreco] = useState(100);
   const [aumento, setAumento] = useState(100);
   const [desconto, setDesconto] = useState(50);

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useCallback } from "react";
 
-function SimuladorMoeda() {
+export function SimuladorMoeda() {
   const [lancamentos, setLancamentos] = useState(0);
   const [caras, setCaras] = useState(0);
   const [historico, setHistorico] = useState<("cara" | "coroa")[]>([]);

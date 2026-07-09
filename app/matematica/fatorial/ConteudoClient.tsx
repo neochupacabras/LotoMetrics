@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-function CalculadoraFatorial() {
+export function CalculadoraFatorial() {
   const [n, setN] = useState(5);
   function fat(x: number): bigint {
     if (x <= 1) return 1n;

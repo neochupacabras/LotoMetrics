@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useCallback } from "react";
 
-function SimuladorLGN() {
+export function SimuladorLGN() {
   const [resultados, setResultados] = useState<number[]>([]);
   const [rodando, setRodando] = useState(false);
 

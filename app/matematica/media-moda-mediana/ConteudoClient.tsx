@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useMemo } from "react";
 
-function SimuladorSalarios() {
+export function SimuladorSalarios() {
   const [funcionarios, setFuncionarios] = useState([3000, 3200, 2800, 4000, 3500, 3100, 2900, 150000]);
 
   const sorted = useMemo(() => [...funcionarios].sort((a, b) => a - b), [funcionarios]);

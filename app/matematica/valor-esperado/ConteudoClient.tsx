@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-function CalculadoraVE() {
+export function CalculadoraVE() {
   const [premioM, setPremioM] = useState(50);
   const [probabilidade, setProbabilidade] = useState(1);
   const [custo, setCusto] = useState(6);

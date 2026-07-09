@@ -6,7 +6,7 @@ import { useState } from "react";
 // ─── Calculadora de combinações C(n,k) ───────────────────────────────────────
 // ─── Artigo ──────────────────────────────────────────────────────────────────
 
-function BrincadeiraGuardaRoupa() {
+export function BrincadeiraGuardaRoupa() {
   const [camisas, setCamisas] = useState(5);
   const [calcas, setCalcas]   = useState(4);
   const [tenis, setTenis]     = useState(3);
@@ -63,17 +63,17 @@ function BrincadeiraGuardaRoupa() {
 
 // ─── Calculadora de combinações C(n,k) ───────────────────────────────────────
 
-function fat(n: number): number {
+export function fat(n: number): number {
   if (n <= 1) return 1;
   return n * fat(n - 1);
 }
 
-function comb(n: number, k: number): number {
+export function comb(n: number, k: number): number {
   if (k > n) return 0;
   return fat(n) / (fat(k) * fat(n - k));
 }
 
-function CalculadoraCnk() {
+export function CalculadoraCnk() {
   const [n, setN] = useState(25);
   const [k, setK] = useState(15);
 

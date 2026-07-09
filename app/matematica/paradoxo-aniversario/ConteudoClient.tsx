@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useMemo } from "react";
 
-function SimuladorAniversario() {
+export function SimuladorAniversario() {
   const [pessoas, setPessoas] = useState(23);
   const prob = useMemo(() => {
     let p = 1;

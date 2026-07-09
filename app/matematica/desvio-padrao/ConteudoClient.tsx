@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useMemo } from "react";
 
-function VisualizadorDP() {
+export function VisualizadorDP() {
   const [dispersao, setDispersao] = useState(15);
   const media = 170;
   const dados = useMemo(() => {

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useMemo } from "react";
 
-function CurvaGaussiana() {
+export function CurvaGaussiana() {
   const [media, setMedia] = useState(170);
   const [dp, setDp] = useState(10);
 
