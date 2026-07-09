@@ -192,6 +192,88 @@ const BANCO: Pergunta[] = [
       "Toda combinação específica de 15 dezenas tem probabilidade 1/3.268.760 de ser sorteada. Não importa se os números parecem 'estratégicos', 'aleatórios', 'quentes' ou 'frios' — a probabilidade é idêntica para todas.",
     link: { href: "/dicas/frequencia", label: "Artigo: Frequência" },
   },
+  // ── NOVAS LOTERIAS ────────────────────────────────────────────────────────
+  {
+    afirmacao:
+      "Na Quina, acertar 2 dezenas (duque) tem probabilidade de aproximadamente 1 em 37 — tornando-a a faixa premiada mais acessível entre as loterias de formato simples.",
+    resposta: "verdade",
+    explicacao:
+      "Com 5 dezenas sorteadas de 80, a probabilidade de acertar exatamente 2 é C(5,2)×C(75,3) ÷ C(80,5) ≈ 1 em 37. Isso é muito mais frequente do que qualquer faixa da Mega-Sena (cuja faixa mínima, a quadra, tem probabilidade de 1 em 2.332). A Quina tem o prêmio de entrada mais acessível.",
+    link: { href: "/dicas/quina", label: "Artigo: Quina" },
+  },
+  {
+    afirmacao:
+      "Na Lotomania, você pode ganhar um prêmio acertando zero dos 20 números sorteados.",
+    resposta: "verdade",
+    explicacao:
+      "A Lotomania tem uma faixa especial de '0 acertos': se nenhum dos 20 números sorteados estiver entre os 50 que você marcou, você ganha. Com 100 números disponíveis e 50 marcados, há uma chance de aproximadamente 1 em 100.000 de todos os 20 sorteados caírem exatamente nos 50 que você não marcou.",
+    link: { href: "/dicas/lotomania", label: "Artigo: Lotomania" },
+  },
+  {
+    afirmacao:
+      "A faixa principal da +Milionária é a mais rara entre todas as loterias federais ativas — mais rara até do que a Mega-Sena.",
+    resposta: "verdade",
+    explicacao:
+      "Para ganhar a 1ª faixa da +Milionária você precisa acertar 6 dezenas de 50 E os 2 trevos de 6. A probabilidade combinada é 1 em 238.360.656 — mais de 4 vezes mais rara que a Mega-Sena (1 em 50.063.860). Por isso o prêmio da +Milionária tende a acumular mais.",
+    link: { href: "/dicas/mais-milionaria", label: "Artigo: +Milionária" },
+  },
+  {
+    afirmacao:
+      "Na +Milionária, escolher os 2 trevos certos tem probabilidade de 1 em 15 — independente de quais dezenas você acertou.",
+    resposta: "verdade",
+    explicacao:
+      "Com 6 trevos disponíveis e 2 sorteados, a probabilidade de acertar os 2 exatos é C(2,2)×C(4,0) ÷ C(6,2) = 1/15. Os trevos são independentes das dezenas — acertar ou errar os trevos não afeta em nada a probabilidade de acertar as dezenas.",
+    link: { href: "/dicas/mais-milionaria", label: "Artigo: +Milionária" },
+  },
+  {
+    afirmacao:
+      "Na Timemania, o universo de 80 dezenas significa que as dezenas ficam mais tempo sem sair do que na Mega-Sena, que tem 60 dezenas.",
+    resposta: "verdade",
+    explicacao:
+      "A Timemania sorteia 7 de 80 dezenas (8,75% por concurso) enquanto a Mega-Sena sorteia 6 de 60 (10%). Com proporção menor, cada dezena leva mais concursos para aparecer — o atraso médio esperado na Timemania é cerca de 11,4 concursos, contra 10 na Mega-Sena.",
+    link: { href: "/dicas/timemania", label: "Artigo: Timemania" },
+  },
+  {
+    afirmacao:
+      "Na Dupla Sena, é matematicamente impossível ganhar prêmios nos dois sorteios do mesmo concurso com uma única aposta.",
+    resposta: "mito",
+    explicacao:
+      "É perfeitamente possível — e já aconteceu. Se uma aposta tiver 6 acertos no 1º sorteio E 6 acertos no 2º sorteio do mesmo concurso, ganha prêmio nos dois. Como os dois sorteios são independentes, cada um tem sua própria probabilidade de gerar ganhadores. Improvável, mas não impossível.",
+    link: { href: "/dicas/dupla-sena", label: "Artigo: Dupla Sena" },
+  },
+  {
+    afirmacao:
+      "A Dupla Sena tem chance maior de ganhar a faixa principal do que a Mega-Sena — mesmo considerando só o 1º sorteio.",
+    resposta: "verdade",
+    explicacao:
+      "A Dupla Sena sorteia 6 dezenas de um universo de 50 (não 60 como a Mega-Sena). O total de combinações é C(50,6) = 15.890.700 contra C(60,6) = 50.063.860 da Mega-Sena. A faixa principal da Dupla Sena é mais de 3 vezes mais provável por sorteio do que a Mega-Sena.",
+    link: { href: "/dicas/dupla-sena", label: "Artigo: Dupla Sena" },
+  },
+  {
+    afirmacao:
+      "Na Super Sete, é possível que o mesmo dígito apareça em todas as 7 colunas do mesmo concurso.",
+    resposta: "verdade",
+    explicacao:
+      "Como cada coluna da Super Sete é sorteada de forma completamente independente (de 0 a 9), cada coluna pode sortear qualquer dígito independente das outras. A probabilidade de um dígito específico aparecer em todas as 7 colunas é (1/10)⁷ = 1 em 10 milhões — improvável mas matematicamente possível.",
+    link: { href: "/dicas/super-sete", label: "Artigo: Super Sete" },
+  },
+  {
+    afirmacao:
+      "No Dia de Sorte, um apostador que sempre escolhe o mesmo mês vai acertar o Mês da Sorte em média uma vez por mês, jogando 3 vezes por semana.",
+    resposta: "verdade",
+    explicacao:
+      "Com 12 meses possíveis e 1 sorteado, a probabilidade de acertar o mês em qualquer concurso é 1/12. Jogando 3 vezes por semana (≈13 vezes por mês), a probabilidade de acertar pelo menos uma vez no mês é 1-(11/12)¹³ ≈ 68%. Em média, um ganhador do mês a cada 12 concursos = aproximadamente 1 vez por mês.",
+    link: { href: "/dicas/dia-de-sorte", label: "Artigo: Dia de Sorte" },
+  },
+  {
+    afirmacao:
+      "As ferramentas de análise estatística do LotoAnalítica (heatmap, analisador, tabelas) funcionam da mesma forma para todas as 9 loterias disponíveis.",
+    resposta: "mito",
+    explicacao:
+      "Algumas ferramentas têm adaptações por loteria. O heatmap da Super Sete usa uma grade de dígitos × colunas em vez do volante linear. O analisador usa distribuições calibradas especificamente para cada loteria. Certas categorias de tabelas (como moldura e ciclos) são excluídas para loterias onde não fazem sentido. O conferidor da +Milionária inclui seletor de trevos.",
+    link: { href: "/analises", label: "Análises e novidades" },
+  },
+
 ];
 
 // ─── Tipos e helpers ────────────────────────────────────────────────────────
