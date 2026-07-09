@@ -6,7 +6,7 @@ import { useState } from "react";
 export function CalculadoraFatorial() {
   const [n, setN] = useState(5);
   function fat(x: number): bigint {
-    if (x <= 1) return 1n;
+    if (x <= 1) return BigInt(1);
     return BigInt(x) * fat(x - 1);
   }
   const resultado = fat(n);
