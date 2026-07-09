@@ -80,3 +80,24 @@ export const CATEGORIAS: CategoriaTabela[] = [
 export function getCategoriaPorSlug(slug: string): CategoriaTabela | undefined {
   return CATEGORIAS.find((c) => c.slug === slug);
 }
+
+// ── Categorias disponíveis por loteria ────────────────────────────────────────
+//
+// Critérios de exclusão:
+//  moldura-centro  → requer volante 2D regular; excluído para Super Sete e Lotomania
+//  linhas-colunas  → idem
+//  ciclos          → sem sentido para Super Sete (valores 0-9 completam ciclo a cada poucos concursos)
+//  repetidas       → sem sentido para Super Sete (dezenas repetidas dentro do mesmo sorteio)
+//  duques-trincas  → sem sentido para Super Sete (pares de posições ≠ pares de valores)
+//  multiplos-de-3  → zero=0 não é múltiplo de 3 por convenção; mantido para Lotomania pois 0 é excluído
+
+const CATEGORIAS_EXCLUIDAS: Record<string, string[]> = {
+  supersete:  ["moldura-centro", "linhas-colunas", "ciclos", "repetidas", "duques-trincas"],
+  lotomania:  ["moldura-centro", "linhas-colunas"],
+};
+
+export function getCategoriasParaLoteria(codigoLoteria: string): CategoriaTabela[] {
+  const excluidas = CATEGORIAS_EXCLUIDAS[codigoLoteria] ?? [];
+  if (excluidas.length === 0) return CATEGORIAS;
+  return CATEGORIAS.filter((c) => !excluidas.includes(c.slug));
+}

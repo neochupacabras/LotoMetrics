@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { CATEGORIAS } from "@/lib/categorias";
+import { getCategoriasParaLoteria } from "@/lib/categorias";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -49,7 +49,7 @@ export default async function TabelasIndexPage({
       </p>
 
       <div className="grade-categorias">
-        {CATEGORIAS.map((c) => (
+        {getCategoriasParaLoteria(codigoLoteria).map((c) => (
           <Link
             key={c.slug}
             href={`/${codigoLoteria}/tabelas/${c.slug}`}

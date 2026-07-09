@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
 import HeatmapVolante from "@/components/HeatmapVolante";
 import GraficoBarras from "@/components/GraficoBarras";
-import { getCategoriaPorSlug } from "@/lib/categorias";
+import { getCategoriaPorSlug, getCategoriasParaLoteria } from "@/lib/categorias";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { formatarDezena, isCodigoLoteriaValido } from "@/lib/format";
 import * as Estat from "@/lib/estatisticas";
@@ -46,6 +46,12 @@ export default async function CategoriaPage({
 
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) {
+    notFound();
+  }
+
+  // Verificar se a categoria está disponível para esta loteria
+  const categoriasDisponiveis = getCategoriasParaLoteria(codigoLoteria);
+  if (!categoriasDisponiveis.find((c) => c.slug === slugCategoria)) {
     notFound();
   }
 
