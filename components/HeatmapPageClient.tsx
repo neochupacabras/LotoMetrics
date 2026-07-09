@@ -75,6 +75,87 @@ function insightTexto(periodo: PeriodoData, loteria: Loteria): string {
 
 // ─── Componente ──────────────────────────────────────────────────────────────
 
+
+// ─── Heatmap especial para Super Sete: 7 colunas × 10 valores ────────────────
+// Para a Super Sete, a análise relevante é por coluna (C1-C7), não por dezena.
+// Cada coluna tem 10 valores possíveis (0-9) e a frequência de cada valor
+// em cada coluna é o que tem significado estatístico.
+
+function HeatmapSuperSete({
+  periodo,
+  totalConcursos,
+}: {
+  periodo: PeriodoData;
+  totalConcursos: number;
+}) {
+  const [hoverId, setHoverId] = useState<string | null>(null);
+
+  // Para Super Sete precisamos das frequências por coluna
+  // O banco armazena as 7 dezenas em ordem de coluna (C1=idx0 ... C7=idx6)
+  // Mas getFrequenciaHeatmap retorna a frequência agregada por valor (0-9)
+  // A visualização mais correta mostra: para cada coluna, qual valor saiu mais
+  // Nota: a query atual soma todas as posições — para Super Sete precisamos de
+  // uma nota explicando isso e mostrar o que temos disponível
+
+  const freqMap = new Map(periodo.frequencias.map((f) => [f.dezena, f.frequencia]));
+  const valores = Array.from({ length: 10 }, (_, i) => i); // 0-9
+  const colunas = ["C1","C2","C3","C4","C5","C6","C7"];
+
+  const allFreqs = periodo.frequencias.map((f) => f.frequencia);
+  const minF = Math.min(...allFreqs, 0);
+  const maxF = Math.max(...allFreqs, 1);
+  const intervalo = maxF - minF || 1;
+
+  const esperado = totalConcursos * (1/10); // cada valor tem 10% de chance em cada coluna
+
+  return (
+    <div className="heatmap-supersete">
+      <div className="heatmap-supersete__aviso">
+        <strong>Como ler:</strong> cada linha representa um valor (0 a 9). A intensidade
+        mostra com que frequência aquele valor saiu <em>em qualquer</em> das 7 colunas.
+        Para análise por coluna individual, consulte as{" "}
+        <a href="/supersete/tabelas/frequencia" className="breadcrumb">tabelas de frequência</a>.
+      </div>
+      <div className="heatmap-supersete__grid">
+        {/* Cabeçalho */}
+        <div className="heatmap-supersete__header-cell" />
+        {colunas.map((c) => (
+          <div key={c} className="heatmap-supersete__col-label">{c}</div>
+        ))}
+        {/* Linhas de valores */}
+        {valores.map((v) => {
+          const freq = freqMap.get(v) ?? 0;
+          const t = (freq - minF) / intervalo;
+          const bg = interpolarCor(t);
+          const id = `v${v}`;
+          return (
+            <>
+              <div key={`label-${v}`} className="heatmap-supersete__row-label">{v}</div>
+              {colunas.map((_, ci) => (
+                <button
+                  key={`${v}-${ci}`}
+                  type="button"
+                  className="heatmap-supersete__cell"
+                  data-ativa={hoverId === id}
+                  style={{ background: bg }}
+                  onMouseEnter={() => setHoverId(id)}
+                  onMouseLeave={() => setHoverId(null)}
+                  title={`Valor ${v}: ${freq} aparições total`}
+                >
+                  <span className="heatmap-supersete__freq">{freq}</span>
+                </button>
+              ))}
+            </>
+          );
+        })}
+      </div>
+      <p className="heatmap-supersete__media">
+        Média esperada por valor: {esperado.toFixed(0)} aparições ({(100/10).toFixed(0)}% dos sorteios por coluna)
+      </p>
+    </div>
+  );
+}
+
 export default function HeatmapPageClient({ loteria, periodos, premium = false, logado = false }: Props) {
   const [periodoId, setPeriodoId] = useState(periodos[0].id);
   const [invertido, setInvertido] = useState(false);
@@ -208,7 +289,10 @@ export default function HeatmapPageClient({ loteria, periodos, premium = false, 
         )}
       </div>
 
-      {/* Grade do heatmap */}
+      {/* Grade do heatmap — Super Sete tem visualização especial por colunas */}
+      {loteria.codigo === "supersete" ? (
+        <HeatmapSuperSete periodo={periodo} totalConcursos={periodo.totalConcursos} />
+      ) : (
       <div
         className="heatmap-grade"
         style={{ gridTemplateColumns: `repeat(${loteria.gridColunas}, 1fr)` }}
@@ -238,6 +322,7 @@ export default function HeatmapPageClient({ loteria, periodos, premium = false, 
           );
         })}
       </div>
+      )}
 
       {/* Legenda da escala de cores */}
       <div className="heatmap-legenda">
