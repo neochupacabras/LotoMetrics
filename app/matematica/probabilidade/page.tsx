@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useState, useCallback } from "react";
 import Masthead from "@/components/Masthead";
 import { SimuladorMoeda } from "./ConteudoClient";
 export default function ArtigoProbabilidadePage() {

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useState, useMemo } from "react";
 import Masthead from "@/components/Masthead";
 import { VisualizadorDP } from "./ConteudoClient";
 export default function ArtigoDesvioPadraoPage() {

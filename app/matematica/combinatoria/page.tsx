@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useState } from "react";
 import Masthead from "@/components/Masthead";
 import { BrincadeiraGuardaRoupa, fat, comb, CalculadoraCnk } from "./ConteudoClient";
 export default function ArtigoCombinatoriaPage() {
