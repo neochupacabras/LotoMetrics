@@ -450,6 +450,32 @@ export default async function HomePage() {
           </div>
         </div>
 
+        {/* ── Destaques: Matemática e Calculadoras ──────────────── */}
+        <section className="container home-destaques-secoes">
+          <a href="/matematica" className="home-destaque-card home-destaque-card--matematica">
+            <div className="home-destaque-card__icone">📐</div>
+            <div className="home-destaque-card__texto">
+              <p className="home-destaque-card__titulo">Matemática sem mistério</p>
+              <p className="home-destaque-card__sub">
+                18 artigos com linguagem simples, exemplos do cotidiano e componentes
+                interativos. Combinatória, probabilidade, juros compostos e muito mais.
+              </p>
+              <span className="home-destaque-card__cta">Explorar →</span>
+            </div>
+          </a>
+          <a href="/calculadoras" className="home-destaque-card home-destaque-card--calculadoras">
+            <div className="home-destaque-card__icone">🧮</div>
+            <div className="home-destaque-card__texto">
+              <p className="home-destaque-card__titulo">Calculadoras online</p>
+              <p className="home-destaque-card__sub">
+                10 calculadoras gratuitas: porcentagem, juros, datas, área, IMC,
+                probabilidade de loteria e mais — resultado imediato, sem cadastro.
+              </p>
+              <span className="home-destaque-card__cta">Acessar →</span>
+            </div>
+          </a>
+        </section>
+
         {/* ── Últimas análises ─────────────────────────────────── */}
         <section className="container home-secao">
           <div className="home-analises-header">

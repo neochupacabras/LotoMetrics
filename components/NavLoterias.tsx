@@ -44,7 +44,7 @@ function LoteriasDropdown({ loterias, algumAtivo }: LoteriasDropdownProps) {
     <div ref={ref} className="nav-dropdown">
       <button
         type="button"
-        className="nav-loterias a"
+        className="nav-dropdown__btn"
         data-ativo={algumAtivo}
         data-aberto={aberto}
         onClick={() => setAberto(v => !v)}

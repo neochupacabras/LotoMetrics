@@ -6827,8 +6827,8 @@ footer.rodape {
   flex-shrink: 0;
 }
 
-/* O botão "Loterias ▾" usa as mesmas classes do link de nav */
-.nav-dropdown > button {
+/* Botão "Loterias ▾" */
+.nav-dropdown__btn {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -6844,13 +6844,13 @@ footer.rodape {
   transition: background 0.12s, color 0.12s;
 }
 
-.nav-dropdown > button:hover,
-.nav-dropdown > button[data-aberto="true"] {
+.nav-dropdown__btn:hover,
+.nav-dropdown__btn[data-aberto="true"] {
   background: color-mix(in srgb, var(--pine) 10%, transparent);
   color: var(--pine);
 }
 
-.nav-dropdown > button[data-ativo="true"] {
+.nav-dropdown__btn[data-ativo="true"] {
   background: var(--pine);
   color: #fff;
   font-weight: 600;
