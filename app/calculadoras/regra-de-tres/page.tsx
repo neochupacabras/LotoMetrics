@@ -44,6 +44,31 @@ export default function CalcRegraDeTresPage() {
             ))}
           </div>
         </div>
+        {/* ── Manual de uso ─────────────────────────────────────────────── */}
+        <div className="calc-manual">
+          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Regra de Três</p>
+          <ol className="calc-manual__passos">
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">1</span>
+            <div className="calc-manual__texto"><strong>Escolha o tipo: direta ou inversa</strong> — <span dangerouslySetInnerHTML={{__html: "Se quando A aumenta, D também aumenta → <strong>direta</strong> (mais peças produzidas, mais material gasto). Se quando A aumenta, D diminui → <strong>inversa</strong> (mais operários, menos dias para terminar)."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">2</span>
+            <div className="calc-manual__texto"><strong>Preencha os três valores conhecidos</strong> — <span dangerouslySetInnerHTML={{__html: "A regra de três tem 4 valores: A, B, C e D. Você preenche os três que conhece (A, B e C), e a calculadora encontra D automaticamente."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">3</span>
+            <div className="calc-manual__texto"><strong>Leia o resultado no campo D</strong> — <span dangerouslySetInnerHTML={{__html: "O campo D (em verde) mostra o resultado. A fórmula usada também aparece abaixo — direta: D = B×C÷A / inversa: D = A×B÷C."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">4</span>
+            <div className="calc-manual__texto"><strong>Dica para identificar direta ou inversa</strong> — <span dangerouslySetInnerHTML={{__html: "Pergunte: 'se A dobrar, D dobra também?' Se sim → direta. 'Se A dobrar, D cai pela metade?' → inversa."}} /></div>
+          </li>
+          </ol>
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Exemplo direto:</strong> 3 pintores pintam 1 casa em 2 dias. Quantos dias para 5 pintores? Aqui: mais pintores = menos dias → inversa. A=3, B=2, C=5, D = 3×2÷5 = 1,2 dias."}} />
+        </div>
+
+
       </main>
     </>
   );

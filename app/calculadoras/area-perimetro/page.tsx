@@ -36,6 +36,31 @@ export default function CalcAreaPage() {
             <Link href="/calculadoras/porcentagem" className="botao-copiar" style={{ fontSize: "0.85rem" }}>🏷️ Porcentagem</Link>
           </div>
         </div>
+        {/* ── Manual de uso ─────────────────────────────────────────────── */}
+        <div className="calc-manual">
+          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Área e Perímetro</p>
+          <ol className="calc-manual__passos">
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">1</span>
+            <div className="calc-manual__texto"><strong>Escolha a figura geométrica</strong> — <span dangerouslySetInnerHTML={{__html: "Clique em <strong>Círculo</strong>, <strong>Retângulo</strong>, <strong>Quadrado</strong> ou <strong>Triângulo</strong>. Os campos de entrada mudam conforme a figura."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">2</span>
+            <div className="calc-manual__texto"><strong>Preencha as dimensões</strong> — <span dangerouslySetInnerHTML={{__html: "Informe as dimensões na mesma unidade (cm, m, km). Para o triângulo, informe os três lados (a, b, c) — a área é calculada pela fórmula de Heron."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">3</span>
+            <div className="calc-manual__texto"><strong>Veja a visualização proporcional</strong> — <span dangerouslySetInnerHTML={{__html: "Um desenho SVG da figura aparece proporcional às dimensões informadas, junto com os valores de área (em unidades²) e perímetro (em unidades)."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">4</span>
+            <div className="calc-manual__texto"><strong>Leia a fórmula aplicada</strong> — <span dangerouslySetInnerHTML={{__html: "A fórmula utilizada aparece em texto abaixo do resultado — útil para estudar ou verificar o cálculo manualmente."}} /></div>
+          </li>
+          </ol>
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Atenção para o triângulo:</strong> os três lados precisam satisfazer a desigualdade triangular (a soma de dois lados deve ser maior que o terceiro). Caso contrário, o triângulo não existe e a área não será calculada."}} />
+        </div>
+
+
       </main>
     </>
   );

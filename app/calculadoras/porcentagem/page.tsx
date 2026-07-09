@@ -53,6 +53,31 @@ export default function CalcPorcentagemPage() {
         </div>
 
         <p style={{ marginTop: 24 }}><Link href="/matematica/porcentagem" className="breadcrumb">📖 Entenda a matemática de porcentagem →</Link></p>
+        {/* ── Manual de uso ─────────────────────────────────────────────── */}
+        <div className="calc-manual">
+          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Porcentagem</p>
+          <ol className="calc-manual__passos">
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">1</span>
+            <div className="calc-manual__texto"><strong>Escolha o modo de cálculo</strong> — <span dangerouslySetInnerHTML={{__html: "Clique em um dos 5 botões no topo: <strong>X% de Y</strong> (quanto é 15% de R$350?), <strong>X é % de Y</strong> (25 é que % de 200?), <strong>Aumentar por %</strong>, <strong>Diminuir por %</strong> ou <strong>Variação %</strong>."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">2</span>
+            <div className="calc-manual__texto"><strong>Preencha os dois campos</strong> — <span dangerouslySetInnerHTML={{__html: "Conforme o modo escolhido, preencha os campos A e B. Os campos se adaptam automaticamente ao modo — os rótulos indicam o que cada um representa."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">3</span>
+            <div className="calc-manual__texto"><strong>Leia o resultado</strong> — <span dangerouslySetInnerHTML={{__html: "O resultado aparece automaticamente abaixo, sem precisar clicar em nenhum botão. Para o modo <strong>X é % de Y</strong>, uma barra visual mostra a proporção."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">4</span>
+            <div className="calc-manual__texto"><strong>Troque o modo sem perder o raciocínio</strong> — <span dangerouslySetInnerHTML={{__html: "Você pode mudar de modo a qualquer hora. Os campos são limpos ao trocar o modo — comece a digitação novamente para o novo cálculo."}} /></div>
+          </li>
+          </ol>
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Dica:</strong> para calcular quantos por cento uma parcela representa do total, use o modo 'X é % de Y' — coloque a parcela em X e o total em Y."}} />
+        </div>
+
+
       </main>
     </>
   );

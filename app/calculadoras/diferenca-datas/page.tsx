@@ -44,6 +44,31 @@ export default function CalcDataPage() {
             ))}
           </div>
         </div>
+        {/* ── Manual de uso ─────────────────────────────────────────────── */}
+        <div className="calc-manual">
+          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Diferença entre Datas</p>
+          <ol className="calc-manual__passos">
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">1</span>
+            <div className="calc-manual__texto"><strong>Escolha o modo de cálculo</strong> — <span dangerouslySetInnerHTML={{__html: "Clique em <strong>Diferença entre datas</strong> (para saber quantos dias/meses entre dois momentos) ou <strong>Adicionar / subtrair dias</strong> (para descobrir que data cai daqui a N dias)."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">2</span>
+            <div className="calc-manual__texto"><strong>Preencha as datas usando o seletor</strong> — <span dangerouslySetInnerHTML={{__html: "Clique no campo de data — um calendário nativo do seu sistema aparece. Selecione o dia, mês e ano. Funciona em celular e computador."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">3</span>
+            <div className="calc-manual__texto"><strong>Leia os resultados</strong> — <span dangerouslySetInnerHTML={{__html: "Para diferença: aparecem os valores em dias, semanas, meses e anos aproximados. Para adicionar/subtrair: aparece a data resultante com o dia da semana por extenso."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">4</span>
+            <div className="calc-manual__texto"><strong>Datas no passado e no futuro</strong> — <span dangerouslySetInnerHTML={{__html: "A calculadora aceita qualquer data — passado (para calcular idade em dias) ou futuro (para contar prazo de contratos). Use valores negativos no modo 'Adicionar dias' para subtrair."}} /></div>
+          </li>
+          </ol>
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Dica:</strong> para calcular quantos dias você tem de vida, coloque sua data de nascimento em 'Data inicial' e hoje em 'Data final' no modo de diferença."}} />
+        </div>
+
+
       </main>
     </>
   );

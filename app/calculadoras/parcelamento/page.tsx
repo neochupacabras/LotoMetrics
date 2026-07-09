@@ -36,6 +36,31 @@ export default function CalcParcelamentoPage() {
             <Link href="/matematica/juros-compostos" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📖 Entender Juros Compostos</Link>
           </div>
         </div>
+        {/* ── Manual de uso ─────────────────────────────────────────────── */}
+        <div className="calc-manual">
+          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Parcelamento</p>
+          <ol className="calc-manual__passos">
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">1</span>
+            <div className="calc-manual__texto"><strong>Informe o preço à vista</strong> — <span dangerouslySetInnerHTML={{__html: "Digite o preço que o produto custa quando pago à vista (ou em dinheiro). Este é o valor de referência para o cálculo dos juros."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">2</span>
+            <div className="calc-manual__texto"><strong>Informe o número de parcelas</strong> — <span dangerouslySetInnerHTML={{__html: "Quantas vezes o produto é parcelado — ex: 12x, 24x."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">3</span>
+            <div className="calc-manual__texto"><strong>Informe o valor de cada parcela</strong> — <span dangerouslySetInnerHTML={{__html: "O valor mensal de cada parcela conforme anunciado na loja. A calculadora usa os três valores para descobrir qual é a taxa de juros embutida."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">4</span>
+            <div className="calc-manual__texto"><strong>Interprete o resultado</strong> — <span dangerouslySetInnerHTML={{__html: "Aparece a taxa mensal real, a taxa anual equivalente, o total pago, os juros totais em reais e o percentual de custo extra. Um aviso indica se a taxa é razoável, moderada ou alta."}} /></div>
+          </li>
+          </ol>
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Cuidado com parcelamentos 'sem juros':</strong> às vezes o preço à vista já está inflado para compensar o parcelamento. Compare o preço à vista em outras lojas antes de usar como referência."}} />
+        </div>
+
+
       </main>
     </>
   );

@@ -36,6 +36,31 @@ export default function CalcMediaPonderadaPage() {
             <Link href="/calculadoras/porcentagem" className="botao-copiar" style={{ fontSize: "0.85rem" }}>🏷️ Porcentagem</Link>
           </div>
         </div>
+        {/* ── Manual de uso ─────────────────────────────────────────────── */}
+        <div className="calc-manual">
+          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Média Ponderada</p>
+          <ol className="calc-manual__passos">
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">1</span>
+            <div className="calc-manual__texto"><strong>Edite os valores e pesos existentes</strong> — <span dangerouslySetInnerHTML={{__html: "Cada linha tem um campo de valor e um campo de peso. Os três exemplos iniciais (notas com pesos diferentes) podem ser editados diretamente — clique e digite o novo valor."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">2</span>
+            <div className="calc-manual__texto"><strong>Adicione mais itens se precisar</strong> — <span dangerouslySetInnerHTML={{__html: "Clique em <strong>+ Adicionar item</strong> para incluir uma nova linha. Você pode ter quantos itens quiser — a calculadora atualiza o resultado automaticamente."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">3</span>
+            <div className="calc-manual__texto"><strong>Remova itens com o botão ×</strong> — <span dangerouslySetInnerHTML={{__html: "O botão vermelho × ao lado de cada linha remove aquela entrada. A média é recalculada imediatamente."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">4</span>
+            <div className="calc-manual__texto"><strong>Interprete a comparação com a média simples</strong> — <span dangerouslySetInnerHTML={{__html: "O resultado mostra a média ponderada e também a média simples (sem pesos) para comparação. A diferença entre as duas mostra o quanto os pesos influenciam o resultado."}} /></div>
+          </li>
+          </ol>
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Exemplo de uso escolar:</strong> se uma prova tem peso 4, trabalho tem peso 2 e participação tem peso 1, coloque as notas nos valores e os pesos correspondentes (4, 2, 1). A média ponderada resultante é sua nota final."}} />
+        </div>
+
+
       </main>
     </>
   );

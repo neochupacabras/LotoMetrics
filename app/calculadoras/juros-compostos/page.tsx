@@ -50,6 +50,31 @@ export default function CalcJurosCompostosPage() {
         </div>
 
         <p style={{ marginTop: 24 }}><Link href="/matematica/juros-compostos" className="breadcrumb">📖 Entenda a matemática de juros compostos →</Link></p>
+        {/* ── Manual de uso ─────────────────────────────────────────────── */}
+        <div className="calc-manual">
+          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Juros Compostos</p>
+          <ol className="calc-manual__passos">
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">1</span>
+            <div className="calc-manual__texto"><strong>Escolha o que você quer calcular</strong> — <span dangerouslySetInnerHTML={{__html: "Clique em <strong>Calcular montante</strong> (valor final), <strong>Calcular taxa</strong> (qual a taxa do investimento?) ou <strong>Calcular prazo</strong> (quantos períodos para atingir o valor desejado?)."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">2</span>
+            <div className="calc-manual__texto"><strong>Preencha os campos disponíveis</strong> — <span dangerouslySetInnerHTML={{__html: "Cada modo exibe os campos necessários. Para <em>calcular montante</em>: informe capital, taxa e períodos. Para os outros modos, um dos campos é substituído pelo resultado desejado."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">3</span>
+            <div className="calc-manual__texto"><strong>Verifique a tabela de evolução</strong> — <span dangerouslySetInnerHTML={{__html: "No modo <strong>Calcular montante</strong>, uma tabela aparece mostrando o saldo a cada período — útil para visualizar como o capital cresce ao longo do tempo."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">4</span>
+            <div className="calc-manual__texto"><strong>Atenção às unidades</strong> — <span dangerouslySetInnerHTML={{__html: "Taxa e períodos devem ser na mesma unidade: se a taxa é mensal, os períodos devem ser em meses. Se a taxa é anual, os períodos devem ser em anos."}} /></div>
+          </li>
+          </ol>
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Dica:</strong> para descobrir a taxa real de um parcelamento, use 'Calcular taxa' com capital = preço à vista, montante = total parcelado, e períodos = número de parcelas."}} />
+        </div>
+
+
       </main>
     </>
   );

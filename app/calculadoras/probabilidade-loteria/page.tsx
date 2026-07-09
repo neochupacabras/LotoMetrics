@@ -45,6 +45,31 @@ export default function CalcProbLoteriaPage() {
             ))}
           </div>
         </div>
+        {/* ── Manual de uso ─────────────────────────────────────────────── */}
+        <div className="calc-manual">
+          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Probabilidade de Loteria</p>
+          <ol className="calc-manual__passos">
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">1</span>
+            <div className="calc-manual__texto"><strong>Selecione a loteria</strong> — <span dangerouslySetInnerHTML={{__html: "No menu suspenso, escolha entre as 9 loterias disponíveis: Lotofácil, Mega-Sena, Quina, Lotomania, Dia de Sorte, +Milionária, Timemania, Dupla Sena ou Super Sete."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">2</span>
+            <div className="calc-manual__texto"><strong>Informe quantas dezenas você aposta</strong> — <span dangerouslySetInnerHTML={{__html: "O campo já vem preenchido com a quantidade mínima (aposta simples). Aumente o número para ver como apostar mais dezenas muda as probabilidades de cada faixa."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">3</span>
+            <div className="calc-manual__texto"><strong>Leia a tabela de probabilidades</strong> — <span dangerouslySetInnerHTML={{__html: "Para cada faixa de premiação, a tabela mostra a probabilidade em formato '1 em X' e em porcentagem. Cores indicam: verde = mais acessível, vermelho = mais raro."}} /></div>
+          </li>
+          <li className="calc-manual__passo">
+            <span className="calc-manual__num">4</span>
+            <div className="calc-manual__texto"><strong>Compare entre loterias</strong> — <span dangerouslySetInnerHTML={{__html: "Troque a loteria selecionada e observe como as probabilidades mudam — útil para entender por que a Mega-Sena é mais difícil que a Lotofácil, mesmo com menos dezenas."}} /></div>
+          </li>
+          </ol>
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Dica:</strong> ao apostar mais dezenas, você não multiplica a chance por esse número — você cobre mais combinações. C(dezenas_apostadas, k) diz quantas combinações sua aposta cobre."}} />
+        </div>
+
+
       </main>
     </>
   );

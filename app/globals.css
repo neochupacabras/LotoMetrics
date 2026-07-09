@@ -7005,3 +7005,75 @@ footer.rodape {
 }
 
 .home-destaque-card--calculadoras .home-destaque-card__cta { color: var(--ochre); }
+
+/* ── Manual de uso das calculadoras ─────────────────────────────────── */
+.calc-manual {
+  margin-top: 32px;
+  padding: 24px 28px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+}
+
+.calc-manual__titulo {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--pine);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.calc-manual__passos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.calc-manual__passo {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.calc-manual__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--pine);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.calc-manual__texto {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  flex: 1;
+}
+
+.calc-manual__texto strong {
+  color: var(--ink);
+}
+
+.calc-manual__dica {
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--ochre) 8%, transparent);
+  border-left: 3px solid var(--ochre);
+  border-radius: 3px;
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
