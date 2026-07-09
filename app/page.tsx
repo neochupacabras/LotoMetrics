@@ -466,10 +466,17 @@ export default async function HomePage() {
           <div className="home-analises-grid">
             {analisesRecentes.map((a) => {
               const BADGE: Record<string, string> = {
-                lotofacil: "Lotofácil",
-                megasena: "Mega-Sena",
-                ambas: "Comparativo",
-                educativo: "Educativo",
+                lotofacil:      "Lotofácil",
+                megasena:       "Mega-Sena",
+                quina:          "Quina",
+                lotomania:      "Lotomania",
+                diadesorte:     "Dia de Sorte",
+                maismilionaria: "+Milionária",
+                timemania:      "Timemania",
+                duplasena:      "Dupla Sena",
+                supersete:      "Super Sete",
+                ambas:          "Comparativo",
+                educativo:      "Educativo",
               };
               const data = new Date(a.data + "T12:00:00").toLocaleDateString("pt-BR", {
                 day: "numeric",

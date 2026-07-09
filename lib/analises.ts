@@ -3,7 +3,7 @@ export interface Analise {
   titulo: string;
   resumo: string;
   data: string; // ISO date string YYYY-MM-DD
-  categoria: "lotofacil" | "megasena" | "ambas" | "educativo";
+  categoria: "lotofacil" | "megasena" | "quina" | "lotomania" | "diadesorte" | "maismilionaria" | "timemania" | "duplasena" | "supersete" | "ambas" | "educativo";
   tempoLeitura: number; // minutos
   corpo: string; // HTML/JSX como string — renderizado via dangerouslySetInnerHTML
 }
