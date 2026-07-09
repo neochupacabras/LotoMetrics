@@ -89,13 +89,74 @@ export default async function ProbabilidadesPage({
         faixasPremiadas={faixasPremiadas}
       />
 
+      {/* ── Seção especial: trevos da +Milionária ───────────────────────── */}
+      {codigoLoteria === "maismilionaria" && (
+        <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 32, marginBottom: 24 }}>
+          <h2 className="bloco__titulo">Os trevos da +Milionária</h2>
+          <p>
+            Além das 6 dezenas de 1 a 50, cada aposta inclui 2 trevos escolhidos de 1
+            a 6. A Caixa sorteia 2 trevos. As faixas de premiação combinam acertos de
+            dezenas <em>e</em> de trevos — o que cria as 10 faixas exibidas acima.
+          </p>
+          <p>
+            As probabilidades dos trevos são calculadas independentemente das dezenas:
+          </p>
+          <div className="tabela-scroll">
+            <table className="tabela-dados">
+              <thead>
+                <tr>
+                  <th>Acertos de trevos</th>
+                  <th className="num">Probabilidade</th>
+                  <th className="num">% das apostas</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2 trevos certos</td>
+                  <td className="num">1 em 15</td>
+                  <td className="num">6,67%</td>
+                </tr>
+                <tr>
+                  <td>1 trevo certo</td>
+                  <td className="num">8 em 15</td>
+                  <td className="num">53,33%</td>
+                </tr>
+                <tr>
+                  <td>0 trevos certos</td>
+                  <td className="num">6 em 15</td>
+                  <td className="num">40,00%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>
+            A probabilidade de acertar os 2 trevos certos é apenas 1 em 15 — o que
+            significa que, em média, apenas 6,7% das apostas acertam os dois trevos.
+            Por isso as faixas que exigem "2 trevos" são muito mais raras do que as
+            equivalentes com "0 ou 1 trevo".
+          </p>
+          <p>
+            A faixa 1 (6 dezenas + 2 trevos) combina as duas probabilidades independentes:
+            P(6 dezenas) × P(2 trevos) = (1/15.890.700) × (1/15) = 1 em 238.360.656.
+            Por isso a +Milionária tem o prêmio principal mais raro entre todas as loterias
+            federais — e por isso ele tende a acumular mais e chegar a valores recordes.
+          </p>
+          <p>
+            Use o <a href="/maismilionaria/conferidor" className="breadcrumb">
+              conferidor da +Milionária
+            </a> para checar como seu jogo (dezenas + trevos) teria se saído em todo
+            o histórico disponível.
+          </p>
+        </div>
+      )}
+
       <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 40, marginBottom: 24 }}>
         <h2 className="bloco__titulo">Por que as probabilidades não mudam</h2>
         <p>
           As chances que aparecem nessa página são calculadas pela combinatória — o ramo
-          da matemática que conta quantas combinações possíveis existem. Para a Lotofácil,
-          o total é C(25,15) = 3.268.760 combinações possíveis. A chance de acertar as
-          15 dezenas é sempre 1 em 3.268.760 — não importa quais dezenas você escolheu,
+          da matemática que conta quantas combinações possíveis existem para {loteria.nome}.
+          A chance de acertar a faixa principal é sempre a mesma fração — 1 dividido pelo
+          número total de combinações possíveis — independente de quais dezenas você escolheu,
           quais saíram nos últimos concursos, ou qual estratégia você usou para montar
           o jogo.
         </p>
@@ -111,7 +172,7 @@ export default async function ProbabilidadesPage({
           combinações — seja jogando mais bilhetes separados, seja jogando apostas com
           mais dezenas (que incluem múltiplas combinações). Mas como explicado no artigo
           sobre{" "}
-          <a href={`/${codigoLoteria}/dicas/mais-dezenas-vale-a-pena`} className="breadcrumb">
+          <a href="/dicas/mais-dezenas-vale-a-pena" className="breadcrumb">
             apostar mais dezenas
           </a>, o custo sobe na exata mesma proporção que a probabilidade — a
           probabilidade por real gasto nunca muda.

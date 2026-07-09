@@ -43,7 +43,18 @@ export default async function SimuladorPage({
   ]);
   if (!loteria) notFound();
 
-  const totalLabel = loteria.nome === "Lotofácil" ? "3.700+" : "3.000+";
+  const totalLabel: Record<string, string> = {
+    lotofacil:      "3.700+",
+    megasena:       "3.000+",
+    quina:          "6.400+",
+    lotomania:      "2.600+",
+    diadesorte:     "1.200+",
+    maismilionaria: "360+",
+    timemania:      "2.400+",
+    duplasena:      "2.900+",
+    supersete:      "860+",
+  };
+  const totalConcursosLabel = totalLabel[codigoLoteria] ?? "histórico completo";
 
   return (
     <div className="container secao">
@@ -51,7 +62,7 @@ export default async function SimuladorPage({
       <h1 className="titulo-edicao">E se eu tivesse jogado todo concurso?</h1>
       <p className="subtitulo-edicao" style={{ maxWidth: 600 }}>
         Escolha uma combinação e veja quanto teria gasto e ganho se tivesse apostado
-        esse mesmo jogo {premium ? `em cada um dos ${totalLabel} concursos` : "nos últimos 100 concursos"} da história da {loteria.nome} — com os prêmios históricos reais.
+        esse mesmo jogo {premium ? `em cada um dos ${totalConcursosLabel} concursos` : "nos últimos 100 concursos"} da história da {loteria.nome} — com os prêmios históricos reais.
       </p>
 
       <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
@@ -67,7 +78,7 @@ export default async function SimuladorPage({
         <p>
           O resultado é quase sempre negativo — e isso é esperado. Como explicado no
           artigo sobre{" "}
-          <a href={`/${codigoLoteria}/dicas/retorno-ao-apostador`} className="breadcrumb">
+          <a href="/dicas/retorno-ao-apostador" className="breadcrumb">
             retorno ao apostador
           </a>, a Caixa destina aproximadamente 43% da arrecadação a prêmios, o que
           significa que o apostador espera perder ~57% do que aposta no longo prazo.
@@ -85,9 +96,9 @@ export default async function SimuladorPage({
         </h3>
         <p>
           A versão gratuita simula os últimos 100 concursos. A versão Premium simula
-          o histórico completo — mais de 3.700 concursos para a Lotofácil e mais de
-          3.000 para a Mega-Sena — o que permite ver o desempenho de qualquer jogo
-          ao longo de toda a história da loteria.
+          o histórico completo — {totalConcursosLabel} concursos para {loteria.nome} —
+          o que permite ver o desempenho de qualquer jogo ao longo de toda a história
+          da loteria.
         </p>
       </div>
 
@@ -98,6 +109,17 @@ export default async function SimuladorPage({
           <a href="/assinar" className="simulador-aviso-free__link">
             Assine o Premium para rodar no histórico completo →
           </a>
+        </div>
+      )}
+
+      {/* ── Aviso Dupla Sena: simulador confere só o 1º sorteio ──────────── */}
+      {codigoLoteria === "duplasena" && (
+        <div className="aviso-legal" style={{ marginBottom: 20 }}>
+          <strong>Dupla Sena:</strong> o simulador confere seu jogo apenas contra o{" "}
+          <strong>1º sorteio</strong> de cada concurso. O 2º sorteio existe e aparece
+          nos resultados, mas não é considerado nesta simulação histórica. Isso significa
+          que os prêmios calculados podem ser subestimados — na prática, seu jogo também
+          teria sido conferido contra o 2º sorteio a cada concurso.
         </div>
       )}
 
