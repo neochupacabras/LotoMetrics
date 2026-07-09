@@ -21,18 +21,22 @@ export default function Masthead({
   matematicaAtiva?: boolean;
   calculadorasAtiva?: boolean;
 }) {
-  const items = [
-    ...Object.values(LOTERIAS).map((l) => ({
-      href: `/${l.slug}/resultados`,
-      label: l.nome,
-      ativo: loteriaAtiva === l.slug,
-    })),
-    { href: "/dicas",      label: "Dicas",       ativo: !!dicasAtiva     },
-    { href: "/matematica",    label: "Matemática",    ativo: !!matematicaAtiva    },
-    { href: "/calculadoras",  label: "Calculadoras",  ativo: !!calculadorasAtiva  },
-    { href: "/analises",   label: "Análises",   ativo: !!analisesAtiva  },
-    { href: "/quiz",       label: "Quiz",        ativo: !!quizAtivo      },
-    { href: "/premium",  label: "✦ Premium", ativo: !!premiumAtivo, className: "masthead__premium-link" },
+  // Loterias — vão para o dropdown
+  const loterias = Object.values(LOTERIAS).map((l) => ({
+    href: `/${l.slug}/resultados`,
+    label: l.nome,
+    ativo: loteriaAtiva === l.slug,
+  }));
+
+  // Seções — ficam no nav principal
+  const secoes = [
+    { href: "/dicas",        label: "Dicas",        ativo: !!dicasAtiva        },
+    { href: "/matematica",   label: "Matemática",   ativo: !!matematicaAtiva   },
+    { href: "/calculadoras", label: "Calculadoras", ativo: !!calculadorasAtiva },
+    { href: "/analises",     label: "Análises",     ativo: !!analisesAtiva     },
+    { href: "/quiz",         label: "Quiz",         ativo: !!quizAtivo         },
+    { href: "/premium",      label: "✦ Premium",    ativo: !!premiumAtivo,
+      className: "masthead__premium-link" },
   ];
 
   return (
@@ -45,7 +49,7 @@ export default function Masthead({
           <div className="masthead__tagline">Resultados &amp; estatísticas de loteria</div>
         </div>
 
-        <NavLoterias items={items} />
+        <NavLoterias items={secoes} loterias={loterias} />
 
         <UserMenu />
       </div>

@@ -10,7 +10,80 @@ interface NavItem {
   className?: string;
 }
 
-export default function NavLoterias({ items }: { items: NavItem[] }) {
+interface LoteriasDropdownProps {
+  loterias: NavItem[];
+  algumAtivo: boolean;
+}
+
+// Dropdown de loterias — abre painel em grid ao clicar
+function LoteriasDropdown({ loterias, algumAtivo }: LoteriasDropdownProps) {
+  const [aberto, setAberto] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Fechar ao clicar fora
+  useEffect(() => {
+    function onClickFora(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setAberto(false);
+      }
+    }
+    if (aberto) document.addEventListener("mousedown", onClickFora);
+    return () => document.removeEventListener("mousedown", onClickFora);
+  }, [aberto]);
+
+  // Fechar ao pressionar Escape
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setAberto(false);
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
+
+  return (
+    <div ref={ref} className="nav-dropdown">
+      <button
+        type="button"
+        className="nav-loterias a"
+        data-ativo={algumAtivo}
+        data-aberto={aberto}
+        onClick={() => setAberto(v => !v)}
+        aria-expanded={aberto}
+        aria-haspopup="true"
+      >
+        Loterias
+        <span className="nav-dropdown__seta" aria-hidden>{aberto ? "▲" : "▼"}</span>
+      </button>
+
+      {aberto && (
+        <div className="nav-dropdown__painel" role="menu">
+          <div className="nav-dropdown__grid">
+            {loterias.map(l => (
+              <Link
+                key={l.href}
+                href={l.href}
+                role="menuitem"
+                data-ativo={l.ativo}
+                className="nav-dropdown__item"
+                onClick={() => setAberto(false)}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function NavLoterias({
+  items,
+  loterias,
+}: {
+  items: NavItem[];
+  loterias: NavItem[];
+}) {
   const navRef = useRef<HTMLDivElement>(null);
   const [canLeft,  setCanLeft]  = useState(false);
   const [canRight, setCanRight] = useState(false);
@@ -49,6 +122,8 @@ export default function NavLoterias({ items }: { items: NavItem[] }) {
     setTimeout(checkScroll, 300);
   }
 
+  const algumLotAtivo = loterias.some(l => l.ativo);
+
   return (
     <div className="nav-loterias-outer">
       <button
@@ -62,11 +137,11 @@ export default function NavLoterias({ items }: { items: NavItem[] }) {
         ‹
       </button>
 
-      <div
-        ref={navRef}
-        className="nav-loterias"
-        onScroll={checkScroll}
-      >
+      <div ref={navRef} className="nav-loterias" onScroll={checkScroll}>
+        {/* Dropdown de loterias — substitui os 9 links individuais */}
+        <LoteriasDropdown loterias={loterias} algumAtivo={algumLotAtivo} />
+
+        {/* Seções da plataforma */}
         {items.map((item) => (
           <Link
             key={item.href}
@@ -90,7 +165,6 @@ export default function NavLoterias({ items }: { items: NavItem[] }) {
         ›
       </button>
 
-      {/* Gradiente indicando mais conteúdo à direita */}
       {canRight && <div className="nav-loterias-fade" aria-hidden />}
     </div>
   );

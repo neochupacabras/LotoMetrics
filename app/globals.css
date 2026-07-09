@@ -6820,3 +6820,188 @@ footer.rodape {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+/* ── Dropdown de loterias no nav ─────────────────────────────────────── */
+.nav-dropdown {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* O botão "Loterias ▾" usa as mesmas classes do link de nav */
+.nav-dropdown > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s, color 0.12s;
+}
+
+.nav-dropdown > button:hover,
+.nav-dropdown > button[data-aberto="true"] {
+  background: color-mix(in srgb, var(--pine) 10%, transparent);
+  color: var(--pine);
+}
+
+.nav-dropdown > button[data-ativo="true"] {
+  background: var(--pine);
+  color: #fff;
+  font-weight: 600;
+}
+
+.nav-dropdown__seta {
+  font-size: 0.6rem;
+  opacity: 0.7;
+  margin-top: 1px;
+}
+
+/* Painel dropdown */
+.nav-dropdown__painel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 100;
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  padding: 10px;
+  min-width: 260px;
+  animation: dropdown-in 0.12s ease;
+}
+
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Grid de loterias dentro do painel */
+.nav-dropdown__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.nav-dropdown__item {
+  display: block;
+  padding: 7px 12px;
+  border-radius: 4px;
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: background 0.1s, color 0.1s;
+  white-space: nowrap;
+}
+
+.nav-dropdown__item:hover {
+  background: color-mix(in srgb, var(--pine) 8%, transparent);
+  color: var(--pine);
+}
+
+.nav-dropdown__item[data-ativo="true"] {
+  background: color-mix(in srgb, var(--pine) 12%, transparent);
+  color: var(--pine);
+  font-weight: 600;
+}
+
+/* Em mobile: painel ocupa largura total da tela */
+@media (max-width: 480px) {
+  .nav-dropdown__painel {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    top: auto;
+    min-width: unset;
+  }
+  .nav-dropdown__grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* ── Home: destaques das seções Matemática e Calculadoras ──────────── */
+.home-destaques-secoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 48px 0 20px;
+}
+
+@media (max-width: 600px) {
+  .home-destaques-secoes { grid-template-columns: 1fr; }
+}
+
+.home-destaque-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 22px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--ink);
+  border: 1px solid var(--line-strong);
+  transition: transform 0.15s, box-shadow 0.15s;
+  background: var(--paper-raised);
+}
+
+.home-destaque-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.09);
+}
+
+.home-destaque-card--matematica {
+  border-color: color-mix(in srgb, var(--pine) 30%, transparent);
+  background: color-mix(in srgb, var(--pine) 4%, var(--paper-raised));
+}
+
+.home-destaque-card--matematica:hover {
+  border-color: var(--pine);
+}
+
+.home-destaque-card--calculadoras {
+  border-color: color-mix(in srgb, var(--ochre) 30%, transparent);
+  background: color-mix(in srgb, var(--ochre) 4%, var(--paper-raised));
+}
+
+.home-destaque-card--calculadoras:hover {
+  border-color: var(--ochre);
+}
+
+.home-destaque-card__icone {
+  font-size: 2.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.home-destaque-card__titulo {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.home-destaque-card--matematica .home-destaque-card__titulo { color: var(--pine); }
+.home-destaque-card--calculadoras .home-destaque-card__titulo { color: var(--ochre); }
+
+.home-destaque-card__sub {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.home-destaque-card__cta {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--pine);
+}
+
+.home-destaque-card--calculadoras .home-destaque-card__cta { color: var(--ochre); }
