@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, Fragment } from "react";
 
 export function CalcMediaPonderada() {
   const [itens, setItens] = useState([
@@ -30,11 +30,11 @@ export function CalcMediaPonderada() {
           <span style={{ fontSize: "0.72rem", fontFamily: "var(--font-mono)", textTransform: "uppercase", color: "var(--ink-faint)" }}>Peso / Crédito</span>
           <span />
           {itens.map((item, i) => (
-            <>
-              <input key={`v${i}`} className="calc-input" type="number" step="0.1" placeholder="0" value={item.valor} onChange={e => updateItem(i, "valor", e.target.value)} style={{ fontFamily: "var(--font-mono)", fontWeight: 600 }} />
-              <input key={`p${i}`} className="calc-input" type="number" step="0.5" placeholder="1" value={item.peso} onChange={e => updateItem(i, "peso", e.target.value)} style={{ fontFamily: "var(--font-mono)" }} />
-              <button key={`r${i}`} type="button" onClick={() => removeItem(i)} style={{ border: "1px solid var(--rust)", borderRadius: 4, background: "transparent", color: "var(--rust)", cursor: "pointer", fontSize: "1rem", height: 40 }} title="Remover">×</button>
-            </>
+            <Fragment key={i}>
+              <input className="calc-input" type="number" step="0.1" placeholder="0" value={item.valor} onChange={e => updateItem(i, "valor", e.target.value)} style={{ fontFamily: "var(--font-mono)", fontWeight: 600 }} />
+              <input className="calc-input" type="number" step="0.5" placeholder="1" value={item.peso} onChange={e => updateItem(i, "peso", e.target.value)} style={{ fontFamily: "var(--font-mono)" }} />
+              <button type="button" onClick={() => removeItem(i)} style={{ border: "1px solid var(--rust)", borderRadius: 4, background: "transparent", color: "var(--rust)", cursor: "pointer", fontSize: "1rem", height: 40 }} title="Remover">×</button>
+            </Fragment>
           ))}
         </div>
         <button type="button" className="botao-copiar" onClick={addItem} style={{ fontSize: "0.82rem" }}>+ Adicionar item</button>

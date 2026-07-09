@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
 type Forma = "circulo" | "retangulo" | "quadrado" | "triangulo";
 
@@ -9,7 +9,7 @@ export function CalcAreaPerimetro() {
   const va = parseFloat(a.replace(",",".")), vb = parseFloat(b.replace(",",".")), vc = parseFloat(c.replace(",","."));
   const fmt = (v: number) => v.toLocaleString("pt-BR", { maximumFractionDigits: 4 });
 
-  type Resultado = { area: number; perimetro: number; formula: string; svgEl: React.ReactNode } | null;
+  type Resultado = { area: number; perimetro: number; formula: string; svgEl: ReactNode } | null;
   let res: Resultado = null;
   if (forma === "circulo" && !isNaN(va) && va > 0) {
     res = { area: Math.PI*va*va, perimetro: 2*Math.PI*va, formula: `A = π × ${va}² = ${fmt(Math.PI*va*va)} | P = 2π × ${va} = ${fmt(2*Math.PI*va)}`,
