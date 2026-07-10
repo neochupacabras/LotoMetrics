@@ -5574,6 +5574,13 @@ footer.rodape {
 .analise-card__badge--megasena  { background: var(--ochre); }
 .analise-card__badge--ambas     { background: var(--rust); }
 .analise-card__badge--educativo { background: var(--ink-soft); }
+.analise-card__badge--quina          { background: var(--pine-deep); }
+.analise-card__badge--lotomania       { background: color-mix(in srgb, var(--ochre) 60%, var(--rust) 40%); }
+.analise-card__badge--diadesorte      { background: color-mix(in srgb, var(--rust) 60%, var(--pine) 40%); }
+.analise-card__badge--maismilionaria  { background: color-mix(in srgb, var(--pine) 55%, var(--ochre) 45%); }
+.analise-card__badge--timemania       { background: color-mix(in srgb, var(--ochre) 70%, var(--ink-soft) 30%); }
+.analise-card__badge--duplasena       { background: color-mix(in srgb, var(--rust) 70%, var(--ink-soft) 30%); }
+.analise-card__badge--supersete       { background: color-mix(in srgb, var(--pine) 70%, var(--ink-soft) 30%); }
 
 .analise-card__data,
 .analise-card__tempo {
