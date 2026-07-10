@@ -13,7 +13,7 @@ export function CalcAreaPerimetro() {
   let res: Resultado = null;
   if (forma === "circulo" && !isNaN(va) && va > 0) {
     res = { area: Math.PI*va*va, perimetro: 2*Math.PI*va, formula: `A = π × ${va}² = ${fmt(Math.PI*va*va)} | P = 2π × ${va} = ${fmt(2*Math.PI*va)}`,
-      svgEl: <ellipse cx="80" cy="60" rx={Math.min(va*8,70)} ry={Math.min(va*8,70)} fill="color-mix(in srgb, var(--pine) 20%, transparent)" stroke="var(--pine)" strokeWidth="2"/> };
+      svgEl: <ellipse cx="80" cy="60" rx={Math.min(va*8,54)} ry={Math.min(va*8,54)} fill="color-mix(in srgb, var(--pine) 20%, transparent)" stroke="var(--pine)" strokeWidth="2"/> };
   } else if (forma === "retangulo" && !isNaN(va) && !isNaN(vb) && va > 0 && vb > 0) {
     const maxD = Math.max(va,vb), rw = (va/maxD)*120, rh = (vb/maxD)*80;
     res = { area: va*vb, perimetro: 2*(va+vb), formula: `A = ${va} × ${vb} = ${fmt(va*vb)} | P = 2×(${va}+${vb}) = ${fmt(2*(va+vb))}`,
