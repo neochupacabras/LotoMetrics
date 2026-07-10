@@ -2,7 +2,7 @@
 import { useState, useMemo } from "react";
 
 const LOTERIAS = [
-  { codigo: "lotofacil",      nome: "Lotofácil",    n: 25, m: 6, k: 15, faixas: [15,14,13,12,11] },
+  { codigo: "lotofacil",      nome: "Lotofácil",    n: 25, m: 15, k: 15, faixas: [15,14,13,12,11] },
   { codigo: "megasena",       nome: "Mega-Sena",    n: 60, m: 6, k: 6,  faixas: [6,5,4] },
   { codigo: "quina",          nome: "Quina",        n: 80, m: 5, k: 5,  faixas: [5,4,3,2] },
   { codigo: "lotomania",      nome: "Lotomania",    n: 100,m: 20,k: 20, faixas: [20,19,18,17,16,15] },
