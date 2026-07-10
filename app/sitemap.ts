@@ -3,6 +3,8 @@ import { getLoteriaPorCodigo, getNumerosConcursos } from "@/lib/queries";
 import { CATEGORIAS } from "@/lib/categorias";
 import { ARTIGOS } from "@/lib/artigos";
 import { ANALISES } from "@/lib/analises";
+import { ARTIGOS_MATEMATICA } from "@/lib/matematica";
+import { CALCULADORAS } from "@/lib/calculadoras";
 import { SITE_URL } from "@/lib/seo";
 
 // Forçar geração em runtime (não em build time) — o sitemap depende do banco
@@ -32,6 +34,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: SITE_URL, changeFrequency: "daily", priority: 1 },
     { url: `${SITE_URL}/dicas`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${SITE_URL}/analises`, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${SITE_URL}/matematica`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${SITE_URL}/calculadoras`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${SITE_URL}/glossario`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${SITE_URL}/perguntas-frequentes`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${SITE_URL}/calendario`, changeFrequency: "daily", priority: 0.6 },
+    { url: `${SITE_URL}/quiz`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${SITE_URL}/sobre`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/contato`, changeFrequency: "yearly", priority: 0.4 },
     { url: `${SITE_URL}/api-dados`, changeFrequency: "monthly", priority: 0.6 },
@@ -50,6 +58,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const artigo of ARTIGOS) {
     entradas.push({
       url: `${SITE_URL}/dicas/${artigo.slug}`,
+      changeFrequency: "yearly",
+      priority: 0.5,
+    });
+  }
+
+  for (const artigoMat of ARTIGOS_MATEMATICA) {
+    entradas.push({
+      url: `${SITE_URL}/matematica/${artigoMat.slug}`,
+      changeFrequency: "yearly",
+      priority: 0.5,
+    });
+  }
+
+  for (const calc of CALCULADORAS) {
+    entradas.push({
+      url: `${SITE_URL}/calculadoras/${calc.slug}`,
       changeFrequency: "yearly",
       priority: 0.5,
     });

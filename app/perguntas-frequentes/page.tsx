@@ -31,9 +31,30 @@ function idCategoria(categoria: string) {
     .replace(/\s+/g, "-");
 }
 
+function gerarJsonLd() {
+  const todasPerguntas = FAQ.flatMap((c) => c.perguntas);
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: todasPerguntas.map((p) => ({
+      "@type": "Question",
+      name: p.pergunta,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: p.resposta,
+      },
+    })),
+  };
+}
+
 export default function FAQPage() {
+  const jsonLd = gerarJsonLd();
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Masthead />
       <main className="container secao" style={{ maxWidth: 780 }}>
         <p className="eyebrow">Referência</p>
