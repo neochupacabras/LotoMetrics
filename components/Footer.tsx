@@ -13,6 +13,7 @@ export default function Footer() {
           <a href="/sobre">Sobre</a>
           <a href="/contato">Fale conosco</a>
           <a href="/glossario">Glossário</a>
+          <a href="/perguntas-frequentes">Perguntas frequentes</a>
           <a href="/dicas#jogo-responsavel">Jogo responsável</a>
           <a href="/privacidade">Política de Privacidade</a>
           <a href="/api-dados">API de dados</a>
