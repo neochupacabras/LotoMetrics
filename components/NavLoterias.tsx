@@ -10,28 +10,27 @@ interface NavItem {
   className?: string;
 }
 
-interface LoteriasDropdownProps {
+// ─── Dropdown de loterias ────────────────────────────────────────────────────
+function LoteriasDropdown({
+  loterias,
+  algumAtivo,
+}: {
   loterias: NavItem[];
   algumAtivo: boolean;
-}
-
-// Dropdown de loterias — abre painel em grid ao clicar
-function LoteriasDropdown({ loterias, algumAtivo }: LoteriasDropdownProps) {
+}) {
   const [aberto, setAberto] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  // Fechar ao clicar fora
   useEffect(() => {
-    function onClickFora(e: MouseEvent) {
+    function onFora(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setAberto(false);
       }
     }
-    if (aberto) document.addEventListener("mousedown", onClickFora);
-    return () => document.removeEventListener("mousedown", onClickFora);
+    if (aberto) document.addEventListener("mousedown", onFora);
+    return () => document.removeEventListener("mousedown", onFora);
   }, [aberto]);
 
-  // Fechar ao pressionar Escape
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setAberto(false);
@@ -41,24 +40,29 @@ function LoteriasDropdown({ loterias, algumAtivo }: LoteriasDropdownProps) {
   }, []);
 
   return (
-    <div ref={ref} className="nav-dropdown">
+    <div ref={ref} style={{ position: "relative", flexShrink: 0 }}>
       <button
         type="button"
         className="nav-dropdown__btn"
         data-ativo={algumAtivo}
-        data-aberto={aberto}
-        onClick={() => setAberto(v => !v)}
+        onClick={() => setAberto((v) => !v)}
         aria-expanded={aberto}
         aria-haspopup="true"
       >
         Loterias
-        <span className="nav-dropdown__seta" aria-hidden>{aberto ? "▲" : "▼"}</span>
+        <span style={{ fontSize: "0.6rem", opacity: 0.7, marginLeft: 3 }} aria-hidden>
+          {aberto ? "▲" : "▼"}
+        </span>
       </button>
 
       {aberto && (
-        <div className="nav-dropdown__painel" role="menu">
+        <div
+          className="nav-dropdown__painel"
+          role="menu"
+          /* Painel posicionado relativamente ao wrapper, não ao nav com overflow */
+        >
           <div className="nav-dropdown__grid">
-            {loterias.map(l => (
+            {loterias.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
@@ -77,6 +81,7 @@ function LoteriasDropdown({ loterias, algumAtivo }: LoteriasDropdownProps) {
   );
 }
 
+// ─── Nav principal com setas de scroll ───────────────────────────────────────
 export default function NavLoterias({
   items,
   loterias,
@@ -85,7 +90,7 @@ export default function NavLoterias({
   loterias: NavItem[];
 }) {
   const navRef = useRef<HTMLDivElement>(null);
-  const [canLeft,  setCanLeft]  = useState(false);
+  const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(false);
 
   const checkScroll = useCallback(() => {
@@ -122,10 +127,12 @@ export default function NavLoterias({
     setTimeout(checkScroll, 300);
   }
 
-  const algumLotAtivo = loterias.some(l => l.ativo);
+  const algumLotAtivo = loterias.some((l) => l.ativo);
 
   return (
+    /* Wrapper externo — NÃO tem overflow, para o painel do dropdown aparecer */
     <div className="nav-loterias-outer">
+      {/* Seta esquerda */}
       <button
         type="button"
         className="nav-loterias-seta nav-loterias-seta--esq"
@@ -137,11 +144,14 @@ export default function NavLoterias({
         ‹
       </button>
 
-      <div ref={navRef} className="nav-loterias" onScroll={checkScroll}>
-        {/* Dropdown de loterias — substitui os 9 links individuais */}
-        <LoteriasDropdown loterias={loterias} algumAtivo={algumLotAtivo} />
+      {/*
+        Dropdown FORA do div com overflow-x: auto.
+        Fica no wrapper externo (sem overflow) para o painel aparecer sem ser cortado.
+      */}
+      <LoteriasDropdown loterias={loterias} algumAtivo={algumLotAtivo} />
 
-        {/* Seções da plataforma */}
+      {/* Nav com overflow apenas para as seções (Dicas, Matemática etc.) */}
+      <div ref={navRef} className="nav-loterias" onScroll={checkScroll}>
         {items.map((item) => (
           <Link
             key={item.href}
@@ -154,6 +164,7 @@ export default function NavLoterias({
         ))}
       </div>
 
+      {/* Seta direita */}
       <button
         type="button"
         className="nav-loterias-seta nav-loterias-seta--dir"

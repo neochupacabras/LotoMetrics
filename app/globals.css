@@ -6930,7 +6930,7 @@ footer.rodape {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  margin: 48px 0 20px;
+  padding: 48px 0 20px;  /* padding no grid interno, não margin no container */
 }
 
 @media (max-width: 600px) {
