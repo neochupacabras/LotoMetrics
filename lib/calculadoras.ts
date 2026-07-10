@@ -4,7 +4,7 @@ export interface Calculadora {
   subtitulo: string;
   emoji: string;
   cor: "pine" | "ochre" | "rust";
-  categoria: "financeira" | "basica" | "data" | "geometria" | "probabilidade";
+  categoria: "financeira" | "basica" | "data" | "geometria" | "probabilidade" | "loteria";
   descricao: string; // SEO
 }
 
@@ -99,6 +99,42 @@ export const CALCULADORAS: Calculadora[] = [
     categoria: "basica",
     descricao: "Calculadora de média ponderada: some valores com pesos diferentes, como notas com créditos ou produtos com quantidades. Resultado instantâneo com detalhamento.",
   },
+  {
+    slug: "custo-aposta-multipla",
+    titulo: "Custo da Aposta Múltipla",
+    subtitulo: "Quanto custa apostar em mais dezenas do que o mínimo",
+    emoji: "🧾",
+    cor: "rust",
+    categoria: "loteria",
+    descricao: "Calculadora de custo de aposta múltipla: descubra quantos jogos simples uma aposta com mais dezenas equivale e o valor total, para Lotofácil, Mega-Sena, Quina e outras loterias.",
+  },
+  {
+    slug: "rateio-bolao",
+    titulo: "Rateio de Bolão",
+    subtitulo: "Divida um prêmio entre participantes com cotas iguais ou diferentes",
+    emoji: "🤝",
+    cor: "pine",
+    categoria: "loteria",
+    descricao: "Calculadora de rateio de bolão de loteria: informe o valor do prêmio e as cotas de cada participante para descobrir quanto cada um recebe.",
+  },
+  {
+    slug: "valor-esperado-aposta",
+    titulo: "Valor Esperado de uma Aposta",
+    subtitulo: "Veja se, em média, uma aposta compensa o que custa",
+    emoji: "⚖️",
+    cor: "ochre",
+    categoria: "probabilidade",
+    descricao: "Calculadora de valor esperado: informe custo, prêmio e probabilidade de qualquer aposta e veja o retorno médio esperado por real gasto.",
+  },
+  {
+    slug: "conversor-unidades",
+    titulo: "Conversor de Unidades",
+    subtitulo: "Comprimento, peso, volume e temperatura, tudo em um só lugar",
+    emoji: "📏",
+    cor: "pine",
+    categoria: "basica",
+    descricao: "Conversor de unidades online: converta comprimento, peso, volume e temperatura entre as principais unidades do sistema métrico e imperial.",
+  },
 ];
 
 export const CATEGORIAS_CALC = {
@@ -107,6 +143,7 @@ export const CATEGORIAS_CALC = {
   data:         { label: "Data e Tempo",  cor: "rust"  },
   geometria:    { label: "Geometria",     cor: "pine"  },
   probabilidade:{ label: "Probabilidade", cor: "rust"  },
+  loteria:      { label: "Loteria",       cor: "rust"  },
 } as const;
 
 export function getCalculadora(slug: string): Calculadora | undefined {

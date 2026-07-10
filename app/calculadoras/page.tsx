@@ -48,8 +48,8 @@ export default function CalculadorasPage() {
         {/* Stats rápidas */}
         <div style={{ display: "flex", gap: 24, flexWrap: "wrap", margin: "24px 0 36px" }}>
           {[
-            { numero: "10", label: "calculadoras" },
-            { numero: "5", label: "categorias" },
+            { numero: "14", label: "calculadoras" },
+            { numero: "6", label: "categorias" },
             { numero: "0", label: "cadastros necessários" },
           ].map(({ numero, label }) => (
             <div key={label} style={{ textAlign: "center" }}>
