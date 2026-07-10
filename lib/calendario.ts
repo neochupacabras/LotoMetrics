@@ -20,7 +20,12 @@ export const AGENDA: AgendaLoteria[] = [
     horario: "21h",
     observacao: "Ampliado de 3 para 6 sorteios semanais a partir de 29/06/2026.",
   },
-  { codigo: "maismilionaria", dias: [6],                horario: "21h" },
+  {
+    codigo: "maismilionaria",
+    dias: [3, 6],
+    horario: "21h",
+    observacao: "Passou de 1 para 2 sorteios semanais (quarta e sábado). Confirmado na página oficial da +Milionária em loterias.caixa.gov.br.",
+  },
   { codigo: "timemania",      dias: [2, 4, 6],          horario: "21h" },
   { codigo: "duplasena",      dias: [1, 3, 5],          horario: "21h" },
   { codigo: "supersete",      dias: [1, 3, 5],          horario: "21h" },
