@@ -150,4 +150,16 @@ export const ARTIGOS: Artigo[] = [
     resumo:
       "Na Super Sete, cada coluna é um sorteio independente de 0 a 9 — o mesmo dígito pode aparecer em colunas diferentes, o que muda toda a análise.",
   },
+  {
+    slug: "quina",
+    titulo: "Quina: 5 sorteios por semana e a faixa premiada mais acessível entre as loterias de dezenas",
+    resumo:
+      "Com prêmio a partir de apenas 2 acertos e sorteios de segunda a sábado, a Quina tem a dinâmica mais frequente entre as grandes loterias da Caixa.",
+  },
+  {
+    slug: "lotomania",
+    titulo: "Lotomania: por que acertar 0 e acertar 20 têm exatamente a mesma probabilidade",
+    resumo:
+      "Marcar 50 de 100 números e torcer para acertar (ou não acertar) nenhum parece estranho — mas a simetria matemática por trás disso é exata, não coincidência.",
+  },
 ];

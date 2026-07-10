@@ -1770,7 +1770,7 @@ export const ANALISES: Analise[] = [
     resumo:
       "5 de 80 dezenas, 5 sorteios por semana, 4 faixas de premiação. A Quina tem a melhor relação entre frequência de sorteios e probabilidade de ganho entre as loterias federais.",
     data: "2026-07-08",
-    categoria: "educativo" as const,
+    categoria: "quina" as const,
     tempoLeitura: 5,
     corpo: `
       <p>
@@ -1845,7 +1845,7 @@ export const ANALISES: Analise[] = [
     resumo:
       "Na Lotomania, o apostador marca 50 de 100 números — e a Caixa sorteia 20. Você ganha tanto acertando muitos quanto acertando zero. A matemática por trás dessa peculiaridade.",
     data: "2026-07-11",
-    categoria: "educativo" as const,
+    categoria: "lotomania" as const,
     tempoLeitura: 6,
     corpo: `
       <p>
@@ -1928,7 +1928,7 @@ export const ANALISES: Analise[] = [
     resumo:
       "Com sorteios 3 vezes por semana e o menor universo de dezenas (1-31), o Dia de Sorte tem as faixas intermediárias mais acessíveis das loterias federais.",
     data: "2026-07-09",
-    categoria: "educativo" as const,
+    categoria: "diadesorte" as const,
     tempoLeitura: 5,
     corpo: `
       <p>
@@ -2029,7 +2029,7 @@ export const ANALISES: Analise[] = [
     resumo:
       "Com mais de 2.400 concursos desde 2008, a Timemania tem um histórico rico. O que os dados dizem sobre distribuição de dezenas, frequência de acúmulos e o Time do Coração.",
     data: "2026-07-13",
-    categoria: "educativo" as const,
+    categoria: "timemania" as const,
     tempoLeitura: 5,
     corpo: `
       <p>
@@ -2083,7 +2083,7 @@ export const ANALISES: Analise[] = [
     resumo:
       "Com dois sorteios independentes por aposta, a Dupla Sena dobra aproximadamente suas chances. Mas isso é equivalente a comprar dois bilhetes da Mega-Sena?",
     data: "2026-07-16",
-    categoria: "educativo" as const,
+    categoria: "duplasena" as const,
     tempoLeitura: 5,
     corpo: `
       <p>
@@ -2135,7 +2135,7 @@ export const ANALISES: Analise[] = [
     resumo:
       "Com 10 milhões de combinações possíveis e dezenas que podem se repetir, a Super Sete tem propriedades estatísticas completamente diferentes de todas as outras loterias.",
     data: "2026-07-17",
-    categoria: "educativo" as const,
+    categoria: "supersete" as const,
     tempoLeitura: 5,
     corpo: `
       <p>
@@ -2183,6 +2183,466 @@ export const ANALISES: Analise[] = [
         aumenta 3 vezes (para uma coluna) ou 3⁷ = 2.187 vezes (para todas as 7
         colunas com 3 números cada). Como em todas as loterias, a eficiência por real
         gasto é idêntica independente da estratégia de aposta.
+      </p>
+    `,
+  },
+
+  {
+    slug: "quina-acumulos-e-volume-de-apostas",
+    titulo: "Quina: por que ela acumula menos que a Mega-Sena (mesmo sendo mais difícil de ganhar sozinha)",
+    resumo:
+      "Com 5 sorteios por semana e um universo de 80 números, a Quina tem uma dinâmica de acúmulo bem diferente da Mega-Sena. Os números mostram por quê.",
+    data: "2026-09-05",
+    categoria: "quina" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        A Quina sorteia 5 dezenas entre 80 números, cinco vezes por semana — de
+        segunda a sábado. Apostando o mínimo de 5 dezenas, a chance de acertar a
+        quina (5 pontos) é de 1 em 24.040.016. Isoladamente, é uma faixa mais difícil
+        de acertar que a sena da Mega-Sena (1 em 50.063.860 é maior, então a Quina é,
+        na verdade, mais fácil que a Mega-Sena nesse quesito específico — mas ainda
+        assim rara).
+      </p>
+
+      <h2>Por que ela acumula com menos frequência</h2>
+      <p>
+        Mesmo com uma faixa principal difícil, a Quina passa boa parte do ano sendo
+        ganha em algum concurso. Isso acontece porque ela é sorteada 5 vezes por
+        semana (contra 3 da Mega-Sena) e tem um volume histórico de apostas alto o
+        suficiente para que, na maioria dos concursos, pelo menos um bilhete acerte
+        as 5 dezenas. Mais sorteios por semana significam mais "tentativas" para que
+        a faixa principal saia — mesmo que a probabilidade de cada bilhete individual
+        não mude.
+      </p>
+      <p>
+        Na <a href="/quina/acumulos">linha do tempo de acúmulos da Quina</a>, dá pra
+        ver que sequências longas sem ganhador na faixa principal são bem mais raras
+        que na Mega-Sena — não porque a Quina seja "mais fácil" matematicamente, mas
+        porque o volume de tentativas por semana é maior.
+      </p>
+
+      <h2>As outras 3 faixas de premiação</h2>
+      <p>
+        Diferente da Mega-Sena, a Quina paga prêmio a partir de apenas 2 acertos —
+        a faixa mais acessível de todas as loterias de dezenas da Caixa, com
+        probabilidade de 1 em 36 na aposta mínima. É por isso que a Quina tem fama
+        de "pagar mais fácil", mesmo sendo tecnicamente difícil de ganhar na faixa
+        principal.
+      </p>
+      <div class="tabela-scroll">
+        <table class="tabela-dados">
+          <thead>
+            <tr><th>Acertos</th><th class="num">Probabilidade (aposta de 5 dezenas)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>5 (Quina)</td><td class="num">1 em 24.040.016</td></tr>
+            <tr><td>4 (Quadra)</td><td class="num">1 em 64.107</td></tr>
+            <tr><td>3 (Terno)</td><td class="num">1 em 866</td></tr>
+            <tr><td>2 (Duque)</td><td class="num">1 em 36</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>O que a tabela de frequência mostra (e não mostra)</h2>
+      <p>
+        Com quase 6.900 concursos realizados desde 1994, a Quina tem um dos maiores
+        históricos entre as loterias da Caixa — o suficiente para que a frequência
+        de cada dezena já esteja bem próxima do esperado (86 saídas cada, em média,
+        a cada 1.376 concursos). A <a href="/quina/tabelas/frequencia">tabela de
+        frequência da Quina</a> mostra esse histórico completo — útil para
+        curiosidade, não para prever o próximo sorteio.
+      </p>
+
+      <h2>Conclusão</h2>
+      <p>
+        A Quina acumula pouco não porque seja "fácil", mas porque tem volume de
+        apostas e frequência de sorteios altos o bastante para que, na maioria das
+        semanas, alguém acerte as 5 dezenas em algum dos 5 concursos. Cada aposta
+        individual continua tendo a mesma chance minúscula de sempre.
+      </p>
+    `,
+  },
+
+  {
+    slug: "lotomania-quantos-concursos-para-premiar",
+    titulo: "Lotomania: em quantos concursos, em média, você teria alguma faixa premiada",
+    resumo:
+      "Apostando o mínimo de 50 dezenas repetidamente, quantos concursos você precisaria acompanhar até acertar 15 ou mais — ou zero? Os números exatos.",
+    data: "2026-09-06",
+    categoria: "lotomania" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        Na Lotomania, o apostador marca 50 números de 100, e a Caixa sorteia 20.
+        As faixas premiadas vão de 15 a 20 acertos — e também incluem 0 acertos,
+        a faixa mais curiosa da loteria.
+      </p>
+
+      <h2>A simetria entre acertar tudo e não acertar nada</h2>
+      <p>
+        Um detalhe pouco conhecido: a probabilidade de acertar 0 das 20 dezenas
+        sorteadas é exatamente igual à de acertar as 20 — ambas em torno de
+        1 em 11.372.636. Isso é consequência direta da simetria da distribuição
+        hipergeométrica quando o apostador marca metade do universo (50 de 100):
+        cada dezena sorteada tem exatamente a mesma chance de estar dentro ou fora
+        do seu cartão.
+      </p>
+      <p>
+        Na prática, isso significa que "tentar acertar zero de propósito" não é
+        mais fácil nem mais difícil do que tentar acertar tudo — e escolher os
+        números de forma aparentemente estratégica não muda nenhuma das duas
+        probabilidades.
+      </p>
+
+      <h2>Probabilidades de cada faixa (aposta mínima de 50 dezenas)</h2>
+      <div class="tabela-scroll">
+        <table class="tabela-dados">
+          <thead>
+            <tr><th>Acertos</th><th class="num">Probabilidade</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>20</td><td class="num">1 em 11.372.636</td></tr>
+            <tr><td>19</td><td class="num">1 em 352.552</td></tr>
+            <tr><td>18</td><td class="num">1 em 24.236</td></tr>
+            <tr><td>17</td><td class="num">1 em 2.777</td></tr>
+            <tr><td>16</td><td class="num">1 em 473</td></tr>
+            <tr><td>15</td><td class="num">1 em 112</td></tr>
+            <tr><td>0</td><td class="num">1 em 11.372.636</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        A faixa de 15 acertos é, de longe, a mais acessível — em média, 1 a cada
+        112 cartões de 50 dezenas acerta pelo menos essa faixa. É por isso que a
+        Lotomania costuma ter muito mais ganhadores nas faixas intermediárias do
+        que a Mega-Sena ou a Quina têm nas suas.
+      </p>
+
+      <h2>Quantos concursos até "algum" prêmio</h2>
+      <p>
+        Combinando todas as faixas premiadas (0, 15 a 20 acertos), a chance de um
+        único cartão ser premiado em algum nível, num único concurso, fica
+        em torno de 1 em 100. Jogando o mesmo cartão toda semana (a Lotomania sorteia
+        aos sábados), isso equivale, em expectativa, a um prêmio a cada 2 anos —
+        um número útil para calibrar expectativa, não uma promessa: cada concurso
+        continua sendo um evento independente, sem nenhuma "conta" acumulada a seu
+        favor.
+      </p>
+      <p>
+        Acompanhe o histórico de acúmulos na <a href="/lotomania/acumulos">linha do
+        tempo de acúmulos da Lotomania</a> e a distribuição real das dezenas na
+        <a href="/lotomania/tabelas/frequencia"> tabela de frequência</a>.
+      </p>
+    `,
+  },
+
+  {
+    slug: "dia-de-sorte-qual-mes-sai-mais",
+    titulo: "Dia de Sorte: qual mês sai mais (e por que isso não muda sua estratégia)",
+    resumo:
+      "Com 12 meses possíveis e centenas de concursos no histórico, algum mês naturalmente lidera o ranking de frequência. O que isso significa de verdade.",
+    data: "2026-09-07",
+    categoria: "diadesorte" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        O Mês da Sorte tem só 12 opções possíveis — um universo bem menor que as
+        dezenas de qualquer loteria. Isso faz com que, no histórico acumulado desde
+        2018, alguns meses apareçam visivelmente mais que outros. É tentador ler
+        significado nisso, mas a matemática conta uma história mais simples.
+      </p>
+
+      <h2>A variação esperada num universo pequeno</h2>
+      <p>
+        Com apenas 12 categorias possíveis, a variação natural entre elas é
+        proporcionalmente maior do que entre as 25 dezenas da Lotofácil ou as 60 da
+        Mega-Sena. Com centenas de concursos realizados, cada mês deveria aparecer
+        aproximadamente a mesma quantidade de vezes (1/12 do total) — mas o desvio
+        padrão relativo de um universo de 12 opções é maior que o de universos
+        maiores, então diferenças de alguns pontos percentuais entre o mês "líder"
+        e o "lanterna" são inteiramente esperadas, não evidência de viés.
+      </p>
+
+      <h2>Por que o mês líder muda com o tempo</h2>
+      <p>
+        Se você olhar o ranking de meses mais sorteados hoje e comparar com o
+        ranking de um ano atrás, o mês líder provavelmente já mudou. Isso é o
+        comportamento esperado de qualquer processo aleatório de 12 categorias:
+        a liderança "passeia" entre as opções conforme mais concursos acontecem,
+        sem nenhuma categoria ter vantagem real.
+      </p>
+
+      <h2>O que muda de verdade: a faixa do mês</h2>
+      <p>
+        A única coisa que importa matematicamente é que a probabilidade de acertar
+        o mês sorteado é sempre 1 em 12, independentemente de qual mês você escolhe
+        ou de qual saiu recentemente. Escolher "o mês que está devendo" não aumenta
+        nem diminui essa chance — ela é fixa em 1/12 para qualquer mês, em qualquer
+        concurso.
+      </p>
+      <p>
+        Veja a distribuição completa na <a href="/diadesorte/tabelas/frequencia">
+        tabela de frequência do Dia de Sorte</a>, que inclui tanto as dezenas quanto
+        o Mês da Sorte.
+      </p>
+
+      <h2>Conclusão</h2>
+      <p>
+        Com um universo pequeno de 12 meses, é normal ver algum "líder" no
+        histórico — mas essa liderança é ruído estatístico esperado, não sinal.
+        A chance de qualquer mês sair no próximo concurso continua sendo,
+        sempre, 1 em 12.
+      </p>
+    `,
+  },
+
+  {
+    slug: "mais-milionaria-vale-pagar-mais-caro",
+    titulo: "+Milionária: vale pagar mais caro pela aposta? Comparando custo e probabilidade real",
+    resumo:
+      "A aposta da +Milionária custa mais que a maioria das outras loterias. O que esse valor extra compra em termos de probabilidade e estrutura de prêmios.",
+    data: "2026-09-08",
+    categoria: "maismilionaria" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        A aposta mínima da +Milionária (6 dezenas de 1 a 50, mais 2 trevos de 1 a 6)
+        custa R$ 6,00 — mais cara que a Mega-Sena (R$ 5,00) e bem mais cara que a
+        Lotofácil (R$ 3,00). Vale a pena o preço extra?
+      </p>
+
+      <h2>O que o preço extra compra</h2>
+      <p>
+        O valor mais alto financia duas coisas que as outras loterias não têm: os
+        2 trevos (um sorteio adicional e independente de 1 a 6) e um prêmio mínimo
+        garantido na faixa principal de R$ 10 milhões — bem acima do que a Mega-Sena
+        garante como prêmio mínimo. A estrutura de 10 faixas de premiação também é
+        a mais ampla entre as loterias de dezenas, com prêmios a partir de apenas
+        1 trevo acertado (sem nenhuma dezena).
+      </p>
+
+      <h2>Comparando a probabilidade da faixa principal</h2>
+      <div class="tabela-scroll">
+        <table class="tabela-dados">
+          <thead>
+            <tr><th>Loteria</th><th class="num">Preço</th><th class="num">Prob. faixa principal</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Mega-Sena</td><td class="num">R$ 5,00</td><td class="num">1 em 50.063.860</td></tr>
+            <tr><td>+Milionária</td><td class="num">R$ 6,00</td><td class="num">1 em 238.360.500</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        A faixa principal da +Milionária (6 dezenas + 2 trevos) é quase 5 vezes
+        mais difícil que a sena da Mega-Sena — resultado de multiplicar a
+        probabilidade das dezenas (1 em 15.890.700) pela dos 2 trevos (1 em 15).
+        O preço 20% maior não compra uma faixa principal mais fácil; compra um
+        prêmio mínimo maior e faixas extras de premiação.
+      </p>
+
+      <h2>Os trevos isoladamente</h2>
+      <p>
+        Acertar os 2 trevos sozinhos, sem nenhuma dezena, já paga um prêmio fixo —
+        com probabilidade de 1 em 15. É a faixa mais acessível da +Milionária,
+        parecida com o papel que o "acerto do mês" tem no Dia de Sorte: um prêmio
+        de consolação alcançável, isolado da dificuldade das dezenas.
+      </p>
+
+      <h2>Conclusão</h2>
+      <p>
+        O preço mais alto da +Milionária não torna a faixa principal mais fácil —
+        pelo contrário. O que ele compra é uma estrutura de prêmios mais ampla e um
+        piso mínimo garantido maior. Se o objetivo é maximizar a chance de ganhar
+        qualquer prêmio, vale comparar a <a href="/maismilionaria/probabilidades">
+        tabela de probabilidades por faixa</a> antes de decidir onde apostar.
+      </p>
+    `,
+  },
+
+  {
+    slug: "timemania-custo-por-faixa-comparado",
+    titulo: "Timemania: o que o Time do Coração realmente muda nas suas chances",
+    resumo:
+      "A Timemania tem uma faixa premiada exclusiva para quem acerta o Time do Coração sorteado — mesmo sem nenhuma dezena. O que essa faixa vale de fato.",
+    data: "2026-09-09",
+    categoria: "timemania" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        A Timemania sorteia 7 dezenas de 1 a 80, mas tem uma peculiaridade que
+        nenhuma outra loteria da Caixa tem: além das dezenas, o apostador escolhe
+        um "Time do Coração" entre uma lista de times de futebol, e há uma faixa de
+        prêmio exclusiva para quem acerta o time sorteado — mesmo com zero dezenas.
+      </p>
+
+      <h2>Probabilidades por faixa (aposta mínima de 10 dezenas)</h2>
+      <div class="tabela-scroll">
+        <table class="tabela-dados">
+          <thead>
+            <tr><th>Acertos</th><th class="num">Probabilidade</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>7 (principal)</td><td class="num">1 em 26.472.637</td></tr>
+            <tr><td>6</td><td class="num">1 em 216.103</td></tr>
+            <tr><td>5</td><td class="num">1 em 5.220</td></tr>
+            <tr><td>4</td><td class="num">1 em 276</td></tr>
+            <tr><td>3</td><td class="num">1 em 29</td></tr>
+            <tr><td>Time do Coração</td><td class="num">depende do nº de times cadastrados</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        A faixa do Time do Coração funciona de forma diferente das outras: em vez
+        de uma probabilidade combinatória fixa, ela depende de quantos times estão
+        na lista oficial da Caixa (atualmente mais de 80) e de quantos apostadores
+        escolheram o mesmo time. Escolher um time menos popular não muda a
+        probabilidade de ele ser sorteado, mas pode significar dividir o prêmio
+        com menos gente, caso ele saia.
+      </p>
+
+      <h2>Por que 3 acertos já premia</h2>
+      <p>
+        Com a menor faixa premiada em apenas 3 acertos (probabilidade de 1 em 29),
+        a Timemania tem uma das faixas de entrada mais acessíveis entre as
+        loterias federais — parecida com a faixa de 2 acertos da Quina. Isso ajuda
+        a explicar por que a Timemania tem, proporcionalmente, um número alto de
+        ganhadores em faixas menores a cada concurso.
+      </p>
+
+      <h2>Conclusão</h2>
+      <p>
+        O Time do Coração não muda a matemática das dezenas — é uma faixa
+        completamente separada, com sua própria mecânica de premiação. Escolher
+        um time não é uma "aposta extra" que aumenta sua chance nas dezenas; é uma
+        segunda chance, independente, de ganhar algo mesmo com zero acertos.
+        Veja o histórico completo na <a href="/timemania/tabelas/frequencia">tabela
+        de frequência da Timemania</a>.
+      </p>
+    `,
+  },
+
+  {
+    slug: "dupla-sena-repeticao-entre-sorteios",
+    titulo: "Dupla Sena: com que frequência as mesmas dezenas saem nos dois sorteios do mesmo concurso",
+    resumo:
+      "Cada concurso da Dupla Sena tem dois sorteios independentes, com as mesmas 50 bolinhas usadas nos dois. Isso significa que os mesmos números podem se repetir — e os dados mostram com que frequência isso já aconteceu.",
+    data: "2026-09-10",
+    categoria: "duplasena" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        Na Dupla Sena, cada concurso tem dois sorteios de 6 dezenas entre 50
+        números — o 1º e o 2º sorteio. As bolinhas usadas no 1º sorteio voltam
+        para a esfera antes do 2º, o que significa que uma mesma dezena pode, sim,
+        ser sorteada nos dois sorteios do mesmo concurso.
+      </p>
+
+      <h2>Qual a chance de repetição entre os dois sorteios</h2>
+      <p>
+        Se os dois sorteios fossem completamente independentes (o que são), a
+        quantidade esperada de dezenas repetidas entre o 1º e o 2º sorteio segue
+        uma distribuição hipergeométrica: em média, 6 × (6/50) = 0,72 dezenas
+        repetidas por concurso. Ou seja, é comum que nenhuma dezena se repita, e
+        relativamente raro que duas ou mais se repitam no mesmo concurso.
+      </p>
+      <p>
+        Isso é visível na <a href="/duplasena/tabelas/repetidas">tabela de
+        repetidas da Dupla Sena</a>, que compara diretamente o 1º e o 2º sorteio de
+        cada concurso — uma tabela que não existe nas loterias de sorteio único.
+      </p>
+
+      <h2>Dois sorteios não são o mesmo que duas apostas</h2>
+      <p>
+        Uma dúvida comum é se apostar na Dupla Sena "dobra" a chance de ganhar,
+        como se fossem dois bilhetes da Mega-Sena. Não exatamente: são duas
+        chances independentes de ganhar com o mesmo conjunto de dezenas escolhido,
+        o que de fato aumenta a chance de acertar <em>algo</em> no concurso — mas
+        cada sorteio individual mantém a mesma probabilidade combinatória de
+        1 em 15.890.700 para a sena (aposta mínima de 6 dezenas).
+      </p>
+      <div class="tabela-scroll">
+        <table class="tabela-dados">
+          <thead>
+            <tr><th>Acertos</th><th class="num">Probabilidade (por sorteio)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>6 (sena)</td><td class="num">1 em 15.890.700</td></tr>
+            <tr><td>5 (quina)</td><td class="num">1 em 60.192</td></tr>
+            <tr><td>4 (quadra)</td><td class="num">1 em 1.120</td></tr>
+            <tr><td>3 (terno)</td><td class="num">1 em 60</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Conclusão</h2>
+      <p>
+        A repetição de dezenas entre o 1º e o 2º sorteio é um evento estatístico
+        esperado, não uma coincidência rara — e não indica nenhum padrão a ser
+        explorado. Com dois sorteios genuinamente independentes, a estratégia mais
+        honesta continua sendo escolher as dezenas uma vez e deixar a matemática
+        seguir seu curso nos dois sorteios.
+      </p>
+    `,
+  },
+
+  {
+    slug: "super-sete-repeticao-por-coluna",
+    titulo: "Super Sete: o que a repetição de dígitos entre colunas revela (e não revela)",
+    resumo:
+      "Com 7 colunas sorteadas de forma independente entre 0 e 9, é comum ver o mesmo dígito aparecer duas ou mais vezes num resultado. Veja o que os números dizem sobre isso.",
+    data: "2026-09-11",
+    categoria: "supersete" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        Diferente de todas as outras loterias da Caixa, a Super Sete não sorteia
+        dezenas únicas de um conjunto — ela sorteia um dígito de 0 a 9,
+        independentemente, para cada uma das 7 colunas. Isso muda completamente
+        a estatística do jogo.
+      </p>
+
+      <h2>Cada coluna é um sorteio próprio</h2>
+      <p>
+        Como cada coluna tem sua própria urna de 0 a 9, a probabilidade de acertar
+        um dígito numa única coluna é sempre 10% (1 em 10) — independentemente do
+        que saiu nas outras colunas ou em concursos anteriores. Não existe conceito
+        de "atraso" entre colunas diferentes, porque tecnicamente são 7 sorteios
+        separados acontecendo ao mesmo tempo.
+      </p>
+
+      <h2>Por que dígitos repetidos são tão comuns</h2>
+      <p>
+        Pelo problema do aniversário aplicado a 7 sorteios de 10 opções, a chance
+        de pelo menos duas das 7 colunas saírem com o mesmo dígito no mesmo
+        concurso é de aproximadamente 88% — ou seja, é o resultado mais comum, não
+        uma coincidência. Resultados com todos os 7 dígitos diferentes entre si
+        são, na verdade, a minoria dos concursos.
+      </p>
+      <p>
+        Isso é bem diferente das loterias de dezenas únicas (Mega-Sena, Lotofácil
+        etc.), onde por definição nenhuma dezena se repete dentro do mesmo
+        sorteio. Compare com a <a href="/supersete/tabelas/repetidas">tabela de
+        repetição por coluna da Super Sete</a> para ver a distribuição real.
+      </p>
+
+      <h2>O que isso significa para apostar em mais de 1 número por coluna</h2>
+      <p>
+        Apostar em 2 ou 3 números na mesma coluna aumenta proporcionalmente a
+        chance de acertar aquela coluna (de 10% para 20% ou 30%), mas o custo sobe
+        na mesma proporção. Como em qualquer loteria, o retorno esperado por real
+        gasto continua sendo o mesmo — a decisão de quantas colunas "reforçar" é
+        sobre orçamento e apetite ao risco, não sobre uma vantagem matemática
+        escondida.
+      </p>
+
+      <h2>Conclusão</h2>
+      <p>
+        Dígitos repetidos entre colunas na Super Sete não são um sinal nem uma
+        anomalia — são o resultado esperado de 7 sorteios independentes de apenas
+        10 opções cada. Entender isso ajuda a interpretar os resultados sem cair
+        na tentação de ver padrão onde só existe combinatória.
       </p>
     `,
   },
