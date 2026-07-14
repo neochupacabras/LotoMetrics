@@ -10,6 +10,12 @@ import { formatarDezena, isCodigoLoteriaValido } from "@/lib/format";
 import * as Estat from "@/lib/estatisticas";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 
+// Essas tabelas recalculam distribuições estatísticas sobre todo o histórico
+// da loteria a cada acesso. Só existe 1 concurso novo por dia por loteria,
+// então cachear por 1h evita recomputar isso a cada visita/rastreamento sem
+// deixar a tabela desatualizada por muito tempo depois de um novo sorteio.
+export const revalidate = 3600; // 1 hora
+
 export async function generateMetadata({
   params,
 }: {

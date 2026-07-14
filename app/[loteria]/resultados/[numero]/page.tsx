@@ -7,6 +7,14 @@ import { analisarConcurso } from "@/lib/analise-concurso";
 import { formatarData, formatarMoeda, isCodigoLoteriaValido } from "@/lib/format";
 import { SITE_URL, SITE_NAME, NOME_LOTERIA } from "@/lib/seo";
 
+// Resultados de concursos já sorteados são imutáveis — não há motivo para
+// recalcular ~10 queries (incluindo 7 distribuições estatísticas sobre todo
+// o histórico) a cada acesso, especialmente durante rastreamento do Googlebot
+// em milhares dessas páginas. Com ISR, a Vercel serve a versão em cache e só
+// roda as queries de novo depois de 24h — sem isso, cada crawl reconstrói a
+// página do zero e pode esgotar o pool de conexões do Supabase sob carga.
+export const revalidate = 86400; // 24 horas
+
 export async function generateMetadata({
   params,
 }: {
