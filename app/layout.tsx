@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Crimson_Pro, Work_Sans, JetBrains_Mono } from "next/font/google";
+import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -8,21 +8,21 @@ import { SITE_URL } from "@/lib/seo";
 import { getPlanoPremium } from "@/lib/plano";
 import "./globals.css";
 
-const crimsonPro = Crimson_Pro({
-  variable: "--font-crimson",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
   weight: ["500", "600"],
-  style: ["normal", "italic"],
+  style: ["normal"],
 });
 
-const workSans = Work_Sans({
-  variable: "--font-worksans",
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-plex-sans",
   subsets: ["latin"],
   weight: ["400", "500"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
   weight: ["400", "500", "700"],
 });
@@ -55,7 +55,7 @@ export default async function RootLayout({
   const { premium } = await getPlanoPremium();
 
   return (
-    <html lang="pt-BR" className={`${crimsonPro.variable} ${workSans.variable} ${jetbrainsMono.variable}`}>
+    <html lang="pt-BR" className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`}>
       <body suppressHydrationWarning>
         {children}
         <Footer />

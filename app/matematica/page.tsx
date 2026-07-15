@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import Legenda from "@/components/Legenda";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { ARTIGOS_MATEMATICA } from "@/lib/matematica";
 
@@ -45,13 +44,6 @@ export default function MatematicaPage() {
           cotidiano — explicados com linguagem simples, exemplos reais e
           ilustrações interativas. Sem fórmulas intimidadoras. Sem decoreba.
         </p>
-
-        <Legenda
-          itens={[
-            { cor: "pine", texto: "Nível básico" },
-            { cor: "ochre", texto: "Nível intermediário" },
-          ]}
-        />
 
         {/* Chamada central */}
         <div className="mat-chamada">

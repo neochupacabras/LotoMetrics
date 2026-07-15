@@ -1,28 +1,28 @@
 /* ============================================================
-   Sistema de design: "Atlas das Loterias"
-   Uma estética de mapa/cartografia — papel-pergaminho, tinta
-   profunda, dourado de bússola e vermelho de rota, com a
-   legenda de mapa como elemento de assinatura visual. Cada
-   loteria é um "território" a explorar, não um item de menu.
+   Sistema de design: "Boletim de Resultados"
+   Uma estética de boletim/ledger oficial — papel quente, regras
+   finas, tipografia serifada para manchetes e monoespaçada para
+   números (datas, valores, dezenas), com bolinhas de sorteio
+   como elemento de assinatura visual.
    ============================================================ */
 
 :root {
-  --paper: #f3eee0;
-  --paper-raised: #faf7ee;
-  --ink: #1a2623;
-  --ink-soft: #3a4a46;
-  --ink-faint: #74827c;
-  --pine: #1f4e4a;
-  --pine-deep: #163b38;
-  --ochre: #c89b3c;
-  --ochre-soft: #e3cc93;
-  --rust: #9b3a2e;
-  --line: #ddd5be;
-  --line-strong: #c9c0a3;
+  --paper: #efeee6;
+  --paper-raised: #f7f6f0;
+  --ink: #1c1b17;
+  --ink-soft: #5b5847;
+  --ink-faint: #8c8874;
+  --pine: #1e4b3c;
+  --pine-deep: #15362a;
+  --ochre: #b9802c;
+  --ochre-soft: #e4c189;
+  --rust: #8e3a2a;
+  --line: #d8d4c5;
+  --line-strong: #c2bca5;
 
-  --font-display: var(--font-crimson), Georgia, serif;
-  --font-body: var(--font-worksans), -apple-system, sans-serif;
-  --font-mono: var(--font-jetbrains), "Courier New", monospace;
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-body: var(--font-plex-sans), -apple-system, sans-serif;
+  --font-mono: var(--font-plex-mono), "Courier New", monospace;
 
   --container-width: 880px;
 }
@@ -7295,182 +7295,3 @@ footer.rodape {
   color: var(--ink-soft);
 }
 
-/* ── Mega-nav (Direção A: Atlas das Loterias) ──────────────────────── */
-.mega-nav {
-  display: flex;
-  gap: 4px;
-  position: relative;
-}
-
-.mega-nav__item {
-  position: relative;
-}
-
-.mega-nav__gatilho {
-  font-family: var(--font-body);
-  font-size: 0.92rem;
-  font-weight: 500;
-  color: var(--ink-soft);
-  background: transparent;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  text-transform: none;
-}
-
-.mega-nav__gatilho:hover {
-  background: color-mix(in srgb, var(--pine) 8%, transparent);
-  color: var(--pine);
-}
-
-.mega-nav__gatilho[data-ativo="true"] {
-  color: var(--pine);
-  border-bottom: 2px solid var(--ochre);
-  border-radius: 6px 6px 0 0;
-}
-
-.mega-nav__painel {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 0;
-  min-width: 320px;
-  background: var(--paper-raised);
-  border: 1px solid var(--line-strong);
-  border-radius: 10px;
-  padding: 16px;
-  box-shadow: 0 12px 28px rgba(26, 38, 35, 0.14);
-  z-index: 40;
-}
-
-.mega-nav__mapa {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-}
-
-.mega-nav__no {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  text-align: center;
-  color: var(--ink-soft);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 8px 6px;
-  text-decoration: none;
-}
-
-.mega-nav__no:hover {
-  border-color: var(--pine);
-  color: var(--pine);
-}
-
-.mega-nav__no[data-ativo="true"] {
-  background: var(--pine);
-  border-color: var(--pine);
-  color: var(--paper);
-}
-
-.mega-nav__lista {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.mega-nav__link {
-  display: flex;
-  flex-direction: column;
-  padding: 8px 10px;
-  border-radius: 6px;
-  text-decoration: none;
-}
-
-.mega-nav__link:hover {
-  background: color-mix(in srgb, var(--ochre) 10%, transparent);
-}
-
-.mega-nav__link-label {
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--ink);
-}
-
-.mega-nav__link-descricao {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--ink-faint);
-  margin-top: 2px;
-}
-
-.mega-nav__rodape {
-  display: block;
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 1px solid var(--line);
-  font-family: var(--font-mono);
-  font-size: 0.76rem;
-  color: var(--rust);
-  text-decoration: none;
-}
-
-@media (max-width: 640px) {
-  .mega-nav {
-    overflow-x: auto;
-  }
-  .mega-nav__painel {
-    left: auto;
-    right: 0;
-    min-width: 280px;
-  }
-  .mega-nav__mapa {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* ── Legenda (elemento-assinatura, Direção A) ──────────────────────── */
-.legenda-mapa {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding: 10px 16px;
-  background: var(--paper-raised);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  margin: 16px 0 28px;
-}
-
-.legenda-mapa__titulo {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--ink-faint);
-}
-
-.legenda-mapa__item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  color: var(--ink-soft);
-}
-
-.legenda-mapa__ponto {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.legenda-mapa__ponto--pine  { background: var(--pine); }
-.legenda-mapa__ponto--ochre { background: var(--ochre); }
-.legenda-mapa__ponto--rust  { background: var(--rust); }
-
-.home-mapa-rotas {
-  margin: 4px 0 20px;
-  opacity: 0.8;
-}
