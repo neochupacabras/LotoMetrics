@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CodigoLoteria } from "@/lib/types";
 import { LOTERIAS } from "@/lib/format";
 import UserMenu from "@/components/auth/UserMenu";
-import NavLoterias from "@/components/NavLoterias";
+import MegaNav from "@/components/MegaNav";
 
 export default function Masthead({
   loteriaAtiva,
@@ -23,36 +23,28 @@ export default function Masthead({
   calculadorasAtiva?: boolean;
   glossarioAtivo?: boolean;
 }) {
-  // Loterias — vão para o dropdown
   const loterias = Object.values(LOTERIAS).map((l) => ({
-    href: `/${l.slug}/resultados`,
-    label: l.nome,
-    ativo: loteriaAtiva === l.slug,
+    slug: l.slug,
+    nome: l.nome,
   }));
 
-  // Seções — ficam no nav principal
-  const secoes = [
-    { href: "/dicas",        label: "Dicas",        ativo: !!dicasAtiva        },
-    { href: "/matematica",   label: "Matemática",   ativo: !!matematicaAtiva   },
-    { href: "/calculadoras", label: "Calculadoras", ativo: !!calculadorasAtiva },
-    { href: "/analises",     label: "Análises",     ativo: !!analisesAtiva     },
-    { href: "/glossario",    label: "Glossário",    ativo: !!glossarioAtivo    },
-    { href: "/quiz",         label: "Quiz",         ativo: !!quizAtivo         },
-    { href: "/premium",      label: "✦ Premium",    ativo: !!premiumAtivo,
-      className: "masthead__premium-link" },
-  ];
+  const grupoAtivo =
+    dicasAtiva || matematicaAtiva || glossarioAtivo || quizAtivo ? "estudar"
+    : calculadorasAtiva ? "calcular"
+    : analisesAtiva ? "consultar"
+    : undefined;
 
   return (
     <header className="masthead">
       <div className="container masthead__inner">
         <div>
           <Link href="/" className="masthead__title">
-            Loto<span>Analítica</span>
+            Atlas <span>das Loterias</span>
           </Link>
-          <div className="masthead__tagline">Resultados &amp; estatísticas de loteria</div>
+          <div className="masthead__tagline">Um mapa para explorar cada loteria</div>
         </div>
 
-        <NavLoterias items={secoes} loterias={loterias} />
+        <MegaNav loterias={loterias} grupoAtivo={grupoAtivo} loteriaAtiva={loteriaAtiva} />
 
         <UserMenu />
       </div>

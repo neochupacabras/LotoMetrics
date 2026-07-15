@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
+import Legenda from "@/components/Legenda";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { getAnalisesRecentes } from "@/lib/analises";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
@@ -265,14 +266,34 @@ export default async function HomePage() {
         <section className="home-hero">
           <div className="container">
             <div className="home-hero-texto">
-              <p className="eyebrow">LotoAnalítica</p>
+              <p className="eyebrow">Atlas das Loterias</p>
               <h1 className="home-hero-titulo">
-                Resultados e estatísticas,<br />sem enrolação.
+                Nove territórios,<br />um mapa sem mistério.
               </h1>
               <p className="home-hero-subtitulo">
                 Dados oficiais da Caixa. Ferramentas reais baseadas em combinatória
-                e histórico completo. Sem previsões falsas, sem sistemas mágicos.
+                e histórico completo. Escolha uma loteria e explore o que os
+                números realmente dizem — sem previsões falsas, sem sistemas mágicos.
               </p>
+            </div>
+
+            <Legenda
+              titulo="Legenda"
+              itens={[
+                { cor: "rust", texto: "Acumulou — sem ganhador na faixa principal" },
+                { cor: "pine", texto: "Teve ganhador" },
+                { cor: "ochre", texto: "Sorteio de hoje" },
+              ]}
+            />
+
+            <div className="home-mapa-rotas" aria-hidden="true">
+              <svg viewBox="0 0 900 60" preserveAspectRatio="none" style={{ width: "100%", height: 40 }}>
+                <line x1="30" y1="30" x2="200" y2="15" stroke="var(--ochre-soft)" strokeWidth="1" strokeDasharray="4,5" />
+                <line x1="200" y1="15" x2="380" y2="45" stroke="var(--ochre-soft)" strokeWidth="1" strokeDasharray="4,5" />
+                <line x1="380" y1="45" x2="560" y2="10" stroke="var(--ochre-soft)" strokeWidth="1" strokeDasharray="4,5" />
+                <line x1="560" y1="10" x2="740" y2="40" stroke="var(--ochre-soft)" strokeWidth="1" strokeDasharray="4,5" />
+                <line x1="740" y1="40" x2="880" y2="20" stroke="var(--ochre-soft)" strokeWidth="1" strokeDasharray="4,5" />
+              </svg>
             </div>
 
             {/* Últimos resultados */}

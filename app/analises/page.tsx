@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
+import Legenda from "@/components/Legenda";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { getAnalisesRecentes } from "@/lib/analises";
 
@@ -57,6 +58,14 @@ export default function AnalisesPage() {
           sobre os resultados mais recentes. Publicado após cada sorteio e
           atualizado regularmente.
         </p>
+
+        <Legenda
+          itens={[
+            { cor: "pine", texto: "Uma loteria específica" },
+            { cor: "ochre", texto: "Comparativo entre loterias" },
+            { cor: "rust", texto: "Conteúdo educativo" },
+          ]}
+        />
 
         <div className="analises-lista" style={{ marginTop: 36 }}>
           {analises.map((a) => (
