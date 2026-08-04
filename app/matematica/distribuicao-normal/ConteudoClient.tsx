@@ -56,11 +56,15 @@ export function CurvaGaussiana() {
           const pts = xs.filter(x => x >= r.from && x <= r.to)
             .map(x => `${xToSvg(x).toFixed(1)},${yToSvg(gaussian(x)).toFixed(1)}`).join(" ");
           const baseline = yToSvg(0);
+          // i=0 é a faixa mais larga (99,7%) — rótulo fica mais embaixo, perto da base.
+          // i=2 é a faixa mais estreita (68%) — rótulo fica mais em cima, perto do pico.
+          // Sem isso, os três rótulos caem todos no mesmo ponto (x = média) e se sobrepõem.
+          const alturaFracao = [0.08, 0.28, 0.5][i];
           return (
             <g key={i}>
               <polygon points={`${x1},${baseline} ${pts} ${x2},${baseline}`}
                 fill={r.cor} opacity={r.opacity} />
-              <text x={(x1+x2)/2} y={yToSvg(gaussian(media)*0.15)}
+              <text x={(x1+x2)/2} y={yToSvg(maxY * alturaFracao)}
                 textAnchor="middle" fontSize="9" fill={r.cor} fontFamily="var(--font-mono)" fontWeight="bold">
                 {r.label}
               </text>
