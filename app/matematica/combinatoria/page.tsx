@@ -95,7 +95,7 @@ export default function ArtigoCombinatoriaPage() {
         </p>
 
         <div className="mat-svg-wrap">
-          <svg viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", maxWidth: 680 }}>
+          <svg viewBox="0 0 680 275" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", maxWidth: 680 }}>
             {/* Título Permutação */}
             <text x="10" y="28" fontFamily="var(--font-display)" fontSize="14" fill="var(--ink)" fontWeight="bold">Arranjo (ordem IMPORTA) — Ana→Bruno ≠ Bruno→Ana</text>
             {["Ana→Bruno", "Bruno→Ana", "Ana→Carla", "Carla→Ana", "..."].map((txt, i) => (
@@ -116,7 +116,7 @@ export default function ArtigoCombinatoriaPage() {
                 <text x="100" y="23" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="12" fill="#1e4b3c">{txt}</text>
               </g>
             ))}
-            <text x="10" y="215" fontFamily="var(--font-mono)" fontSize="11" fill="var(--pine)">Total: C(5,2) = 10 combinações únicas</text>
+            <text x="10" y="260" fontFamily="var(--font-mono)" fontSize="11" fill="var(--pine)">Total: C(5,2) = 10 combinações únicas</text>
           </svg>
         </div>
 
