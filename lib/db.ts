@@ -40,4 +40,36 @@ pool.on("error", (err) => {
   console.error("pg pool error:", err.message);
 });
 
+// Retry automático (1 tentativa extra) para erros transitórios de conexão —
+// comuns quando o pooler está momentaneamente sob carga (ex.: rajada de
+// acessos do Googlebot). Isso cobre TODAS as chamadas existentes de
+// `pool.query(...)` no projeto, sem precisar alterar cada uma manualmente.
+const ERROS_TRANSITORIOS = [
+  "Connection terminated",
+  "connection timeout",
+  "timeout exceeded",
+  "ECONNRESET",
+  "ETIMEDOUT",
+  "remaining connection slots",
+  "too many connections",
+];
+
+function ehErroTransitorio(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return ERROS_TRANSITORIOS.some((padrao) => msg.toLowerCase().includes(padrao.toLowerCase()));
+}
+
+const queryOriginal = pool.query.bind(pool);
+// @ts-expect-error — sobrescrevendo com uma versão compatível que adiciona retry
+pool.query = async (...args: Parameters<typeof queryOriginal>) => {
+  try {
+    return await queryOriginal(...args);
+  } catch (err) {
+    if (!ehErroTransitorio(err)) throw err;
+    console.warn("pg query falhou (erro transitório), tentando 1x mais:", (err as Error).message);
+    await new Promise((r) => setTimeout(r, 300));
+    return await queryOriginal(...args);
+  }
+};
+
 export default pool;
