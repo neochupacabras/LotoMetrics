@@ -591,86 +591,101 @@ export const ANALISES: Analise[] = [
   },
   {
     slug: "mega-da-virada-2026-matematica-premio",
-    titulo: "Mega da Virada 2026: a matemática honesta do maior prêmio do ano",
+    titulo: "Mega da Virada 2026: quando é, como o prêmio bilionário é formado e a matemática por trás dele",
     resumo:
-      "A Mega da Virada acumula prêmios que podem ultrapassar R$600 milhões. O que a matemática diz sobre quanto você precisaria apostar para ter chance real — e por que o resultado surpreende.",
-    data: "2026-06-28",
+      "A edição mais recente pagou R$ 1,09 bilhão — recorde histórico das loterias brasileiras. Entenda o mecanismo real por trás desse crescimento e o que a matemática diz sobre apostar no maior concurso do ano.",
+    data: "2026-08-11",
     categoria: "megasena" as const,
-    tempoLeitura: 5,
+    tempoLeitura: 6,
     corpo: `
       <p>
-        A Mega da Virada acontece todo 31 de dezembro e concentra o maior prêmio do
-        calendário das loterias brasileiras — resultado dos acúmulos programáticos
-        ao longo do ano. A pergunta que todo apostador tem mas raramente vê respondida
-        com honestidade: quanto você precisaria gastar para ter uma chance "real" de ganhar?
+        A Mega da Virada acontece sempre em <strong>31 de dezembro</strong> e é o
+        concurso mais aguardado do calendário das loterias brasileiras. A data e o
+        número exato do concurso de 2026, junto com a estimativa oficial de prêmio,
+        só são confirmados pela Caixa entre novembro e dezembro — assim que sair,
+        atualizamos este artigo. Enquanto isso, vale entender como o prêmio é
+        formado de verdade e o que esperar com base no histórico recente.
       </p>
 
-      <h2>O que é uma "chance real"</h2>
+      <h2>Como o prêmio bilionário é formado (mecanismo real, não estimativa)</h2>
       <p>
-        Nenhuma quantidade de apostas garante vitória. A Mega-Sena tem 50.063.860
-        combinações possíveis, e cada aposta cobre apenas 1 delas. Para ter 50% de
-        chance de acertar a sena em pelo menos 1 aposta, você precisaria cobrir
-        aproximadamente 34,7 milhões de combinações — a R$6 cada, isso representa
-        R$208 milhões em apostas. Para 10% de chance: R$30 milhões. Para 1% de chance:
-        R$3 milhões.
-      </p>
-      <p>
-        Isso não significa que você "precisa" gastar R$3 milhões para "justificar"
-        apostar. Significa que, com uma aposta de R$6, você tem 0,000002% de chance —
-        e essa chance existe tanto para você quanto para qualquer outro apostador,
-        independente de qual combinação você escolheu.
+        Diferente de outros concursos especiais, a Mega da Virada tem, sim, um
+        mecanismo confirmado de acúmulo programático: uma fatia da arrecadação de
+        <strong> cada concurso regular</strong> da Mega-Sena ao longo do ano é
+        reservada especificamente para o prêmio de dezembro. A Caixa aumentou esse
+        percentual de <strong>5% para 10%</strong> nos últimos anos, e também
+        redistribuiu a divisão interna do prêmio especial, elevando para
+        <strong> 90%</strong> a fatia destinada a quem acerta as 6 dezenas
+        (antes, uma parte maior ia para as faixas de 5 e 4 acertos). Essas duas
+        mudanças estruturais — não só "mais gente apostando" — explicam boa parte
+        do crescimento recente dos prêmios.
       </p>
 
-      <h2>A matemática do valor esperado com prêmio grande</h2>
+      <h2>O crescimento histórico dos prêmios</h2>
       <p>
-        O valor esperado de uma aposta é: (prêmio) × (probabilidade) − (custo).
-        Com prêmio de R$600 milhões, probabilidade de 1 em 50.063.860 e aposta de R$6:
+        Criada em 2009, a Mega da Virada saiu de <strong>R$ 144 milhões</strong> na
+        primeira edição para <strong>R$ 635 milhões</strong> em 2024. A edição mais
+        recente, sorteada na manhã de 1º de janeiro de 2026 (o sorteio de 31/12
+        atrasou por instabilidade no sistema, causada por um volume recorde de
+        apostas de última hora), pagou <strong>R$ 1,09 bilhão</strong> — o maior
+        prêmio já distribuído por uma loteria no Brasil, dividido entre 6 apostas
+        vencedoras, cada uma levando cerca de R$ 182 milhões.
+      </p>
+
+      <h2>Como funciona a aposta</h2>
+      <p>
+        A Mega da Virada segue a estrutura normal da Mega-Sena: você escolhe de 6 a
+        20 números entre 60 disponíveis, com a aposta simples de 6 dezenas sendo a
+        mais barata. São premiadas as faixas de 6, 5 e 4 acertos. Assim como outros
+        concursos especiais, ela <strong>não acumula</strong> — se ninguém acertar
+        as 6 dezenas, o prêmio principal é redistribuído para quem acertar 5, e se
+        necessário, para quem acertar 4.
+      </p>
+
+      <h2>A matemática do valor esperado com prêmio bilionário</h2>
+      <p>
+        O valor esperado de uma aposta é: (prêmio) × (probabilidade) − (custo). Com
+        um prêmio de referência de R$ 1 bilhão, probabilidade de 1 em 50.063.860 e
+        aposta de R$ 6:
       </p>
       <p>
-        Valor esperado = R$600.000.000 × (1/50.063.860) − R$6 = R$11,98 − R$6 = R$5,98.
+        Valor esperado = R$ 1.000.000.000 × (1/50.063.860) − R$ 6 = R$ 19,97 − R$ 6 = <strong>R$ 13,97</strong>.
       </p>
       <p>
-        Isso significa que, matematicamente, com esse prêmio, o valor esperado de uma
-        aposta simples é <em>positivo</em> — algo extremamente raro em loterias. Na
-        maioria dos concursos normais da Mega-Sena, o valor esperado é negativo (retorno
-        de ~43% da arrecadação). Com prêmios acumulados muito grandes, a equação muda.
+        Isso significa que, matematicamente, o valor esperado de uma aposta simples
+        na Mega da Virada pode ficar <em>positivo</em> — algo raríssimo em loteria.
+        Na maioria dos concursos normais da Mega-Sena, o valor esperado é negativo.
+        Com um prêmio desse tamanho, a equação muda.
       </p>
 
       <h2>Por que isso não significa "vale a pena" de forma simples</h2>
       <p>
-        O valor esperado positivo não captura toda a realidade por dois motivos
-        importantes.
+        <strong>O prêmio é rateado.</strong> Quanto maior o prêmio anunciado, mais
+        gente aposta — e maior a chance de dividir o prêmio principal com outros
+        ganhadores. Na edição mais recente, 6 apostas diferentes acertaram as 6
+        dezenas simultaneamente, reduzindo o valor por ganhador de R$ 1,09 bilhão
+        para cerca de R$ 182 milhões cada.
       </p>
       <p>
-        <strong>O prêmio é rateado.</strong> Se milhões de apostadores apostarem mais
-        quando o prêmio é alto — o que de fato acontece — a probabilidade de precisar
-        dividir o prêmio com outros ganhadores também aumenta. Em concursos com prêmio
-        muito alto, o volume de apostas pode superar 200 milhões, reduzindo
-        drasticamente o valor esperado real por ganhador.
-      </p>
-      <p>
-        <strong>Utilidade marginal do dinheiro.</strong> Para a maioria das pessoas, a
-        diferença entre ter R$0 e ter R$6 é concreta (uma refeição). A diferença entre
-        ter R$600 milhões e R$1,2 bilhão é abstrata. O valor esperado matemático trata
-        R$1 como equivalente em qualquer contexto, o que não reflete a realidade.
+        <strong>Utilidade marginal do dinheiro.</strong> Para a maioria das pessoas,
+        a diferença entre ter R$ 0 e ter R$ 6 é concreta. A diferença entre ter
+        R$ 180 milhões e R$ 1 bilhão é abstrata. O valor esperado matemático trata
+        R$ 1 como equivalente em qualquer contexto, o que não reflete a realidade.
       </p>
 
       <h2>O que fazer com essa informação</h2>
       <p>
-        A Mega da Virada é o único concurso do ano onde o valor esperado por aposta
-        pode ser positivo — matematicamente interessante. Mas "positivo" não significa
-        "provável de ganhar". Com prêmio de R$600 milhões e uma aposta de R$6, você
-        espera ganhar R$11,98 em média — ao longo de 50 milhões de apostas. Em uma
-        única aposta, você quase certamente não vai ganhar nada.
+        A Mega da Virada costuma ser o único concurso do ano em que o valor
+        esperado por aposta pode ficar positivo — matematicamente interessante.
+        Mas "positivo" não significa "provável de ganhar": em uma única aposta,
+        você quase certamente não vai ganhar nada, independentemente do tamanho do
+        prêmio.
       </p>
       <p>
-        A forma mais honesta de ver a Mega da Virada: é o concurso onde o custo de
-        entretenimento por aposta tem o melhor "negócio" do ano, graças ao prêmio
-        acumulado. Não é uma estratégia de investimento.
-      </p>
-      <p>
-        Acompanhe o histórico de todos os acúmulos da Mega-Sena, incluindo as edições
-        anteriores da Mega da Virada, na
+        A forma mais honesta de ver a Mega da Virada: é o concurso com o melhor
+        "custo de entretenimento" matemático do ano, graças ao prêmio acumulado —
+        não uma estratégia de investimento. Acompanhe o histórico completo de
+        acúmulos da Mega-Sena, incluindo edições anteriores da Mega da Virada, na
         <a href="/megasena/acumulos">linha do tempo de acúmulos</a>.
       </p>
     `,

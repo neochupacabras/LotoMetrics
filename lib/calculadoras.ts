@@ -118,6 +118,15 @@ export const CALCULADORAS: Calculadora[] = [
     descricao: "Calculadora de rateio de bolão de loteria: informe o valor do prêmio e as cotas de cada participante para descobrir quanto cada um recebe.",
   },
   {
+    slug: "financiamento",
+    titulo: "Financiamento e Empréstimo",
+    subtitulo: "Simule parcelas pelo sistema Price (fixas) ou SAC (decrescentes)",
+    emoji: "🏦",
+    cor: "pine",
+    categoria: "financeira",
+    descricao: "Calculadora de financiamento e empréstimo: simule o valor das parcelas pelos sistemas Price e SAC, com total de juros e valor final pago.",
+  },
+  {
     slug: "valor-esperado-aposta",
     titulo: "Valor Esperado de uma Aposta",
     subtitulo: "Veja se, em média, uma aposta compensa o que custa",

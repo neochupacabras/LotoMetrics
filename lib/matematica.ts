@@ -286,6 +286,17 @@ export const ARTIGOS_MATEMATICA: ArtigoMatematica[] = [
     conceito: "Métodos de Monte Carlo e estimativa por simulação aleatória",
     cotidiano: "previsão do tempo, cálculo de π, risco de seguros, física de partículas",
   },
+  {
+    slug: "pesquisas-eleitorais-margem-de-erro",
+    titulo: "Pesquisas Eleitorais e Margem de Erro",
+    subtitulo: "Como 2 mil entrevistas conseguem representar mais de 150 milhões de eleitores — e o que 'empate técnico' realmente significa",
+    emoji: "🗳️",
+    cor: "rust",
+    nivel: "intermediário",
+    tempoLeitura: 8,
+    conceito: "Amostragem, margem de erro e intervalo de confiança",
+    cotidiano: "pesquisas eleitorais, eleições 2026, institutos de pesquisa, IBGE",
+  },
 ];
 
 export function getArtigoMatematica(slug: string): ArtigoMatematica | undefined {
