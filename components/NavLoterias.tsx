@@ -45,22 +45,19 @@ function LoteriasDropdown({
         type="button"
         className="nav-dropdown__btn"
         data-ativo={algumAtivo}
+        data-aberto={aberto}
         onClick={() => setAberto((v) => !v)}
         aria-expanded={aberto}
         aria-haspopup="true"
       >
         Loterias
-        <span style={{ fontSize: "0.6rem", opacity: 0.7, marginLeft: 3 }} aria-hidden>
-          {aberto ? "▲" : "▼"}
+        <span className="nav-dropdown__seta" data-aberto={aberto} aria-hidden>
+          ▼
         </span>
       </button>
 
       {aberto && (
-        <div
-          className="nav-dropdown__painel"
-          role="menu"
-          /* Painel posicionado relativamente ao wrapper, não ao nav com overflow */
-        >
+        <div className="nav-dropdown__painel" role="menu">
           <div className="nav-dropdown__grid">
             {loterias.map((l) => (
               <Link
@@ -81,7 +78,7 @@ function LoteriasDropdown({
   );
 }
 
-// ─── Nav principal com setas de scroll ───────────────────────────────────────
+// ─── Nav principal: sublinhado deslizante + scroll horizontal em telas pequenas ──
 export default function NavLoterias({
   items,
   loterias,
@@ -90,8 +87,24 @@ export default function NavLoterias({
   loterias: NavItem[];
 }) {
   const navRef = useRef<HTMLDivElement>(null);
+  const underlineRef = useRef<HTMLSpanElement>(null);
+  const itemRefs = useRef<Map<string, HTMLAnchorElement>>(new Map());
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(false);
+
+  const itemAtivo = items.find((i) => i.ativo) ?? items[0];
+
+  const moverSublinhadoPara = useCallback((href: string) => {
+    const el = itemRefs.current.get(href);
+    const underline = underlineRef.current;
+    if (!el || !underline) return;
+    underline.style.left = `${el.offsetLeft}px`;
+    underline.style.width = `${el.offsetWidth}px`;
+  }, []);
+
+  const voltarAoAtivo = useCallback(() => {
+    moverSublinhadoPara(itemAtivo.href);
+  }, [itemAtivo, moverSublinhadoPara]);
 
   const checkScroll = useCallback(() => {
     const el = navRef.current;
@@ -102,8 +115,14 @@ export default function NavLoterias({
 
   useEffect(() => {
     checkScroll();
+    voltarAoAtivo();
     window.addEventListener("resize", checkScroll);
-    return () => window.removeEventListener("resize", checkScroll);
+    window.addEventListener("resize", voltarAoAtivo);
+    return () => {
+      window.removeEventListener("resize", checkScroll);
+      window.removeEventListener("resize", voltarAoAtivo);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkScroll]);
 
   useEffect(() => {
@@ -130,9 +149,12 @@ export default function NavLoterias({
   const algumLotAtivo = loterias.some((l) => l.ativo);
 
   return (
-    /* Wrapper externo — NÃO tem overflow, para o painel do dropdown aparecer */
     <div className="nav-loterias-outer">
-      {/* Seta esquerda */}
+      <div className="nav-dropdown">
+        <LoteriasDropdown loterias={loterias} algumAtivo={algumLotAtivo} />
+        <span className="nav-dropdown__separador" aria-hidden />
+      </div>
+
       <button
         type="button"
         className="nav-loterias-seta nav-loterias-seta--esq"
@@ -144,27 +166,29 @@ export default function NavLoterias({
         ‹
       </button>
 
-      {/*
-        Dropdown FORA do div com overflow-x: auto.
-        Fica no wrapper externo (sem overflow) para o painel aparecer sem ser cortado.
-      */}
-      <LoteriasDropdown loterias={loterias} algumAtivo={algumLotAtivo} />
-
-      {/* Nav com overflow apenas para as seções (Dicas, Matemática etc.) */}
-      <div ref={navRef} className="nav-loterias" onScroll={checkScroll}>
+      <div
+        ref={navRef}
+        className="nav-loterias"
+        onScroll={checkScroll}
+        onMouseLeave={voltarAoAtivo}
+      >
         {items.map((item) => (
           <Link
             key={item.href}
             href={item.href}
             data-ativo={item.ativo}
             className={item.className}
+            ref={(el) => {
+              if (el) itemRefs.current.set(item.href, el);
+            }}
+            onMouseEnter={() => moverSublinhadoPara(item.href)}
           >
             {item.label}
           </Link>
         ))}
+        <span ref={underlineRef} className="nav-loterias__sublinhado" aria-hidden />
       </div>
 
-      {/* Seta direita */}
       <button
         type="button"
         className="nav-loterias-seta nav-loterias-seta--dir"

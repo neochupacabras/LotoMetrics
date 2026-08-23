@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import BotaoCopiar from "@/components/BotaoCopiar";
 import { criarApiKeyAction, revogarApiKeyAction } from "@/lib/api-key-actions";
 
 interface ApiKey {
@@ -72,7 +73,6 @@ export default function ApiKeysClient({ keys: keysInicial }: { keys: ApiKey[] })
   const [novaChave, setNovaChave] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
-  const [copiado, setCopiado] = useState(false);
 
   function handleCriar() {
     if (!label.trim()) { setErro("Dê um nome para identificar a chave."); return; }
@@ -86,13 +86,6 @@ export default function ApiKeysClient({ keys: keysInicial }: { keys: ApiKey[] })
         setErro(res.erro ?? "Erro ao criar a chave.");
       }
     });
-  }
-
-  function handleCopiar() {
-    if (!novaChave) return;
-    navigator.clipboard?.writeText(novaChave);
-    setCopiado(true);
-    setTimeout(() => setCopiado(false), 2000);
   }
 
   function handleRevogar(id: string) {
@@ -109,13 +102,11 @@ export default function ApiKeysClient({ keys: keysInicial }: { keys: ApiKey[] })
           </p>
           <div className="api-nova-chave__valor">
             <code className="api-nova-chave__code">{novaChave}</code>
-            <button
-              type="button"
+            <BotaoCopiar
+              texto={novaChave}
               className="botao-copiar api-nova-chave__copiar"
-              onClick={handleCopiar}
-            >
-              {copiado ? "Copiado!" : "Copiar"}
-            </button>
+              labelCopiado="Copiado ✓"
+            />
           </div>
           <button
             type="button"

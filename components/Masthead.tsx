@@ -3,6 +3,7 @@ import { CodigoLoteria } from "@/lib/types";
 import { LOTERIAS } from "@/lib/format";
 import UserMenu from "@/components/auth/UserMenu";
 import NavLoterias from "@/components/NavLoterias";
+import MastheadShell from "@/components/MastheadShell";
 
 export default function Masthead({
   loteriaAtiva,
@@ -43,7 +44,7 @@ export default function Masthead({
   ];
 
   return (
-    <header className="masthead">
+    <MastheadShell>
       <div className="container masthead__inner">
         <div>
           <Link href="/" className="masthead__title">
@@ -56,6 +57,6 @@ export default function Masthead({
 
         <UserMenu />
       </div>
-    </header>
+    </MastheadShell>
   );
 }

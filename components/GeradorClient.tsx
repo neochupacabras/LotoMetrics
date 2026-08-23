@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Dezenas from "./Dezenas";
+import BotaoCopiar from "./BotaoCopiar";
 import { gerarJogo, amostrarSubconjunto, ResultadoGeracao } from "@/lib/gerar-jogo";
 import { DadosGerador } from "@/lib/gerador";
 import { formatarDezena } from "@/lib/format";
@@ -134,11 +135,6 @@ export default function GeradorClient({
       setErro(e instanceof Error ? e.message : "Não foi possível gerar com esses filtros.");
       setJogos([]);
     }
-  }
-
-  function copiarJogo(dezenas: number[]) {
-    const texto = dezenas.map(formatarDezena).join(" - ");
-    navigator.clipboard?.writeText(texto);
   }
 
   function baixarTXT() {
@@ -438,13 +434,7 @@ export default function GeradorClient({
                   {!jogo.atendeuTodosFiltros && (
                     <span className="badge badge--acumulou">Filtros parcialmente atendidos</span>
                   )}
-                  <button
-                    type="button"
-                    className="botao-copiar"
-                    onClick={() => copiarJogo(jogo.dezenas)}
-                  >
-                    Copiar
-                  </button>
+                  <BotaoCopiar texto={jogo.dezenas.map(formatarDezena).join(" - ")} />
                 </div>
               </div>
             ))}

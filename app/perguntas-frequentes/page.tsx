@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
+import FaqItem from "@/components/FaqItem";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { FAQ } from "@/lib/faq";
 
@@ -77,9 +78,9 @@ export default function FAQPage() {
           <section key={c.categoria} id={idCategoria(c.categoria)} className="faq-secao">
             <h2 className="faq-secao__titulo">{c.categoria}</h2>
             {c.perguntas.map((p, i) => (
-              <details key={i} className="faq-item">
-                <summary className="faq-item__pergunta">{p.pergunta}</summary>
-                <div className="faq-item__resposta">
+              <FaqItem key={i}>
+                {p.pergunta}
+                <>
                   <p>{p.resposta}</p>
                   {p.saibaMais && (
                     <p style={{ marginTop: 8 }}>
@@ -88,8 +89,8 @@ export default function FAQPage() {
                       </Link>
                     </p>
                   )}
-                </div>
-              </details>
+                </>
+              </FaqItem>
             ))}
           </section>
         ))}

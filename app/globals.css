@@ -71,6 +71,14 @@ img {
 .masthead {
   border-bottom: 1px solid var(--line-strong);
   background: var(--paper-raised);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: box-shadow 0.2s ease;
+}
+
+.masthead[data-encolhido="true"] {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
 }
 
 .masthead__inner {
@@ -80,6 +88,11 @@ img {
   padding: 28px 24px 20px;
   flex-wrap: wrap;
   gap: 16px;
+  transition: padding 0.2s ease;
+}
+
+.masthead[data-encolhido="true"] .masthead__inner {
+  padding: 14px 24px;
 }
 
 .masthead__title {
@@ -89,6 +102,11 @@ img {
   letter-spacing: -0.01em;
   text-decoration: none;
   color: var(--ink);
+  transition: font-size 0.2s ease;
+}
+
+.masthead[data-encolhido="true"] .masthead__title {
+  font-size: 1.3rem;
 }
 
 .masthead__title span {
@@ -102,6 +120,16 @@ img {
   letter-spacing: 0.12em;
   color: var(--ink-faint);
   margin-top: 4px;
+  max-height: 20px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.2s ease, opacity 0.15s ease, margin 0.2s ease;
+}
+
+.masthead[data-encolhido="true"] .masthead__tagline {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
 }
 
 /* Wrapper externo com setas — sempre visível */
@@ -160,12 +188,10 @@ img {
 
 /* Nav em si — sempre scroll horizontal */
 .nav-loterias {
+  position: relative;
   display: flex;
-  gap: 4px;
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
-  padding: 3px;
-  background: var(--paper);
+  gap: 2px;
+  padding: 3px 2px;
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -184,21 +210,40 @@ img {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   text-decoration: none;
-  padding: 7px 14px;
-  border-radius: 3px;
+  padding: 9px 12px;
   color: var(--ink-soft);
   white-space: nowrap;
+  position: relative;
 }
 
 .nav-loterias a[data-ativo="true"] {
-  background: var(--pine);
-  color: var(--paper);
+  color: var(--pine);
+}
+
+/* Barra que desliza entre os itens ao passar o mouse (ver NavLoterias.tsx) */
+.nav-loterias__sublinhado {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  background: var(--ochre);
+  transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
 }
 
 /* ---------- Seções gerais ---------- */
 
 main {
   min-height: 60vh;
+  animation: pagina-entrar 0.35s ease;
+}
+
+@keyframes pagina-entrar {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main { animation: none; }
 }
 
 .secao {
@@ -270,6 +315,16 @@ h1.titulo-edicao {
   display: flex;
   align-items: center;
   justify-content: center;
+  animation: dezena-entrar 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+@keyframes dezena-entrar {
+  from { opacity: 0; transform: scale(0.3); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dezena-bola { animation: none; }
 }
 
 .dezena-bola--pequena {
@@ -569,6 +624,10 @@ footer.rodape {
   text-align: right;
 }
 
+.tabela-dados tr {
+  transition: background 0.12s ease;
+}
+
 .tabela-dados tr:hover {
   background: var(--paper-raised);
 }
@@ -590,10 +649,13 @@ footer.rodape {
   text-decoration: none;
   color: var(--ink);
   background: var(--paper-raised);
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
 }
 
 .cartao-categoria:hover {
   border-color: var(--pine);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .cartao-categoria__titulo {
@@ -933,10 +995,17 @@ footer.rodape {
   font-size: 0.75rem;
   color: var(--ink);
   cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
 }
 
 .botao-copiar:hover {
   border-color: var(--pine);
+  color: var(--pine);
+}
+
+.botao-copiar[data-copiado="true"] {
+  border-color: var(--pine);
+  background: color-mix(in srgb, var(--pine) 10%, transparent);
   color: var(--pine);
 }
 
@@ -2618,12 +2687,24 @@ footer.rodape {
 }
 
 .usermenu-entrar {
-  font-size: 0.83rem;
-  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 6px 14px;
   text-decoration: none;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
 }
 
-.usermenu-entrar:hover { color: var(--pine); }
+.usermenu-entrar:hover {
+  border-color: var(--pine);
+  background: color-mix(in srgb, var(--pine) 6%, transparent);
+  color: var(--pine);
+}
 
 .usermenu-cadastrar {
   font-size: 0.82rem;
@@ -5539,12 +5620,13 @@ footer.rodape {
   border-radius: 4px;
   background: var(--paper);
   text-decoration: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
 }
 
 .analise-card:hover {
   border-color: var(--pine);
-  box-shadow: 0 2px 8px rgba(30, 75, 60, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(30, 75, 60, 0.1);
 }
 
 .analise-card--compacta {
@@ -6832,41 +6914,56 @@ footer.rodape {
 .nav-dropdown {
   position: relative;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* Botão "Loterias ▾" */
+/* Botão "Loterias" — ação primária do menu, por isso preenchido
+   (mesmo tratamento visual do botão "Criar conta"), diferente dos
+   demais itens do nav, que são navegação secundária de conteúdo. */
 .nav-dropdown__btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 10px;
-  border-radius: 3px;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 4px;
   border: none;
-  background: transparent;
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  color: var(--ink-soft);
+  background: var(--pine);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--paper);
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.12s, color 0.12s;
+  transition: background 0.15s;
 }
 
 .nav-dropdown__btn:hover,
 .nav-dropdown__btn[data-aberto="true"] {
-  background: color-mix(in srgb, var(--pine) 10%, transparent);
-  color: var(--pine);
+  background: var(--pine-deep);
 }
 
 .nav-dropdown__btn[data-ativo="true"] {
-  background: var(--pine);
-  color: #fff;
-  font-weight: 600;
+  background: var(--rust);
+}
+
+.nav-dropdown__separador {
+  width: 1px;
+  height: 20px;
+  background: var(--line-strong);
+  flex-shrink: 0;
 }
 
 .nav-dropdown__seta {
-  font-size: 0.6rem;
-  opacity: 0.7;
-  margin-top: 1px;
+  font-size: 0.65rem;
+  display: inline-flex;
+  transition: transform 0.2s ease;
+}
+
+.nav-dropdown__seta[data-aberto="true"] {
+  transform: rotate(180deg);
 }
 
 /* Painel dropdown */
@@ -7206,14 +7303,15 @@ footer.rodape {
   font-weight: 700;
   font-size: 0.98rem;
   color: var(--ink);
-  list-style: none;
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.faq-item__pergunta::-webkit-details-marker {
-  display: none;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-body);
 }
 
 .faq-item__pergunta::before {
@@ -7229,15 +7327,23 @@ footer.rodape {
   color: var(--paper);
   background: var(--pine);
   border-radius: 4px;
+  transition: transform 0.2s ease;
 }
 
-.faq-item[open] > .faq-item__pergunta::before {
+.faq-item__pergunta[aria-expanded="true"]::before {
   content: "–";
+}
+
+.faq-item__corpo {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
 }
 
 .faq-item__resposta {
   margin-top: 10px;
   padding-left: 28px;
+  padding-bottom: 2px;
   color: var(--ink-soft);
   line-height: 1.65;
   font-size: 0.92rem;
@@ -7295,3 +7401,37 @@ footer.rodape {
   color: var(--ink-soft);
 }
 
+
+/* ── Skeleton / shimmer de carregamento ────────────────────────────── */
+.skeleton-barra,
+.skeleton-bola {
+  background: linear-gradient(
+    90deg,
+    var(--line) 0%,
+    var(--paper-raised) 50%,
+    var(--line) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+.skeleton-bola {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-barra,
+  .skeleton-bola {
+    animation: none;
+    background: var(--line);
+  }
+}
