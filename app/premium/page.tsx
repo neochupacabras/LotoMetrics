@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Masthead from "@/components/Masthead";
+import FaqItem from "@/components/FaqItem";
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
 const GRUPOS = [
   {
     titulo: "Análise sem limite",
+    emoji: "🔍",
     descricao:
       "As ferramentas mais poderosas do site sem as restrições do plano gratuito.",
     cor: "pine",
@@ -53,6 +55,7 @@ const GRUPOS = [
   },
   {
     titulo: "Rastreamento automático",
+    emoji: "📧",
     descricao:
       "Salve seus jogos fixos e receba o resultado por e-mail após cada sorteio — sem precisar voltar ao site.",
     cor: "ochre",
@@ -60,7 +63,7 @@ const GRUPOS = [
       {
         nome: "Rastreador de jogos pessoais",
         detalhe:
-          "Cadastre suas combinações fixas. Após cada sorteio da Lotofácil (segunda, quarta e sábado) e Mega-Sena (terça, quinta e sábado), você recebe um e-mail com quantos pontos cada jogo fez e se houve prêmio.",
+          "Cadastre suas combinações fixas. Após cada sorteio da Lotofácil (todos os dias, exceto domingo) e Mega-Sena (terça, quinta e sábado), você recebe um e-mail com quantos pontos cada jogo fez e se houve prêmio.",
         link: null,
       },
       {
@@ -79,6 +82,7 @@ const GRUPOS = [
   },
   {
     titulo: "Conferidor por foto",
+    emoji: "📸",
     descricao:
       "A funcionalidade que mais viraliza — fotografe o bilhete e as dezenas são preenchidas automaticamente.",
     cor: "pine",
@@ -99,6 +103,7 @@ const GRUPOS = [
   },
   {
     titulo: "API de dados históricos",
+    emoji: "🔌",
     descricao:
       "Para desenvolvedores, pesquisadores e quem quer construir em cima dos dados.",
     cor: "ochre",
@@ -119,6 +124,7 @@ const GRUPOS = [
   },
   {
     titulo: "Experiência sem anúncios",
+    emoji: "🚫",
     descricao: "Para assinantes, o site é completamente limpo.",
     cor: "pine",
     itens: [
@@ -142,7 +148,11 @@ const COMPARATIVO = [
   { feature: "Simulador — últimos 100 concursos",  free: true,  premium: true  },
   { feature: "Alertas de acúmulo",                 free: true,  premium: true  },
   { feature: "Salvar jogos na conta",              free: true,  premium: true  },
-  { feature: "Artigos educacionais (19)",          free: true,  premium: true  },
+  { feature: "Calendário de sorteios",             free: true,  premium: true  },
+  { feature: "15 calculadoras gratuitas",          free: true,  premium: true  },
+  { feature: "26 artigos de Matemática",           free: true,  premium: true  },
+  { feature: "26 artigos de Dicas e estratégias",  free: true,  premium: true  },
+  { feature: "Glossário de termos",                free: true,  premium: true  },
   { feature: "Quiz Verdade ou Mito?",              free: true,  premium: true  },
   { feature: "Sem anúncios",                       free: false, premium: true  },
   { feature: "Conferidor ilimitado",               free: false, premium: true  },
@@ -194,6 +204,7 @@ export default function PremiumPage() {
           >
             <div className="container premium-grupo__inner">
               <div className="premium-grupo__cabecalho">
+                <span className="premium-grupo__emoji" aria-hidden>{grupo.emoji}</span>
                 <h2 className="premium-grupo__titulo">{grupo.titulo}</h2>
                 <p className="premium-grupo__desc">{grupo.descricao}</p>
               </div>
@@ -283,10 +294,10 @@ export default function PremiumPage() {
                 r: "Sim, em qualquer dispositivo com câmera e browser moderno. No celular o botão abre diretamente a câmera traseira. A leitura usa o Google Cloud Vision (DOCUMENT_TEXT_DETECTION), que é preciso mesmo com iluminação imperfeita ou papel amassado.",
               },
             ].map((faq) => (
-              <div key={faq.p} className="premium-faq__item">
-                <p className="premium-faq__pergunta">{faq.p}</p>
-                <p className="premium-faq__resposta">{faq.r}</p>
-              </div>
+              <FaqItem key={faq.p}>
+                {faq.p}
+                <p>{faq.r}</p>
+              </FaqItem>
             ))}
           </div>
         </section>
