@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
 import HeatmapVolante from "@/components/HeatmapVolante";
 import GraficoBarras from "@/components/GraficoBarras";
+import { SimuladorFrequenciaAleatoria } from "@/components/SimuladorFrequenciaAleatoria";
 import { getCategoriaPorSlug, getCategoriasParaLoteria } from "@/lib/categorias";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { formatarDezena, isCodigoLoteriaValido } from "@/lib/format";
@@ -78,6 +79,7 @@ export default async function CategoriaPage({
         dezenaMin={loteria.dezenaMin}
         dezenaMax={loteria.dezenaMax}
         gridColunas={loteria.gridColunas}
+        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
       />
 
       <div className="aviso-legal">
@@ -95,12 +97,14 @@ async function ConteudoCategoria({
   dezenaMin,
   dezenaMax,
   gridColunas,
+  qtdDezenasSorteadas,
 }: {
   slug: string;
   loteriaId: number;
   dezenaMin: number;
   dezenaMax: number;
   gridColunas: number;
+  qtdDezenasSorteadas: number;
 }) {
   switch (slug) {
     case "frequencia":
@@ -110,6 +114,7 @@ async function ConteudoCategoria({
           dezenaMin={dezenaMin}
           dezenaMax={dezenaMax}
           gridColunas={gridColunas}
+          qtdDezenasSorteadas={qtdDezenasSorteadas}
         />
       );
     case "atraso":
@@ -180,11 +185,13 @@ async function ConteudoFrequencia({
   dezenaMin,
   dezenaMax,
   gridColunas,
+  qtdDezenasSorteadas,
 }: {
   loteriaId: number;
   dezenaMin: number;
   dezenaMax: number;
   gridColunas: number;
+  qtdDezenasSorteadas: number;
 }) {
   const dados = await Estat.getFrequencia(loteriaId);
   const maisFrequentes = dados.slice(0, 10);
@@ -193,6 +200,12 @@ async function ConteudoFrequencia({
 
   return (
     <>
+      <SimuladorFrequenciaAleatoria
+        dezenaMin={dezenaMin}
+        dezenaMax={dezenaMax}
+        qtdDezenasSorteadas={qtdDezenasSorteadas}
+        frequenciaReal={dados}
+      />
       <div className="bloco">
         <h2 className="bloco__titulo">Mapa de calor</h2>
         <p className="bloco__nota">

@@ -45,7 +45,7 @@ export default function Masthead({
 
   return (
     <MastheadShell>
-      <div className="container masthead__inner">
+      <div className="container masthead__linha1">
         <div>
           <Link href="/" className="masthead__title">
             Loto<span>Analítica</span>
@@ -53,9 +53,11 @@ export default function Masthead({
           <div className="masthead__tagline">Resultados &amp; estatísticas de loteria</div>
         </div>
 
-        <NavLoterias items={secoes} loterias={loterias} />
-
         <UserMenu />
+      </div>
+
+      <div className="container masthead__linha2">
+        <NavLoterias items={secoes} loterias={loterias} />
       </div>
     </MastheadShell>
   );
