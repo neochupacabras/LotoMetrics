@@ -2225,8 +2225,14 @@ footer.rodape {
   background: var(--paper-raised);
   border-bottom: 1px solid var(--line);
   padding: 64px 0 52px;
+}
+
+.home-hero-intro {
   position: relative;
   overflow: hidden;
+  /* dá folga nas bordas pra bolinha não ficar cortada rente ao título */
+  padding: 8px 12px;
+  margin: -8px -12px;
 }
 
 .hero-bolinhas {
@@ -2249,8 +2255,8 @@ footer.rodape {
   will-change: transform;
 }
 
-/* O conteúdo do hero (texto, widgets) fica acima das bolinhas */
-.home-hero > .container {
+/* O texto e o widget do hero ficam acima das bolinhas */
+.home-hero-intro > * {
   position: relative;
   z-index: 1;
 }

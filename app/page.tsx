@@ -280,20 +280,22 @@ export default async function HomePage() {
       <main>
         {/* ── Hero ──────────────────────────────────────────────── */}
         <section className="home-hero">
-          <HeroBolinhas />
           <div className="container">
-            <div className="home-hero-texto">
-              <p className="eyebrow">LotoAnalítica</p>
-              <h1 className="home-hero-titulo">
-                Resultados e estatísticas,<br />sem enrolação.
-              </h1>
-              <p className="home-hero-subtitulo">
-                Dados oficiais da Caixa. Ferramentas reais baseadas em combinatória
-                e histórico completo. Sem previsões falsas, sem sistemas mágicos.
-              </p>
-            </div>
+            <div className="home-hero-intro">
+              <HeroBolinhas />
+              <div className="home-hero-texto">
+                <p className="eyebrow">LotoAnalítica</p>
+                <h1 className="home-hero-titulo">
+                  Resultados e estatísticas,<br />sem enrolação.
+                </h1>
+                <p className="home-hero-subtitulo">
+                  Dados oficiais da Caixa. Ferramentas reais baseadas em combinatória
+                  e histórico completo. Sem previsões falsas, sem sistemas mágicos.
+                </p>
+              </div>
 
-            <ProximoSorteioWidget />
+              <ProximoSorteioWidget />
+            </div>
 
             {/* Últimos resultados */}
             <p className="home-resultados-label">Últimos resultados</p>
