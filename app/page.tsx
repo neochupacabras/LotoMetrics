@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
 import ProximoSorteioWidget from "@/components/ProximoSorteioWidget";
+import HeroBolinhas from "@/components/HeroBolinhas";
 import GeradorRelampago from "@/components/GeradorRelampago";
 import DesafioIntuicao from "@/components/DesafioIntuicao";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
@@ -279,6 +280,7 @@ export default async function HomePage() {
       <main>
         {/* ── Hero ──────────────────────────────────────────────── */}
         <section className="home-hero">
+          <HeroBolinhas />
           <div className="container">
             <div className="home-hero-texto">
               <p className="eyebrow">LotoAnalítica</p>

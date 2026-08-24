@@ -2225,6 +2225,44 @@ footer.rodape {
   background: var(--paper-raised);
   border-bottom: 1px solid var(--line);
   padding: 64px 0 52px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bolinhas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-bolinhas__item {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid;
+  background: var(--paper-raised);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  will-change: transform;
+}
+
+/* O conteúdo do hero (texto, widgets) fica acima das bolinhas */
+.home-hero > .container {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-bolinhas__item { transition: none; }
+}
+
+@media (max-width: 700px) {
+  .hero-bolinhas {
+    display: none;
+  }
 }
 
 .home-hero-texto {
