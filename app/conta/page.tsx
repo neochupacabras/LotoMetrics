@@ -13,6 +13,18 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+const ABREV_LOTERIA: Record<string, string> = {
+  lotofacil: "LF",
+  megasena: "MS",
+  quina: "QN",
+  lotomania: "LM",
+  diadesorte: "DS",
+  maismilionaria: "+M",
+  timemania: "TM",
+  duplasena: "DP",
+  supersete: "S7",
+};
+
 function formatarDezena(n: number) {
   return String(n).padStart(2, "0");
 }
@@ -126,7 +138,7 @@ export default async function ContaPage({
                 {jogos.map(j => (
                   <div key={j.id} className="conta-jogo-preview">
                     <span className="conta-jogo-preview__loteria">
-                      {j.loteria === "lotofacil" ? "LF" : "MS"}
+                      {ABREV_LOTERIA[j.loteria] ?? j.loteria.slice(0, 2).toUpperCase()}
                     </span>
                     <span className="conta-jogo-preview__dezenas">
                       {(j.dezenas as number[]).map(d => formatarDezena(d)).join(" · ")}
