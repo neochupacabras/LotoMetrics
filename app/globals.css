@@ -7660,3 +7660,73 @@ footer.rodape {
     border-radius: 8px;
   }
 }
+
+/* ── Filtro e grade da listagem de Análises ────────────────────────── */
+.analises-filtro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 28px 0 32px;
+}
+
+.analises-filtro__chip {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  padding: 7px 15px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.analises-filtro__chip:hover {
+  border-color: var(--pine);
+  color: var(--pine);
+}
+
+.analises-filtro__chip[data-ativo="true"] {
+  background: var(--pine);
+  border-color: var(--pine);
+  color: var(--paper);
+}
+
+.analise-card--hero {
+  padding: 32px;
+  margin-bottom: 28px;
+  background: var(--paper-raised);
+  border-width: 1.5px;
+}
+
+.analise-card__titulo--hero {
+  font-size: 1.5rem;
+  max-width: 640px;
+}
+
+.analise-card--hero .analise-card__resumo {
+  max-width: 640px;
+  font-size: 0.98rem;
+}
+
+.analise-card--hero .analise-card__cta {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--pine);
+}
+
+.analises-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 680px) {
+  .analises-grade {
+    grid-template-columns: 1fr;
+  }
+}

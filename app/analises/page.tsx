@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
+import AnalisesFiltro from "@/components/AnalisesFiltro";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { getAnalisesRecentes } from "@/lib/analises";
 
@@ -21,35 +22,13 @@ export const metadata: Metadata = {
   },
 };
 
-const BADGE: Record<string, string> = {
-  lotofacil:      "Lotofácil",
-  megasena:       "Mega-Sena",
-  quina:          "Quina",
-  lotomania:      "Lotomania",
-  diadesorte:     "Dia de Sorte",
-  maismilionaria: "+Milionária",
-  timemania:      "Timemania",
-  duplasena:      "Dupla Sena",
-  supersete:      "Super Sete",
-  ambas:          "Comparativo",
-  educativo:      "Educativo",
-};
-
-function formatarData(iso: string): string {
-  return new Date(iso + "T12:00:00").toLocaleDateString("pt-BR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
-
 export default function AnalisesPage() {
   const analises = getAnalisesRecentes();
 
   return (
     <>
       <Masthead analisesAtiva />
-      <main className="container secao" style={{ maxWidth: 760 }}>
+      <main className="container secao" style={{ maxWidth: 900 }}>
         <p className="eyebrow">Conteúdo</p>
         <h1 className="titulo-edicao">Análises e novidades</h1>
         <p className="subtitulo-edicao">
@@ -58,25 +37,7 @@ export default function AnalisesPage() {
           atualizado regularmente.
         </p>
 
-        <div className="analises-lista" style={{ marginTop: 36 }}>
-          {analises.map((a) => (
-            <Link
-              key={a.slug}
-              href={`/analises/${a.slug}`}
-              className="analise-card"
-            >
-              <div className="analise-card__meta">
-                <span className={`analise-card__badge analise-card__badge--${a.categoria}`}>
-                  {BADGE[a.categoria]}
-                </span>
-                <span className="analise-card__data">{formatarData(a.data)}</span>
-                <span className="analise-card__tempo">{a.tempoLeitura} min de leitura</span>
-              </div>
-              <h2 className="analise-card__titulo">{a.titulo}</h2>
-              <p className="analise-card__resumo">{a.resumo}</p>
-            </Link>
-          ))}
-        </div>
+        <AnalisesFiltro analises={analises} />
 
         <div className="bloco" style={{ marginTop: 48 }}>
           <p>
