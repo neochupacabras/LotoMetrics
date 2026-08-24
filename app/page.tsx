@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
 import ProximoSorteioWidget from "@/components/ProximoSorteioWidget";
+import GeradorRelampago from "@/components/GeradorRelampago";
+import DesafioIntuicao from "@/components/DesafioIntuicao";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { getAnalisesRecentes } from "@/lib/analises";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
@@ -403,6 +405,11 @@ export default async function HomePage() {
           </div>
         </div>
 
+        {/* ── Gerador relâmpago ─────────────────────────────────── */}
+        <div className="container">
+          <GeradorRelampago />
+        </div>
+
         {/* ── Ferramentas ──────────────────────────────────────── */}
         <section className="container home-secao">
           <h2 className="home-secao-titulo">Ferramentas disponíveis</h2>
@@ -528,6 +535,11 @@ export default async function HomePage() {
               </div>
             </a>
           </div>
+        </div>
+
+        {/* ── Desafio de intuição ───────────────────────────────── */}
+        <div className="container home-secao">
+          <DesafioIntuicao />
         </div>
 
         {/* ── Últimas análises ─────────────────────────────────── */}

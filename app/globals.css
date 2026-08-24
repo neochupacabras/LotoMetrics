@@ -7730,3 +7730,151 @@ footer.rodape {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Gerador Relâmpago (demo interativa na home) ────────────────────── */
+.gerador-relampago {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+  padding: 40px 0;
+}
+
+@media (max-width: 700px) {
+  .gerador-relampago {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gerador-relampago__titulo {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 8px 0 10px;
+}
+
+.gerador-relampago__desc {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+.gerador-relampago__caixa {
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.gerador-relampago__bolinhas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 40px;
+  margin-bottom: 18px;
+}
+
+.gerador-relampago__placeholder {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  align-self: center;
+}
+
+.gerador-relampago__info {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line-strong);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.gerador-relampago__info strong {
+  color: var(--rust);
+}
+
+/* ── Desafio de Intuição ─────────────────────────────────────────────── */
+.desafio-intuicao {
+  background: var(--paper-raised);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 28px 32px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.desafio-intuicao__pergunta {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 8px 0 18px;
+  line-height: 1.35;
+}
+
+.desafio-intuicao__opcoes {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.desafio-intuicao__opcao {
+  flex: 1;
+  min-width: 180px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.desafio-intuicao__opcao:hover {
+  border-color: var(--pine);
+  background: color-mix(in srgb, var(--pine) 5%, var(--paper));
+}
+
+.desafio-intuicao__resultado {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line-strong);
+  animation: pagina-entrar 0.3s ease;
+}
+
+.desafio-intuicao__veredito {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--rust);
+  margin-bottom: 8px;
+}
+
+.desafio-intuicao__explicacao {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.desafio-intuicao__proxima {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--pine);
+  background: transparent;
+  border: 1px solid var(--pine);
+  border-radius: 16px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.desafio-intuicao__proxima:hover {
+  background: var(--pine);
+  color: var(--paper);
+}
