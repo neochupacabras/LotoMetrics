@@ -7,6 +7,7 @@ import DesafioIntuicao from "@/components/DesafioIntuicao";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { getAnalisesRecentes } from "@/lib/analises";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
+import { ARTIGOS } from "@/lib/artigos";
 
 export const dynamic = "force-dynamic"; // Depende do banco e de auth em runtime
 
@@ -233,11 +234,14 @@ const FERRAMENTAS = [
   },
 ];
 
-const ARTIGOS_DESTAQUE = [
-  { titulo: "Atraso: o que é e por que não prevê nada", slug: "atraso" },
-  { titulo: "Retorno ao apostador: quanto você perde por real jogado", slug: "retorno-ao-apostador" },
-  { titulo: "Sequências: por que números seguidos são mais comuns do que parecem", slug: "sequencias" },
-];
+// Um artigo de cada "família" de cor, pra dar variedade na prévia da home
+const ARTIGOS_DESTAQUE_SLUGS = ["atraso", "retorno-ao-apostador", "vieses-cognitivos"];
+
+const COR_VAR: Record<string, string> = {
+  pine:  "var(--pine)",
+  ochre: "var(--ochre)",
+  rust:  "var(--rust)",
+};
 
 // ─── Página ───────────────────────────────────────────────────────────────────
 
@@ -597,14 +601,28 @@ export default async function HomePage() {
             Cada conceito que aparece nas tabelas e ferramentas tem um artigo explicando a matemática real por trás.
           </p>
           <div className="home-artigos-grid">
-            {ARTIGOS_DESTAQUE.map((a) => (
-              <Link key={a.slug} href={`/dicas/${a.slug}`} className="home-artigo-card">
-                <span className="home-artigo-titulo">{a.titulo}</span>
-                <span className="home-artigo-seta">→</span>
-              </Link>
-            ))}
+            {ARTIGOS_DESTAQUE_SLUGS.map((slug) => {
+              const artigo = ARTIGOS.find((a) => a.slug === slug);
+              if (!artigo) return null;
+              return (
+                <Link key={slug} href={`/dicas/${slug}`} className="home-artigo-card">
+                  <span
+                    className="home-artigo-icone"
+                    style={{ background: COR_VAR[artigo.cor] }}
+                    aria-hidden
+                  >
+                    {artigo.emoji}
+                  </span>
+                  <span className="home-artigo-titulo">{artigo.titulo}</span>
+                  <span className="home-artigo-seta">→</span>
+                </Link>
+              );
+            })}
             <Link href="/dicas" className="home-artigo-card home-artigo-card--todos">
-              <span className="home-artigo-titulo">Ver todos os 19 artigos</span>
+              <span className="home-artigo-icone" style={{ background: "var(--ink-faint)" }} aria-hidden>
+                📚
+              </span>
+              <span className="home-artigo-titulo">Ver todos os 26 artigos</span>
               <span className="home-artigo-seta">→</span>
             </Link>
           </div>
