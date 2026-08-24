@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 
 // ─── Banco de perguntas ──────────────────────────────────────────────────────
@@ -309,6 +309,22 @@ export default function QuizClient() {
   const [atual, setAtual] = useState(0);
   const [respostaDada, setRespostaDada] = useState<Resposta>(null);
   const [acertos, setAcertos] = useState(0);
+  const [placarAnimado, setPlacarAnimado] = useState(0);
+
+  useEffect(() => {
+    if (fase !== "resultado") return;
+    setPlacarAnimado(0);
+    const duracao = 600;
+    const inicio = performance.now();
+    let frame: number;
+    function passo(ts: number) {
+      const progresso = Math.min((ts - inicio) / duracao, 1);
+      setPlacarAnimado(Math.round(acertos * progresso));
+      if (progresso < 1) frame = requestAnimationFrame(passo);
+    }
+    frame = requestAnimationFrame(passo);
+    return () => cancelAnimationFrame(frame);
+  }, [fase, acertos]);
 
   const comecar = useCallback(() => {
     setPerguntas(embaralhar(BANCO).slice(0, TOTAL_POR_SESSAO));
@@ -369,7 +385,7 @@ export default function QuizClient() {
       <div className="quiz-resultado">
         <p className="eyebrow">Resultado</p>
         <div className="quiz-resultado-placar">
-          <span className="quiz-resultado-numero">{acertos}</span>
+          <span className="quiz-resultado-numero">{placarAnimado}</span>
           <span className="quiz-resultado-total">/{TOTAL_POR_SESSAO}</span>
         </div>
         <p className="quiz-resultado-emoji">{emoji}</p>
@@ -409,6 +425,7 @@ export default function QuizClient() {
 
       {/* Card da pergunta */}
       <div
+        key={atual}
         className="quiz-card"
         data-estado={respondeu ? (acertou ? "correto" : "errado") : "neutro"}
       >
@@ -456,7 +473,7 @@ export default function QuizClient() {
 
       {/* Placar parcial */}
       <div className="quiz-placar-parcial">
-        {respondeu ? `${acertos + (acertou ? 1 : 0)} acertos em ${atual + 1} pergunta${atual + 1 > 1 ? "s" : ""}` : `${acertos} acerto${acertos !== 1 ? "s" : ""} até agora`}
+        {respondeu ? `${acertos} acerto${acertos !== 1 ? "s" : ""} em ${atual + 1} pergunta${atual + 1 > 1 ? "s" : ""}` : `${acertos} acerto${acertos !== 1 ? "s" : ""} até agora`}
       </div>
     </div>
   );

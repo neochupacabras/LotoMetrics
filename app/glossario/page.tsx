@@ -1,8 +1,9 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
+import GlossarioBusca from "@/components/GlossarioBusca";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
-import { getGlossarioAgrupado } from "@/lib/glossario";
+import { GLOSSARIO, getGlossarioAgrupado } from "@/lib/glossario";
 
 const TITULO = "Glossário — termos de loteria e estatística explicados";
 const DESCRICAO =
@@ -38,38 +39,7 @@ export default function GlossarioPage() {
           cada, com link para o artigo completo quando existir um.
         </p>
 
-        {/* Índice A-Z */}
-        <nav className="glossario-indice" aria-label="Índice alfabético">
-          {grupos.map((g) => (
-            <a key={g.letra} href={`#letra-${g.letra}`} className="glossario-indice__letra">
-              {g.letra}
-            </a>
-          ))}
-        </nav>
-
-        {grupos.map((g) => (
-          <section key={g.letra} id={`letra-${g.letra}`} className="glossario-secao">
-            <h2 className="glossario-secao__titulo">{g.letra}</h2>
-            <dl className="glossario-lista">
-              {g.termos.map((t) => (
-                <div key={t.slug} id={t.slug} className="glossario-item">
-                  <dt className="glossario-item__termo">{t.termo}</dt>
-                  <dd className="glossario-item__definicao">
-                    {t.definicao}
-                    {t.saibaMais && (
-                      <>
-                        {" "}
-                        <Link href={t.saibaMais.href} className="breadcrumb">
-                          {t.saibaMais.label} →
-                        </Link>
-                      </>
-                    )}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        ))}
+        <GlossarioBusca termos={GLOSSARIO} grupos={grupos} />
 
         <div className="bloco" style={{ marginTop: 40 }}>
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>

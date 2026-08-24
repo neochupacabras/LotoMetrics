@@ -1521,6 +1521,16 @@ footer.rodape {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  animation: quiz-card-entrar 0.3s ease;
+}
+
+@keyframes quiz-card-entrar {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz-card { animation: none; }
 }
 
 .quiz-card[data-estado="correto"] {
@@ -7891,4 +7901,51 @@ footer.rodape {
 .desafio-intuicao__proxima:hover {
   background: var(--pine);
   color: var(--paper);
+}
+
+/* ── Busca do Glossário ─────────────────────────────────────────────── */
+.glossario-busca {
+  margin: 28px 0 8px;
+}
+
+.glossario-busca__input {
+  width: 100%;
+  padding: 13px 18px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--paper-raised);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--ink);
+  transition: border-color 0.15s ease;
+}
+
+.glossario-busca__input:focus {
+  outline: none;
+  border-color: var(--pine);
+}
+
+.glossario-busca__input::placeholder {
+  color: var(--ink-faint);
+}
+
+.glossario-busca__resultados {
+  margin-top: 20px;
+  animation: pagina-entrar 0.25s ease;
+}
+
+.glossario-busca__contagem {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+.glossario-busca__vazio {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--ink-faint);
+  padding: 24px 0;
 }
