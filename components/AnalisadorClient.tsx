@@ -5,6 +5,23 @@ import Link from "next/link";
 import { analisar, type ResultadoAnalisador, type LabelTipicidade } from "@/lib/analisador";
 import { formatarDezena } from "@/lib/format";
 
+// Faixa típica da soma das dezenas sorteadas (média ± 1 desvio padrão da
+// distribuição hipergeométrica) — calculada com média = k(n+1)/2 e
+// variância = k(n-k)(n+1)/12, onde n = universo de dezenas e k = qtd
+// sorteada. Não é um valor de tabela real (não temos o histórico completo
+// aqui), mas a distribuição teórica exata de qualquer sorteio honesto.
+const FAIXA_TIPICA_SOMA: Record<string, string> = {
+  lotofacil: "177–213",
+  megasena: "142–224",
+  quina: "152–253",
+  lotomania: "894–1.126",
+  diadesorte: "91–133",
+  maismilionaria: "120–186",
+  timemania: "225–342",
+  duplasena: "120–186",
+  supersete: "24–39", // soma de 7 dígitos independentes de 0 a 9 (mecânica própria)
+};
+
 interface Props {
   codigoLoteria: string;
   nomeLoteria: string;
@@ -170,11 +187,7 @@ export default function AnalisadorClient({
             <MetricaCard
               titulo="Soma das dezenas"
               valor={String(resultado.soma.valor)}
-              detalhe={
-                codigoLoteria === "lotofacil"
-                  ? `Percentil ${resultado.soma.percentil.toFixed(0)}% — faixa típica: 183–207`
-                  : `Percentil ${resultado.soma.percentil.toFixed(0)}% — faixa típica: 155–210`
-              }
+              detalhe={`Percentil ${resultado.soma.percentil.toFixed(0)}% — faixa típica: ${FAIXA_TIPICA_SOMA[codigoLoteria] ?? "—"}`}
               pct={resultado.soma.pct}
               label={resultado.soma.label}
               link={LINKS_ARTIGOS.soma}

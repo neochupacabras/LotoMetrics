@@ -21,7 +21,8 @@ export default function FechamentoClient({
   dezenaMax: number;
   qtdDezenasSorteadas: number;
 }) {
-  const config = FECHAMENTO_CONFIG[codigoLoteria];
+  const config = FECHAMENTO_CONFIG[codigoLoteria] ?? { poolMin: 0, poolMax: 0, getKsPermitidos: () => [] };
+  const configDisponivel = codigoLoteria in FECHAMENTO_CONFIG;
 
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
   const [tipo, setTipo] = useState<"reduzido" | "completo">("reduzido");
@@ -117,6 +118,21 @@ export default function FechamentoClient({
     tipo === "reduzido" && k && dentroDoIntervalo
       ? probabilidadeAoMenosK(dezenaMax, qtdDezenasSorteadas, poolTamanho, k)
       : null;
+
+  if (!configDisponivel) {
+    return (
+      <div className="bloco" style={{ maxWidth: 680 }}>
+        <p className="bloco__titulo">Fechamento não disponível para esta loteria</p>
+        <p>
+          A técnica de fechamento parte de escolher <em>mais dezenas do que o
+          mínimo</em> da aposta. Essa loteria não se encaixa nesse modelo —{" "}
+          {qtdDezenasSorteadas === 20
+            ? "aqui a aposta já é sempre um número fixo de dezenas, sem opção de escolher mais."
+            : "o formato de aposta dela é diferente do de escolher dezenas de um universo comum."}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div>

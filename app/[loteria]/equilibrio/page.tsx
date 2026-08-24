@@ -24,6 +24,23 @@ export async function generateMetadata({
   );
 }
 
+// Probabilidade da faixa principal (aposta mínima) de cada loteria — não é
+// sempre um simples C(universo, sorteadas): Lotomania e Timemania têm aposta
+// mínima maior que o número de dezenas sorteadas, então a conta real é
+// hipergeométrica; +Milionária combina dezenas e trevos; Super Sete é
+// 10 elevado a 7 colunas. Todos os valores abaixo foram verificados.
+const PROBABILIDADE_FAIXA_PRINCIPAL: Record<string, string> = {
+  lotofacil: "3.268.760",
+  megasena: "50.063.860",
+  quina: "24.040.016",
+  lotomania: "11.372.636",
+  diadesorte: "2.629.575",
+  maismilionaria: "238.360.500",
+  timemania: "26.472.637",
+  duplasena: "15.890.700",
+  supersete: "10.000.000",
+};
+
 export default async function EquilibrioPage({
   params,
 }: {
@@ -87,7 +104,8 @@ export default async function EquilibrioPage({
             Não. O Índice de Equilíbrio mede tipicidade estatística — o quão próximo
             o jogo está do perfil médio historicamente observado. Ele não mede nem
             prediz probabilidade de premiação. Um jogo com nota 20 tem exatamente a
-            mesma chance de ganhar que um jogo com nota 95: 1 em {loteria.nome === "Lotofácil" ? "3.268.760" : "50.063.860"}.
+            mesma chance de ganhar que um jogo com nota 95: 1 em{" "}
+            {PROBABILIDADE_FAIXA_PRINCIPAL[codigoLoteria] ?? "milhões"}.
             O índice é uma ferramenta de caracterização, não de predição.
           </p>
         </div>

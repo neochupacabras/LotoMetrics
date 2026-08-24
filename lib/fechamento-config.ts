@@ -23,4 +23,34 @@ export const FECHAMENTO_CONFIG: Record<string, ConfigFechamento> = {
     poolMax: 16,
     getKsPermitidos: () => [4, 5],
   },
+  quina: {
+    poolMin: 6,
+    poolMax: 17,
+    getKsPermitidos: () => [2, 3, 4],
+  },
+  diadesorte: {
+    poolMin: 8,
+    poolMax: 15,
+    getKsPermitidos: () => [4, 5, 6],
+  },
+  maismilionaria: {
+    poolMin: 7,
+    poolMax: 16,
+    getKsPermitidos: () => [4, 5],
+  },
+  timemania: {
+    poolMin: 11,
+    poolMax: 15,
+    getKsPermitidos: () => [3, 4, 5, 6],
+  },
+  duplasena: {
+    poolMin: 7,
+    poolMax: 16,
+    getKsPermitidos: () => [3, 4, 5],
+  },
+  // lotomania (aposta sempre fixa em 50 dezenas) e supersete (mecânica de
+  // colunas, não de dezenas) não se encaixam no modelo de fechamento
+  // "escolha mais que o mínimo" — de propósito, sem entrada aqui. O
+  // FechamentoClient e a página de fechamentos tratam a ausência de
+  // configuração mostrando uma explicação, em vez de quebrar.
 };
