@@ -804,11 +804,25 @@ footer.rodape {
   margin-right: 14px;
   white-space: nowrap;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.subnav a:hover {
+  color: var(--pine);
+  border-bottom-color: var(--line-strong);
 }
 
 .subnav a[data-ativo="true"] {
   color: var(--pine);
   border-bottom-color: var(--pine);
+}
+
+.subnav__icone {
+  font-size: 0.85rem;
+  line-height: 1;
 }
 
 /* Setas de navegação */
@@ -1235,10 +1249,13 @@ footer.rodape {
   text-decoration: none;
   color: var(--ink);
   margin-bottom: 16px;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .destaque-cartao:hover {
   border-left-color: var(--pine);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .destaque-cartao__titulo {

@@ -9,6 +9,22 @@ type AbaAtiva =
   | "fechamentos" | "conferidor" | "destaques" | "bolao" | "analisador"
   | "heatmap" | "acumulos" | "equilibrio";
 
+const ICONE_ABA: Record<AbaAtiva, string> = {
+  resultados: "📋",
+  destaques: "⭐",
+  tabelas: "📊",
+  gerador: "🎲",
+  simulador: "⏱️",
+  fechamentos: "🧩",
+  bolao: "🤝",
+  conferidor: "✅",
+  analisador: "🔍",
+  heatmap: "🔥",
+  acumulos: "📈",
+  probabilidades: "🎯",
+  equilibrio: "⚖️",
+};
+
 const ABAS_COMPLETAS: { slug: AbaAtiva; label: string }[] = [
   { slug: "resultados",     label: "Resultados"     },
   { slug: "destaques",      label: "Destaques"      },
@@ -123,6 +139,7 @@ export default function Subnav({
               href={`/${codigoLoteria}/${slug}`}
               data-ativo={ativa === slug}
             >
+              <span className="subnav__icone" aria-hidden>{ICONE_ABA[slug]}</span>
               {label}
             </Link>
           ))}
