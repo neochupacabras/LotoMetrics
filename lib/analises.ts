@@ -2700,6 +2700,479 @@ export const ANALISES: Analise[] = [
     `,
   },
 
+  {
+    slug: "como-jogar-lotofacil-regras-completas",
+    titulo: "Como jogar na Lotofácil: regras e preço",
+    resumo:
+      "15 a 20 dezenas de 1 a 25, sorteios de segunda a sábado, aposta a partir de R$ 3,50. O guia rápido com tudo que você precisa saber antes de apostar.",
+    data: "2026-08-24",
+    categoria: "lotofacil" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        A Lotofácil é a loteria com o maior número de sorteios por semana da Caixa
+        e uma das faixas de premiação mais generosas do país — você já ganha algo
+        acertando "só" 11 das 15 dezenas sorteadas.
+      </p>
+
+      <h2>Como funciona a aposta</h2>
+      <p>
+        Você escolhe de <strong>15 a 20 números entre 1 e 25</strong>. A Caixa
+        sorteia 15 dezenas. A aposta mínima (15 números) custa <strong>R$ 3,50</strong>;
+        marcar mais números aumenta o preço e o número de combinações cobertas,
+        na mesma proporção — sem "desconto".
+      </p>
+
+      <h2>Quando é o sorteio</h2>
+      <p>
+        <strong>Todos os dias, de segunda a sábado, às 21h</strong> (horário de
+        Brasília) — a única loteria da Caixa com sorteio praticamente diário. Não
+        há sorteio aos domingos.
+      </p>
+
+      <h2>Faixas de premiação</h2>
+      <div class="tabela-scroll">
+        <table class="tabela-dados">
+          <thead><tr><th>Acertos</th><th class="num">Probabilidade (aposta mínima)</th></tr></thead>
+          <tbody>
+            <tr><td>15</td><td class="num">1 em 3.268.760</td></tr>
+            <tr><td>14</td><td class="num">1 em 21.792</td></tr>
+            <tr><td>13</td><td class="num">1 em 692</td></tr>
+            <tr><td>12</td><td class="num">1 em 60</td></tr>
+            <tr><td>11</td><td class="num">1 em 11</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Onde apostar</h2>
+      <p>
+        Em qualquer casa lotérica credenciada, ou pelo site/aplicativo Loterias
+        Caixa. Dá para escolher os números manualmente, pela Surpresinha (sistema
+        escolhe por você) ou pela Teimosinha (repete a mesma aposta em vários
+        concursos seguidos).
+      </p>
+      <p>
+        Quer entender a matemática por trás das faixas de premiação e por que
+        alguns padrões de jogo parecem mais comuns? Veja o artigo de
+        <a href="/dicas/frequencia">frequência das dezenas</a> e a
+        <a href="/lotofacil/gerador">ferramenta de geração de jogos</a>.
+      </p>
+    `,
+  },
+
+  {
+    slug: "como-jogar-mega-sena-regras-completas",
+    titulo: "Como jogar na Mega-Sena: regras e preço",
+    resumo:
+      "6 a 20 dezenas de 1 a 60, sorteios às terças, quintas e sábados, aposta a partir de R$ 6,00. O guia rápido com tudo sobre a loteria mais famosa do Brasil.",
+    data: "2026-08-24",
+    categoria: "megasena" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        A Mega-Sena é a loteria mais conhecida do país — e também a que concentra
+        os maiores prêmios, especialmente na tradicional Mega da Virada, em 31 de
+        dezembro.
+      </p>
+
+      <h2>Como funciona a aposta</h2>
+      <p>
+        Você escolhe de <strong>6 a 20 números entre 1 e 60</strong>. A Caixa
+        sorteia 6 dezenas. A aposta mínima (6 números) custa <strong>R$ 6,00</strong>.
+        Apostar em mais números aumenta proporcionalmente o preço e a cobertura de
+        combinações.
+      </p>
+
+      <h2>Quando é o sorteio</h2>
+      <p>
+        <strong>Terças, quintas e sábados, às 21h</strong> (horário de Brasília).
+        Concursos especiais, como a Mega da Virada, têm data própria fora dessa
+        agenda regular.
+      </p>
+
+      <h2>Faixas de premiação</h2>
+      <div class="tabela-scroll">
+        <table class="tabela-dados">
+          <thead><tr><th>Acertos</th><th class="num">Probabilidade (aposta mínima)</th></tr></thead>
+          <tbody>
+            <tr><td>6 (sena)</td><td class="num">1 em 50.063.860</td></tr>
+            <tr><td>5 (quina)</td><td class="num">1 em 154.518</td></tr>
+            <tr><td>4 (quadra)</td><td class="num">1 em 2.332</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Se ninguém acertar as 6 dezenas, o prêmio acumula para o próximo concurso
+        — é esse acúmulo que faz os prêmios da Mega-Sena chegarem a valores tão
+        altos.
+      </p>
+
+      <h2>Onde apostar</h2>
+      <p>
+        Em qualquer casa lotérica credenciada, ou pelo site/aplicativo Loterias
+        Caixa, com opção de Surpresinha e Teimosinha. Veja a
+        <a href="/analises/mega-da-virada-2026-matematica-premio">matemática por
+        trás do prêmio da Mega da Virada</a> e a
+        <a href="/megasena/gerador">ferramenta de geração de jogos</a>.
+      </p>
+    `,
+  },
+
+  {
+    slug: "como-jogar-quina-regras-completas",
+    titulo: "Como jogar na Quina: regras e preço",
+    resumo:
+      "5 a 15 dezenas de 1 a 80, sorteios de segunda a sábado, aposta a partir de R$ 3,00 — e prêmio a partir de apenas 2 acertos. Tudo o que você precisa saber.",
+    data: "2026-08-24",
+    categoria: "quina" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        A Quina é uma das loterias mais antigas da Caixa (desde 1994) e tem a
+        faixa de premiação mais acessível entre todas as loterias de dezenas —
+        você já ganha algo acertando apenas 2 números.
+      </p>
+
+      <h2>Como funciona a aposta</h2>
+      <p>
+        Você escolhe de <strong>5 a 15 números entre 1 e 80</strong>. A Caixa
+        sorteia 5 dezenas. A aposta mínima (5 números) custa <strong>R$ 3,00</strong>.
+      </p>
+
+      <h2>Quando é o sorteio</h2>
+      <p>
+        <strong>De segunda a sábado, às 21h</strong> (horário de Brasília) — a
+        segunda loteria com mais sorteios por semana, atrás só da Lotofácil.
+      </p>
+
+      <h2>Faixas de premiação</h2>
+      <div class="tabela-scroll">
+        <table class="tabela-dados">
+          <thead><tr><th>Acertos</th><th class="num">Probabilidade (aposta mínima)</th></tr></thead>
+          <tbody>
+            <tr><td>5 (quina)</td><td class="num">1 em 24.040.016</td></tr>
+            <tr><td>4 (quadra)</td><td class="num">1 em 64.107</td></tr>
+            <tr><td>3 (terno)</td><td class="num">1 em 866</td></tr>
+            <tr><td>2 (duque)</td><td class="num">1 em 36</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Onde apostar</h2>
+      <p>
+        Em qualquer casa lotérica credenciada, ou pelo site/aplicativo Loterias
+        Caixa. Veja por que a Quina
+        <a href="/analises/quina-acumulos-e-volume-de-apostas">acumula com menos
+        frequência</a> que outras loterias, mesmo com uma faixa principal difícil.
+      </p>
+    `,
+  },
+
+  {
+    slug: "como-jogar-lotomania-regras-completas",
+    titulo: "Como jogar na Lotomania: regras e preço",
+    resumo:
+      "Marque 50 dos 100 números do volante (00 a 99) — e ganhe acertando muitos ou nenhum dos 20 sorteados. A mecânica mais incomum das loterias da Caixa.",
+    data: "2026-08-24",
+    categoria: "lotomania" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        A Lotomania tem a mecânica mais diferente de todas as loterias da Caixa:
+        você marca 50 números, a Caixa sorteia 20 — e ganha tanto quem acerta
+        muitos quanto quem <strong>não acerta nenhum</strong>.
+      </p>
+
+      <h2>Como funciona a aposta</h2>
+      <p>
+        Você marca exatamente <strong>50 números, escolhidos entre os 100
+        disponíveis no volante (numerados de 00 a 99, onde o "00" representa a
+        dezena 100)</strong> — não há opção de marcar mais ou menos. A Caixa
+        sorteia 20 dezenas. A aposta custa <strong>R$ 3,00</strong>.
+      </p>
+
+      <h2>Quando é o sorteio</h2>
+      <p>
+        <strong>Segundas, quartas e sextas-feiras, às 21h</strong> (horário de
+        Brasília).
+      </p>
+
+      <h2>Faixas de premiação</h2>
+      <div class="tabela-scroll">
+        <table class="tabela-dados">
+          <thead><tr><th>Acertos</th><th class="num">Probabilidade</th></tr></thead>
+          <tbody>
+            <tr><td>20</td><td class="num">1 em 11.372.636</td></tr>
+            <tr><td>19</td><td class="num">1 em 352.552</td></tr>
+            <tr><td>18</td><td class="num">1 em 24.236</td></tr>
+            <tr><td>17</td><td class="num">1 em 2.777</td></tr>
+            <tr><td>16</td><td class="num">1 em 473</td></tr>
+            <tr><td>15</td><td class="num">1 em 112</td></tr>
+            <tr><td>0</td><td class="num">1 em 11.372.636</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Sim, <strong>acertar zero das 20 dezenas sorteadas também paga prêmio</strong> —
+        e tem exatamente a mesma probabilidade de acertar as 20. É uma consequência
+        matemática de marcar metade do universo de números (50 de 100), não uma
+        pegadinha.
+      </p>
+
+      <h2>Onde apostar</h2>
+      <p>
+        Em qualquer casa lotérica credenciada, ou pelo site/aplicativo Loterias
+        Caixa. Entenda melhor
+        <a href="/dicas/lotomania">por que acertar 0 e 20 têm a mesma chance</a>.
+      </p>
+    `,
+  },
+
+  {
+    slug: "como-jogar-dia-de-sorte-regras-completas",
+    titulo: "Como jogar no Dia de Sorte: regras e preço",
+    resumo:
+      "7 a 15 dezenas de 1 a 31, mais um Mês da Sorte — sorteios agora de segunda a sábado. Entenda como essa loteria, menos conhecida, funciona de verdade.",
+    data: "2026-08-24",
+    categoria: "diadesorte" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        O Dia de Sorte é uma das loterias menos conhecidas da Caixa, mas tem uma
+        característica única: além das dezenas, você escolhe também um "Mês da
+        Sorte" — com uma faixa de prêmio própria para quem acerta só o mês.
+      </p>
+
+      <h2>Como funciona a aposta</h2>
+      <p>
+        Você escolhe de <strong>7 a 15 números entre 1 e 31</strong>, mais um dos
+        12 meses do ano (o Mês da Sorte). A Caixa sorteia 7 dezenas e 1 mês. A
+        aposta mínima custa <strong>R$ 2,50</strong> — uma das mais baratas entre
+        todas as loterias.
+      </p>
+
+      <h2>Quando é o sorteio</h2>
+      <p>
+        <strong>De segunda a sábado, às 21h</strong> (horário de Brasília). Essa
+        agenda foi ampliada recentemente — o Dia de Sorte passou de 3 para 6
+        sorteios semanais a partir de 29 de junho de 2026.
+      </p>
+
+      <h2>Faixas de premiação</h2>
+      <p>
+        Há faixas para quem acerta de 4 a 7 das dezenas, mais uma faixa própria
+        para quem acerta <strong>apenas o Mês da Sorte</strong> — mesmo sem acertar
+        nenhuma dezena. A chance de acertar o mês é sempre 1 em 12, independente
+        de qual mês você escolher.
+      </p>
+
+      <h2>Onde apostar</h2>
+      <p>
+        Em qualquer casa lotérica credenciada, ou pelo site/aplicativo Loterias
+        Caixa. Veja
+        <a href="/analises/dia-de-sorte-qual-mes-sai-mais">por que "o mês que está
+        devendo" não existe de verdade</a> nessa loteria.
+      </p>
+    `,
+  },
+
+  {
+    slug: "como-jogar-mais-milionaria-regras-completas",
+    titulo: "Como jogar na +Milionária: regras e preço",
+    resumo:
+      "6 a 12 dezenas de 1 a 50, mais 2 a 6 trevos de 1 a 6 — a única loteria federal com dois sorteios em um. Prêmio mínimo garantido de R$ 10 milhões.",
+    data: "2026-08-24",
+    categoria: "maismilionaria" as const,
+    tempoLeitura: 5,
+    corpo: `
+      <p>
+        A +Milionária é a loteria mais nova da Caixa (lançada em 2022) e a única
+        que combina dois sorteios independentes num único bilhete: dezenas e
+        trevos.
+      </p>
+
+      <h2>Como funciona a aposta</h2>
+      <p>
+        Você escolhe de <strong>6 a 12 números entre 1 e 50</strong>, mais de
+        <strong>2 a 6 trevos entre 1 e 6</strong>. A Caixa sorteia 6 dezenas e 2
+        trevos. A aposta mínima (6 dezenas + 2 trevos) custa <strong>R$ 6,00</strong>.
+      </p>
+
+      <h2>Quando é o sorteio</h2>
+      <p>
+        <strong>Quartas e sábados, às 21h</strong> (horário de Brasília) — 2
+        sorteios semanais.
+      </p>
+
+      <h2>Faixas de premiação</h2>
+      <p>
+        São 10 faixas ao todo, cruzando acertos de dezenas e trevos — inclusive
+        uma faixa exclusiva para quem acerta <strong>só os 2 trevos</strong>, sem
+        nenhuma dezena (probabilidade de 1 em 15). A faixa principal (6 dezenas +
+        2 trevos) tem probabilidade de 1 em 238.360.500 e garante prêmio mínimo de
+        <strong>R$ 10 milhões</strong> — o maior piso garantido entre as loterias
+        da Caixa.
+      </p>
+
+      <h2>Onde apostar</h2>
+      <p>
+        Em qualquer casa lotérica credenciada, ou pelo site/aplicativo Loterias
+        Caixa. Veja se
+        <a href="/analises/mais-milionaria-vale-pagar-mais-caro">vale pagar mais
+        caro</a> por essa aposta.
+      </p>
+    `,
+  },
+
+  {
+    slug: "como-jogar-timemania-regras-completas",
+    titulo: "Como jogar na Timemania: regras e preço",
+    resumo:
+      "7 a 15 dezenas de 1 a 80, mais o Time do Coração — uma faixa de prêmio que paga mesmo sem acertar nenhuma dezena. Entenda essa loteria pouco conhecida.",
+    data: "2026-08-24",
+    categoria: "timemania" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        A Timemania tem uma peculiaridade que nenhuma outra loteria da Caixa tem:
+        além das dezenas, você escolhe um "Time do Coração" — e pode ganhar prêmio
+        acertando só o time.
+      </p>
+
+      <h2>Como funciona a aposta</h2>
+      <p>
+        Você escolhe de <strong>10 a 15 números entre 1 e 80</strong>, mais um
+        time de futebol entre os cadastrados oficialmente pela Caixa. A Caixa
+        sorteia 7 dezenas e 1 time. A aposta mínima custa <strong>R$ 3,50</strong>.
+      </p>
+
+      <h2>Quando é o sorteio</h2>
+      <p>
+        <strong>Terças, quintas e sábados, às 21h</strong> (horário de Brasília).
+      </p>
+
+      <h2>Faixas de premiação</h2>
+      <p>
+        Faixas de 3 a 7 acertos nas dezenas, mais uma faixa exclusiva para quem
+        acerta o <strong>Time do Coração</strong> sorteado — mesmo com zero
+        dezenas certas. A faixa mínima (3 acertos) tem probabilidade de 1 em 29,
+        uma das mais acessíveis entre as loterias da Caixa.
+      </p>
+
+      <h2>Onde apostar</h2>
+      <p>
+        Em qualquer casa lotérica credenciada, ou pelo site/aplicativo Loterias
+        Caixa. Entenda
+        <a href="/dicas/timemania">o que o Time do Coração muda de verdade</a> nas
+        suas chances.
+      </p>
+    `,
+  },
+
+  {
+    slug: "como-jogar-dupla-sena-regras-completas",
+    titulo: "Como jogar na Dupla Sena: regras e preço",
+    resumo:
+      "6 a 15 dezenas de 1 a 50, com dois sorteios independentes no mesmo concurso — duas chances de ganhar por um único bilhete. Veja como funciona.",
+    data: "2026-08-24",
+    categoria: "duplasena" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        A Dupla Sena é a única loteria da Caixa que sorteia <strong>duas vezes no
+        mesmo concurso</strong> — o mesmo bilhete concorre nos dois sorteios,
+        dobrando as chances de ganhar algo.
+      </p>
+
+      <h2>Como funciona a aposta</h2>
+      <p>
+        Você escolhe de <strong>6 a 15 números entre 1 e 50</strong>. A Caixa
+        realiza dois sorteios de 6 dezenas cada, no mesmo concurso. A aposta
+        mínima custa <strong>R$ 3,00</strong> e vale para os dois sorteios.
+      </p>
+
+      <h2>Quando é o sorteio</h2>
+      <p>
+        <strong>Segundas, quartas e sextas-feiras, às 21h</strong> (horário de
+        Brasília).
+      </p>
+
+      <h2>Faixas de premiação</h2>
+      <div class="tabela-scroll">
+        <table class="tabela-dados">
+          <thead><tr><th>Acertos</th><th class="num">Probabilidade (por sorteio)</th></tr></thead>
+          <tbody>
+            <tr><td>6 (sena)</td><td class="num">1 em 15.890.700</td></tr>
+            <tr><td>5 (quina)</td><td class="num">1 em 60.192</td></tr>
+            <tr><td>4 (quadra)</td><td class="num">1 em 1.120</td></tr>
+            <tr><td>3 (terno)</td><td class="num">1 em 60</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Essas probabilidades valem para cada um dos dois sorteios — ou seja, seu
+        bilhete tem duas chances independentes de acertar cada faixa.
+      </p>
+
+      <h2>Onde apostar</h2>
+      <p>
+        Em qualquer casa lotérica credenciada, ou pelo site/aplicativo Loterias
+        Caixa. Veja
+        <a href="/analises/dupla-sena-repeticao-entre-sorteios">com que frequência
+        as mesmas dezenas saem nos dois sorteios</a> do mesmo concurso.
+      </p>
+    `,
+  },
+
+  {
+    slug: "como-jogar-super-sete-regras-completas",
+    titulo: "Como jogar no Super Sete: regras e preço",
+    resumo:
+      "7 colunas, cada uma com um dígito de 0 a 9 sorteado de forma independente. A loteria mais diferente de todas — sem dezenas, sem universo compartilhado.",
+    data: "2026-08-24",
+    categoria: "supersete" as const,
+    tempoLeitura: 4,
+    corpo: `
+      <p>
+        O Super Sete não se parece com nenhuma outra loteria da Caixa: em vez de
+        escolher dezenas de um universo compartilhado, você escolhe um dígito
+        para cada uma de 7 colunas independentes.
+      </p>
+
+      <h2>Como funciona a aposta</h2>
+      <p>
+        O volante tem <strong>7 colunas</strong>, cada uma com dígitos de
+        <strong>0 a 9</strong>. Na aposta simples, você marca 1 dígito por coluna
+        — mas pode marcar mais de um dígito na mesma coluna, aumentando o preço e
+        a cobertura. A aposta simples (1 dígito por coluna) custa
+        <strong>R$ 3,00</strong>.
+      </p>
+
+      <h2>Quando é o sorteio</h2>
+      <p>
+        <strong>Segundas, quartas e sextas-feiras, às 21h</strong> (horário de
+        Brasília). A Caixa sorteia um dígito para cada uma das 7 colunas,
+        independentemente.
+      </p>
+
+      <h2>Faixas de premiação</h2>
+      <p>
+        Você ganha acertando de 3 a 7 colunas — quanto mais colunas certas, maior
+        o prêmio. Como cada coluna tem só 10 dígitos possíveis, a probabilidade de
+        acertar uma coluna específica é sempre <strong>1 em 10</strong>,
+        independente do que sai nas outras colunas ou em concursos anteriores.
+      </p>
+
+      <h2>Onde apostar</h2>
+      <p>
+        Em qualquer casa lotérica credenciada, ou pelo site/aplicativo Loterias
+        Caixa. Entenda
+        <a href="/dicas/super-sete">por que dígitos repetidos entre colunas são
+        tão comuns</a> nessa loteria.
+      </p>
+    `,
+  },
+
 ];
 
 export function getAnalise(slug: string): Analise | undefined {
