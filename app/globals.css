@@ -2214,12 +2214,12 @@ footer.rodape {
 .home-hero {
   background: var(--paper-raised);
   border-bottom: 1px solid var(--line);
-  padding: 48px 0 40px;
+  padding: 64px 0 52px;
 }
 
 .home-hero-texto {
   max-width: 540px;
-  margin-bottom: 32px;
+  margin-bottom: 44px;
 }
 
 .home-hero-titulo {
@@ -2228,7 +2228,7 @@ footer.rodape {
   font-weight: 700;
   line-height: 1.15;
   color: var(--ink);
-  margin: 8px 0 14px;
+  margin: 10px 0 16px;
 }
 
 .home-hero-subtitulo {
@@ -2238,11 +2238,30 @@ footer.rodape {
   max-width: 480px;
 }
 
+.home-resultados-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-resultados-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
 /* Grid de resultados */
 .home-resultados-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
+  gap: 20px;
 }
 
 @media (max-width: 600px) {
@@ -2254,11 +2273,11 @@ footer.rodape {
 .home-resultado-card {
   background: var(--paper);
   border: 1px solid var(--line-strong);
-  border-radius: 6px;
-  padding: 16px 18px;
+  border-radius: 8px;
+  padding: 20px 22px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .home-resultado-header {
@@ -2409,7 +2428,7 @@ footer.rodape {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .home-ferramenta-card--destaque {
@@ -2418,10 +2437,28 @@ footer.rodape {
 
 .home-ferramenta-card:hover {
   border-color: var(--pine);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .home-ferramenta-card--destaque:hover {
   border-left-color: var(--pine);
+}
+
+.home-ferramenta-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.home-ferramenta-icone {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.home-ferramenta-card--destaque .home-ferramenta-icone {
+  font-size: 1.7rem;
 }
 
 .home-ferramenta-titulo {

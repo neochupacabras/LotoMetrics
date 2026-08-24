@@ -166,6 +166,7 @@ function CartaoResultado({
 const FERRAMENTAS = [
   {
     titulo: "Analisador de jogo",
+    emoji: "🔍",
     descricao: "Selecione suas dezenas e veja o perfil estatístico em 7 métricas, comparado a todas as combinações possíveis.",
     hrefLF: "/lotofacil/analisador",
     hrefMS: "/megasena/analisador",
@@ -173,6 +174,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Simulador histórico",
+    emoji: "⏱️",
     descricao: "E se você tivesse jogado essa combinação em todo concurso? Resultado financeiro honesto com prêmios históricos reais.",
     hrefLF: "/lotofacil/simulador",
     hrefMS: "/megasena/simulador",
@@ -180,6 +182,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Heatmap do volante",
+    emoji: "🔥",
     descricao: "Visualize a frequência de cada dezena no volante, por período. Mude o intervalo e observe a aleatoriedade em ação.",
     hrefLF: "/lotofacil/heatmap",
     hrefMS: "/megasena/heatmap",
@@ -187,6 +190,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Linha do tempo dos acúmulos",
+    emoji: "📈",
     descricao: "Todo acúmulo histórico em um scatter chart — quanto durou, quando aconteceu e qual foi o prêmio pago.",
     hrefLF: "/lotofacil/acumulos",
     hrefMS: "/megasena/acumulos",
@@ -194,6 +198,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Tabelas estatísticas",
+    emoji: "📊",
     descricao: "13 análises do histórico completo: frequência, atraso, ciclos, pares/ímpares, soma, primos, Fibonacci e mais.",
     hrefLF: "/lotofacil/tabelas",
     hrefMS: "/megasena/tabelas",
@@ -201,6 +206,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Gerador de jogos",
+    emoji: "🎲",
     descricao: "Monte combinações com filtros estatísticos — modo simples com critérios pré-definidos ou avançado com controle total.",
     hrefLF: "/lotofacil/gerador",
     hrefMS: "/megasena/gerador",
@@ -208,6 +214,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Conferidor",
+    emoji: "✅",
     descricao: "Verifique como um jogo específico teria se saído em cada concurso da história — acertos por faixa, período a período.",
     hrefLF: "/lotofacil/conferidor",
     hrefMS: "/megasena/conferidor",
@@ -215,6 +222,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Fechamentos e Bolão",
+    emoji: "🤝",
     descricao: "Cobertura combinatória inteligente: calcule fechamentos e monte bolões com o menor número de apostas possível.",
     hrefLF: "/lotofacil/fechamentos",
     hrefMS: "/megasena/fechamentos",
@@ -277,6 +285,7 @@ export default async function HomePage() {
             </div>
 
             {/* Últimos resultados */}
+            <p className="home-resultados-label">Últimos resultados</p>
             <div className="home-resultados-grid">
               {ultimoLF && (
                 <CartaoResultado
@@ -402,7 +411,10 @@ export default async function HomePage() {
           <div className="home-ferramentas-destaque">
             {FERRAMENTAS.filter((f) => f.destaque).map((f) => (
               <div key={f.titulo} className="home-ferramenta-card home-ferramenta-card--destaque">
-                <h3 className="home-ferramenta-titulo">{f.titulo}</h3>
+                <div className="home-ferramenta-topo">
+                  <span className="home-ferramenta-icone" aria-hidden>{f.emoji}</span>
+                  <h3 className="home-ferramenta-titulo">{f.titulo}</h3>
+                </div>
                 <p className="home-ferramenta-desc">{f.descricao}</p>
                 <div className="home-ferramenta-links">
                   <Link href={f.hrefLF} className="home-ferramenta-link">
@@ -420,7 +432,10 @@ export default async function HomePage() {
           <div className="home-ferramentas-grid">
             {FERRAMENTAS.filter((f) => !f.destaque).map((f) => (
               <div key={f.titulo} className="home-ferramenta-card">
-                <h3 className="home-ferramenta-titulo">{f.titulo}</h3>
+                <div className="home-ferramenta-topo">
+                  <span className="home-ferramenta-icone" aria-hidden>{f.emoji}</span>
+                  <h3 className="home-ferramenta-titulo">{f.titulo}</h3>
+                </div>
                 <p className="home-ferramenta-desc">{f.descricao}</p>
                 <div className="home-ferramenta-links">
                   <Link href={f.hrefLF} className="home-ferramenta-link">
