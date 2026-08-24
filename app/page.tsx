@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
+import ProximoSorteioWidget from "@/components/ProximoSorteioWidget";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { getAnalisesRecentes } from "@/lib/analises";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
@@ -283,6 +284,8 @@ export default async function HomePage() {
                 e histórico completo. Sem previsões falsas, sem sistemas mágicos.
               </p>
             </div>
+
+            <ProximoSorteioWidget />
 
             {/* Últimos resultados */}
             <p className="home-resultados-label">Últimos resultados</p>
