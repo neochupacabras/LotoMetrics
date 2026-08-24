@@ -2,6 +2,8 @@ export interface CategoriaTabela {
   slug: string;
   titulo: string;
   descricao: string;
+  emoji: string;
+  cor: "pine" | "ochre" | "rust";
 }
 
 // As 13 categorias previstas na especificação original do projeto.
@@ -10,70 +12,96 @@ export const CATEGORIAS: CategoriaTabela[] = [
     slug: "frequencia",
     titulo: "Frequência",
     descricao: "Quantas vezes cada dezena já foi sorteada no histórico completo.",
+    emoji: "📊",
+    cor: "pine",
   },
   {
     slug: "atraso",
     titulo: "Atraso",
     descricao:
       "Há quantos concursos cada dezena não é sorteada, e o maior atraso já registrado para ela.",
+    emoji: "⏳",
+    cor: "rust",
   },
   {
     slug: "ciclos",
     titulo: "Ciclo das dezenas",
     descricao:
       "Acompanhamento de quando todas as dezenas completam um ciclo (saem ao menos uma vez desde o início dele).",
+    emoji: "🔄",
+    cor: "ochre",
   },
   {
     slug: "sequencias",
     titulo: "Sequências",
     descricao:
       "Maiores sequências de dezenas consecutivas dentro de um sorteio, e dezenas que mais se repetem em concursos seguidos.",
+    emoji: "🔗",
+    cor: "pine",
   },
   {
     slug: "pares-impares",
     titulo: "Pares e ímpares",
     descricao: "Distribuição histórica da proporção de dezenas pares e ímpares por concurso.",
+    emoji: "⚖️",
+    cor: "ochre",
   },
   {
     slug: "primos",
     titulo: "Números primos",
     descricao: "Frequência de números primos entre as dezenas sorteadas.",
+    emoji: "🔢",
+    cor: "rust",
   },
   {
     slug: "soma",
     titulo: "Soma das dezenas",
     descricao: "Distribuição estatística da soma total das dezenas sorteadas por concurso.",
+    emoji: "➕",
+    cor: "pine",
   },
   {
     slug: "fibonacci",
     titulo: "Números de Fibonacci",
     descricao: "Frequência de dezenas pertencentes à sequência de Fibonacci.",
+    emoji: "🌀",
+    cor: "ochre",
   },
   {
     slug: "multiplos-de-3",
     titulo: "Múltiplos de 3",
     descricao: "Frequência de dezenas múltiplas de 3 sorteadas.",
+    emoji: "✳️",
+    cor: "rust",
   },
   {
     slug: "repetidas",
     titulo: "Repetidas do concurso anterior",
     descricao: "Quantas dezenas se repetem em relação ao sorteio imediatamente anterior.",
+    emoji: "🔁",
+    cor: "pine",
   },
   {
     slug: "moldura-centro",
     titulo: "Moldura e centro",
     descricao:
       "Distribuição das dezenas sorteadas considerando a posição delas no volante (borda vs. centro).",
+    emoji: "🎯",
+    cor: "ochre",
   },
   {
     slug: "linhas-colunas",
     titulo: "Linhas e colunas",
     descricao: "Distribuição das dezenas sorteadas por linha e por coluna do volante.",
+    emoji: "📐",
+    cor: "rust",
   },
   {
     slug: "duques-trincas",
     titulo: "Duques e trincas",
     descricao: "Pares e trios de dezenas que mais saem juntos no mesmo sorteio.",
+    emoji: "🔺",
+    cor: "pine",
   },
 ];
 

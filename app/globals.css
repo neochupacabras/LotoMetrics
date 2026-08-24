@@ -7447,3 +7447,61 @@ footer.rodape {
     background: var(--line);
   }
 }
+
+/* ── Card de categoria de tabela (com ícone e faixa colorida) ──────── */
+.categoria-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--paper-raised);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.categoria-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.categoria-card__topo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.categoria-card__corpo {
+  padding: 14px 16px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.categoria-card__titulo {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.02rem;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.categoria-card__descricao {
+  font-size: 0.83rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.categoria-card__cta {
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--pine);
+}
