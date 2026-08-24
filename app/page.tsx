@@ -26,12 +26,13 @@ export const metadata: Metadata = {
 
 // ─── Sub-componentes ─────────────────────────────────────────────────────────
 
-function Dezena({ numero, destaque }: { numero: number; destaque?: boolean }) {
+function Dezena({ numero, destaque, indice = 0 }: { numero: number; destaque?: boolean; indice?: number }) {
   return (
     <span
       className="home-dezena"
       data-destaque={destaque}
       aria-label={`Dezena ${numero}`}
+      style={{ animationDelay: `${Math.min(indice, 12) * 45}ms` }}
     >
       {String(numero).padStart(2, "0")}
     </span>
@@ -124,16 +125,16 @@ function CartaoResultado({
         </div>
       </div>
       <div className="home-dezenas-lista">
-        {dezenas.map((d) => (
-          <Dezena key={d} numero={d} />
+        {dezenas.map((d, i) => (
+          <Dezena key={d} numero={d} indice={i} />
         ))}
       </div>
       {dezenasSegundoSorteio && dezenasSegundoSorteio.length > 0 && (
         <div className="home-segundo-sorteio">
           <span className="home-segundo-sorteio__label">2º sorteio</span>
           <div className="home-dezenas-lista home-dezenas-lista--pequena">
-            {dezenasSegundoSorteio.map((d) => (
-              <Dezena key={`s2-${d}`} numero={d} />
+            {dezenasSegundoSorteio.map((d, i) => (
+              <Dezena key={`s2-${d}`} numero={d} indice={i} />
             ))}
           </div>
         </div>
@@ -384,7 +385,7 @@ export default async function HomePage() {
             <span className="home-stats-sep">·</span>
             <span><strong>12</strong> ferramentas</span>
             <span className="home-stats-sep">·</span>
-            <span><strong>19</strong> artigos educacionais</span>
+            <span><strong>26</strong> artigos educacionais</span>
             <span className="home-stats-sep">·</span>
             <span>Dados oficiais da Caixa</span>
           </div>
@@ -458,7 +459,7 @@ export default async function HomePage() {
               <div className="home-destaque-card__texto">
                 <p className="home-destaque-card__titulo">Matemática sem mistério</p>
                 <p className="home-destaque-card__sub">
-                  18 artigos com linguagem simples, exemplos do cotidiano e componentes
+                  26 artigos com linguagem simples, exemplos do cotidiano e componentes
                   interativos. Combinatória, probabilidade, juros compostos e muito mais.
                 </p>
                 <span className="home-destaque-card__cta">Explorar →</span>
@@ -469,10 +470,43 @@ export default async function HomePage() {
               <div className="home-destaque-card__texto">
                 <p className="home-destaque-card__titulo">Calculadoras online</p>
                 <p className="home-destaque-card__sub">
-                  10 calculadoras gratuitas: porcentagem, juros, datas, área, IMC,
+                  15 calculadoras gratuitas: porcentagem, juros, financiamento, área, IMC,
                   probabilidade de loteria e mais — resultado imediato, sem cadastro.
                 </p>
                 <span className="home-destaque-card__cta">Acessar →</span>
+              </div>
+            </a>
+            <a href="/glossario" className="home-destaque-card home-destaque-card--glossario">
+              <div className="home-destaque-card__icone">📖</div>
+              <div className="home-destaque-card__texto">
+                <p className="home-destaque-card__titulo">Glossário</p>
+                <p className="home-destaque-card__sub">
+                  37 termos de loteria e estatística explicados em um parágrafo cada,
+                  com link direto para o artigo completo quando existir um.
+                </p>
+                <span className="home-destaque-card__cta">Consultar →</span>
+              </div>
+            </a>
+            <a href="/perguntas-frequentes" className="home-destaque-card home-destaque-card--faq">
+              <div className="home-destaque-card__icone">❓</div>
+              <div className="home-destaque-card__texto">
+                <p className="home-destaque-card__titulo">Perguntas frequentes</p>
+                <p className="home-destaque-card__sub">
+                  Idade mínima, prazo de resgate, imposto de renda, como funciona um
+                  bolão — respostas diretas sobre como apostar e resgatar prêmios.
+                </p>
+                <span className="home-destaque-card__cta">Ver perguntas →</span>
+              </div>
+            </a>
+            <a href="/calendario" className="home-destaque-card home-destaque-card--calendario">
+              <div className="home-destaque-card__icone">📅</div>
+              <div className="home-destaque-card__texto">
+                <p className="home-destaque-card__titulo">Calendário de sorteios</p>
+                <p className="home-destaque-card__sub">
+                  Quais loterias sorteiam em cada dia da semana, a que horas, e quando
+                  é o próximo concurso de cada uma.
+                </p>
+                <span className="home-destaque-card__cta">Ver calendário →</span>
               </div>
             </a>
           </div>
