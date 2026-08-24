@@ -6,6 +6,9 @@ export interface Analise {
   categoria: "lotofacil" | "megasena" | "quina" | "lotomania" | "diadesorte" | "maismilionaria" | "timemania" | "duplasena" | "supersete" | "ambas" | "educativo";
   tempoLeitura: number; // minutos
   corpo: string; // HTML/JSX como string — renderizado via dangerouslySetInnerHTML
+  // Opcional: perguntas que viram schema FAQPage (rich snippet no Google).
+  // As respostas devem ser texto puro (sem HTML) e bater com o que já está no corpo.
+  perguntasFrequentes?: { pergunta: string; resposta: string }[];
 }
 
 export const ANALISES: Analise[] = [
@@ -2708,6 +2711,12 @@ export const ANALISES: Analise[] = [
     data: "2026-08-24",
     categoria: "lotofacil" as const,
     tempoLeitura: 4,
+    perguntasFrequentes: [
+      { pergunta: "Quanto custa jogar na Lotofácil?", resposta: "A aposta mínima, com 15 dezenas, custa R$ 3,50. Marcar mais dezenas (até o máximo de 20) aumenta o preço proporcionalmente." },
+      { pergunta: "Que dia é o sorteio da Lotofácil?", resposta: "Todos os dias, de segunda a sábado, às 21h (horário de Brasília). Não há sorteio aos domingos." },
+      { pergunta: "Quantos números eu escolho na Lotofácil?", resposta: "De 15 a 20 números, entre 1 e 25. A Caixa sorteia 15 dezenas." },
+      { pergunta: "Com quantos pontos a Lotofácil já paga prêmio?", resposta: "A partir de 11 acertos das 15 dezenas sorteadas." },
+    ],
     corpo: `
       <p>
         A Lotofácil é a loteria com o maior número de sorteios por semana da Caixa
@@ -2768,6 +2777,12 @@ export const ANALISES: Analise[] = [
     data: "2026-08-24",
     categoria: "megasena" as const,
     tempoLeitura: 4,
+    perguntasFrequentes: [
+      { pergunta: "Quanto custa jogar na Mega-Sena?", resposta: "A aposta mínima, com 6 dezenas, custa R$ 6,00. Marcar mais dezenas (até o máximo de 20) aumenta o preço proporcionalmente." },
+      { pergunta: "Que dia é o sorteio da Mega-Sena?", resposta: "Terças, quintas e sábados, às 21h (horário de Brasília). Concursos especiais, como a Mega da Virada, têm data própria." },
+      { pergunta: "Quantos números eu escolho na Mega-Sena?", resposta: "De 6 a 20 números, entre 1 e 60. A Caixa sorteia 6 dezenas." },
+      { pergunta: "O que acontece se ninguém acertar as 6 dezenas?", resposta: "O prêmio acumula e é somado ao prêmio do próximo concurso." },
+    ],
     corpo: `
       <p>
         A Mega-Sena é a loteria mais conhecida do país — e também a que concentra
@@ -2826,6 +2841,12 @@ export const ANALISES: Analise[] = [
     data: "2026-08-24",
     categoria: "quina" as const,
     tempoLeitura: 4,
+    perguntasFrequentes: [
+      { pergunta: "Quanto custa jogar na Quina?", resposta: "A aposta mínima, com 5 dezenas, custa R$ 3,00. Marcar mais dezenas (até o máximo de 15) aumenta o preço proporcionalmente." },
+      { pergunta: "Que dia é o sorteio da Quina?", resposta: "De segunda a sábado, às 21h (horário de Brasília)." },
+      { pergunta: "Quantos números eu escolho na Quina?", resposta: "De 5 a 15 números, entre 1 e 80. A Caixa sorteia 5 dezenas." },
+      { pergunta: "Com quantos pontos a Quina já paga prêmio?", resposta: "A partir de apenas 2 acertos (duque) — a faixa de entrada mais acessível entre as loterias de dezenas da Caixa." },
+    ],
     corpo: `
       <p>
         A Quina é uma das loterias mais antigas da Caixa (desde 1994) e tem a
@@ -2876,6 +2897,12 @@ export const ANALISES: Analise[] = [
     data: "2026-08-24",
     categoria: "lotomania" as const,
     tempoLeitura: 5,
+    perguntasFrequentes: [
+      { pergunta: "Quanto custa jogar na Lotomania?", resposta: "A aposta, sempre com 50 números, custa R$ 3,00 — não há opção de marcar mais ou menos números." },
+      { pergunta: "Que dia é o sorteio da Lotomania?", resposta: "Segundas, quartas e sextas-feiras, às 21h (horário de Brasília)." },
+      { pergunta: "Posso ganhar acertando zero números na Lotomania?", resposta: "Sim. Acertar 0 das 20 dezenas sorteadas paga prêmio, com a mesma probabilidade de acertar as 20 — uma consequência de marcar metade do universo de números (50 de 100)." },
+      { pergunta: "Como são numeradas as dezenas da Lotomania?", resposta: "De 00 a 99, onde o \"00\" representa a dezena 100." },
+    ],
     corpo: `
       <p>
         A Lotomania tem a mecânica mais diferente de todas as loterias da Caixa:
@@ -2936,6 +2963,12 @@ export const ANALISES: Analise[] = [
     data: "2026-08-24",
     categoria: "diadesorte" as const,
     tempoLeitura: 4,
+    perguntasFrequentes: [
+      { pergunta: "Quanto custa jogar no Dia de Sorte?", resposta: "A aposta mínima, com 7 dezenas, custa R$ 2,50 — uma das mais baratas entre todas as loterias da Caixa." },
+      { pergunta: "Que dia é o sorteio do Dia de Sorte?", resposta: "De segunda a sábado, às 21h (horário de Brasília) — agenda ampliada de 3 para 6 sorteios semanais a partir de 29 de junho de 2026." },
+      { pergunta: "O que é o Mês da Sorte?", resposta: "Além das dezenas, você escolhe um dos 12 meses do ano. Há uma faixa de prêmio própria para quem acerta só o mês, mesmo sem acertar nenhuma dezena." },
+      { pergunta: "Quantos números eu escolho no Dia de Sorte?", resposta: "De 7 a 15 números, entre 1 e 31, mais 1 mês entre os 12 disponíveis." },
+    ],
     corpo: `
       <p>
         O Dia de Sorte é uma das loterias menos conhecidas da Caixa, mas tem uma
@@ -2984,6 +3017,12 @@ export const ANALISES: Analise[] = [
     data: "2026-08-24",
     categoria: "maismilionaria" as const,
     tempoLeitura: 5,
+    perguntasFrequentes: [
+      { pergunta: "Quanto custa jogar na +Milionária?", resposta: "A aposta mínima, com 6 dezenas e 2 trevos, custa R$ 6,00." },
+      { pergunta: "Que dia é o sorteio da +Milionária?", resposta: "Quartas e sábados, às 21h (horário de Brasília)." },
+      { pergunta: "O que são os trevos da +Milionária?", resposta: "Um segundo sorteio independente das dezenas: você escolhe de 2 a 6 trevos entre 1 e 6, e a Caixa sorteia 2. Há inclusive uma faixa de prêmio para quem acerta só os trevos." },
+      { pergunta: "Qual o prêmio mínimo garantido da +Milionária?", resposta: "R$ 10 milhões para a faixa principal (6 dezenas + 2 trevos) — o maior piso garantido entre as loterias da Caixa." },
+    ],
     corpo: `
       <p>
         A +Milionária é a loteria mais nova da Caixa (lançada em 2022) e a única
@@ -3032,6 +3071,12 @@ export const ANALISES: Analise[] = [
     data: "2026-08-24",
     categoria: "timemania" as const,
     tempoLeitura: 4,
+    perguntasFrequentes: [
+      { pergunta: "Quanto custa jogar na Timemania?", resposta: "A aposta mínima, com 10 dezenas, custa R$ 3,50." },
+      { pergunta: "Que dia é o sorteio da Timemania?", resposta: "Terças, quintas e sábados, às 21h (horário de Brasília)." },
+      { pergunta: "O que é o Time do Coração na Timemania?", resposta: "Além das dezenas, você escolhe um time de futebol entre os cadastrados pela Caixa. Há uma faixa de prêmio exclusiva para quem acerta o time sorteado, mesmo com zero dezenas certas." },
+      { pergunta: "Com quantos pontos a Timemania já paga prêmio?", resposta: "A partir de 3 acertos das 7 dezenas sorteadas." },
+    ],
     corpo: `
       <p>
         A Timemania tem uma peculiaridade que nenhuma outra loteria da Caixa tem:
@@ -3077,6 +3122,12 @@ export const ANALISES: Analise[] = [
     data: "2026-08-24",
     categoria: "duplasena" as const,
     tempoLeitura: 4,
+    perguntasFrequentes: [
+      { pergunta: "Quanto custa jogar na Dupla Sena?", resposta: "A aposta mínima, com 6 dezenas, custa R$ 3,00 — e vale para os dois sorteios do concurso." },
+      { pergunta: "Que dia é o sorteio da Dupla Sena?", resposta: "Segundas, quartas e sextas-feiras, às 21h (horário de Brasília)." },
+      { pergunta: "Como funcionam os dois sorteios da Dupla Sena?", resposta: "O mesmo bilhete concorre em dois sorteios de 6 dezenas cada, dentro do mesmo concurso — duas chances independentes de acertar cada faixa de prêmio." },
+      { pergunta: "Quantos números eu escolho na Dupla Sena?", resposta: "De 6 a 15 números, entre 1 e 50. A Caixa sorteia 6 dezenas em cada um dos dois sorteios." },
+    ],
     corpo: `
       <p>
         A Dupla Sena é a única loteria da Caixa que sorteia <strong>duas vezes no
@@ -3132,6 +3183,12 @@ export const ANALISES: Analise[] = [
     data: "2026-08-24",
     categoria: "supersete" as const,
     tempoLeitura: 4,
+    perguntasFrequentes: [
+      { pergunta: "Quanto custa jogar no Super Sete?", resposta: "A aposta simples (1 dígito por coluna) custa R$ 3,00." },
+      { pergunta: "Que dia é o sorteio do Super Sete?", resposta: "Segundas, quartas e sextas-feiras, às 21h (horário de Brasília)." },
+      { pergunta: "Como funciona a aposta no Super Sete?", resposta: "O volante tem 7 colunas, cada uma com dígitos de 0 a 9. Você marca 1 dígito por coluna na aposta simples, podendo marcar mais de um por coluna para aumentar a cobertura." },
+      { pergunta: "Com quantas colunas certas o Super Sete já paga prêmio?", resposta: "A partir de 3 colunas certas das 7 sorteadas." },
+    ],
     corpo: `
       <p>
         O Super Sete não se parece com nenhuma outra loteria da Caixa: em vez de

@@ -64,8 +64,26 @@ export default async function AnalisePage({
 
   const recentes = getAnalisesRecentes(4).filter((a) => a.slug !== slug);
 
+  const jsonLdFaq = analise.perguntasFrequentes
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: analise.perguntasFrequentes.map((p) => ({
+          "@type": "Question",
+          name: p.pergunta,
+          acceptedAnswer: { "@type": "Answer", text: p.resposta },
+        })),
+      }
+    : null;
+
   return (
     <>
+      {jsonLdFaq && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}
+        />
+      )}
       <Masthead analisesAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow">
@@ -89,6 +107,22 @@ export default async function AnalisePage({
           className="analise-post__corpo"
           dangerouslySetInnerHTML={{ __html: analise.corpo }}
         />
+
+        {analise.perguntasFrequentes && (
+          <section style={{ marginTop: 40 }}>
+            <h2 className="bloco__titulo" style={{ marginBottom: 16 }}>
+              Perguntas frequentes
+            </h2>
+            <div className="analise-faq">
+              {analise.perguntasFrequentes.map((p, i) => (
+                <div key={i} className="analise-faq__item">
+                  <p className="analise-faq__pergunta">{p.pergunta}</p>
+                  <p className="analise-faq__resposta">{p.resposta}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <div className="aviso-legal" style={{ marginTop: 40 }}>
           Este artigo é conteúdo educativo e analítico. Análises históricas não

@@ -7993,3 +7993,33 @@ footer.rodape {
   color: var(--ink-faint);
   padding: 24px 0;
 }
+
+/* ── FAQ visível dentro de artigos de análise (acompanha o schema FAQPage) ── */
+.analise-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.analise-faq__item {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.analise-faq__item:last-child {
+  border-bottom: none;
+}
+
+.analise-faq__pergunta {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.analise-faq__resposta {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
