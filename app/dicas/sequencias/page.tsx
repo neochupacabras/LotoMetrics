@@ -27,7 +27,9 @@ export default function ArtigoSequenciasPage() {
     <>
       <Masthead dicasAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
-        <p className="eyebrow">Dicas e estratégias</p>
+        <p className="eyebrow">
+          <Link href="/dicas" className="breadcrumb">← Dicas e estratégias</Link>
+        </p>
         <h1 className="titulo-edicao">{TITULO}</h1>
         <p className="subtitulo-edicao">
           A Lotofácil e a Mega-Sena dão resultados quase opostos nessa análise — e a

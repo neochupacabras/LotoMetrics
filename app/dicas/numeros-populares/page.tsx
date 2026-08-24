@@ -27,7 +27,9 @@ export default function ArtigoNumerosPopularesPage() {
     <>
       <Masthead dicasAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
-        <p className="eyebrow">Dicas e estratégias</p>
+        <p className="eyebrow">
+          <Link href="/dicas" className="breadcrumb">← Dicas e estratégias</Link>
+        </p>
         <h1 className="titulo-edicao">{TITULO}</h1>
         <p className="subtitulo-edicao">
           A maioria das discussões sobre estratégia de loteria foca em como aumentar a

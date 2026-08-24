@@ -27,7 +27,9 @@ export default function ArtigoFrequenciaPage() {
     <>
       <Masthead dicasAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
-        <p className="eyebrow">Dicas e estratégias</p>
+        <p className="eyebrow">
+          <Link href="/dicas" className="breadcrumb">← Dicas e estratégias</Link>
+        </p>
         <h1 className="titulo-edicao">{TITULO}</h1>
         <p className="subtitulo-edicao">
           A tabela de frequência mostra quantas vezes cada dezena já saiu no histórico

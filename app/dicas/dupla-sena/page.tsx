@@ -24,7 +24,9 @@ export default function ArtigoDuplaSenaPage() {
     <>
       <Masthead dicasAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
-        <p className="eyebrow">Dicas e estratégias</p>
+        <p className="eyebrow">
+          <Link href="/dicas" className="breadcrumb">← Dicas e estratégias</Link>
+        </p>
         <h1 className="titulo-edicao">{TITULO}</h1>
         <p className="subtitulo-edicao">
           A Dupla Sena existe desde 2001 e tem uma mecânica única entre as loterias

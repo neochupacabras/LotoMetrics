@@ -27,7 +27,9 @@ export default function ArtigoMultiplosDe3Page() {
     <>
       <Masthead dicasAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
-        <p className="eyebrow">Dicas e estratégias</p>
+        <p className="eyebrow">
+          <Link href="/dicas" className="breadcrumb">← Dicas e estratégias</Link>
+        </p>
         <h1 className="titulo-edicao">{TITULO}</h1>
         <p className="subtitulo-edicao">
           Entre 1 e 25, os múltiplos de 3 são 3, 6, 9, 12, 15, 18, 21 e 24 — 8 números.
