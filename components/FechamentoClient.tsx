@@ -15,11 +15,13 @@ export default function FechamentoClient({
   dezenaMin,
   dezenaMax,
   qtdDezenasSorteadas,
+  nomeLoteria = "Loteria",
 }: {
   codigoLoteria: string;
   dezenaMin: number;
   dezenaMax: number;
   qtdDezenasSorteadas: number;
+  nomeLoteria?: string;
 }) {
   const config = FECHAMENTO_CONFIG[codigoLoteria] ?? { poolMin: 0, poolMax: 0, getKsPermitidos: () => [] };
   const configDisponivel = codigoLoteria in FECHAMENTO_CONFIG;
@@ -103,13 +105,61 @@ export default function FechamentoClient({
 
   function baixarTodos() {
     if (!resultado?.tickets) return;
-    const linhas = resultado.tickets.map((t) => t.map(formatarDezena).join(" - "));
-    const texto = linhas.join("\n");
-    const blob = new Blob([texto], { type: "text/plain;charset=utf-8" });
+
+    const LARGURA = 64;
+    const linha = (ch = "-") => ch.repeat(LARGURA);
+    const rotulo = (label: string, valor: string) =>
+      `  ${label.padEnd(20, ".")}: ${valor}`;
+
+    const agora = new Date();
+    const dataFormatada = agora.toLocaleDateString("pt-BR");
+    const horaFormatada = agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+
+    const dezenasEscolhidas = Array.from(selecionadas)
+      .sort((a, b) => a - b)
+      .map(formatarDezena)
+      .join(" - ");
+
+    const garantia =
+      resultado.tipo === "reduzido"
+        ? `pelo menos ${resultado.pontosGarantidos} pontos`
+        : `todas as combinações (fechamento completo)`;
+
+    const cabecalho = [
+      linha("="),
+      "  LOTOANALÍTICA — FECHAMENTO DE DEZENAS".padEnd(LARGURA - 1),
+      linha("="),
+      rotulo("Loteria", nomeLoteria),
+      rotulo("Tipo", resultado.tipo === "reduzido" ? "Reduzido" : "Completo"),
+      rotulo("Garantia", garantia),
+      rotulo("Dezenas escolhidas", `${poolTamanho} — ${dezenasEscolhidas}`),
+      rotulo("Total de jogos", String(resultado.totalTickets ?? resultado.tickets.length)),
+      rotulo("Gerado em", `${dataFormatada} às ${horaFormatada}`),
+      linha(),
+      "",
+    ];
+
+    const linhas = resultado.tickets.map((t, i) => {
+      const dezenas = t.map(formatarDezena).join(" - ");
+      return `  Jogo ${String(i + 1).padStart(3, "0")}   ${dezenas}`;
+    });
+
+    const rodape = [
+      "",
+      linha(),
+      "  O fechamento organiza a cobertura das dezenas escolhidas — ele",
+      "  não aumenta a probabilidade de essas dezenas serem sorteadas.",
+      "",
+      "  lotoanalitica.com.br",
+      linha("="),
+    ];
+
+    const conteudo = [...cabecalho, ...linhas, ...rodape].join("\n");
+    const blob = new Blob([conteudo], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `fechamento-${codigoLoteria}-${poolTamanho}dezenas.txt`;
+    a.download = `lotoanalitica-fechamento-${codigoLoteria}-${poolTamanho}dezenas.txt`;
     a.click();
     URL.revokeObjectURL(url);
   }

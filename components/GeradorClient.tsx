@@ -138,27 +138,44 @@ export default function GeradorClient({
   }
 
   function baixarTXT() {
-    const linhas = jogos.map((jogo, i) => {
-      const dezenas = jogo.dezenas.map(formatarDezena).join(" - ");
-      const meta = `Soma: ${jogo.soma} | ${jogo.pares}P / ${jogo.impares}I`;
-      return `Jogo ${String(i + 1).padStart(2, "0")}: ${dezenas}  (${meta})`;
-    });
+    const LARGURA = 64;
+    const linha = (ch = "-") => ch.repeat(LARGURA);
+    const rotulo = (label: string, valor: string) =>
+      `  ${label.padEnd(18, ".")}: ${valor}`;
+
+    const agora = new Date();
+    const dataFormatada = agora.toLocaleDateString("pt-BR");
+    const horaFormatada = agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
 
     const cabecalho = [
-      `LotoAnalítica — Jogos gerados`,
-      `Loteria: ${nomeLoteria}`,
-      `Gerado em: ${new Date().toLocaleString("pt-BR")}`,
-      `Modo: ${modo === "avancado" ? "Avançado" : "Simples"}`,
-      "-".repeat(60),
+      linha("="),
+      "  LOTOANALÍTICA — JOGOS GERADOS".padEnd(LARGURA - 1),
+      linha("="),
+      rotulo("Loteria", nomeLoteria),
+      rotulo("Modo", modo === "avancado" ? "Avançado" : "Simples"),
+      rotulo("Total de jogos", String(jogos.length)),
+      rotulo("Gerado em", `${dataFormatada} às ${horaFormatada}`),
+      linha(),
       "",
     ];
 
+    const linhas = jogos.flatMap((jogo, i) => {
+      const dezenas = jogo.dezenas.map(formatarDezena).join(" - ");
+      const meta = `Soma ${jogo.soma} · ${jogo.pares} pares / ${jogo.impares} ímpares`;
+      return [
+        `  Jogo ${String(i + 1).padStart(2, "0")}   ${dezenas}`,
+        `            ${meta}`,
+        "",
+      ];
+    });
+
     const rodape = [
+      linha(),
+      "  As estatísticas históricas não aumentam a probabilidade real",
+      "  de premiação — cada concurso é um evento independente.",
       "",
-      "-".repeat(60),
-      "Aviso: estatísticas históricas não aumentam a probabilidade real",
-      "de premiação. Cada concurso é um evento independente.",
-      "lotoanalitica.com.br",
+      "  lotoanalitica.com.br",
+      linha("="),
     ];
 
     const conteudo = [...cabecalho, ...linhas, ...rodape].join("\n");
@@ -166,7 +183,7 @@ export default function GeradorClient({
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `lotoanalitica-jogos-${new Date().toISOString().slice(0,10)}.txt`;
+    a.download = `lotoanalitica-jogos-${agora.toISOString().slice(0,10)}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   }

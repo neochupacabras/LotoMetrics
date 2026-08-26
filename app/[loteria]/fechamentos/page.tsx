@@ -140,6 +140,7 @@ export default async function FechamentosPage({
         dezenaMin={loteria.dezenaMin}
         dezenaMax={loteria.dezenaMax}
         qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        nomeLoteria={loteria.nome}
       />
 
       <div className="aviso-legal">
