@@ -12,6 +12,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import type { AcumuloData } from "@/lib/queries";
+import InsightCallout from "@/components/InsightCallout";
 
 // ─── Cores do design system (hardcoded para JS) ───────────────────────────────
 const COR_PAPER  = "#f3f1ea";
@@ -124,11 +125,14 @@ export default function AcumulosClient({ acumulos, nomeLoteria }: Props) {
   // Estatísticas gerais
   const stats = useMemo(() => {
     if (!acumulos.length) return null;
-    const maiorDuracao = Math.max(...acumulos.map((a) => a.duracao));
-    const maiorPremio = Math.max(...acumulos.map((a) => a.premio));
+    // Recordes como objetos completos (não só o número) pra poder contar a
+    // história de um evento real — duração e prêmio precisam vir do MESMO
+    // acúmulo, senão a frase mistura dois recordes diferentes.
+    const recordeDuracao = [...acumulos].sort((a, b) => b.duracao - a.duracao)[0];
+    const recordePremio = [...acumulos].sort((a, b) => b.premio - a.premio)[0];
     const mediaDuracao = acumulos.reduce((s, a) => s + a.duracao, 0) / acumulos.length;
     const acumulosMaisDeUm = acumulos.filter((a) => a.duracao > 1).length;
-    return { maiorDuracao, maiorPremio, mediaDuracao, acumulosMaisDeUm };
+    return { recordeDuracao, recordePremio, mediaDuracao, acumulosMaisDeUm };
   }, [acumulos]);
 
   const premioMax = useMemo(
@@ -151,6 +155,25 @@ export default function AcumulosClient({ acumulos, nomeLoteria }: Props) {
   return (
     <div className="acumulos-wrapper">
 
+      {/* ── Insight: amarra os 4 números soltos numa história real ──────── */}
+      {stats && (
+        <InsightCallout kicker="O recorde da casa">
+          O acúmulo mais longo já registrado durou{" "}
+          <strong>{stats.recordeDuracao.duracao} sorteios</strong> — até o
+          concurso #{stats.recordeDuracao.concursoFim} — e pagou{" "}
+          <strong>{formatarMilhoes(stats.recordeDuracao.premio)}</strong> quando
+          finalmente saiu, {(stats.recordeDuracao.duracao / stats.mediaDuracao).toFixed(1)}x a
+          duração média de {stats.mediaDuracao.toFixed(1)} sorteios.
+          {stats.recordePremio.concursoFim !== stats.recordeDuracao.concursoFim && (
+            <>
+              {" "}Já o maior prêmio pago por um único acúmulo foi{" "}
+              <strong>{formatarMilhoes(stats.recordePremio.premio)}</strong>, no
+              concurso #{stats.recordePremio.concursoFim}.
+            </>
+          )}
+        </InsightCallout>
+      )}
+
       {/* ── Estatísticas rápidas ───────────────────────────────────────── */}
       {stats && (
         <div className="acumulos-stats">
@@ -159,11 +182,11 @@ export default function AcumulosClient({ acumulos, nomeLoteria }: Props) {
             <span className="acumulos-stat-rotulo">acúmulos fechados</span>
           </div>
           <div className="acumulos-stat">
-            <span className="acumulos-stat-valor">{stats.maiorDuracao}</span>
+            <span className="acumulos-stat-valor">{stats.recordeDuracao.duracao}</span>
             <span className="acumulos-stat-rotulo">maior sequência (sorteios)</span>
           </div>
           <div className="acumulos-stat">
-            <span className="acumulos-stat-valor">{formatarMilhoes(stats.maiorPremio)}</span>
+            <span className="acumulos-stat-valor">{formatarMilhoes(stats.recordePremio.premio)}</span>
             <span className="acumulos-stat-rotulo">maior prêmio pago</span>
           </div>
           <div className="acumulos-stat">
@@ -295,8 +318,11 @@ export default function AcumulosClient({ acumulos, nomeLoteria }: Props) {
             </thead>
             <tbody>
               {top20.map((a, i) => (
-                <tr key={`${a.concursoFim}-${i}`}>
-                  <td className="num" style={{ color: "var(--ink-faint)", fontFamily: "var(--font-mono)" }}>
+                <tr
+                  key={`${a.concursoFim}-${i}`}
+                  style={i === 0 ? { background: "var(--ochre-soft)" } : undefined}
+                >
+                  <td className="num" style={{ color: i === 0 ? "var(--ink)" : "var(--ink-faint)", fontFamily: "var(--font-mono)", fontWeight: i === 0 ? 700 : 400 }}>
                     {i + 1}
                   </td>
                   <td>
