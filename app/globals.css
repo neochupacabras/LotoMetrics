@@ -78,7 +78,7 @@ img {
 /* ---------- Cabeçalho / masthead ---------- */
 
 .masthead {
-  border-bottom: 1px solid var(--line-strong);
+  border-bottom: 2px solid var(--ink);
   background: var(--paper-raised);
   position: sticky;
   top: 0;
@@ -118,16 +118,16 @@ img {
 
 .masthead__title {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.65rem;
-  letter-spacing: -0.01em;
+  font-weight: 400;
+  font-size: 1.85rem;
+  letter-spacing: 0;
   text-decoration: none;
   color: var(--ink);
   transition: font-size 0.2s ease;
 }
 
 .masthead[data-encolhido="true"] .masthead__title {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
 }
 
 .masthead__title span {
@@ -226,10 +226,9 @@ img {
 }
 
 .nav-loterias a {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.86rem;
   text-decoration: none;
   padding: 9px 12px;
   color: var(--ink-soft);
@@ -563,7 +562,7 @@ h1.titulo-edicao {
 /* ---------- Rodapé ---------- */
 
 footer.rodape {
-  border-top: 1px solid var(--line-strong);
+  border-top: 2px solid var(--ink);
   background: var(--paper-raised);
   margin-top: 60px;
 }
@@ -584,9 +583,11 @@ footer.rodape {
 
 .rodape__links {
   display: flex;
+  flex-wrap: wrap;
   gap: 18px;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.8rem;
   color: var(--ink-faint);
 }
 
@@ -2884,7 +2885,7 @@ footer.rodape {
   border-radius: 3px;
 }
 
-.usermenu-conta:hover { background: var(--pine-dark, #163829); color: var(--paper); }
+.usermenu-conta:hover { background: var(--pine-deep); color: var(--paper); }
 
 .usermenu-badge-inline {
   font-size: 0.7rem;
@@ -7093,14 +7094,13 @@ footer.rodape {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 14px;
-  border-radius: 4px;
+  padding: 8px 14px;
+  border-radius: 0;
   border: none;
-  background: var(--pine);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  background: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.84rem;
   color: var(--paper);
   cursor: pointer;
   white-space: nowrap;
@@ -7109,11 +7109,11 @@ footer.rodape {
 
 .nav-dropdown__btn:hover,
 .nav-dropdown__btn[data-aberto="true"] {
-  background: var(--pine-deep);
+  background: var(--pine);
 }
 
 .nav-dropdown__btn[data-ativo="true"] {
-  background: var(--rust);
+  background: var(--pine-deep);
 }
 
 .nav-dropdown__separador {
@@ -7140,9 +7140,9 @@ footer.rodape {
   left: 0;
   z-index: 100;
   background: var(--paper-raised);
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  box-shadow: 3px 3px 0 var(--ink);
   padding: 10px;
   min-width: 260px;
   animation: dropdown-in 0.12s ease;
@@ -7163,7 +7163,7 @@ footer.rodape {
 .nav-dropdown__item {
   display: block;
   padding: 7px 12px;
-  border-radius: 4px;
+  border-radius: 0;
   font-size: 0.84rem;
   color: var(--ink-soft);
   text-decoration: none;
