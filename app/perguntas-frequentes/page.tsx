@@ -56,7 +56,7 @@ export default function FAQPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Masthead />
+      <Masthead faqAtivo />
       <main className="container secao" style={{ maxWidth: 780 }}>
         <p className="eyebrow">Referência</p>
         <h1 className="titulo-edicao">Perguntas frequentes</h1>

@@ -43,7 +43,7 @@ export default function CalendarioPage() {
 
   return (
     <>
-      <Masthead />
+      <Masthead calendarioAtivo />
       <main className="container secao" style={{ maxWidth: 900 }}>
         <p className="eyebrow">Referência</p>
         <h1 className="titulo-edicao">Calendário de sorteios</h1>
