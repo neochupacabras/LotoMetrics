@@ -15,11 +15,11 @@ import {
 // Paleta derivada diretamente dos tokens de app/globals.css — não usar
 // var(--...) aqui porque o Recharts define fill como atributo SVG puro,
 // que não resolve custom properties de forma confiável entre navegadores.
-const COR_PINE = "#1e4b3c";
+const COR_PINE = "#c23b22";
 const COR_OCHRE = "#b9802c";
-const COR_LINE = "#d8d4c5";
-const COR_INK_SOFT = "#5b5847";
-const COR_PAPEL_ELEVADO = "#f7f6f0";
+const COR_LINE = "#d4d2c8";
+const COR_INK_SOFT = "#4a4a45";
+const COR_PAPEL_ELEVADO = "#faf9f4";
 
 export interface BarraDado {
   rotulo: string;
@@ -43,11 +43,11 @@ function TooltipPersonalizado({
       style={{
         background: COR_PAPEL_ELEVADO,
         border: `1px solid ${COR_LINE}`,
-        borderRadius: 4,
+        borderRadius: 0,
         padding: "6px 10px",
         fontFamily: "var(--font-mono)",
         fontSize: "0.75rem",
-        color: "#1c1b17",
+        color: "#17171a",
       }}
     >
       <div>{dado.rotulo}</div>
@@ -96,7 +96,7 @@ export default function GraficoBarras({
             width={70}
           />
           <Tooltip content={<TooltipPersonalizado rotuloValor={rotuloValor} />} cursor={{ fill: "rgba(30,75,60,0.06)" }} />
-          <Bar dataKey="valor" radius={[0, 3, 3, 0]} maxBarSize={18}>
+          <Bar dataKey="valor" radius={[0, 0, 0, 0]} maxBarSize={18}>
             {dados.map((d, i) => (
               <Cell key={i} fill={d.destaque ? COR_OCHRE : COR_PINE} />
             ))}
@@ -138,7 +138,7 @@ export default function GraficoBarras({
             }}
           />
         )}
-        <Bar dataKey="valor" radius={[3, 3, 0, 0]} maxBarSize={36}>
+        <Bar dataKey="valor" radius={[0, 0, 0, 0]} maxBarSize={36}>
           {dados.map((d, i) => (
             <Cell key={i} fill={d.destaque ? COR_OCHRE : COR_PINE} />
           ))}

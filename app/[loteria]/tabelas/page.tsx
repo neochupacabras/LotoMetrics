@@ -6,12 +6,6 @@ import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 
-const COR_VAR: Record<string, string> = {
-  pine:  "var(--pine)",
-  ochre: "var(--ochre)",
-  rust:  "var(--rust)",
-};
-
 export async function generateMetadata({
   params,
 }: {
@@ -55,14 +49,14 @@ export default async function TabelasIndexPage({
       </p>
 
       <div className="grade-categorias">
-        {getCategoriasParaLoteria(codigoLoteria).map((c) => (
+        {getCategoriasParaLoteria(codigoLoteria).map((c, i) => (
           <Link
             key={c.slug}
             href={`/${codigoLoteria}/tabelas/${c.slug}`}
             className="categoria-card"
           >
-            <div className="categoria-card__topo" style={{ background: COR_VAR[c.cor] }}>
-              <span aria-hidden>{c.emoji}</span>
+            <div className="categoria-card__topo">
+              {String(i + 1).padStart(2, "0")}
             </div>
             <div className="categoria-card__corpo">
               <p className="categoria-card__titulo">{c.titulo}</p>

@@ -701,7 +701,8 @@ footer.rodape {
 
 .bloco__titulo {
   font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-weight: 400;
+  font-size: 1.6rem;
   margin: 0 0 4px;
 }
 
@@ -755,8 +756,9 @@ footer.rodape {
 }
 
 .breadcrumb {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.82rem;
   color: var(--ink-faint);
   text-decoration: none;
   margin-bottom: 18px;
@@ -1984,15 +1986,15 @@ footer.rodape {
   flex-direction: column;
   gap: 4px;
   padding: 16px 18px;
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   background: var(--paper-raised);
 }
 
 .acumulos-stat-valor {
   font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 600;
+  font-size: 2.1rem;
+  font-weight: 400;
   color: var(--pine);
   line-height: 1;
 }
@@ -2050,8 +2052,8 @@ footer.rodape {
 
 /* Wrapper do chart */
 .acumulos-chart-wrapper {
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   background: var(--paper-raised);
   padding: 16px 8px 8px;
 }
@@ -2069,7 +2071,7 @@ footer.rodape {
   background: var(--ink);
   color: var(--paper);
   padding: 10px 14px;
-  border-radius: 4px;
+  border-radius: 0;
   font-family: var(--font-mono);
   font-size: 0.78rem;
   line-height: 1.6;
@@ -2119,7 +2121,8 @@ footer.rodape {
   justify-content: center;
   min-width: 28px;
   padding: 2px 6px;
-  border-radius: 999px;
+  border-radius: 0;
+  border: 1px solid var(--ink);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 700;
@@ -2718,7 +2721,7 @@ footer.rodape {
 }
 
 .auth-titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.6rem;
   color: var(--ink);
   margin: 0 0 6px;
@@ -2788,7 +2791,7 @@ footer.rodape {
   background: #fff;
   font-size: 0.95rem;
   color: var(--ink);
-  font-family: var(--font-plex-sans);
+  font-family: var(--font-body);
   transition: border-color 0.15s ease;
   box-sizing: border-box;
 }
@@ -2942,7 +2945,7 @@ footer.rodape {
 }
 
 .conta-titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.6rem;
   color: var(--ink);
   margin: 0 0 4px;
@@ -2979,7 +2982,7 @@ footer.rodape {
 }
 
 .conta-secao-titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.15rem;
   color: var(--ink);
   margin: 0 0 16px;
@@ -3012,7 +3015,7 @@ footer.rodape {
 }
 
 .conta-plano-nome {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.1rem;
   color: var(--ink);
   margin: 0 0 4px;
@@ -3089,7 +3092,7 @@ footer.rodape {
 }
 
 .assinar-titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 2.2rem;
   color: var(--ink);
   margin: 8px 0 12px;
@@ -3149,7 +3152,7 @@ footer.rodape {
 }
 
 .assinar-plano-preco {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.8rem;
   color: var(--ink);
   margin: 0;
@@ -3157,7 +3160,7 @@ footer.rodape {
 }
 
 .assinar-plano-periodo {
-  font-family: var(--font-plex-sans);
+  font-family: var(--font-body);
   font-size: 0.85rem;
   color: var(--ink-soft);
   font-weight: 400;
@@ -3188,7 +3191,7 @@ footer.rodape {
 }
 
 .assinar-beneficios-titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.1rem;
   color: var(--ink);
   margin: 0 0 20px;
@@ -3268,7 +3271,7 @@ footer.rodape {
 }
 
 .bloqueado-premium__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.1rem;
   color: var(--ink);
   margin: 0 0 8px;
@@ -3400,7 +3403,7 @@ footer.rodape {
 }
 
 .gerador-premium-overlay__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.15rem;
   color: var(--ink);
   margin: 0 0 10px;
@@ -3457,7 +3460,7 @@ footer.rodape {
 }
 
 .heatmap-premium-overlay__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.15rem;
   color: var(--ink);
   margin: 0 0 10px;
@@ -3556,7 +3559,7 @@ footer.rodape {
 }
 
 .simulador-comparar-vs {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.1rem;
   color: var(--ink-soft);
   flex-shrink: 0;
@@ -3579,7 +3582,7 @@ footer.rodape {
 .simulador-comparar-coluna[data-cor="b"] { border-color: var(--pine); }
 
 .simulador-comparar-coluna__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1rem;
   margin: 0 0 16px;
   color: var(--ink);
@@ -3727,7 +3730,7 @@ footer.rodape {
 .jogos-lista { display: flex; flex-direction: column; gap: 32px; }
 
 .jogos-grupo__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1rem;
   color: var(--ink-soft);
   margin: 0 0 14px;
@@ -3884,7 +3887,7 @@ footer.rodape {
 
 .assinatura-card__valor--destaque {
   color: var(--ochre);
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1rem;
 }
 
@@ -4030,7 +4033,7 @@ footer.rodape {
 .ocr-cta__icone { font-size: 2rem; display: block; margin-bottom: 10px; }
 
 .ocr-cta__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.1rem;
   color: var(--ink);
   margin: 0 0 8px;
@@ -4072,7 +4075,7 @@ footer.rodape {
 }
 
 .ocr-dropzone__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.05rem;
   color: var(--ink);
   margin: 0 0 6px;
@@ -4239,8 +4242,8 @@ footer.rodape {
    ========================================================== */
 
 .projecao-card {
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   padding: 24px 28px;
   margin-bottom: 40px;
   background: var(--paper);
@@ -4251,7 +4254,7 @@ footer.rodape {
 
 .projecao-card--acumulado {
   border-color: var(--ochre);
-  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  background: color-mix(in srgb, var(--ochre) 6%, var(--paper));
 }
 
 .projecao-card__header {
@@ -4283,7 +4286,7 @@ footer.rodape {
   background: var(--ochre);
   color: #fff;
   padding: 4px 10px;
-  border-radius: 3px;
+  border-radius: 0;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -4295,8 +4298,9 @@ footer.rodape {
 }
 
 .projecao-card__premio-valor {
-  font-family: var(--font-fraunces);
-  font-size: 2.8rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 3.2rem;
   line-height: 1;
   margin-bottom: 6px;
 }
@@ -4359,13 +4363,13 @@ footer.rodape {
   flex: 1;
   height: 8px;
   background: var(--line);
-  border-radius: 4px;
+  border-radius: 0;
   overflow: hidden;
 }
 
 .projecao-barra-fill {
   height: 100%;
-  border-radius: 4px;
+  border-radius: 0;
   transition: width 0.3s ease;
 }
 
@@ -4380,8 +4384,9 @@ footer.rodape {
 
 /* ── Um ticket ───────────────────────────────────────────── */
 .projecao-card__um-ticket {
-  font-family: var(--font-fraunces);
-  font-size: 1.6rem;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.9rem;
   color: var(--ink);
   margin: 0 0 6px;
 }
@@ -4585,7 +4590,7 @@ footer.rodape {
 }
 
 .api-criar-chave__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 0.95rem;
   color: var(--ink);
   margin: 0;
@@ -4609,7 +4614,7 @@ footer.rodape {
 }
 
 .api-hero__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 2.6rem;
   color: var(--paper);
   line-height: 1.15;
@@ -4665,7 +4670,7 @@ footer.rodape {
 .api-secao:last-child { border-bottom: none; }
 
 .api-secao__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.6rem;
   color: var(--ink);
   margin: 0 0 10px;
@@ -4817,7 +4822,7 @@ footer.rodape {
 }
 
 .api-caso-card__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1rem;
   color: var(--ink);
   margin: 0 0 8px;
@@ -4843,7 +4848,7 @@ footer.rodape {
 }
 
 .api-preco-card__nome {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.2rem;
   color: var(--ochre);
   margin: 0 0 8px;
@@ -4875,7 +4880,7 @@ footer.rodape {
 }
 
 .api-preco-card__item-valor {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.4rem;
   color: var(--pine);
 }
@@ -4937,7 +4942,7 @@ footer.rodape {
 }
 
 .api-comparativo__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1rem;
   margin: 0 0 16px;
 }
@@ -4988,7 +4993,7 @@ footer.rodape {
 }
 
 .api-cta-final__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 2rem;
   color: var(--paper);
   margin: 0 0 12px;
@@ -5062,7 +5067,7 @@ footer.rodape {
 }
 
 .premium-hero__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 2.6rem;
   color: var(--paper);
   line-height: 1.15;
@@ -5124,7 +5129,7 @@ footer.rodape {
 }
 
 .premium-grupo__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.4rem;
   color: var(--ink);
   margin: 0 0 10px;
@@ -5195,7 +5200,7 @@ footer.rodape {
 }
 
 .premium-comparativo__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.6rem;
   color: var(--ink);
   margin: 0 0 28px;
@@ -5327,7 +5332,7 @@ footer.rodape {
 }
 
 .premium-cta-final__titulo {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 2rem;
   color: var(--paper);
   margin: 0 0 8px;
@@ -5397,7 +5402,7 @@ footer.rodape {
 }
 
 .premium-cta-plano__preco {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.4rem;
   color: var(--paper);
   margin: 0;
@@ -5405,7 +5410,7 @@ footer.rodape {
 }
 
 .premium-cta-plano__periodo {
-  font-family: var(--font-plex-sans);
+  font-family: var(--font-body);
   font-size: 0.78rem;
   color: rgba(239,238,230,0.5);
   font-weight: 400;
@@ -5480,7 +5485,7 @@ footer.rodape {
 }
 
 .simulador-drawdown-valor {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.3rem;
   color: var(--ink);
 }
@@ -5562,7 +5567,7 @@ footer.rodape {
 }
 
 .equilibrio-scorecard__nota {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 5rem;
   font-weight: 700;
   line-height: 1;
@@ -5714,7 +5719,7 @@ footer.rodape {
 }
 
 .contato-card__email {
-  font-family: var(--font-fraunces);
+  font-family: var(--font-display);
   font-size: 1.2rem;
   color: var(--pine);
   text-decoration: none;
@@ -5919,7 +5924,7 @@ footer.rodape {
   background: var(--paper);
   border-left: 3px solid var(--pine);
   padding: 20px 24px;
-  border-radius: 0 4px 4px 0;
+  border-radius: 0;
 }
 
 .ferramenta-explicacao p {
@@ -7586,31 +7591,30 @@ footer.rodape {
 .categoria-card {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   overflow: hidden;
   text-decoration: none;
   color: var(--ink);
   background: var(--paper-raised);
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: background 0.15s;
 }
 
 .categoria-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: var(--paper);
 }
 
 .categoria-card__topo {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 18px;
-  font-size: 1.8rem;
-  line-height: 1;
+  padding: 14px 16px 0;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
 }
 
 .categoria-card__corpo {
-  padding: 14px 16px 16px;
+  padding: 8px 16px 16px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -7618,8 +7622,8 @@ footer.rodape {
 
 .categoria-card__titulo {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.02rem;
+  font-weight: 400;
+  font-size: 1.25rem;
   color: var(--ink);
   margin-bottom: 6px;
 }
@@ -7633,10 +7637,9 @@ footer.rodape {
 
 .categoria-card__cta {
   margin-top: 12px;
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.8rem;
   color: var(--pine);
 }
 

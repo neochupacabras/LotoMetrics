@@ -14,18 +14,24 @@ import {
 import type { AcumuloData } from "@/lib/queries";
 
 // ─── Cores do design system (hardcoded para JS) ───────────────────────────────
-const COR_PAPER  = "#efeee6";
-const COR_OCHRE_SOFT = "#e4c189";
+const COR_PAPER  = "#f3f1ea";
+const COR_OCHRE_SOFT = "#e9d9b8";
 const COR_OCHRE  = "#b9802c";
-const COR_PINE   = "#1e4b3c";
-const COR_INK_FAINT = "#8c8874";
+const COR_PINE   = "#c23b22";
+const COR_INK_FAINT = "#6b6a63";
+
+// Mesma escala de densidade de tinta (papel → coral) usada no heatmap do
+// volante, em escala logarítmica — a maioria dos acúmulos é curta, então
+// isso distribui melhor a cor entre durações de 1 a 14+ sorteios.
+const PAPEL_RGB = [243, 241, 234] as const;
+const TINTA_RGB = [194, 59, 34] as const;
 
 function corDuracao(dur: number): string {
-  if (dur === 1)  return COR_OCHRE_SOFT;
-  if (dur <= 3)   return "#d4a45a";
-  if (dur <= 7)   return COR_OCHRE;
-  if (dur <= 14)  return "#8c5e1a";
-  return COR_PINE;
+  const t = Math.min(Math.log2(dur + 1) / Math.log2(15), 1);
+  const r = PAPEL_RGB[0] + (TINTA_RGB[0] - PAPEL_RGB[0]) * t;
+  const g = PAPEL_RGB[1] + (TINTA_RGB[1] - PAPEL_RGB[1]) * t;
+  const b = PAPEL_RGB[2] + (TINTA_RGB[2] - PAPEL_RGB[2]) * t;
+  return `rgb(${Math.round(r)}, ${Math.round(g)}, ${Math.round(b)})`;
 }
 
 function formatarMilhoes(v: number): string {

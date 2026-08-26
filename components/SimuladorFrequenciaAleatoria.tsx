@@ -58,7 +58,7 @@ export function SimuladorFrequenciaAleatoria({
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🎲 O padrão real é diferente de um sorteio aleatório?</p>
+      <p className="mat-interativo__titulo">O padrão real é diferente de um sorteio aleatório?</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Concursos aleatórios a simular</label>
@@ -74,7 +74,7 @@ export function SimuladorFrequenciaAleatoria({
       </div>
 
       <button type="button" className="botao-copiar" onClick={simular} disabled={rodando} style={{ fontSize: "0.82rem", marginTop: 4 }}>
-        {rodando ? "Simulando…" : "🎲 Simular sorteios aleatórios"}
+        {rodando ? "Simulando…" : "Simular sorteios aleatórios"}
       </button>
 
       {contagem && (

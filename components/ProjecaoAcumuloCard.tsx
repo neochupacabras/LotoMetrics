@@ -60,7 +60,7 @@ export default function ProjecaoAcumuloCard({
   const altaChance  = projecao.probAoMenosUmGanhador > 0.5;
   const mediaChance = projecao.probAoMenosUmGanhador > 0.2;
 
-  const corDestaque = altaChance ? "#166534" : mediaChance ? "#92400e" : "#1e4b3c";
+  const corDestaque = altaChance ? "#166534" : mediaChance ? "#92400e" : "#4a4a45";
 
   return (
     <div className={`projecao-card ${temAcumulo ? "projecao-card--acumulado" : ""}`}>
@@ -112,7 +112,7 @@ export default function ProjecaoAcumuloCard({
           <BarraProb
             prob={projecao.probGanhadorSeVenderMenos}
             label="Se vender 50% menos"
-            cor="#8c8874"
+            cor="#6b6a63"
           />
           <BarraProb
             prob={projecao.probAoMenosUmGanhador}
@@ -122,7 +122,7 @@ export default function ProjecaoAcumuloCard({
           <BarraProb
             prob={projecao.probGanhadorSeVenderMais}
             label="Se vender 50% mais"
-            cor="#1e4b3c"
+            cor="#c23b22"
           />
         </div>
       </div>
