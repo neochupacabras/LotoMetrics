@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
 import ProximoSorteioWidget from "@/components/ProximoSorteioWidget";
-import HeroBolinhas from "@/components/HeroBolinhas";
 import GeradorRelampago from "@/components/GeradorRelampago";
 import DesafioIntuicao from "@/components/DesafioIntuicao";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
@@ -156,7 +155,7 @@ function CartaoResultado({
       )}
       {mesSorte && (
         <p className="home-mes-sorte">
-          {codigoLoteria === "timemania" ? "🏟️ Time do Coração:" : "🗓️ Mês da Sorte:"}{" "}
+          {codigoLoteria === "timemania" ? "Time do Coração:" : "Mês da Sorte:"}{" "}
           <strong>{mesSorte}</strong>
         </p>
       )}
@@ -171,7 +170,7 @@ function CartaoResultado({
 const FERRAMENTAS = [
   {
     titulo: "Analisador de jogo",
-    emoji: "🔍",
+    indice: "01",
     descricao: "Selecione suas dezenas e veja o perfil estatístico em 7 métricas, comparado a todas as combinações possíveis.",
     hrefLF: "/lotofacil/analisador",
     hrefMS: "/megasena/analisador",
@@ -179,7 +178,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Simulador histórico",
-    emoji: "⏱️",
+    indice: "02",
     descricao: "E se você tivesse jogado essa combinação em todo concurso? Resultado financeiro honesto com prêmios históricos reais.",
     hrefLF: "/lotofacil/simulador",
     hrefMS: "/megasena/simulador",
@@ -187,7 +186,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Heatmap do volante",
-    emoji: "🔥",
+    indice: "03",
     descricao: "Visualize a frequência de cada dezena no volante, por período. Mude o intervalo e observe a aleatoriedade em ação.",
     hrefLF: "/lotofacil/heatmap",
     hrefMS: "/megasena/heatmap",
@@ -195,7 +194,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Linha do tempo dos acúmulos",
-    emoji: "📈",
+    indice: "04",
     descricao: "Todo acúmulo histórico em um scatter chart — quanto durou, quando aconteceu e qual foi o prêmio pago.",
     hrefLF: "/lotofacil/acumulos",
     hrefMS: "/megasena/acumulos",
@@ -203,7 +202,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Tabelas estatísticas",
-    emoji: "📊",
+    indice: "05",
     descricao: "13 análises do histórico completo: frequência, atraso, ciclos, pares/ímpares, soma, primos, Fibonacci e mais.",
     hrefLF: "/lotofacil/tabelas",
     hrefMS: "/megasena/tabelas",
@@ -211,7 +210,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Gerador de jogos",
-    emoji: "🎲",
+    indice: "06",
     descricao: "Monte combinações com filtros estatísticos — modo simples com critérios pré-definidos ou avançado com controle total.",
     hrefLF: "/lotofacil/gerador",
     hrefMS: "/megasena/gerador",
@@ -219,7 +218,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Conferidor",
-    emoji: "✅",
+    indice: "07",
     descricao: "Verifique como um jogo específico teria se saído em cada concurso da história — acertos por faixa, período a período.",
     hrefLF: "/lotofacil/conferidor",
     hrefMS: "/megasena/conferidor",
@@ -227,7 +226,7 @@ const FERRAMENTAS = [
   },
   {
     titulo: "Fechamentos e Bolão",
-    emoji: "🤝",
+    indice: "08",
     descricao: "Cobertura combinatória inteligente: calcule fechamentos e monte bolões com o menor número de apostas possível.",
     hrefLF: "/lotofacil/fechamentos",
     hrefMS: "/megasena/fechamentos",
@@ -282,7 +281,6 @@ export default async function HomePage() {
         <section className="home-hero">
           <div className="container">
             <div className="home-hero-intro">
-              <HeroBolinhas />
               <div className="home-hero-texto">
                 <p className="eyebrow">LotoAnalítica</p>
                 <h1 className="home-hero-titulo">
@@ -430,7 +428,7 @@ export default async function HomePage() {
             {FERRAMENTAS.filter((f) => f.destaque).map((f) => (
               <div key={f.titulo} className="home-ferramenta-card home-ferramenta-card--destaque">
                 <div className="home-ferramenta-topo">
-                  <span className="home-ferramenta-icone" aria-hidden>{f.emoji}</span>
+                  <span className="home-ferramenta-icone" aria-hidden>{f.indice}</span>
                   <h3 className="home-ferramenta-titulo">{f.titulo}</h3>
                 </div>
                 <p className="home-ferramenta-desc">{f.descricao}</p>
@@ -451,7 +449,7 @@ export default async function HomePage() {
             {FERRAMENTAS.filter((f) => !f.destaque).map((f) => (
               <div key={f.titulo} className="home-ferramenta-card">
                 <div className="home-ferramenta-topo">
-                  <span className="home-ferramenta-icone" aria-hidden>{f.emoji}</span>
+                  <span className="home-ferramenta-icone" aria-hidden>{f.indice}</span>
                   <h3 className="home-ferramenta-titulo">{f.titulo}</h3>
                 </div>
                 <p className="home-ferramenta-desc">{f.descricao}</p>
@@ -488,7 +486,7 @@ export default async function HomePage() {
         <div className="container">
           <div className="home-destaques-secoes">
             <a href="/matematica" className="home-destaque-card home-destaque-card--matematica">
-              <div className="home-destaque-card__icone">📐</div>
+              <div className="home-destaque-card__icone">01</div>
               <div className="home-destaque-card__texto">
                 <p className="home-destaque-card__titulo">Matemática sem mistério</p>
                 <p className="home-destaque-card__sub">
@@ -499,7 +497,7 @@ export default async function HomePage() {
               </div>
             </a>
             <a href="/calculadoras" className="home-destaque-card home-destaque-card--calculadoras">
-              <div className="home-destaque-card__icone">🧮</div>
+              <div className="home-destaque-card__icone">02</div>
               <div className="home-destaque-card__texto">
                 <p className="home-destaque-card__titulo">Calculadoras online</p>
                 <p className="home-destaque-card__sub">
@@ -510,7 +508,7 @@ export default async function HomePage() {
               </div>
             </a>
             <a href="/glossario" className="home-destaque-card home-destaque-card--glossario">
-              <div className="home-destaque-card__icone">📖</div>
+              <div className="home-destaque-card__icone">03</div>
               <div className="home-destaque-card__texto">
                 <p className="home-destaque-card__titulo">Glossário</p>
                 <p className="home-destaque-card__sub">
@@ -521,7 +519,7 @@ export default async function HomePage() {
               </div>
             </a>
             <a href="/perguntas-frequentes" className="home-destaque-card home-destaque-card--faq">
-              <div className="home-destaque-card__icone">❓</div>
+              <div className="home-destaque-card__icone">04</div>
               <div className="home-destaque-card__texto">
                 <p className="home-destaque-card__titulo">Perguntas frequentes</p>
                 <p className="home-destaque-card__sub">
@@ -532,7 +530,7 @@ export default async function HomePage() {
               </div>
             </a>
             <a href="/calendario" className="home-destaque-card home-destaque-card--calendario">
-              <div className="home-destaque-card__icone">📅</div>
+              <div className="home-destaque-card__icone">05</div>
               <div className="home-destaque-card__texto">
                 <p className="home-destaque-card__titulo">Calendário de sorteios</p>
                 <p className="home-destaque-card__sub">
@@ -605,17 +603,17 @@ export default async function HomePage() {
             Cada conceito que aparece nas tabelas e ferramentas tem um artigo explicando a matemática real por trás.
           </p>
           <div className="home-artigos-grid">
-            {ARTIGOS_DESTAQUE_SLUGS.map((slug) => {
+            {ARTIGOS_DESTAQUE_SLUGS.map((slug, i) => {
               const artigo = ARTIGOS.find((a) => a.slug === slug);
               if (!artigo) return null;
               return (
                 <Link key={slug} href={`/dicas/${slug}`} className="home-artigo-card">
                   <span
                     className="home-artigo-icone"
-                    style={{ background: COR_VAR[artigo.cor] }}
+                    style={{ color: COR_VAR[artigo.cor] }}
                     aria-hidden
                   >
-                    {artigo.emoji}
+                    {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="home-artigo-titulo">{artigo.titulo}</span>
                   <span className="home-artigo-seta">→</span>
@@ -623,8 +621,8 @@ export default async function HomePage() {
               );
             })}
             <Link href="/dicas" className="home-artigo-card home-artigo-card--todos">
-              <span className="home-artigo-icone" style={{ background: "var(--ink-faint)" }} aria-hidden>
-                📚
+              <span className="home-artigo-icone" style={{ color: "var(--ink-faint)" }} aria-hidden>
+                +
               </span>
               <span className="home-artigo-titulo">Ver todos os 26 artigos</span>
               <span className="home-artigo-seta">→</span>

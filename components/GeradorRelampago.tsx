@@ -56,7 +56,7 @@ export default function GeradorRelampago() {
         </div>
 
         <button type="button" className="botao-gerar" onClick={gerar}>
-          🎲 Gerar dezenas
+          Gerar dezenas
         </button>
 
         {dezenas && (

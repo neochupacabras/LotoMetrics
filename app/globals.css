@@ -2305,9 +2305,9 @@ footer.rodape {
 
 .home-hero-titulo {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 700;
-  line-height: 1.15;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 400;
+  line-height: 1.05;
   color: var(--ink);
   margin: 10px 0 16px;
 }
@@ -2353,8 +2353,8 @@ footer.rodape {
 
 .home-resultado-card {
   background: var(--paper);
-  border: 1px solid var(--line-strong);
-  border-radius: 8px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   padding: 20px 22px;
   display: flex;
   flex-direction: column;
@@ -2387,10 +2387,10 @@ footer.rodape {
 }
 
 .home-acumulado-badge {
-  background: var(--ochre-soft);
-  color: var(--pine-deep);
+  background: var(--pine);
+  color: var(--paper);
   padding: 2px 8px;
-  border-radius: 999px;
+  border-radius: 0;
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -2410,14 +2410,14 @@ footer.rodape {
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: 50%;
-  background: var(--ochre);
+  border-radius: 0;
+  border: 1px solid var(--ink);
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--font-mono);
   font-size: 0.72rem;
   font-weight: 700;
   flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
   animation: dezena-entrar 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
 }
 
@@ -2426,8 +2426,9 @@ footer.rodape {
 }
 
 .home-resultado-link {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.8rem;
   color: var(--pine);
   text-decoration: none;
   align-self: flex-start;
@@ -2439,7 +2440,7 @@ footer.rodape {
 
 /* ── Barra de estatísticas ─────────────────────────────────── */
 .home-stats-bar {
-  background: var(--pine);
+  background: var(--ink);
   padding: 12px 0;
 }
 
@@ -2454,7 +2455,7 @@ footer.rodape {
 }
 
 .home-stats-inner strong {
-  color: var(--ochre-soft);
+  color: color-mix(in srgb, var(--pine) 70%, var(--paper) 30%);
   font-weight: 700;
 }
 
@@ -2470,8 +2471,8 @@ footer.rodape {
 
 .home-secao-titulo {
   font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 400;
   color: var(--ink);
   margin-bottom: 8px;
 }
@@ -2502,56 +2503,55 @@ footer.rodape {
 }
 
 .home-ferramenta-card {
-  padding: 18px 20px;
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
+  padding: 20px 22px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   background: var(--paper-raised);
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .home-ferramenta-card--destaque {
-  border-left: 3px solid var(--ochre);
+  background: var(--paper);
 }
 
 .home-ferramenta-card:hover {
-  border-color: var(--pine);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  background: var(--paper);
 }
 
 .home-ferramenta-card--destaque:hover {
-  border-left-color: var(--pine);
+  background: color-mix(in srgb, var(--pine) 5%, var(--paper));
 }
 
 .home-ferramenta-topo {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 10px;
 }
 
 .home-ferramenta-icone {
-  font-size: 1.4rem;
-  line-height: 1;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
   flex-shrink: 0;
 }
 
 .home-ferramenta-card--destaque .home-ferramenta-icone {
-  font-size: 1.7rem;
+  color: var(--pine);
 }
 
 .home-ferramenta-titulo {
   font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.15rem;
+  font-weight: 400;
   color: var(--ink);
   line-height: 1.3;
 }
 
 .home-ferramenta-card--destaque .home-ferramenta-titulo {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
 }
 
 .home-ferramenta-desc {
@@ -2568,8 +2568,9 @@ footer.rodape {
 }
 
 .home-ferramenta-link {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.78rem;
   color: var(--pine);
   text-decoration: none;
 }
@@ -2601,17 +2602,17 @@ footer.rodape {
   font-size: 0.70rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--ochre-soft);
+  color: var(--paper);
   margin-bottom: 4px;
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 .home-quiz-titulo {
   font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.9rem;
+  font-weight: 400;
   color: var(--paper);
-  line-height: 1.2;
+  line-height: 1.1;
   margin-bottom: 6px;
 }
 
@@ -2624,8 +2625,9 @@ footer.rodape {
 
 .home-quiz-btn {
   flex-shrink: 0;
-  background: var(--ochre) !important;
+  background: var(--paper) !important;
   color: var(--ink) !important;
+  border-radius: 0 !important;
   white-space: nowrap;
 }
 
@@ -2640,19 +2642,16 @@ footer.rodape {
   display: flex;
   align-items: center;
   padding: 14px 18px;
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   background: var(--paper-raised);
   text-decoration: none;
   gap: 14px;
-  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .home-artigo-card:hover {
-  border-color: var(--pine);
   background: var(--paper);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
 }
 
 .home-artigo-card--todos {
@@ -2663,10 +2662,14 @@ footer.rodape {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  font-size: 1.1rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 0;
+  border: 1px solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--pine);
   flex-shrink: 0;
 }
 
@@ -2679,7 +2682,8 @@ footer.rodape {
 }
 
 .home-artigo-seta {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
+  font-weight: 600;
   color: var(--pine);
   flex-shrink: 0;
   font-size: 0.85rem;
@@ -5783,7 +5787,7 @@ footer.rodape {
 .analise-card {
   display: block;
   padding: 24px;
-  border: 1px solid var(--line-soft);
+  border: 1px solid var(--line-strong);
   border-radius: 4px;
   background: var(--paper);
   text-decoration: none;
@@ -5988,17 +5992,15 @@ footer.rodape {
   flex-direction: column;
   gap: 8px;
   padding: 20px;
-  border: 1px solid var(--line-soft);
-  border-radius: 4px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   background: var(--paper);
   text-decoration: none;
-  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  transition: background 0.15s;
 }
 
 .home-analise-card:hover {
-  border-color: var(--pine);
-  box-shadow: 0 4px 12px rgba(30, 75, 60, 0.1);
-  transform: translateY(-2px);
+  background: var(--paper-raised);
 }
 
 .home-analise-meta {
@@ -6014,10 +6016,10 @@ footer.rodape {
 
 .home-analise-titulo {
   font-family: var(--font-display);
-  font-size: 0.98rem;
-  font-weight: 700;
+  font-size: 1.15rem;
+  font-weight: 400;
   color: var(--ink);
-  line-height: 1.35;
+  line-height: 1.3;
 }
 
 .home-analise-resumo {
@@ -6186,7 +6188,7 @@ footer.rodape {
 .resultado-segundo-sorteio {
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px dashed var(--line-soft);
+  border-top: 1px dashed var(--line-strong);
 }
 
 .resultado-segundo-sorteio__titulo {
@@ -7213,84 +7215,33 @@ footer.rodape {
   align-items: flex-start;
   gap: 16px;
   padding: 22px 24px;
-  border-radius: 8px;
+  border-radius: 0;
   text-decoration: none;
   color: var(--ink);
-  border: 1px solid var(--line-strong);
-  transition: transform 0.15s, box-shadow 0.15s;
+  border: 1px solid var(--ink);
+  transition: background 0.15s;
   background: var(--paper-raised);
 }
 
 .home-destaque-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.09);
-}
-
-.home-destaque-card--matematica {
-  border-color: color-mix(in srgb, var(--pine) 30%, transparent);
-  background: color-mix(in srgb, var(--pine) 4%, var(--paper-raised));
-}
-
-.home-destaque-card--matematica:hover {
-  border-color: var(--pine);
-}
-
-.home-destaque-card--calculadoras {
-  border-color: color-mix(in srgb, var(--ochre) 30%, transparent);
-  background: color-mix(in srgb, var(--ochre) 4%, var(--paper-raised));
-}
-
-.home-destaque-card--calculadoras:hover {
-  border-color: var(--ochre);
-}
-
-.home-destaque-card--glossario {
-  border-color: color-mix(in srgb, var(--rust) 30%, transparent);
-  background: color-mix(in srgb, var(--rust) 4%, var(--paper-raised));
-}
-
-.home-destaque-card--glossario:hover {
-  border-color: var(--rust);
-}
-
-.home-destaque-card--faq {
-  border-color: color-mix(in srgb, var(--ochre) 30%, transparent);
-  background: color-mix(in srgb, var(--ochre) 4%, var(--paper-raised));
-}
-
-.home-destaque-card--faq:hover {
-  border-color: var(--ochre);
-}
-
-.home-destaque-card--calendario {
-  border-color: color-mix(in srgb, var(--pine) 30%, transparent);
-  background: color-mix(in srgb, var(--pine) 4%, var(--paper-raised));
-}
-
-.home-destaque-card--calendario:hover {
-  border-color: var(--pine);
+  background: var(--paper);
 }
 
 .home-destaque-card__icone {
-  font-size: 2.2rem;
-  line-height: 1;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .home-destaque-card__titulo {
   font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--ink);
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--pine);
   margin-bottom: 6px;
 }
-
-.home-destaque-card--matematica .home-destaque-card__titulo { color: var(--pine); }
-.home-destaque-card--calculadoras .home-destaque-card__titulo { color: var(--ochre); }
-.home-destaque-card--glossario .home-destaque-card__titulo { color: var(--rust); }
-.home-destaque-card--faq .home-destaque-card__titulo { color: var(--ochre); }
-.home-destaque-card--calendario .home-destaque-card__titulo { color: var(--pine); }
 
 .home-destaque-card__sub {
   font-size: 0.82rem;
@@ -7304,11 +7255,6 @@ footer.rodape {
   font-weight: 600;
   color: var(--pine);
 }
-
-.home-destaque-card--calculadoras .home-destaque-card__cta { color: var(--ochre); }
-.home-destaque-card--glossario .home-destaque-card__cta { color: var(--rust); }
-.home-destaque-card--faq .home-destaque-card__cta { color: var(--ochre); }
-.home-destaque-card--calendario .home-destaque-card__cta { color: var(--pine); }
 
 /* ── Manual de uso das calculadoras ─────────────────────────────────── */
 .calc-manual {
@@ -7861,8 +7807,8 @@ footer.rodape {
 
 .gerador-relampago__titulo {
   font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 400;
   color: var(--ink);
   margin: 8px 0 10px;
 }
@@ -7876,8 +7822,8 @@ footer.rodape {
 
 .gerador-relampago__caixa {
   background: var(--paper-raised);
-  border: 1px solid var(--line-strong);
-  border-radius: 8px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   padding: 24px;
 }
 
@@ -7912,8 +7858,8 @@ footer.rodape {
 /* ── Desafio de Intuição ─────────────────────────────────────────────── */
 .desafio-intuicao {
   background: var(--paper-raised);
-  border: 1px solid var(--line-strong);
-  border-radius: 8px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   padding: 28px 32px;
   max-width: 620px;
   margin: 0 auto;
@@ -7921,8 +7867,8 @@ footer.rodape {
 
 .desafio-intuicao__pergunta {
   font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 1.5rem;
+  font-weight: 400;
   color: var(--ink);
   margin: 8px 0 18px;
   line-height: 1.35;
@@ -7941,8 +7887,8 @@ footer.rodape {
   font-size: 0.88rem;
   color: var(--ink);
   background: var(--paper);
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   padding: 14px 16px;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
@@ -7981,7 +7927,7 @@ footer.rodape {
   color: var(--pine);
   background: transparent;
   border: 1px solid var(--pine);
-  border-radius: 16px;
+  border-radius: 0;
   padding: 7px 16px;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
