@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Dezenas from "./Dezenas";
+import InsightCallout from "./InsightCallout";
 import { planosViaveis, PlanoBolao } from "@/lib/bolao-opcoes";
 import { calcularFechamentoAction, FechamentoActionResult } from "@/lib/fechamento-actions";
 import { gerarPdfBolao, baixarPdfBolao } from "@/lib/bolao-pdf";
@@ -292,6 +293,15 @@ export default function BolaoClient({
               <span className="chip chip--destaque chip--bloco">garantia verificada</span>
             )}
           </h2>
+
+          <InsightCallout kicker="O que isso garante de verdade">
+            Se pelo menos{" "}
+            <strong>{resultado.pontosGarantidos} das {planoEscolhido.tamanhoPool} dezenas do pool</strong>{" "}
+            estiverem entre as sorteadas, pelo menos 1 desses{" "}
+            <strong>{resultado.totalTickets} jogos</strong> vai marcar{" "}
+            {resultado.pontosGarantidos} pontos — não importa qual participante ficou com qual
+            bilhete.
+          </InsightCallout>
 
           <div className="transicao-resumo">
             <div className="transicao-resumo__item">

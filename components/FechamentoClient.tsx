@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Dezenas from "./Dezenas";
+import InsightCallout from "./InsightCallout";
 import { calcularFechamentoAction, FechamentoActionResult } from "@/lib/fechamento-actions";
 import { salvarJogoAction } from "@/lib/jogo-actions";
 import { probabilidadeAoMenosK } from "@/lib/probabilidades";
@@ -282,6 +283,13 @@ export default function FechamentoClient({
             </span>
 
           </h2>
+          <InsightCallout kicker="O que isso garante de verdade">
+            Se pelo menos <strong>{resultado.pontosGarantidos} das suas {poolTamanho} dezenas</strong>{" "}
+            estiverem entre as sorteadas, pelo menos 1 desses{" "}
+            <strong>{resultado.totalTickets} jogos</strong> vai marcar{" "}
+            {resultado.pontosGarantidos} pontos — não importa como essas dezenas caiam
+            espalhadas entre os bilhetes.
+          </InsightCallout>
           <p className="bloco__nota">
             Mostrando {Math.min(PREVIEW_MAX, resultado.tickets.length)} de {resultado.totalTickets}{" "}
             jogos. Baixe o arquivo completo para ver todos.
