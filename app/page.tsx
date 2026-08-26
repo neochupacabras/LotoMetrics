@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
 import GeradorRelampago from "@/components/GeradorRelampago";
+import MaisLoteriasMenu from "@/components/MaisLoteriasMenu";
 import DesafioIntuicao from "@/components/DesafioIntuicao";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { getAnalisesRecentes } from "@/lib/analises";
@@ -166,69 +167,66 @@ function CartaoResultado({
 }
 
 // ─── Ferramentas disponíveis ──────────────────────────────────────────────────
+// Cada ferramenta existe nas 9 loterias — "slug" é a rota compartilhada
+// (/{codigoLoteria}/{slug}). Os cards mostram Lotofácil e Mega-Sena como
+// atalhos rápidos (as duas mais populares) e um menu "+ outras loterias"
+// com as 7 restantes, pra não dar a impressão de que a ferramenta é
+// exclusiva dessas duas.
 const FERRAMENTAS = [
   {
     titulo: "Analisador de jogo",
     indice: "01",
     descricao: "Selecione suas dezenas e veja o perfil estatístico em 7 métricas, comparado a todas as combinações possíveis.",
-    hrefLF: "/lotofacil/analisador",
-    hrefMS: "/megasena/analisador",
+    slug: "analisador",
     destaque: true,
   },
   {
     titulo: "Simulador histórico",
     indice: "02",
     descricao: "E se você tivesse jogado essa combinação em todo concurso? Resultado financeiro honesto com prêmios históricos reais.",
-    hrefLF: "/lotofacil/simulador",
-    hrefMS: "/megasena/simulador",
+    slug: "simulador",
     destaque: true,
   },
   {
     titulo: "Heatmap do volante",
     indice: "03",
     descricao: "Visualize a frequência de cada dezena no volante, por período. Mude o intervalo e observe a aleatoriedade em ação.",
-    hrefLF: "/lotofacil/heatmap",
-    hrefMS: "/megasena/heatmap",
+    slug: "heatmap",
     destaque: true,
   },
   {
     titulo: "Linha do tempo dos acúmulos",
     indice: "04",
     descricao: "Todo acúmulo histórico em um scatter chart — quanto durou, quando aconteceu e qual foi o prêmio pago.",
-    hrefLF: "/lotofacil/acumulos",
-    hrefMS: "/megasena/acumulos",
+    slug: "acumulos",
     destaque: false,
   },
   {
     titulo: "Tabelas estatísticas",
     indice: "05",
     descricao: "13 análises do histórico completo: frequência, atraso, ciclos, pares/ímpares, soma, primos, Fibonacci e mais.",
-    hrefLF: "/lotofacil/tabelas",
-    hrefMS: "/megasena/tabelas",
+    slug: "tabelas",
     destaque: false,
   },
   {
     titulo: "Gerador de jogos",
     indice: "06",
     descricao: "Monte combinações com filtros estatísticos — modo simples com critérios pré-definidos ou avançado com controle total.",
-    hrefLF: "/lotofacil/gerador",
-    hrefMS: "/megasena/gerador",
+    slug: "gerador",
     destaque: false,
   },
   {
     titulo: "Conferidor",
     indice: "07",
     descricao: "Verifique como um jogo específico teria se saído em cada concurso da história — acertos por faixa, período a período.",
-    hrefLF: "/lotofacil/conferidor",
-    hrefMS: "/megasena/conferidor",
+    slug: "conferidor",
     destaque: false,
   },
   {
     titulo: "Fechamentos e Bolão",
     indice: "08",
     descricao: "Cobertura combinatória inteligente: calcule fechamentos e monte bolões com o menor número de apostas possível.",
-    hrefLF: "/lotofacil/fechamentos",
-    hrefMS: "/megasena/fechamentos",
+    slug: "fechamentos",
     destaque: false,
   },
 ];
@@ -430,12 +428,13 @@ export default async function HomePage() {
                 </div>
                 <p className="home-ferramenta-desc">{f.descricao}</p>
                 <div className="home-ferramenta-links">
-                  <Link href={f.hrefLF} className="home-ferramenta-link">
+                  <Link href={`/lotofacil/${f.slug}`} className="home-ferramenta-link">
                     Lotofácil →
                   </Link>
-                  <Link href={f.hrefMS} className="home-ferramenta-link home-ferramenta-link--sec">
+                  <Link href={`/megasena/${f.slug}`} className="home-ferramenta-link home-ferramenta-link--sec">
                     Mega-Sena →
                   </Link>
+                  <MaisLoteriasMenu ferramentaSlug={f.slug} />
                 </div>
               </div>
             ))}
@@ -451,12 +450,13 @@ export default async function HomePage() {
                 </div>
                 <p className="home-ferramenta-desc">{f.descricao}</p>
                 <div className="home-ferramenta-links">
-                  <Link href={f.hrefLF} className="home-ferramenta-link">
+                  <Link href={`/lotofacil/${f.slug}`} className="home-ferramenta-link">
                     Lotofácil →
                   </Link>
-                  <Link href={f.hrefMS} className="home-ferramenta-link home-ferramenta-link--sec">
+                  <Link href={`/megasena/${f.slug}`} className="home-ferramenta-link home-ferramenta-link--sec">
                     Mega-Sena →
                   </Link>
+                  <MaisLoteriasMenu ferramentaSlug={f.slug} />
                 </div>
               </div>
             ))}

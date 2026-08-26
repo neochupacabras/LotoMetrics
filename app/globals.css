@@ -2570,6 +2570,8 @@ footer.rodape {
 
 .home-ferramenta-links {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 14px;
   margin-top: 4px;
 }
@@ -2588,6 +2590,54 @@ footer.rodape {
 
 .home-ferramenta-link--sec {
   color: var(--ink-faint);
+}
+
+/* ── Menu "+N loterias" nos cards de ferramenta da home ─────── */
+.mais-loterias {
+  position: relative;
+}
+
+.mais-loterias__btn {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.mais-loterias__btn:hover {
+  color: var(--pine);
+}
+
+.mais-loterias__painel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  background: var(--paper-raised);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 6px;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mais-loterias__item {
+  display: block;
+  padding: 7px 10px;
+  font-size: 0.84rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.mais-loterias__item:hover {
+  background: var(--paper);
+  color: var(--pine);
 }
 
 /* ── Quiz CTA ──────────────────────────────────────────────── */
