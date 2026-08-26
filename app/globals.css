@@ -889,8 +889,8 @@ footer.rodape {
   max-width: 520px;
   margin: 28px 0;
   padding: 22px 24px;
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   background: var(--paper-raised);
 }
 
@@ -911,7 +911,7 @@ footer.rodape {
   width: 70px;
   padding: 6px 8px;
   border: 1px solid var(--line-strong);
-  border-radius: 3px;
+  border-radius: 0;
   font-family: var(--font-mono);
   background: var(--paper);
   color: var(--ink);
@@ -953,7 +953,7 @@ footer.rodape {
   width: 50px;
   padding: 4px 6px;
   border: 1px solid var(--line-strong);
-  border-radius: 3px;
+  border-radius: 0;
   font-family: var(--font-mono);
   text-align: center;
   background: var(--paper);
@@ -968,15 +968,14 @@ footer.rodape {
 .botao-gerar {
   margin-top: 6px;
   align-self: flex-start;
-  padding: 11px 22px;
+  padding: 12px 24px;
   background: var(--pine);
   color: var(--paper);
   border: none;
-  border-radius: 4px;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
 }
 
@@ -999,8 +998,8 @@ footer.rodape {
 
 .jogo-gerado {
   padding: 18px 20px;
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   background: var(--paper-raised);
 }
 
@@ -1023,7 +1022,7 @@ footer.rodape {
   padding: 5px 12px;
   background: transparent;
   border: 1px solid var(--line-strong);
-  border-radius: 3px;
+  border-radius: 0;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--ink);
@@ -1067,6 +1066,7 @@ footer.rodape {
 
 .campo-select {
   padding: 5px 8px;
+  border-radius: 0;
   border: 1px solid var(--line-strong);
   border-radius: 3px;
   font-family: var(--font-mono);
@@ -1127,7 +1127,7 @@ footer.rodape {
 .dezena-selecionavel {
   width: 46px;
   height: 46px;
-  border-radius: 999px;
+  border-radius: 0;
   border: 1.5px solid var(--line-strong);
   background: var(--paper);
   color: var(--ink-soft);
@@ -1138,9 +1138,9 @@ footer.rodape {
 }
 
 .dezena-selecionavel[data-selecionada="true"] {
-  background: var(--ochre);
+  background: var(--pine);
   border-color: var(--pine-deep);
-  color: var(--pine-deep);
+  color: var(--paper);
 }
 
 .dezena-selecionavel:disabled {
@@ -1187,7 +1187,7 @@ footer.rodape {
   background: transparent;
   border: 1px solid var(--pine);
   color: var(--pine);
-  border-radius: 4px;
+  border-radius: 0;
   font-family: var(--font-mono);
   font-size: 0.8rem;
   cursor: pointer;
@@ -3383,10 +3383,10 @@ footer.rodape {
 .gerador-premium-overlay {
   margin-top: 24px;
   border: 1px dashed var(--ochre);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 40px 32px;
   text-align: center;
-  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  background: color-mix(in srgb, var(--ochre) 6%, var(--paper));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -5520,6 +5520,31 @@ footer.rodape {
 .fechamento-exportar__nota {
   font-size: 0.78rem;
   color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ── Resumo de custo do bolão (antes sem CSS definido) ────── */
+.transicao-resumo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 14px 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.transicao-resumo__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.transicao-resumo__valor {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: var(--ink);
   margin: 0;
 }
 
