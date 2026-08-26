@@ -148,7 +148,7 @@ export default async function DetalheConcursoPage({
         Como essas dezenas se encaixam nas tabelas estatísticas do site.
       </p>
       <div className="analise-grid">
-        <Link href={`/${codigoLoteria}/tabelas/pares-impares`} className="analise-cartao">
+        <Link href={`/${codigoLoteria}/tabelas/pares-impares`} className="analise-cartao cartao-elevado">
           <p className="analise-cartao__rotulo">Pares / Ímpares</p>
           <p className="analise-cartao__valor">
             {analise.pares}/{analise.impares}
@@ -158,7 +158,7 @@ export default async function DetalheConcursoPage({
           )}
         </Link>
 
-        <Link href={`/${codigoLoteria}/tabelas/soma`} className="analise-cartao">
+        <Link href={`/${codigoLoteria}/tabelas/soma`} className="analise-cartao cartao-elevado">
           <p className="analise-cartao__rotulo">Soma das dezenas</p>
           <p className="analise-cartao__valor">{analise.soma}</p>
           {analise.percentualSoma !== null && (
@@ -168,7 +168,7 @@ export default async function DetalheConcursoPage({
           )}
         </Link>
 
-        <Link href={`/${codigoLoteria}/tabelas/primos`} className="analise-cartao">
+        <Link href={`/${codigoLoteria}/tabelas/primos`} className="analise-cartao cartao-elevado">
           <p className="analise-cartao__rotulo">Números primos</p>
           <p className="analise-cartao__valor">{analise.primos}</p>
           {analise.percentualPrimos !== null && (
@@ -176,7 +176,7 @@ export default async function DetalheConcursoPage({
           )}
         </Link>
 
-        <Link href={`/${codigoLoteria}/tabelas/fibonacci`} className="analise-cartao">
+        <Link href={`/${codigoLoteria}/tabelas/fibonacci`} className="analise-cartao cartao-elevado">
           <p className="analise-cartao__rotulo">Números de Fibonacci</p>
           <p className="analise-cartao__valor">{analise.fibonacci}</p>
           {analise.percentualFibonacci !== null && (
@@ -184,7 +184,7 @@ export default async function DetalheConcursoPage({
           )}
         </Link>
 
-        <Link href={`/${codigoLoteria}/tabelas/multiplos-de-3`} className="analise-cartao">
+        <Link href={`/${codigoLoteria}/tabelas/multiplos-de-3`} className="analise-cartao cartao-elevado">
           <p className="analise-cartao__rotulo">Múltiplos de 3</p>
           <p className="analise-cartao__valor">{analise.multiplos3}</p>
           {analise.percentualMultiplos3 !== null && (
@@ -192,7 +192,7 @@ export default async function DetalheConcursoPage({
           )}
         </Link>
 
-        <Link href={`/${codigoLoteria}/tabelas/moldura-centro`} className="analise-cartao">
+        <Link href={`/${codigoLoteria}/tabelas/moldura-centro`} className="analise-cartao cartao-elevado">
           <p className="analise-cartao__rotulo">Moldura / Centro</p>
           <p className="analise-cartao__valor">
             {analise.moldura}/{analise.centro}
@@ -204,7 +204,7 @@ export default async function DetalheConcursoPage({
           )}
         </Link>
 
-        <Link href={`/${codigoLoteria}/tabelas/sequencias`} className="analise-cartao">
+        <Link href={`/${codigoLoteria}/tabelas/sequencias`} className="analise-cartao cartao-elevado">
           <p className="analise-cartao__rotulo">Maior sequência</p>
           <p className="analise-cartao__valor">{analise.maiorSequencia}</p>
           {analise.percentualSequencia !== null && (
@@ -213,7 +213,7 @@ export default async function DetalheConcursoPage({
         </Link>
 
         {analise.repetidas !== null && (
-          <Link href={`/${codigoLoteria}/tabelas/repetidas`} className="analise-cartao">
+          <Link href={`/${codigoLoteria}/tabelas/repetidas`} className="analise-cartao cartao-elevado">
             <p className="analise-cartao__rotulo">Repetidas do anterior</p>
             <p className="analise-cartao__valor">{analise.repetidas}</p>
             <p className="analise-cartao__contexto">vs. concurso {concurso.numero - 1}</p>
