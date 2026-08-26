@@ -16,10 +16,8 @@ export const metadata: Metadata = {
 const GRUPOS = [
   {
     titulo: "Análise sem limite",
-    emoji: "🔍",
     descricao:
       "As ferramentas mais poderosas do site sem as restrições do plano gratuito.",
-    cor: "pine",
     itens: [
       {
         nome: "Simulador histórico — histórico completo",
@@ -55,10 +53,8 @@ const GRUPOS = [
   },
   {
     titulo: "Rastreamento automático",
-    emoji: "📧",
     descricao:
       "Salve seus jogos fixos e receba o resultado por e-mail após cada sorteio — sem precisar voltar ao site.",
-    cor: "ochre",
     itens: [
       {
         nome: "Rastreador de jogos pessoais",
@@ -82,10 +78,8 @@ const GRUPOS = [
   },
   {
     titulo: "Conferidor por foto",
-    emoji: "📸",
     descricao:
       "A funcionalidade que mais viraliza — fotografe o bilhete e as dezenas são preenchidas automaticamente.",
-    cor: "pine",
     itens: [
       {
         nome: "OCR de bilhetes via câmera",
@@ -103,10 +97,8 @@ const GRUPOS = [
   },
   {
     titulo: "API de dados históricos",
-    emoji: "🔌",
     descricao:
       "Para desenvolvedores, pesquisadores e quem quer construir em cima dos dados.",
-    cor: "ochre",
     itens: [
       {
         nome: "Acesso REST com autenticação por chave",
@@ -124,9 +116,7 @@ const GRUPOS = [
   },
   {
     titulo: "Experiência sem anúncios",
-    emoji: "🚫",
     descricao: "Para assinantes, o site é completamente limpo.",
-    cor: "pine",
     itens: [
       {
         nome: "Zero anúncios em qualquer página",
@@ -204,16 +194,14 @@ export default function PremiumPage() {
           >
             <div className="container premium-grupo__inner">
               <div className="premium-grupo__cabecalho">
-                <span className="premium-grupo__emoji" aria-hidden>{grupo.emoji}</span>
+                <span className="premium-grupo__emoji" aria-hidden>{String(gi + 1).padStart(2, "0")}</span>
                 <h2 className="premium-grupo__titulo">{grupo.titulo}</h2>
                 <p className="premium-grupo__desc">{grupo.descricao}</p>
               </div>
               <div className="premium-grupo__itens">
                 {grupo.itens.map((item) => (
                   <div key={item.nome} className="premium-item">
-                    <div className="premium-item__check" style={{
-                      background: grupo.cor === "ochre" ? "var(--ochre)" : "var(--pine)"
-                    }}>✓</div>
+                    <div className="premium-item__check">✓</div>
                     <div className="premium-item__conteudo">
                       <p className="premium-item__nome">
                         {item.link ? (

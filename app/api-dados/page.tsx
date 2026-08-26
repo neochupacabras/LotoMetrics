@@ -69,25 +69,21 @@ const TIPOS_ESTATISTICA = [
 
 const CASOS_DE_USO = [
   {
-    icone: "📊",
     titulo: "Dashboards e visualizações",
     descricao:
       "Construa painéis personalizados com gráficos de frequência, heatmaps ou linhas do tempo de acúmulo usando os dados já processados.",
   },
   {
-    icone: "🤖",
     titulo: "Modelos e análises",
     descricao:
       "Alimente modelos estatísticos, scripts Python ou notebooks Jupyter com histórico completo de concursos e distribuições prontas.",
   },
   {
-    icone: "📱",
     titulo: "Aplicativos e integrações",
     descricao:
       "Integre resultados em tempo real e estatísticas em apps móveis, bots de Telegram ou planilhas automatizadas.",
   },
   {
-    icone: "🔬",
     titulo: "Pesquisa acadêmica",
     descricao:
       "Acesse séries históricas estruturadas para estudos de aleatoriedade, distribuições probabilísticas ou comportamento de apostadores.",
@@ -207,9 +203,9 @@ dados = r.json()["dados"]`}</pre>
           <div className="container">
             <h2 className="api-secao__titulo">Para quem é</h2>
             <div className="api-casos-grid">
-              {CASOS_DE_USO.map((c) => (
+              {CASOS_DE_USO.map((c, i) => (
                 <div key={c.titulo} className="api-caso-card">
-                  <span className="api-caso-card__icone">{c.icone}</span>
+                  <span className="api-caso-card__icone">{String(i + 1).padStart(2, "0")}</span>
                   <h3 className="api-caso-card__titulo">{c.titulo}</h3>
                   <p className="api-caso-card__descricao">{c.descricao}</p>
                 </div>

@@ -90,7 +90,6 @@ export default function ConferidorFoto({
   if (!logado) {
     return (
       <div className="ocr-cta">
-        <span className="ocr-cta__icone">📷</span>
         <p className="ocr-cta__titulo">Conferidor por foto</p>
         <p className="ocr-cta__desc">
           Fotografe o bilhete e as dezenas são preenchidas automaticamente.
@@ -104,7 +103,6 @@ export default function ConferidorFoto({
   if (!isPremium) {
     return (
       <div className="ocr-cta">
-        <span className="ocr-cta__icone">📷</span>
         <p className="ocr-cta__titulo">Conferidor por foto ✦ Premium</p>
         <p className="ocr-cta__desc">
           Fotografe o bilhete e as dezenas são preenchidas automaticamente —
@@ -127,7 +125,6 @@ export default function ConferidorFoto({
           onDragOver={handleDragOver}
           onClick={() => inputRef.current?.click()}
         >
-          <span className="ocr-dropzone__icone">📷</span>
           <p className="ocr-dropzone__titulo">Fotografe ou envie o bilhete</p>
           <p className="ocr-dropzone__sub">
             Arraste aqui, clique para selecionar, ou use a câmera no celular
