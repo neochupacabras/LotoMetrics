@@ -53,7 +53,7 @@ export default async function TabelasIndexPage({
           <Link
             key={c.slug}
             href={`/${codigoLoteria}/tabelas/${c.slug}`}
-            className="categoria-card"
+            className="categoria-card cartao-elevado"
           >
             <div className="categoria-card__topo">
               {String(i + 1).padStart(2, "0")}

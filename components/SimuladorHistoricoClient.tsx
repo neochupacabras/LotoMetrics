@@ -110,7 +110,7 @@ function SeletorDezenas({
 function CardsResumo({ r, cor }: { r: ResultadoSimulacao; cor?: string }) {
   return (
     <div className="simulador-hist-cards">
-      <div className="simulador-hist-card">
+      <div className="simulador-hist-card cartao-elevado">
         <span className="simulador-hist-card-rotulo">Total gasto</span>
         <span className="simulador-hist-card-valor" style={{ color:"var(--rust)" }}>
           {formatarReaisSimples(r.totalGasto)}
@@ -119,7 +119,7 @@ function CardsResumo({ r, cor }: { r: ResultadoSimulacao; cor?: string }) {
           {r.totalConcursos.toLocaleString("pt-BR")} concursos × {formatarReaisSimples(r.precoAposta)}
         </span>
       </div>
-      <div className="simulador-hist-card">
+      <div className="simulador-hist-card cartao-elevado">
         <span className="simulador-hist-card-rotulo">Total ganho</span>
         <span className="simulador-hist-card-valor" style={{ color: cor ?? "var(--pine)" }}>
           {formatarReaisSimples(r.totalGanho)}
@@ -128,7 +128,7 @@ function CardsResumo({ r, cor }: { r: ResultadoSimulacao; cor?: string }) {
           em {r.porFaixa.reduce((s, f) => s + f.qtd, 0)} prêmios
         </span>
       </div>
-      <div className="simulador-hist-card">
+      <div className="simulador-hist-card cartao-elevado">
         <span className="simulador-hist-card-rotulo">Saldo final</span>
         <span className="simulador-hist-card-valor" style={{ color: r.saldoFinal >= 0 ? "var(--pine)" : "var(--rust)" }}>
           {formatarReaisSimples(r.saldoFinal)}
@@ -137,7 +137,7 @@ function CardsResumo({ r, cor }: { r: ResultadoSimulacao; cor?: string }) {
           {r.saldoFinal < 0 ? "prejuízo" : "lucro"} acumulado
         </span>
       </div>
-      <div className="simulador-hist-card">
+      <div className="simulador-hist-card cartao-elevado">
         <span className="simulador-hist-card-rotulo">Retorno</span>
         <span className="simulador-hist-card-valor">{r.retornoPct.toFixed(1)}%</span>
         <span className="simulador-hist-card-detalhe">média teórica: ~43%</span>
@@ -387,7 +387,7 @@ export default function SimuladorHistoricoClient({
 
           {/* Card drawdown */}
           <div className="simulador-drawdown-card">
-            <div className="simulador-drawdown-item simulador-drawdown-item--destaque">
+            <div className="simulador-drawdown-item simulador-drawdown-item--destaque cartao-elevado">
               <span className="simulador-drawdown-rotulo">Maior seca</span>
               <span className="simulador-drawdown-valor">{resultado.drawdown.maiorSeca} concursos</span>
               <span className="simulador-drawdown-detalhe">
@@ -396,7 +396,7 @@ export default function SimuladorHistoricoClient({
                   : "sem seca registrada"}
               </span>
             </div>
-            <div className="simulador-drawdown-item">
+            <div className="simulador-drawdown-item cartao-elevado">
               <span className="simulador-drawdown-rotulo">Maior drawdown</span>
               <span className="simulador-drawdown-valor" style={{ color: "var(--rust)" }}>
                 {formatarReaisSimples(resultado.drawdown.maiorDrawdown)}

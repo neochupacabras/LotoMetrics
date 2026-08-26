@@ -67,7 +67,7 @@ interface MetricaCardProps {
 
 function MetricaCard({ titulo, valor, detalhe, pct, label, link }: MetricaCardProps) {
   return (
-    <div className="analisador-card">
+    <div className="analisador-card cartao-elevado">
       <div className="analisador-card__topo">
         <span className="analisador-card__titulo">{titulo}</span>
         <span className={badgeClass(label)}>{label}</span>

@@ -154,7 +154,7 @@ export default function SimuladorClient({
           </h2>
           <div className="analise-grid">
             {cartoes.map((c) => (
-              <Link key={c.rotulo} href={c.link} className="analise-cartao">
+              <Link key={c.rotulo} href={c.link} className="analise-cartao cartao-elevado">
                 <p className="analise-cartao__rotulo">{c.rotulo}</p>
                 <p className="analise-cartao__valor">{c.valor}</p>
                 {c.percentual !== null && (
