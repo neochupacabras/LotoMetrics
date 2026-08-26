@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import ProximoSorteioWidget from "@/components/ProximoSorteioWidget";
 import GeradorRelampago from "@/components/GeradorRelampago";
 import DesafioIntuicao from "@/components/DesafioIntuicao";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
@@ -291,8 +290,6 @@ export default async function HomePage() {
                   e histórico completo. Sem previsões falsas, sem sistemas mágicos.
                 </p>
               </div>
-
-              <ProximoSorteioWidget />
             </div>
 
             {/* Últimos resultados */}

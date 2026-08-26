@@ -38,7 +38,6 @@ export default function CalculadorasPage() {
           {[
             { numero: "15", label: "calculadoras" },
             { numero: "6", label: "categorias" },
-            { numero: "0", label: "cadastros necessários" },
           ].map(({ numero, label }) => (
             <div key={label} style={{ textAlign: "center" }}>
               <div style={{ fontFamily: "var(--font-mono)", fontSize: "2rem", fontWeight: 700, color: "var(--pine)", lineHeight: 1 }}>{numero}</div>
