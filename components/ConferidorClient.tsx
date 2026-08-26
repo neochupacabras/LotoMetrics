@@ -128,7 +128,7 @@ export default function ConferidorClient({
           data-ativo={aba === "foto"}
           onClick={() => setAba("foto")}
         >
-          📷 Foto do bilhete
+          Foto do bilhete
           {!isPremium && <span className="modo-toggle__lock">✦ Premium</span>}
         </button>
       </div>

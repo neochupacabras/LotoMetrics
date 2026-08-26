@@ -92,7 +92,7 @@ function classificar(nota: number): {
   if (nota >= 55) return {
     classificacao: "equilibrado",
     descricao: "Jogo equilibrado — a maioria das características está dentro da faixa histórica normal",
-    cor: "#1e4b3c",
+    cor: "#4d7c0f",
   };
   if (nota >= 35) return {
     classificacao: "razoavel",
@@ -102,7 +102,7 @@ function classificar(nota: number): {
   return {
     classificacao: "atipico",
     descricao: "Jogo atípico — características raramente observadas no histórico de sorteios",
-    cor: "#8e3a2a",
+    cor: "#7a2e1f",
   };
 }
 

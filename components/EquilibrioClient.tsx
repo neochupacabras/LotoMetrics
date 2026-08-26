@@ -39,8 +39,8 @@ function ScoreCard({ nota, cor, classificacao, descricao }: {
 function BarraMetrica({ metrica }: { metrica: ResultadoEquilibrio["metricas"][0] }) {
   const cor =
     metrica.score >= 75 ? "#166534" :
-    metrica.score >= 55 ? "#1e4b3c" :
-    metrica.score >= 35 ? "#b9802c" : "#8e3a2a";
+    metrica.score >= 55 ? "#4d7c0f" :
+    metrica.score >= 35 ? "#b9802c" : "#7a2e1f";
 
   return (
     <div className="equilibrio-metrica">

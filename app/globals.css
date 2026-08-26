@@ -1333,14 +1333,14 @@ footer.rodape {
   gap: 16px;
   padding: 18px 22px;
   background: var(--paper-raised);
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
 }
 
 .analisador-resumo__numero {
   font-family: var(--font-display);
-  font-size: 2.8rem;
-  font-weight: 600;
+  font-size: 3.2rem;
+  font-weight: 400;
   color: var(--pine);
   line-height: 1;
   flex-shrink: 0;
@@ -1362,8 +1362,8 @@ footer.rodape {
 /* Card individual */
 .analisador-card {
   padding: 18px 20px;
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   background: var(--paper-raised);
   display: flex;
   flex-direction: column;
@@ -1387,8 +1387,8 @@ footer.rodape {
 
 .analisador-card__valor {
   font-family: var(--font-display);
-  font-size: 1.55rem;
-  font-weight: 600;
+  font-size: 1.8rem;
+  font-weight: 400;
   color: var(--ink);
   line-height: 1.2;
 }
@@ -2146,8 +2146,8 @@ footer.rodape {
   gap: 6px;
   padding: 14px 18px;
   background: var(--paper-raised);
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
 }
 
 .simulador-hist-jogo-label {
@@ -2165,8 +2165,9 @@ footer.rodape {
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background: var(--ochre);
+  border-radius: 0;
+  border: 1px solid var(--ink);
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -2189,8 +2190,8 @@ footer.rodape {
   flex-direction: column;
   gap: 4px;
   padding: 18px 20px;
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   background: var(--paper-raised);
 }
 
@@ -2204,8 +2205,8 @@ footer.rodape {
 
 .simulador-hist-card-valor {
   font-family: var(--font-display);
-  font-size: 1.6rem;
-  font-weight: 600;
+  font-size: 1.9rem;
+  font-weight: 400;
   line-height: 1.2;
 }
 
@@ -2230,8 +2231,8 @@ footer.rodape {
 }
 
 .simulador-hist-chart {
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
   background: var(--paper-raised);
   padding: 16px 4px 8px;
 }
@@ -3011,7 +3012,7 @@ footer.rodape {
 
 .conta-plano-card--premium {
   border-color: var(--ochre);
-  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  background: color-mix(in srgb, var(--ochre) 6%, var(--paper));
 }
 
 .conta-plano-nome {
@@ -3257,11 +3258,11 @@ footer.rodape {
 /* ── BloqueadoPremium ─────────────────────────────────────── */
 .bloqueado-premium {
   border: 1px dashed var(--ochre);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 28px 32px;
   margin-top: 32px;
   text-align: center;
-  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  background: color-mix(in srgb, var(--ochre) 6%, var(--paper));
 }
 
 .bloqueado-premium__icone {
@@ -3307,9 +3308,9 @@ footer.rodape {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #fef9ef;
+  background: color-mix(in srgb, var(--ochre) 8%, var(--paper));
   border: 1px solid var(--ochre);
-  border-radius: 4px;
+  border-radius: 0;
   padding: 10px 16px;
   font-size: 0.85rem;
   color: var(--ink-soft);
@@ -3323,7 +3324,7 @@ footer.rodape {
   background: var(--ochre);
   color: #fff;
   padding: 2px 7px;
-  border-radius: 3px;
+  border-radius: 0;
   flex-shrink: 0;
 }
 
@@ -3357,10 +3358,10 @@ footer.rodape {
 .conferidor-premium-cta {
   margin-top: 28px;
   border: 1px dashed var(--ochre);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 24px;
   text-align: center;
-  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  background: color-mix(in srgb, var(--ochre) 6%, var(--paper));
 }
 
 .conferidor-premium-cta__texto {
@@ -3442,7 +3443,7 @@ footer.rodape {
   border-radius: 6px;
   padding: 48px 32px;
   text-align: center;
-  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  background: color-mix(in srgb, var(--ochre) 6%, var(--paper));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3534,12 +3535,12 @@ footer.rodape {
   flex: 1;
   min-width: 0;
   padding: 14px 18px;
-  border-radius: 6px;
+  border-radius: 0;
   border: 2px solid var(--line-strong);
 }
 
 .simulador-comparar-jogo[data-cor="a"] { border-color: var(--ochre); }
-.simulador-comparar-jogo[data-cor="b"] { border-color: var(--pine); }
+.simulador-comparar-jogo[data-cor="b"] { border-color: var(--ink); }
 
 .simulador-comparar-jogo__label {
   display: block;
@@ -3574,12 +3575,12 @@ footer.rodape {
 
 .simulador-comparar-coluna {
   border: 1px solid var(--line-strong);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 20px;
 }
 
 .simulador-comparar-coluna[data-cor="a"] { border-color: var(--ochre); }
-.simulador-comparar-coluna[data-cor="b"] { border-color: var(--pine); }
+.simulador-comparar-coluna[data-cor="b"] { border-color: var(--ink); }
 
 .simulador-comparar-coluna__titulo {
   font-family: var(--font-display);
@@ -3592,7 +3593,7 @@ footer.rodape {
   margin-top: 24px;
   background: var(--paper);
   border: 1px solid var(--line-strong);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 18px 24px;
   font-size: 0.9rem;
   color: var(--ink-soft);
@@ -3663,7 +3664,7 @@ footer.rodape {
 }
 
 .conta-alerta-free {
-  background: #fef9ef;
+  background: color-mix(in srgb, var(--ochre) 8%, var(--paper));
   border: 1px solid var(--ochre);
   border-radius: 4px;
   padding: 12px 20px;
@@ -3857,7 +3858,7 @@ footer.rodape {
   border: 1px solid var(--ochre);
   border-radius: 6px;
   padding: 24px 28px;
-  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  background: color-mix(in srgb, var(--ochre) 6%, var(--paper));
   max-width: 540px;
   display: flex;
   flex-direction: column;
@@ -4026,7 +4027,7 @@ footer.rodape {
   border-radius: 6px;
   padding: 28px 32px;
   text-align: center;
-  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  background: color-mix(in srgb, var(--ochre) 6%, var(--paper));
   margin-bottom: 24px;
 }
 
@@ -4103,7 +4104,7 @@ footer.rodape {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #1c1b17;
+  background: var(--ink);
 }
 
 .ocr-preview__imagem {
@@ -4435,8 +4436,8 @@ footer.rodape {
 }
 
 .api-code-block {
-  background: #1c1b17;
-  color: #efeee6;
+  background: var(--ink);
+  color: var(--paper);
   font-family: var(--font-mono);
   font-size: 0.78rem;
   padding: 14px 16px;
@@ -4623,7 +4624,7 @@ footer.rodape {
 
 .api-hero__sub {
   font-size: 1rem;
-  color: rgba(239,238,230,0.75);
+  color: rgba(243,241,234,0.75);
   max-width: 560px;
   line-height: 1.6;
   margin: 0 0 28px;
@@ -4652,13 +4653,13 @@ footer.rodape {
 
 .api-hero .botao-copiar {
   color: var(--paper);
-  border-color: rgba(239,238,230,0.4);
+  border-color: rgba(243,241,234,0.4);
   background: transparent;
 }
 
 .api-hero .botao-copiar:hover {
   border-color: var(--paper);
-  background: rgba(239,238,230,0.1);
+  background: rgba(243,241,234,0.1);
 }
 
 /* ── Seções ──────────────────────────────────────────────── */
@@ -4840,7 +4841,7 @@ footer.rodape {
   border: 2px solid var(--ochre);
   border-radius: 6px;
   padding: 28px;
-  background: linear-gradient(135deg, #fdfbf5 0%, #fef9ef 100%);
+  background: color-mix(in srgb, var(--ochre) 6%, var(--paper));
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 32px;
@@ -5001,7 +5002,7 @@ footer.rodape {
 
 .api-cta-final__sub {
   font-size: 0.95rem;
-  color: rgba(239,238,230,0.75);
+  color: rgba(243,241,234,0.75);
   margin: 0 0 28px;
 }
 
@@ -5026,7 +5027,7 @@ footer.rodape {
 
 .api-cta-final .botao-copiar {
   color: var(--paper);
-  border-color: rgba(239,238,230,0.4);
+  border-color: rgba(243,241,234,0.4);
   background: transparent;
 }
 
@@ -5076,7 +5077,7 @@ footer.rodape {
 
 .premium-hero__sub {
   font-size: 1rem;
-  color: rgba(239,238,230,0.75);
+  color: rgba(243,241,234,0.75);
   max-width: 600px;
   line-height: 1.6;
   margin: 0 0 28px;
@@ -5100,7 +5101,7 @@ footer.rodape {
 
 .premium-hero__nota {
   font-size: 0.82rem;
-  color: rgba(239,238,230,0.5);
+  color: rgba(243,241,234,0.5);
   margin: 0;
 }
 
@@ -5257,7 +5258,7 @@ footer.rodape {
 }
 
 .premium-comparativo__td-destaque {
-  background: rgba(30, 75, 60, 0.04);
+  background: rgba(194, 59, 34, 0.04);
 }
 
 .premium-comparativo__tr-alt .premium-comparativo__td-feature,
@@ -5266,7 +5267,7 @@ footer.rodape {
 }
 
 .premium-comparativo__tr-alt .premium-comparativo__td-destaque {
-  background: rgba(30, 75, 60, 0.07);
+  background: rgba(194, 59, 34, 0.07);
 }
 
 .premium-comparativo__sim {
@@ -5340,7 +5341,7 @@ footer.rodape {
 
 .premium-cta-final__sub {
   font-size: 0.9rem;
-  color: rgba(239,238,230,0.65);
+  color: rgba(243,241,234,0.65);
   margin: 0 0 32px;
 }
 
@@ -5353,7 +5354,7 @@ footer.rodape {
 }
 
 .premium-cta-plano {
-  border: 1px solid rgba(239,238,230,0.25);
+  border: 1px solid rgba(243,241,234,0.25);
   border-radius: 6px;
   padding: 18px 22px;
   min-width: 140px;
@@ -5363,9 +5364,9 @@ footer.rodape {
 }
 
 .premium-cta-plano:hover {
-  border-color: rgba(239,238,230,0.5);
+  border-color: rgba(243,241,234,0.5);
   transform: translateY(-3px);
-  background: rgba(239,238,230,0.04);
+  background: rgba(243,241,234,0.04);
 }
 
 .premium-cta-plano--destaque {
@@ -5397,7 +5398,7 @@ footer.rodape {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: rgba(239,238,230,0.6);
+  color: rgba(243,241,234,0.6);
   margin: 0 0 6px;
 }
 
@@ -5412,7 +5413,7 @@ footer.rodape {
 .premium-cta-plano__periodo {
   font-family: var(--font-body);
   font-size: 0.78rem;
-  color: rgba(239,238,230,0.5);
+  color: rgba(243,241,234,0.5);
   font-weight: 400;
 }
 
@@ -5438,7 +5439,7 @@ footer.rodape {
 
 .premium-cta-final__nota {
   font-size: 0.78rem;
-  color: rgba(239,238,230,0.4);
+  color: rgba(243,241,234,0.4);
   margin: 0;
 }
 
@@ -5464,7 +5465,7 @@ footer.rodape {
 
 .simulador-drawdown-item {
   border: 1px solid var(--line-strong);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 16px 20px;
   display: flex;
   flex-direction: column;
@@ -5473,7 +5474,7 @@ footer.rodape {
 
 .simulador-drawdown-item--destaque {
   border-color: var(--rust);
-  background: #fef9f9;
+  background: color-mix(in srgb, var(--rust) 5%, var(--paper));
 }
 
 .simulador-drawdown-rotulo {
@@ -5486,7 +5487,8 @@ footer.rodape {
 
 .simulador-drawdown-valor {
   font-family: var(--font-display);
-  font-size: 1.3rem;
+  font-weight: 400;
+  font-size: 1.5rem;
   color: var(--ink);
 }
 
@@ -5593,10 +5595,10 @@ footer.rodape {
 
 .equilibrio-scorecard__nota {
   font-family: var(--font-display);
-  font-size: 5rem;
-  font-weight: 700;
+  font-size: 5.5rem;
+  font-weight: 400;
   line-height: 1;
-  letter-spacing: -2px;
+  letter-spacing: 0;
   transition: color 0.3s ease;
 }
 
@@ -5825,7 +5827,7 @@ footer.rodape {
 .analise-card:hover {
   border-color: var(--pine);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(30, 75, 60, 0.1);
+  box-shadow: 0 4px 12px rgba(194, 59, 34, 0.1);
 }
 
 .analise-card--compacta {

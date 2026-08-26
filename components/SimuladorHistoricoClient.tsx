@@ -32,9 +32,9 @@ function TooltipSimples({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   const saldo = payload[0]?.value as number;
   return (
-    <div style={{ background:"#1c1b17",color:"#efeee6",padding:"10px 14px",borderRadius:"4px",fontFamily:"var(--font-mono)",fontSize:"0.78rem" }}>
+    <div style={{ background:"#17171a",color:"#f3f1ea",padding:"10px 14px",borderRadius:"0",fontFamily:"var(--font-mono)",fontSize:"0.78rem" }}>
       <div style={{ marginBottom:4, opacity:0.65 }}>Concurso {label}</div>
-      <div style={{ color: saldo >= 0 ? "#b9802c" : "#e4c189", fontWeight:700 }}>{formatarReais(saldo)}</div>
+      <div style={{ color: saldo >= 0 ? "#b9802c" : "#7a2e1f", fontWeight:700 }}>{formatarReais(saldo)}</div>
     </div>
   );
 }
@@ -42,7 +42,7 @@ function TooltipSimples({ active, payload, label }: any) {
 function TooltipComparado({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{ background:"#1c1b17",color:"#efeee6",padding:"10px 14px",borderRadius:"4px",fontFamily:"var(--font-mono)",fontSize:"0.78rem",minWidth:140 }}>
+    <div style={{ background:"#17171a",color:"#f3f1ea",padding:"10px 14px",borderRadius:"0",fontFamily:"var(--font-mono)",fontSize:"0.78rem",minWidth:140 }}>
       <div style={{ marginBottom:6, opacity:0.65 }}>Concurso {label}</div>
       {payload.map((p: any) => (
         <div key={p.dataKey} style={{ color: p.stroke, marginBottom:2 }}>
@@ -416,13 +416,13 @@ export default function SimuladorHistoricoClient({
             <div className="simulador-hist-chart">
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={graficoAmostrado} margin={{ top:10, right:16, bottom:20, left:16 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#d8d4c5" />
-                  <XAxis dataKey="numero" tick={{ fontSize:11, fill:"#8c8874", fontFamily:"var(--font-mono)" }}
-                    label={{ value:"Concurso", position:"insideBottomRight", offset:-4, fill:"#8c8874", fontSize:11 }} />
-                  <YAxis tick={{ fontSize:11, fill:"#8c8874", fontFamily:"var(--font-mono)" }}
+                  <CartesianGrid strokeDasharray="3 3" stroke="#d4d2c8" />
+                  <XAxis dataKey="numero" tick={{ fontSize:11, fill:"#6b6a63", fontFamily:"var(--font-mono)" }}
+                    label={{ value:"Concurso", position:"insideBottomRight", offset:-4, fill:"#6b6a63", fontSize:11 }} />
+                  <YAxis tick={{ fontSize:11, fill:"#6b6a63", fontFamily:"var(--font-mono)" }}
                     tickFormatter={v => formatarReais(v)} domain={[yMin*1.05,"auto"]} width={72} />
                   <Tooltip content={<TooltipSimples />} />
-                  <ReferenceLine y={0} stroke="#1e4b3c" strokeWidth={1.5} strokeDasharray="6 3" />
+                  <ReferenceLine y={0} stroke="#6b6a63" strokeWidth={1.5} strokeDasharray="6 3" />
                   <Line type="monotone" dataKey="saldo" stroke="#b9802c" strokeWidth={1.5} dot={false} isAnimationActive={false} />
                 </LineChart>
               </ResponsiveContainer>
@@ -507,15 +507,15 @@ export default function SimuladorHistoricoClient({
             <div className="simulador-hist-chart">
               <ResponsiveContainer width="100%" height={320}>
                 <LineChart data={graficoComparadoAmostrado} margin={{ top:10, right:16, bottom:20, left:16 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#d8d4c5" />
-                  <XAxis dataKey="numero" tick={{ fontSize:11, fill:"#8c8874", fontFamily:"var(--font-mono)" }} />
-                  <YAxis tick={{ fontSize:11, fill:"#8c8874", fontFamily:"var(--font-mono)" }}
+                  <CartesianGrid strokeDasharray="3 3" stroke="#d4d2c8" />
+                  <XAxis dataKey="numero" tick={{ fontSize:11, fill:"#6b6a63", fontFamily:"var(--font-mono)" }} />
+                  <YAxis tick={{ fontSize:11, fill:"#6b6a63", fontFamily:"var(--font-mono)" }}
                     tickFormatter={v => formatarReais(v)} domain={[yMinComp*1.05,"auto"]} width={72} />
                   <Tooltip content={<TooltipComparado />} />
-                  <ReferenceLine y={0} stroke="#1e4b3c" strokeWidth={1.5} strokeDasharray="6 3" />
+                  <ReferenceLine y={0} stroke="#6b6a63" strokeWidth={1.5} strokeDasharray="6 3" />
                   <Legend wrapperStyle={{ fontFamily:"var(--font-mono)", fontSize:"0.78rem" }} />
                   <Line type="monotone" dataKey="saldoA" name="Jogo A" stroke="#b9802c" strokeWidth={2} dot={false} isAnimationActive={false} />
-                  <Line type="monotone" dataKey="saldoB" name="Jogo B" stroke="#1e4b3c" strokeWidth={2} dot={false} isAnimationActive={false} />
+                  <Line type="monotone" dataKey="saldoB" name="Jogo B" stroke="#17171a" strokeWidth={2} dot={false} isAnimationActive={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -529,7 +529,7 @@ export default function SimuladorHistoricoClient({
             </div>
             <div className="simulador-comparar-coluna" data-cor="b">
               <h3 className="simulador-comparar-coluna__titulo">Jogo B</h3>
-              <CardsResumo r={comparacao.jogoB} cor="#1e4b3c" />
+              <CardsResumo r={comparacao.jogoB} cor="#17171a" />
             </div>
           </div>
 
