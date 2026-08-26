@@ -2512,6 +2512,7 @@ footer.rodape {
 @media (prefers-reduced-motion: reduce) {
   .home-dezena {
     animation: none;
+    opacity: 1;
   }
 
   .home-dezena::before {
