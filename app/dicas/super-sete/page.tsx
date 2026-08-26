@@ -35,7 +35,7 @@ export default function ArtigoSuperSetePage() {
           cada coluna é sorteada independentemente das outras.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Como funciona</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Como funciona</h2>
         <p>
           O volante tem 7 colunas (C1 a C7), cada uma com os dígitos de 0 a 9. Para
           cada coluna, o apostador escolhe 1 a 3 números. A Caixa sorteia 1 número
@@ -47,7 +47,7 @@ export default function ArtigoSuperSetePage() {
           (1 número por coluna) custa R$2,50.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>A consequência mais importante: repetição</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>A consequência mais importante: repetição</h2>
         <p>
           Como cada coluna é independente, o mesmo dígito pode aparecer em várias
           colunas no mesmo concurso. O resultado "8, 7, 4, 3, 9, 6, 6" é perfeitamente
@@ -61,7 +61,7 @@ export default function ArtigoSuperSetePage() {
           a Super Sete, porque os dígitos são amostrados com reposição.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>As probabilidades</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>As probabilidades</h2>
         <p>
           Com 10 possibilidades por coluna e 7 colunas independentes, o total de
           combinações possíveis é 10⁷ = 10.000.000. Para a aposta simples:
@@ -85,7 +85,7 @@ export default function ArtigoSuperSetePage() {
           </table>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Apostar mais números por coluna</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Apostar mais números por coluna</h2>
         <p>
           Na Super Sete, você pode escolher 2 ou 3 números por coluna. Escolher 2
           números na coluna 1 significa que, para aquela coluna, você acerta se
@@ -99,7 +99,7 @@ export default function ArtigoSuperSetePage() {
           em outras loterias.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>O heatmap da Super Sete</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>O heatmap da Super Sete</h2>
         <p>
           O <Link href="/supersete/heatmap">heatmap do Super Sete</Link> neste site
           tem uma visualização especial: em vez de colorir dezenas num volante linear,

@@ -35,7 +35,7 @@ export default function ArtigoDuplaSenaPage() {
           que a maioria imagina.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Como funciona</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Como funciona</h2>
         <p>
           O apostador escolhe 6 números de 1 a 50. A Caixa realiza dois sorteios de
           6 dezenas de 1 a 50 no mesmo concurso — o 1º sorteio e o 2º sorteio. O
@@ -47,7 +47,7 @@ export default function ArtigoDuplaSenaPage() {
           faixas de premiação — 4 para o 1º sorteio e 4 para o 2º.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>As faixas por sorteio</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>As faixas por sorteio</h2>
         <div className="tabela-scroll">
           <table className="tabela-dados">
             <thead>
@@ -71,7 +71,7 @@ export default function ArtigoDuplaSenaPage() {
           </table>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Os dois sorteios dobram as chances?</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Os dois sorteios dobram as chances?</h2>
         <p>
           Tecnicamente, sim — mas não de forma simples. A probabilidade de acertar
           a sena em <em>pelo menos um</em> dos dois sorteios é:
@@ -86,7 +86,7 @@ export default function ArtigoDuplaSenaPage() {
           diferentes num sorteio normal.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Comparação com a Mega-Sena</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Comparação com a Mega-Sena</h2>
         <p>
           A Dupla Sena usa o mesmo universo de dezenas (1-50, 6 sorteadas) que a
           +Milionária, mas com 50 dezenas em vez de 60 da Mega-Sena. O resultado:
@@ -95,7 +95,7 @@ export default function ArtigoDuplaSenaPage() {
           considerar o segundo sorteio.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>O simulador confere só o 1º sorteio</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>O simulador confere só o 1º sorteio</h2>
         <p>
           O <Link href="/duplasena/simulador">simulador histórico da Dupla Sena</Link>{" "}
           confere o jogo contra o 1º sorteio de cada concurso. O 2º sorteio é exibido

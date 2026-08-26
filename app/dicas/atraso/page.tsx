@@ -38,7 +38,7 @@ export default function ArtigoAtrasoPage() {
           as pessoas concluem a partir dele.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que o número realmente mede
         </h2>
         <p>
@@ -55,7 +55,7 @@ export default function ArtigoAtrasoPage() {
           e isso é completamente normal estatisticamente.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A pergunta errada
         </h2>
         <p>
@@ -91,7 +91,7 @@ export default function ArtigoAtrasoPage() {
           </p>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Qual atraso é "normal" em cada loteria?
         </h2>
         <p>
@@ -132,7 +132,7 @@ export default function ArtigoAtrasoPage() {
           próximo concurso.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Mas as frequências não deveriam se equilibrar com o tempo?
         </h2>
         <p>
@@ -152,7 +152,7 @@ export default function ArtigoAtrasoPage() {
           passado pesa cada vez menos diante de um futuro cada vez maior" (verdadeiro).
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Atraso longo também não é "suspeito"
         </h2>
         <p>
@@ -172,7 +172,7 @@ export default function ArtigoAtrasoPage() {
           não tem fim nem ordem fixa.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Os maiores atrasos registrados na história
         </h2>
         <p>
@@ -190,7 +190,7 @@ export default function ArtigoAtrasoPage() {
           concursos realizados.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Então pra que serve a tabela de atraso?
         </h2>
         <p>

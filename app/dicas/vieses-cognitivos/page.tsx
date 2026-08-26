@@ -39,7 +39,7 @@ export default function ArtigoViesesPage() {
           de loteria. A característica deles: são invisíveis por dentro.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           1. Viés de disponibilidade
         </h2>
         <p>
@@ -58,7 +58,7 @@ export default function ArtigoViesesPage() {
           a amostra mental disponível é composta principalmente de ganhadores.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           2. Viés de confirmação
         </h2>
         <p>
@@ -84,7 +84,7 @@ export default function ArtigoViesesPage() {
           sem filtro.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           3. Ilusão de controle
         </h2>
         <p>
@@ -107,7 +107,7 @@ export default function ArtigoViesesPage() {
           não necessariamente para quem aposta.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           4. Falácia do custo irrecuperável
         </h2>
         <p>
@@ -124,7 +124,7 @@ export default function ArtigoViesesPage() {
           por uma probabilidade que não mudou, motivado por dinheiro que já foi.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           5. Agrupamento ilusório
         </h2>
         <p>
@@ -153,7 +153,7 @@ export default function ArtigoViesesPage() {
           </p>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Por que é impossível "escolher números aleatoriamente" de forma manual
         </h2>
         <p>
@@ -176,7 +176,7 @@ export default function ArtigoViesesPage() {
           estatisticamente raros.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que fazer com esse conhecimento
         </h2>
         <p>

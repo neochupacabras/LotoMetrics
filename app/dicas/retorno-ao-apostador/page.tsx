@@ -38,7 +38,7 @@ export default function ArtigoRetornoPage() {
           jeito diferente — e vale entender o que ele significa antes de jogar.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Os números oficiais
         </h2>
         <p>
@@ -86,7 +86,7 @@ export default function ArtigoRetornoPage() {
           Isso reduz o retorno efetivo de prêmios grandes de 43% para perto de 30%.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Para onde vai o dinheiro que não vira prêmio
         </h2>
         <p>
@@ -137,7 +137,7 @@ export default function ArtigoRetornoPage() {
           sistema, com o apostador pagando a conta.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Por que isso importa
         </h2>
         <p>
@@ -192,7 +192,7 @@ export default function ArtigoRetornoPage() {
           do dinheiro financiando o governo no caminho.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Prêmios acumulados: mudam a lógica?
         </h2>
         <p>
@@ -212,7 +212,7 @@ export default function ArtigoRetornoPage() {
           histórico completo de acúmulos na Lotofácil para referência.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A Lotofácil tem retorno "melhor" por causa das faixas inferiores
         </h2>
         <p>
@@ -229,7 +229,7 @@ export default function ArtigoRetornoPage() {
           apostadores das faixas menores e neutro para a faixa principal.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A leitura correta
         </h2>
         <p>

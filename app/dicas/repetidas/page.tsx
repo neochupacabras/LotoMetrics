@@ -38,7 +38,7 @@ export default function ArtigoRepetidasPage() {
           a proporção de dezenas sorteadas por vez.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Lotofácil: repetir muito é esperado
         </h2>
         <p>
@@ -105,7 +105,7 @@ export default function ArtigoRepetidasPage() {
           repetições são matematicamente possíveis mas raros.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que isso significa na prática
         </h2>
         <p>
@@ -123,7 +123,7 @@ export default function ArtigoRepetidasPage() {
           combinação de 15 dezenas: 1 em 3.268.760.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Mega-Sena: repetir é a exceção
         </h2>
         <p>
@@ -171,7 +171,7 @@ export default function ArtigoRepetidasPage() {
           "tendência" — é uma variação aleatória completamente esperada.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O mesmo mecanismo, dois resultados opostos
         </h2>
         <p>
@@ -190,7 +190,7 @@ export default function ArtigoRepetidasPage() {
           <Link href="/dicas/primos">primos</Link>. É sempre a mesma conta.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Repetidas e estratégias de jogo
         </h2>
         <p>

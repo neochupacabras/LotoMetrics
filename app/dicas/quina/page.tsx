@@ -35,7 +35,7 @@ export default function ArtigoQuinaPage() {
           entrada mais acessíveis.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Como funciona</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Como funciona</h2>
         <p>
           O apostador escolhe entre 5 e 15 números de 1 a 80. A Caixa sorteia 5
           dezenas. Diferente da maioria das loterias, não existe "aposta mínima
@@ -47,7 +47,7 @@ export default function ArtigoQuinaPage() {
           5 dezenas custa R$2,50.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Faixas de premiação</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Faixas de premiação</h2>
         <div className="tabela-scroll">
           <table className="tabela-dados">
             <thead>
@@ -72,7 +72,7 @@ export default function ArtigoQuinaPage() {
           calculada sobre uma base bem diferente).
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Por que ela acumula pouco</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Por que ela acumula pouco</h2>
         <p>
           Com 5 sorteios por semana e décadas de histórico, a Quina raramente passa
           muitos concursos seguidos sem um ganhador na faixa principal — não porque
@@ -81,7 +81,7 @@ export default function ArtigoQuinaPage() {
           loterias com menos sorteios, como a Mega-Sena.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Universo grande, histórico longo</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Universo grande, histórico longo</h2>
         <p>
           Com quase 6.900 concursos desde 1994, a Quina tem um dos maiores
           históricos entre as loterias federais — dados suficientes para que a

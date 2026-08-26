@@ -38,7 +38,7 @@ export default function ArtigoNumerosPopularesPage() {
           receber <em>se ganhar</em>. E isso depende de quais números você escolheu.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O rateio e o número de ganhadores
         </h2>
         <p>
@@ -58,7 +58,7 @@ export default function ArtigoNumerosPopularesPage() {
           significativa.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Por que alguns números são mais populares
         </h2>
         <p>
@@ -87,7 +87,7 @@ export default function ArtigoNumerosPopularesPage() {
           </li>
         </ul>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O impacto na Mega-Sena é maior
         </h2>
         <p>
@@ -104,7 +104,7 @@ export default function ArtigoNumerosPopularesPage() {
           sair, pode haver dezenas ou centenas de ganhadores dividindo o mesmo prêmio.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que isso muda (e o que não muda)
         </h2>
         <p>
@@ -127,7 +127,7 @@ export default function ArtigoNumerosPopularesPage() {
           menor.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Aplicando na Lotofácil
         </h2>
         <p>
@@ -149,7 +149,7 @@ export default function ArtigoNumerosPopularesPage() {
           que perseguir os números mais ou menos frequentes no histórico.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Existe evidência de que alguns números são realmente mais populares?
         </h2>
         <p>
@@ -168,7 +168,7 @@ export default function ArtigoNumerosPopularesPage() {
           menos competidores em caso de vitória.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Como o gerador de jogos ajuda
         </h2>
         <p>

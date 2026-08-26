@@ -40,7 +40,7 @@ export default function ArtigoCiclosPage() {
           o que ela absolutamente não consegue prever.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O problema do colecionador de figurinhas
         </h2>
         <p>
@@ -67,7 +67,7 @@ export default function ArtigoCiclosPage() {
           sai já é repetição do que tinha aparecido antes.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Os números exatos
         </h2>
         <p>
@@ -108,7 +108,7 @@ export default function ArtigoCiclosPage() {
           menos uma vez.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que acontece na prática: variação real dos ciclos
         </h2>
         <p>
@@ -126,7 +126,7 @@ export default function ArtigoCiclosPage() {
           andamento.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A armadilha do ciclo "quase fechado"
         </h2>
         <p>
@@ -149,7 +149,7 @@ export default function ArtigoCiclosPage() {
           não tem e não pode ter.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Ciclos na Mega-Sena: escala completamente diferente
         </h2>
         <p>
@@ -166,7 +166,7 @@ export default function ArtigoCiclosPage() {
           continuar faltando por mais 30 ou 40 concursos antes de aparecer.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Pra que serve
         </h2>
         <p>

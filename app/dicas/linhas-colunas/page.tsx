@@ -39,7 +39,7 @@ export default function ArtigoLinhasColunasPage() {
           leva a resultados muito uniformes.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A estrutura do volante da Lotofácil
         </h2>
         <p>
@@ -69,7 +69,7 @@ export default function ArtigoLinhasColunasPage() {
           05, 10, 15, 20, 25.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Cinco dezenas, sempre
         </h2>
         <p>
@@ -133,7 +133,7 @@ export default function ArtigoLinhasColunasPage() {
           número prevê.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Por que todas as linhas têm a mesma distribuição
         </h2>
         <p>
@@ -156,7 +156,7 @@ export default function ArtigoLinhasColunasPage() {
           linha ficam todas muito próximas de 3, confirmando a teoria.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Uma linha completa saindo: a sensação de "pattern"
         </h2>
         <p>
@@ -172,7 +172,7 @@ export default function ArtigoLinhasColunasPage() {
           o que é extraordinário é a intensidade da impressão que causam visualmente.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           E na Mega-Sena?
         </h2>
         <p>
@@ -222,7 +222,7 @@ export default function ArtigoLinhasColunasPage() {
           sorteios — na prática, nunca vista em todo o histórico da Mega-Sena.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Pra que serve
         </h2>
         <p>

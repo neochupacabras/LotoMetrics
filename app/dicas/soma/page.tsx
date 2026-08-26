@@ -40,7 +40,7 @@ export default function ArtigoSomaPage() {
           nas extremidades.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Os extremos são raros porque só existe um jeito de chegar neles
         </h2>
         <p>
@@ -60,7 +60,7 @@ export default function ArtigoSomaPage() {
           porque os dados "prefiram" 7.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Os números reais da Lotofácil
         </h2>
         <p>
@@ -122,7 +122,7 @@ export default function ArtigoSomaPage() {
           média de 6 dezenas entre 1 e 60).
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A curva de sino na prática: histórico real
         </h2>
         <p>
@@ -139,7 +139,7 @@ export default function ArtigoSomaPage() {
           alta do prêmio. Eventualmente podem aparecer, mas não em 3.700 concursos.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Mega-Sena: outra escala, mesma lógica
         </h2>
         <p>
@@ -181,7 +181,7 @@ export default function ArtigoSomaPage() {
           </table>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Filtrar por soma "típica" vale a pena?
         </h2>
         <p>
@@ -207,7 +207,7 @@ export default function ArtigoSomaPage() {
           que aumenta a probabilidade de acertar.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A relação com par/ímpar e outras análises
         </h2>
         <p>

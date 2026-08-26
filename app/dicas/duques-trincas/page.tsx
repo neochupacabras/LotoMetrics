@@ -39,7 +39,7 @@ export default function ArtigoDuquesTrincasPage() {
           claro por quê.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A chance de base já é alta
         </h2>
         <p>
@@ -64,7 +64,7 @@ export default function ArtigoDuquesTrincasPage() {
           histórico.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Quantas duplas existem — e por que isso importa
         </h2>
         <p>
@@ -84,7 +84,7 @@ export default function ArtigoDuquesTrincasPage() {
           um sinal real de comportamento futuro.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que os dados históricos realmente mostram
         </h2>
         <p>
@@ -102,7 +102,7 @@ export default function ArtigoDuquesTrincasPage() {
           puramente aleatórios, porque o sorteio é, de fato, aleatório.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           E na Mega-Sena? A escala muda tudo
         </h2>
         <p>
@@ -157,7 +157,7 @@ export default function ArtigoDuquesTrincasPage() {
           significativa do que realmente é.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Trincas: ainda mais dilução
         </h2>
         <p>
@@ -174,7 +174,7 @@ export default function ArtigoDuquesTrincasPage() {
           trincas demais para o número de sorteios realizados.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Pra que serve a tabela
         </h2>
         <p>

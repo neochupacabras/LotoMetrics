@@ -35,7 +35,7 @@ export default function ArtigoTimemaniaPage() {
           de quantas dezenas acertou.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Como funciona</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Como funciona</h2>
         <p>
           O apostador escolhe 10 números de 1 a 80 e um time de futebol da lista
           oficial da Caixa. A Caixa sorteia 7 dezenas de 1 a 80 e um time. Os prêmios
@@ -46,7 +46,7 @@ export default function ArtigoTimemaniaPage() {
           10 dezenas custa R$3,00.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Faixas de premiação</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Faixas de premiação</h2>
         <div className="tabela-scroll">
           <table className="tabela-dados">
             <thead>
@@ -67,7 +67,7 @@ export default function ArtigoTimemaniaPage() {
           </table>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>A faixa do Time do Coração</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>A faixa do Time do Coração</h2>
         <p>
           A 6ª faixa paga um prêmio fixo (geralmente na faixa de R$5 a R$15) quando
           o time sorteado é o mesmo que você escolheu — independente das dezenas. A
@@ -80,7 +80,7 @@ export default function ArtigoTimemaniaPage() {
           é um nome de clube.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Universo grande, probabilidades baixas</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Universo grande, probabilidades baixas</h2>
         <p>
           Com 80 dezenas disponíveis e apenas 7 sorteadas por concurso, a Timemania tem
           uma das menores proporções de dezenas sorteadas entre as loterias federais —

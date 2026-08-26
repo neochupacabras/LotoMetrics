@@ -38,7 +38,7 @@ export default function ArtigoParImparPage() {
           pergunta que parece igual mas não é.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Duas perguntas muito diferentes
         </h2>
         <p>
@@ -62,7 +62,7 @@ export default function ArtigoParImparPage() {
           muito mais delas levando ao resultado "7 pares" do que ao resultado "0 pares".
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Os números reais da Lotofácil
         </h2>
         <p>
@@ -130,7 +130,7 @@ export default function ArtigoParImparPage() {
           que existem tem essa cara.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O histórico confirma a teoria
         </h2>
         <p>
@@ -148,7 +148,7 @@ export default function ArtigoParImparPage() {
           que vão acontecer eventualmente em um histórico longo.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Mega-Sena: proporções muito diferentes
         </h2>
         <p>
@@ -213,7 +213,7 @@ export default function ArtigoParImparPage() {
           1,2% dos casos — raros, mas não impossíveis.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que fazer com essa informação
         </h2>
         <p>

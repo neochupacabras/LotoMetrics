@@ -38,7 +38,7 @@ export default function ArtigoMultiplosDe3Page() {
           faz o resto do trabalho sem precisar de nenhum dado histórico.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que são múltiplos de 3
         </h2>
         <p>
@@ -55,7 +55,7 @@ export default function ArtigoMultiplosDe3Page() {
           independentes tratados de forma idêntica pelo mecanismo de sorteio.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A distribuição
         </h2>
         <p>
@@ -116,7 +116,7 @@ export default function ArtigoMultiplosDe3Page() {
           das combinações possíveis — mas matematicamente viáveis.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O padrão entre filtros semelhantes
         </h2>
         <p>
@@ -159,7 +159,7 @@ export default function ArtigoMultiplosDe3Page() {
           Fibonacci saem" — são todos o mesmo tipo de conta com números diferentes.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O histórico confirma a teoria
         </h2>
         <p>
@@ -175,7 +175,7 @@ export default function ArtigoMultiplosDe3Page() {
           confirmação esperada de um sorteio honesto.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           E na Mega-Sena?
         </h2>
         <p>
@@ -267,7 +267,7 @@ export default function ArtigoMultiplosDe3Page() {
           6 dezenas saem por vez, a média absoluta por concurso é muito menor.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Pra que serve a tabela
         </h2>
         <p>

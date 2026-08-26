@@ -38,7 +38,7 @@ export default function ArtigoMaisDezenasPage() {
           probabilidade. Nunca melhor, nunca pior.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que acontece quando você aposta mais dezenas
         </h2>
         <p>
@@ -102,7 +102,7 @@ export default function ArtigoMaisDezenasPage() {
           e esse é o ponto central desta análise.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O número que nunca muda
         </h2>
         <p>
@@ -131,7 +131,7 @@ export default function ArtigoMaisDezenasPage() {
           </p>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O mesmo raciocínio na Mega-Sena
         </h2>
         <div className="tabela-scroll">
@@ -185,7 +185,7 @@ export default function ArtigoMaisDezenasPage() {
           por R$6.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Onde mais dezenas podem fazer diferença: as faixas intermediárias
         </h2>
         <p>
@@ -205,7 +205,7 @@ export default function ArtigoMaisDezenasPage() {
           só a distribuição de prêmios entre faixas.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A pergunta certa a se fazer
         </h2>
         <p>

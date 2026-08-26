@@ -39,7 +39,7 @@ export default function ArtigoFibonacciPage() {
           falando.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que é a sequência de Fibonacci
         </h2>
         <p>
@@ -57,7 +57,7 @@ export default function ArtigoFibonacciPage() {
           físicos independentes, e o sorteio não conhece a sequência.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Os números, sem misticismo
         </h2>
         <p>
@@ -118,7 +118,7 @@ export default function ArtigoFibonacciPage() {
           números do grupo existem dentro do intervalo de 1 a 25.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Comparando com outros subgrupos
         </h2>
         <p>
@@ -172,7 +172,7 @@ export default function ArtigoFibonacciPage() {
           porque os dois grupos têm o mesmo tamanho.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Por que a fama da sequência não significa nada aqui
         </h2>
         <p>
@@ -194,7 +194,7 @@ export default function ArtigoFibonacciPage() {
           num contexto onde ela não existe.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O histórico real
         </h2>
         <p>
@@ -212,7 +212,7 @@ export default function ArtigoFibonacciPage() {
           subgrupo em vez de a uma dezena individual.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           E na Mega-Sena?
         </h2>
         <p>
@@ -257,7 +257,7 @@ export default function ArtigoFibonacciPage() {
           maioria relativa dos casos é simplesmente não ter nenhum Fibonacci.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Pra que serve a tabela
         </h2>
         <p>

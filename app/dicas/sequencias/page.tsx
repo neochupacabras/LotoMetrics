@@ -38,7 +38,7 @@ export default function ArtigoSequenciasPage() {
           direções diferentes dependendo dos parâmetros da loteria.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Lotofácil: sequências são a norma
         </h2>
         <p>
@@ -102,7 +102,7 @@ export default function ArtigoSequenciasPage() {
           algum trecho. Sobra pouco espaço pra espaçar tudo de forma uniforme.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O histórico confirma: sequências aparecem sempre
         </h2>
         <p>
@@ -121,7 +121,7 @@ export default function ArtigoSequenciasPage() {
           restringe sua variedade de escolhas.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Mega-Sena: sequências são a exceção
         </h2>
         <p>
@@ -166,7 +166,7 @@ export default function ArtigoSequenciasPage() {
           incomum — aparece em apenas ~3% dos sorteios possíveis.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A mesma explicação, dois resultados opostos
         </h2>
         <p>
@@ -184,7 +184,7 @@ export default function ArtigoSequenciasPage() {
           real antes de serem confiadas.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Sequências e o gerador de jogos
         </h2>
         <p>

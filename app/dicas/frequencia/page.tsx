@@ -40,7 +40,7 @@ export default function ArtigoFrequenciaPage() {
           mudam.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que esperar de um sorteio honesto
         </h2>
         <p>
@@ -93,7 +93,7 @@ export default function ArtigoFrequenciaPage() {
           </table>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           "Quente" e "frio" são rótulos, não causas
         </h2>
         <p>
@@ -114,7 +114,7 @@ export default function ArtigoFrequenciaPage() {
           (ou 60) lados em vez de 2.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Quanto tempo leva pra uma dezena "fria" se igualar?
         </h2>
         <p>
@@ -136,7 +136,7 @@ export default function ArtigoFrequenciaPage() {
           porque cada novo sorteio dilui um pouco mais o peso do passado.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Frequência por janela de tempo: uma análise mais honesta
         </h2>
         <p>
@@ -156,7 +156,7 @@ export default function ArtigoFrequenciaPage() {
           preditiva.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O heatmap do volante
         </h2>
         <p>
@@ -169,7 +169,7 @@ export default function ArtigoFrequenciaPage() {
           um mapa de dezenas "melhores" ou "piores".
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Pra que serve, então
         </h2>
         <p>

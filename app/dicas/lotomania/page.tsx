@@ -34,7 +34,7 @@ export default function ArtigoLotomaniaPage() {
           acertando muitas das 20 dezenas sorteadas quanto não acertando nenhuma.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Como funciona</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Como funciona</h2>
         <p>
           O apostador marca exatamente 50 números de 1 a 100 (não há opção de
           apostar menos ou mais). A Caixa sorteia 20 dezenas. As faixas premiadas
@@ -44,7 +44,7 @@ export default function ArtigoLotomaniaPage() {
           Os sorteios acontecem aos sábados, às 20h. A aposta custa R$3,00.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Faixas de premiação</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Faixas de premiação</h2>
         <div className="tabela-scroll">
           <table className="tabela-dados">
             <thead>
@@ -66,7 +66,7 @@ export default function ArtigoLotomaniaPage() {
           </table>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>A simetria entre 0 e 20 acertos</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>A simetria entre 0 e 20 acertos</h2>
         <p>
           Um detalhe curioso: acertar zero das 20 dezenas sorteadas tem exatamente
           a mesma probabilidade que acertar as 20 — ambas em torno de 1 em
@@ -80,7 +80,7 @@ export default function ArtigoLotomaniaPage() {
           são idênticas e nenhuma escolha de dezenas muda esse fato.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>A faixa mais acessível</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>A faixa mais acessível</h2>
         <p>
           Com probabilidade de 1 em 112, a faixa de 15 acertos é, disparada, a mais
           alcançável da Lotomania — mais próxima da faixa de 11 acertos da
@@ -89,7 +89,7 @@ export default function ArtigoLotomaniaPage() {
           faixas intermediárias a cada concurso.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Explorando o histórico</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Explorando o histórico</h2>
         <p>
           Acompanhe a distribuição real das dezenas na{" "}
           <Link href="/lotomania/tabelas/frequencia">tabela de frequência</Link>{" "}

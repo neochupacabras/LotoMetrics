@@ -38,7 +38,7 @@ export default function ArtigoPrimosPage() {
           dado histórico.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que são números primos
         </h2>
         <p>
@@ -54,7 +54,7 @@ export default function ArtigoPrimosPage() {
           necessário.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A conta
         </h2>
         <p>
@@ -116,7 +116,7 @@ export default function ArtigoPrimosPage() {
           mas extremamente raros.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A lógica do cálculo — e por que ela não usa o histórico
         </h2>
         <p>
@@ -135,7 +135,7 @@ export default function ArtigoPrimosPage() {
           explorado.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O histórico real confirma a teoria
         </h2>
         <p>
@@ -152,7 +152,7 @@ export default function ArtigoPrimosPage() {
           esperados. Essa discrepância não existe.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Primos e outros subgrupos: a mesma lógica
         </h2>
         <p>
@@ -170,7 +170,7 @@ export default function ArtigoPrimosPage() {
           "especial" que outro nesse sentido.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           E na Mega-Sena?
         </h2>
         <p>
@@ -224,7 +224,7 @@ export default function ArtigoPrimosPage() {
           sendo sorteadas por vez.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Pra que serve a tabela
         </h2>
         <p>

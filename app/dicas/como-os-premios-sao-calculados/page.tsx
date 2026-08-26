@@ -38,7 +38,7 @@ export default function ArtigoPremiosPage() {
           cada concurso, com acúmulos adicionais em cima.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A fatia de cada concurso
         </h2>
         <p>
@@ -75,7 +75,7 @@ export default function ArtigoPremiosPage() {
           esse ponto com mais detalhe, incluindo uma comparação com outros tipos de jogo.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Como essa fatia é dividida entre as faixas
         </h2>
         <p>
@@ -156,7 +156,7 @@ export default function ArtigoPremiosPage() {
           </table>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Rateio: por que o prêmio muda a cada concurso
         </h2>
         <p>
@@ -180,7 +180,7 @@ export default function ArtigoPremiosPage() {
           após o sorteio e a contagem de ganhadores.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Acúmulo: de onde vêm os prêmios gigantes
         </h2>
         <p>
@@ -198,7 +198,7 @@ export default function ArtigoPremiosPage() {
           esses acúmulos programáticos de muitos concursos anteriores durante o ano.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Por que faixas inferiores têm valores fixos na Lotofácil
         </h2>
         <p>
@@ -216,7 +216,7 @@ export default function ArtigoPremiosPage() {
           proporcionalmente.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Prêmios e imposto de renda
         </h2>
         <p>
@@ -234,7 +234,7 @@ export default function ArtigoPremiosPage() {
           desse limite e ser isento de IR.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que olhar antes de apostar
         </h2>
         <p>

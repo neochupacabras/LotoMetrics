@@ -38,7 +38,7 @@ export default function ArtigoFechamentoPage() {
           um exemplo tão pequeno que dá pra conferir com os dedos.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Começa com um problema simples
         </h2>
         <p>
@@ -60,7 +60,7 @@ export default function ArtigoFechamentoPage() {
           seu grupo sem desperdiçar combinações?
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A solução é jogar todas as combinações do grupo
         </h2>
         <p>
@@ -89,7 +89,7 @@ export default function ArtigoFechamentoPage() {
           possíveis do seu grupo.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O que o fechamento faz — e o que ele não faz
         </h2>
         <p>
@@ -109,7 +109,7 @@ export default function ArtigoFechamentoPage() {
           resultado quando ele acontece. Não é sobre fazer o bom resultado acontecer mais.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Fechamento completo versus fechamento reduzido
         </h2>
         <p>
@@ -166,7 +166,7 @@ export default function ArtigoFechamentoPage() {
           </table>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           E na vida real, na Lotofácil?
         </h2>
         <p>
@@ -194,7 +194,7 @@ export default function ArtigoFechamentoPage() {
           a pontuação mínima que quer cobrir, e o sistema gera os bilhetes otimizados.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Fechamento e bolão: a combinação mais comum
         </h2>
         <p>
@@ -210,7 +210,7 @@ export default function ArtigoFechamentoPage() {
           ou 15 simultaneamente. Esse é o valor prático real do fechamento em grupo.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Resumindo em três frases
         </h2>
         <p>

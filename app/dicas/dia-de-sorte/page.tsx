@@ -34,7 +34,7 @@ export default function ArtigoDiaDeSortePage() {
           mecânica simples mas com mais camadas do que parece à primeira vista.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Como funciona</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Como funciona</h2>
         <p>
           O apostador escolhe entre 7 e 15 números de 1 a 31 e um mês do ano (janeiro
           a dezembro). A Caixa sorteia 7 dezenas de 1 a 31 e um mês. As faixas de
@@ -46,7 +46,7 @@ export default function ArtigoDiaDeSortePage() {
           O Dia de Sorte existe desde maio de 2018.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>As faixas de premiação</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>As faixas de premiação</h2>
         <div className="tabela-scroll">
           <table className="tabela-dados">
             <thead>
@@ -74,7 +74,7 @@ export default function ArtigoDiaDeSortePage() {
           o mês uma vez a cada 4 semanas.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>O papel do Mês da Sorte</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>O papel do Mês da Sorte</h2>
         <p>
           O mês funciona como um multiplicador de faixas: acertar 7 dezenas sem o mês
           paga a 2ª faixa. Acertar 7 dezenas <em>e</em> o mês paga a 1ª faixa, que
@@ -87,7 +87,7 @@ export default function ArtigoDiaDeSortePage() {
           concursos. Cada sorteio é independente.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Universo menor, probabilidades mais acessíveis</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Universo menor, probabilidades mais acessíveis</h2>
         <p>
           Com dezenas de 1 a 31 (apenas 31 números), o Dia de Sorte tem o menor universo
           entre as loterias de dezenas da Caixa. Isso torna as probabilidades das faixas
@@ -110,7 +110,7 @@ export default function ArtigoDiaDeSortePage() {
           </table>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Estratégia do mês</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Estratégia do mês</h2>
         <p>
           Escolher o mês com base no histórico ("agosto não sai há 3 concursos") não
           tem base matemática — cada mês tem a mesma probabilidade de 1/12 em todo

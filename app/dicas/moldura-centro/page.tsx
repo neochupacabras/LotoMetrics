@@ -39,7 +39,7 @@ export default function ArtigoMolduraCentroPage() {
           comportamento especial da loteria envolvido.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A geometria do volante da Lotofácil
         </h2>
         <p>
@@ -78,7 +78,7 @@ export default function ArtigoMolduraCentroPage() {
           simplesmente tem mais números disponíveis para sair.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A distribuição esperada
         </h2>
         <div className="tabela-scroll">
@@ -138,7 +138,7 @@ export default function ArtigoMolduraCentroPage() {
           primos têm o mesmo tamanho de grupo (9), por isso a mesma média.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           O histórico real versus o esperado
         </h2>
         <p>
@@ -156,7 +156,7 @@ export default function ArtigoMolduraCentroPage() {
           forma idêntica.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           A intuição de que o centro é "especial"
         </h2>
         <p>
@@ -173,7 +173,7 @@ export default function ArtigoMolduraCentroPage() {
           sorteio.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           E na Mega-Sena? A proporção se inverte
         </h2>
         <p>
@@ -230,7 +230,7 @@ export default function ArtigoMolduraCentroPage() {
           sem que isso mude nada na natureza aleatória do sorteio.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Pra que serve
         </h2>
         <p>

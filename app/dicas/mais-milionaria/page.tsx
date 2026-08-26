@@ -35,7 +35,7 @@ export default function ArtigoMaisMilionariaPage() {
           componentes simultaneamente.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Como funciona</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Como funciona</h2>
         <p>
           O apostador escolhe 6 números de 1 a 50 (as dezenas) e 2 trevos de 1 a 6.
           A Caixa sorteia 6 dezenas e 2 trevos. Os prêmios dependem da combinação de
@@ -46,7 +46,7 @@ export default function ArtigoMaisMilionariaPage() {
           é R$6,00.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>As 10 faixas de premiação</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>As 10 faixas de premiação</h2>
         <div className="tabela-scroll">
           <table className="tabela-dados">
             <thead>
@@ -72,7 +72,7 @@ export default function ArtigoMaisMilionariaPage() {
           </table>
         </div>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>A matemática dos trevos</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>A matemática dos trevos</h2>
         <p>
           Os trevos funcionam de forma independente das dezenas. Com 6 trevos disponíveis
           e 2 sorteados, as probabilidades de acerto são:
@@ -89,7 +89,7 @@ export default function ArtigoMaisMilionariaPage() {
           intermediárias.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>Por que a faixa principal é tão rara</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Por que a faixa principal é tão rara</h2>
         <p>
           A faixa 1 da +Milionária (6 dezenas + 2 trevos) tem probabilidade de 1 em
           238 milhões — muito mais rara que a Mega-Sena (1 em 50 milhões). Isso porque
@@ -103,7 +103,7 @@ export default function ArtigoMaisMilionariaPage() {
           intermediárias que são mais acessíveis do que as de loterias com só dezenas.
         </p>
 
-        <h2 className="bloco__titulo" style={{ marginTop: "36px" }}>O conferidor com trevos</h2>
+        <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>O conferidor com trevos</h2>
         <p>
           O <Link href="/maismilionaria/conferidor">conferidor da +Milionária</Link> neste
           site inclui um seletor de trevos — além das 6 dezenas, você escolhe os 2
