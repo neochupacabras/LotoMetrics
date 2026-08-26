@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Instrument_Serif, Work_Sans, IBM_Plex_Mono } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -8,17 +8,17 @@ import { SITE_URL } from "@/lib/seo";
 import { getPlanoPremium } from "@/lib/plano";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
   subsets: ["latin"],
-  weight: ["500", "600"],
-  style: ["normal"],
+  weight: ["400"],
+  style: ["normal", "italic"],
 });
 
-const plexSans = IBM_Plex_Sans({
-  variable: "--font-plex-sans",
+const workSans = Work_Sans({
+  variable: "--font-work-sans",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const plexMono = IBM_Plex_Mono({
@@ -55,7 +55,7 @@ export default async function RootLayout({
   const { premium } = await getPlanoPremium();
 
   return (
-    <html lang="pt-BR" className={`${fraunces.variable} ${plexSans.variable} ${plexMono.variable}`}>
+    <html lang="pt-BR" className={`${instrumentSerif.variable} ${workSans.variable} ${plexMono.variable}`}>
       <body suppressHydrationWarning>
         {children}
         <Footer />

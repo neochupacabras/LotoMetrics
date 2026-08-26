@@ -1,27 +1,36 @@
 /* ============================================================
-   Sistema de design: "Boletim de Resultados"
-   Uma estética de boletim/ledger oficial — papel quente, regras
-   finas, tipografia serifada para manchetes e monoespaçada para
-   números (datas, valores, dezenas), com bolinhas de sorteio
-   como elemento de assinatura visual.
+   Sistema de design: "Editorial de Dados"
+   Uma estética de capa de jornal/revista de dados — papel claro,
+   tipografia serifada de manchete gigante, uma única cor de
+   destaque (terracota/coral), regras finas e tabelas com
+   hairlines. Substitui o antigo "Boletim de Resultados"
+   (papel quente/verde-pinho) a pedido do usuário.
+
+   Os NOMES das variáveis foram mantidos (--pine, --ochre, --rust
+   etc.) para não exigir alterar os ~180 arquivos que já as
+   referenciam — só os VALORES mudaram, remapeados assim:
+   --pine  = cor de destaque primária (era verde, agora terracota)
+   --ochre = destaque secundário/selo premium (dourado, mantido)
+   --rust  = estado negativo/atraso (vermelho mais escuro e menos
+             saturado que --pine, pra não competir com ele)
    ============================================================ */
 
 :root {
-  --paper: #efeee6;
-  --paper-raised: #f7f6f0;
-  --ink: #1c1b17;
-  --ink-soft: #5b5847;
-  --ink-faint: #8c8874;
-  --pine: #1e4b3c;
-  --pine-deep: #15362a;
+  --paper: #f3f1ea;
+  --paper-raised: #faf9f4;
+  --ink: #17171a;
+  --ink-soft: #4a4a45;
+  --ink-faint: #6b6a63;
+  --pine: #c23b22;
+  --pine-deep: #8f2414;
   --ochre: #b9802c;
-  --ochre-soft: #e4c189;
-  --rust: #8e3a2a;
-  --line: #d8d4c5;
-  --line-strong: #c2bca5;
+  --ochre-soft: #e9d9b8;
+  --rust: #7a2e1f;
+  --line: #d4d2c8;
+  --line-strong: #b0ac9c;
 
-  --font-display: var(--font-fraunces), Georgia, serif;
-  --font-body: var(--font-plex-sans), -apple-system, sans-serif;
+  --font-display: var(--font-instrument-serif), Georgia, serif;
+  --font-body: var(--font-work-sans), -apple-system, sans-serif;
   --font-mono: var(--font-plex-mono), "Courier New", monospace;
 
   --container-width: 880px;
@@ -291,10 +300,10 @@ main {
 
 h1.titulo-edicao {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(2.2rem, 5vw, 3.4rem);
-  line-height: 1.05;
-  letter-spacing: -0.015em;
+  font-weight: 400;
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
+  line-height: 1.02;
+  letter-spacing: 0;
   margin: 0 0 6px;
 }
 
@@ -760,7 +769,7 @@ footer.rodape {
 /* ---------- Sub-navegação (Resultados / Tabelas) ---------- */
 
 .subnav {
-  border-bottom: 1px solid var(--line);
+  border-bottom: 2px solid var(--ink);
   background: var(--paper);
 }
 
@@ -795,34 +804,29 @@ footer.rodape {
 }
 
 .subnav a {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.84rem;
   text-decoration: none;
-  color: var(--ink-soft);
-  padding: 12px 6px;
+  color: var(--ink-faint);
+  padding: 14px 0;
   border-bottom: 2px solid transparent;
-  margin-right: 14px;
+  margin-right: 24px;
   white-space: nowrap;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .subnav a:hover {
-  color: var(--pine);
+  color: var(--ink);
   border-bottom-color: var(--line-strong);
 }
 
 .subnav a[data-ativo="true"] {
-  color: var(--pine);
+  color: var(--ink);
   border-bottom-color: var(--pine);
-}
-
-.subnav__icone {
-  font-size: 0.85rem;
-  line-height: 1;
 }
 
 /* Setas de navegação */
@@ -1755,7 +1759,8 @@ footer.rodape {
 .heatmap-periodos {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  border: 1px solid var(--ink);
+  width: fit-content;
 }
 
 .heatmap-periodo-btn {
@@ -1763,25 +1768,33 @@ footer.rodape {
   flex-direction: column;
   align-items: flex-start;
   padding: 10px 16px;
-  border: 1.5px solid var(--line-strong);
-  border-radius: 4px;
+  border: none;
+  border-right: 1px solid var(--ink);
+  border-radius: 0;
   background: var(--paper-raised);
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
   gap: 2px;
   font-family: var(--font-mono);
   font-size: 0.82rem;
   color: var(--ink);
 }
 
+.heatmap-periodo-btn:last-child {
+  border-right: none;
+}
+
 .heatmap-periodo-btn:hover {
-  border-color: var(--pine);
+  background: var(--paper);
 }
 
 .heatmap-periodo-btn[data-ativo="true"] {
-  border-color: var(--pine);
-  background: color-mix(in srgb, var(--pine) 8%, var(--paper-raised));
-  color: var(--pine-deep);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.heatmap-periodo-btn[data-ativo="true"] .heatmap-periodo-meta {
+  color: var(--line-strong);
 }
 
 .heatmap-periodo-meta {
@@ -1799,21 +1812,21 @@ footer.rodape {
 
 .heatmap-celula {
   aspect-ratio: 1;
-  border-radius: 5px;
+  border-radius: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 2px;
   cursor: pointer;
-  border: 2px solid transparent;
-  transition: border-color 0.1s ease, transform 0.1s ease;
+  border: 1px solid var(--ink);
+  transition: transform 0.1s ease;
   padding: 0;
 }
 
 .heatmap-celula:hover,
 .heatmap-celula[data-ativa="true"] {
-  border-color: var(--ink);
+  border-width: 2px;
   transform: scale(1.08);
   z-index: 1;
 }
@@ -1845,14 +1858,10 @@ footer.rodape {
 
 .heatmap-legenda-barra {
   width: 120px;
-  height: 10px;
-  border-radius: 4px;
-  background: linear-gradient(
-    to right,
-    #efeee6,
-    #e4c189,
-    #b9802c
-  );
+  height: 12px;
+  border-radius: 0;
+  border: 1px solid var(--ink);
+  background: linear-gradient(to right, var(--paper), var(--pine));
   flex-shrink: 0;
 }
 

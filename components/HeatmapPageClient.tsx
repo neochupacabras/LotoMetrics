@@ -22,37 +22,22 @@ interface Props {
 }
 
 // ─── Cores (hex do design system, hardcoded pois CSS vars não chegam ao JS) ──
-// --paper: #efeee6  --ochre: #b9802c  --pine: #1e4b3c  --ink: #1c1b17
-const COR_FRIA  = [239, 238, 230] as const; // --paper
-const COR_MORNA = [228, 193, 137] as const; // --ochre-soft
-const COR_QUENTE= [185, 128,  44] as const; // --ochre
-
-// Paleta fria: paper → azul-suave → azul-royal
-const COR_FRIA_NEUTRA = [239, 238, 230] as const; // --paper
-const COR_FRIA_MORNA  = [147, 197, 253] as const; // azul claro (sky-300)
-const COR_FRIA_FORTE  = [ 37,  99, 235] as const; // azul royal (blue-600)
+// Densidade de tinta em cor única — do papel (--paper) ao destaque
+// (--pine, agora terracota/coral) — em vez da antiga escala de 3 matizes.
+// --paper: #f3f1ea  --pine: #c23b22  --ink: #17171a
+const PAPEL = [243, 241, 234] as const; // --paper
+const TINTA = [194,  59,  34] as const; // --pine
 
 function interpolarCor(t: number): string {
   const clamped = Math.max(0, Math.min(1, t));
-  const [a, b] = clamped < 0.5
-    ? [COR_FRIA, COR_MORNA]
-    : [COR_MORNA, COR_QUENTE];
-  const k = clamped < 0.5 ? clamped * 2 : (clamped - 0.5) * 2;
-  return `rgb(${Math.round(a[0]+(b[0]-a[0])*k)},${Math.round(a[1]+(b[1]-a[1])*k)},${Math.round(a[2]+(b[2]-a[2])*k)})`;
-}
-
-// Paleta invertida: menos frequente = azul mais intenso
-function interpolarCorFria(t: number): string {
-  const clamped = Math.max(0, Math.min(1, t));
-  const [a, b] = clamped < 0.5
-    ? [COR_FRIA_NEUTRA, COR_FRIA_MORNA]
-    : [COR_FRIA_MORNA, COR_FRIA_FORTE];
-  const k = clamped < 0.5 ? clamped * 2 : (clamped - 0.5) * 2;
-  return `rgb(${Math.round(a[0]+(b[0]-a[0])*k)},${Math.round(a[1]+(b[1]-a[1])*k)},${Math.round(a[2]+(b[2]-a[2])*k)})`;
+  const r = PAPEL[0] + (TINTA[0] - PAPEL[0]) * clamped;
+  const g = PAPEL[1] + (TINTA[1] - PAPEL[1]) * clamped;
+  const b = PAPEL[2] + (TINTA[2] - PAPEL[2]) * clamped;
+  return `rgb(${Math.round(r)},${Math.round(g)},${Math.round(b)})`;
 }
 
 function corTexto(t: number): string {
-  return t > 0.6 ? "#1c1b17" : "#1c1b17";  // sempre escuro nessa escala
+  return t > 0.5 ? "#f3f1ea" : "#17171a"; // texto claro sobre tinta densa, escuro sobre papel
 }
 
 // ─── Insight dinâmico baseado no período selecionado ─────────────────────────
@@ -270,7 +255,7 @@ export default function HeatmapPageClient({ loteria, periodos, premium = false, 
             data-ativo={!invertido}
             onClick={() => setInvertido(false)}
           >
-            🔥 Mais frequentes
+            Mais frequentes
           </button>
           <button
             type="button"
@@ -278,7 +263,7 @@ export default function HeatmapPageClient({ loteria, periodos, premium = false, 
             data-ativo={invertido}
             onClick={() => setInvertido(true)}
           >
-            🧊 Menos frequentes
+            Menos frequentes
           </button>
         </div>
         {invertido && (
@@ -303,7 +288,7 @@ export default function HeatmapPageClient({ loteria, periodos, premium = false, 
           const tBase = (f - minF) / intervalo;
           // Modo frio: menos frequente (tBase baixo) → t alto → azul mais intenso
           const t = invertido ? 1 - tBase : tBase;
-          const bg = invertido ? interpolarCorFria(t) : interpolarCor(t);
+          const bg = interpolarCor(t);
           const active = d === hoverId;
           return (
             <button
@@ -311,7 +296,7 @@ export default function HeatmapPageClient({ loteria, periodos, premium = false, 
               type="button"
               className="heatmap-celula"
               data-ativa={active}
-              style={{ background: bg, color: invertido && t > 0.55 ? "#fff" : corTexto(t) }}
+              style={{ background: bg, color: corTexto(t) }}
               onMouseEnter={() => setHoverId(d)}
               onClick={() => setHoverId(d === hoverId ? null : d)}
               aria-label={`Dezena ${d}: ${f} aparições`}
@@ -329,7 +314,7 @@ export default function HeatmapPageClient({ loteria, periodos, premium = false, 
         <span className="heatmap-legenda-label">
           {invertido ? "Mais frequente" : "Menos frequente"}
         </span>
-        <div className="heatmap-legenda-barra" style={{ filter: invertido ? "hue-rotate(180deg)" : undefined }} />
+        <div className="heatmap-legenda-barra" />
         <span className="heatmap-legenda-label">Mais frequente</span>
         <span className="heatmap-legenda-media">
           Média esperada: {esperadoPorDezena.toFixed(0)} aparições ({(taxaSorteio * 100).toFixed(0)}% dos sorteios)
