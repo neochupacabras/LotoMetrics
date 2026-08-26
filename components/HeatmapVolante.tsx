@@ -1,11 +1,14 @@
 import { formatarDezena } from "@/lib/format";
 
 function corDoCalor(t: number): string {
-  // t entre 0 (frio/azul) e 1 (quente/vermelho), passando por amarelo no meio.
+  // t entre 0 (menos) e 1 (mais). Usa a paleta do próprio site em vez de
+  // uma escala genérica azul-amarelo-vermelho: pinho (--pine) → ocre
+  // (--ochre) → terracota (--rust), mantendo o mapa de calor consistente
+  // com o resto da identidade visual.
   const clamped = Math.max(0, Math.min(1, t));
-  const frio = [37, 99, 235]; // azul
-  const meio = [250, 204, 21]; // amarelo
-  const quente = [220, 38, 38]; // vermelho
+  const frio = [30, 75, 60];    // --pine
+  const meio = [185, 128, 44];  // --ochre
+  const quente = [142, 58, 42]; // --rust
 
   let r: number, g: number, b: number;
   if (clamped < 0.5) {
@@ -72,7 +75,8 @@ export default function HeatmapVolante({
                 fontFamily: "var(--font-mono)",
                 fontSize: "0.75rem",
                 fontWeight: 700,
-                color: t > 0.55 || t < 0.18 ? "#fff" : "#1a1a1a",
+                color: "#fff",
+                textShadow: "0 1px 2px rgba(0,0,0,0.35)",
               }}
             >
               {formatarDezena(d)}
@@ -96,7 +100,7 @@ export default function HeatmapVolante({
             width: "120px",
             height: "10px",
             borderRadius: "4px",
-            background: "linear-gradient(to right, rgb(37,99,235), rgb(250,204,21), rgb(220,38,38))",
+            background: "linear-gradient(to right, rgb(30,75,60), rgb(185,128,44), rgb(142,58,42))",
           }}
         />
         <span>mais</span>
