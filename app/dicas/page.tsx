@@ -44,7 +44,7 @@ export default function DicasPage() {
         </p>
         <div className="grade-categorias">
           {ARTIGOS.map((a, i) => (
-            <Link key={a.slug} href={`/dicas/${a.slug}`} className="categoria-card">
+            <Link key={a.slug} href={`/dicas/${a.slug}`} className="categoria-card cartao-elevado">
               <div className="categoria-card__topo">
                 {String(i + 1).padStart(2, "0")}
               </div>

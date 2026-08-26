@@ -49,7 +49,7 @@ export default function ContatoPage() {
 
         {/* Tópicos */}
         <div className="contato-topicos">
-          <div className="contato-topico">
+          <div className="contato-topico cartao-elevado">
             <p className="contato-topico__titulo">Erro nos dados ou no site</p>
             <p className="contato-topico__desc">
               Encontrou um resultado incorreto, uma ferramenta com problema ou
@@ -63,7 +63,7 @@ export default function ContatoPage() {
             </a>
           </div>
 
-          <div className="contato-topico">
+          <div className="contato-topico cartao-elevado">
             <p className="contato-topico__titulo">Sugestões</p>
             <p className="contato-topico__desc">
               Tem uma ideia de ferramenta, estatística ou melhoria que faria
@@ -77,7 +77,7 @@ export default function ContatoPage() {
             </a>
           </div>
 
-          <div className="contato-topico">
+          <div className="contato-topico cartao-elevado">
             <p className="contato-topico__titulo">Suporte à conta</p>
             <p className="contato-topico__desc">
               Problemas com login, assinatura, cobrança ou acesso ao Premium?
@@ -91,7 +91,7 @@ export default function ContatoPage() {
             </a>
           </div>
 
-          <div className="contato-topico">
+          <div className="contato-topico cartao-elevado">
             <p className="contato-topico__titulo">API — volume maior</p>
             <p className="contato-topico__desc">
               Precisa de mais de 1.000 requisições por mês para um projeto maior?
