@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
+import FaixaBoletim, { type ItemBoletim } from "@/components/FaixaBoletim";
 import GeradorRelampago from "@/components/GeradorRelampago";
 import MaisLoteriasMenu from "@/components/MaisLoteriasMenu";
 import DesafioIntuicao from "@/components/DesafioIntuicao";
@@ -270,6 +271,18 @@ export default async function HomePage() {
     loteriaSS ? getUltimoConcurso(loteriaSS.id) : null,
   ]);
 
+  const itensBoletim: ItemBoletim[] = [
+    ultimoLF  && { loteria: "Lotofácil",    numero: ultimoLF.numero,  destaque: ultimoLF.acumulado  ? "acumulou" : "sem acumular" },
+    ultimoMS  && { loteria: "Mega-Sena",     numero: ultimoMS.numero,  destaque: ultimoMS.acumulado  ? "acumulou" : "sem acumular" },
+    ultimoQ   && { loteria: "Quina",         numero: ultimoQ.numero,   destaque: ultimoQ.acumulado   ? "acumulou" : "sem acumular" },
+    ultimoLM  && { loteria: "Lotomania",     numero: ultimoLM.numero,  destaque: ultimoLM.acumulado  ? "acumulou" : "sem acumular" },
+    ultimoDS  && { loteria: "Dia de Sorte",  numero: ultimoDS.numero,  destaque: ultimoDS.acumulado  ? "acumulou" : "sem acumular" },
+    ultimoMM  && { loteria: "+Milionária",   numero: ultimoMM.numero,  destaque: ultimoMM.acumulado  ? "acumulou" : "sem acumular" },
+    ultimoTM  && { loteria: "Timemania",     numero: ultimoTM.numero,  destaque: ultimoTM.acumulado  ? "acumulou" : "sem acumular" },
+    ultimoDS2 && { loteria: "Dupla Sena",    numero: ultimoDS2.numero, destaque: ultimoDS2.acumulado ? "acumulou" : "sem acumular" },
+    ultimoSS  && { loteria: "Super Sete",    numero: ultimoSS.numero,  destaque: ultimoSS.acumulado  ? "acumulou" : "sem acumular" },
+  ].filter((item): item is ItemBoletim => Boolean(item));
+
   return (
     <>
       <Masthead />
@@ -281,7 +294,13 @@ export default async function HomePage() {
               <div className="home-hero-texto">
                 <p className="eyebrow">LotoAnalítica</p>
                 <h1 className="home-hero-titulo">
-                  Resultados e estatísticas,<br />sem enrolação.
+                  Resultados e estatísticas,<br />
+                  <span className="home-hero-grifo">
+                    sem enrolação.
+                    <svg viewBox="0 0 340 26" preserveAspectRatio="none" aria-hidden="true">
+                      <path d="M6 18 C 90 28, 250 4, 334 14" />
+                    </svg>
+                  </span>
                 </h1>
                 <p className="home-hero-subtitulo">
                   Dados oficiais da Caixa. Ferramentas reais baseadas em combinatória
@@ -289,7 +308,11 @@ export default async function HomePage() {
                 </p>
               </div>
             </div>
+          </div>
 
+          <FaixaBoletim itens={itensBoletim} />
+
+          <div className="container">
             {/* Últimos resultados */}
             <p className="home-resultados-label">Últimos resultados</p>
             <div className="home-resultados-grid">
@@ -421,7 +444,7 @@ export default async function HomePage() {
           {/* Ferramentas destaque (3 maiores) */}
           <div className="home-ferramentas-destaque">
             {FERRAMENTAS.filter((f) => f.destaque).map((f) => (
-              <div key={f.titulo} className="home-ferramenta-card home-ferramenta-card--destaque">
+              <div key={f.titulo} className="home-ferramenta-card home-ferramenta-card--destaque cartao-elevado">
                 <div className="home-ferramenta-topo">
                   <span className="home-ferramenta-icone" aria-hidden>{f.indice}</span>
                   <h3 className="home-ferramenta-titulo">{f.titulo}</h3>
@@ -443,7 +466,7 @@ export default async function HomePage() {
           {/* Ferramentas secundárias (grid menor) */}
           <div className="home-ferramentas-grid">
             {FERRAMENTAS.filter((f) => !f.destaque).map((f) => (
-              <div key={f.titulo} className="home-ferramenta-card">
+              <div key={f.titulo} className="home-ferramenta-card cartao-elevado">
                 <div className="home-ferramenta-topo">
                   <span className="home-ferramenta-icone" aria-hidden>{f.indice}</span>
                   <h3 className="home-ferramenta-titulo">{f.titulo}</h3>
@@ -482,7 +505,7 @@ export default async function HomePage() {
         {/* ── Destaques: Matemática e Calculadoras ──────────────── */}
         <div className="container">
           <div className="home-destaques-secoes">
-            <a href="/matematica" className="home-destaque-card home-destaque-card--matematica">
+            <a href="/matematica" className="home-destaque-card home-destaque-card--matematica cartao-elevado">
               <div className="home-destaque-card__icone">01</div>
               <div className="home-destaque-card__texto">
                 <p className="home-destaque-card__titulo">Matemática sem mistério</p>
@@ -493,7 +516,7 @@ export default async function HomePage() {
                 <span className="home-destaque-card__cta">Explorar →</span>
               </div>
             </a>
-            <a href="/calculadoras" className="home-destaque-card home-destaque-card--calculadoras">
+            <a href="/calculadoras" className="home-destaque-card home-destaque-card--calculadoras cartao-elevado">
               <div className="home-destaque-card__icone">02</div>
               <div className="home-destaque-card__texto">
                 <p className="home-destaque-card__titulo">Calculadoras online</p>
@@ -504,7 +527,7 @@ export default async function HomePage() {
                 <span className="home-destaque-card__cta">Acessar →</span>
               </div>
             </a>
-            <a href="/glossario" className="home-destaque-card home-destaque-card--glossario">
+            <a href="/glossario" className="home-destaque-card home-destaque-card--glossario cartao-elevado">
               <div className="home-destaque-card__icone">03</div>
               <div className="home-destaque-card__texto">
                 <p className="home-destaque-card__titulo">Glossário</p>
@@ -515,7 +538,7 @@ export default async function HomePage() {
                 <span className="home-destaque-card__cta">Consultar →</span>
               </div>
             </a>
-            <a href="/perguntas-frequentes" className="home-destaque-card home-destaque-card--faq">
+            <a href="/perguntas-frequentes" className="home-destaque-card home-destaque-card--faq cartao-elevado">
               <div className="home-destaque-card__icone">04</div>
               <div className="home-destaque-card__texto">
                 <p className="home-destaque-card__titulo">Perguntas frequentes</p>
@@ -526,7 +549,7 @@ export default async function HomePage() {
                 <span className="home-destaque-card__cta">Ver perguntas →</span>
               </div>
             </a>
-            <a href="/calendario" className="home-destaque-card home-destaque-card--calendario">
+            <a href="/calendario" className="home-destaque-card home-destaque-card--calendario cartao-elevado">
               <div className="home-destaque-card__icone">05</div>
               <div className="home-destaque-card__texto">
                 <p className="home-destaque-card__titulo">Calendário de sorteios</p>
@@ -578,7 +601,7 @@ export default async function HomePage() {
                 month: "short",
               });
               return (
-                <Link key={a.slug} href={`/analises/${a.slug}`} className="home-analise-card">
+                <Link key={a.slug} href={`/analises/${a.slug}`} className="home-analise-card cartao-elevado">
                   <div className="home-analise-meta">
                     <span className={`analise-card__badge analise-card__badge--${a.categoria}`}>
                       {BADGE[a.categoria]}
