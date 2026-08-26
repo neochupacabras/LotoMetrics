@@ -3,9 +3,21 @@
 import { useState } from "react";
 import Dezenas from "./Dezenas";
 import BotaoCopiar from "./BotaoCopiar";
+import Link from "next/link";
 import { gerarJogo, amostrarSubconjunto, ResultadoGeracao } from "@/lib/gerar-jogo";
 import { DadosGerador } from "@/lib/gerador";
 import { formatarDezena } from "@/lib/format";
+import { analisar } from "@/lib/analisador";
+
+// Mesma leitura raro/comum do Analisador, condensada numa linha — conecta
+// duas ferramentas que hoje respondem a mesma pergunta ("esse jogo é
+// típico ou raro?") sem nunca se referenciar.
+function fraseLeitura(tipicas: number): string {
+  if (tipicas === 7) return "perfil clássico — todas as 7 características são comuns";
+  if (tipicas >= 5) return `perfil bem típico — ${tipicas} de 7 características são comuns`;
+  if (tipicas >= 3) return `perfil misto — ${tipicas} de 7 características são comuns`;
+  return `foge do padrão em ${7 - tipicas} de 7 pontos`;
+}
 
 const QTD_JOGOS_MAX = 10;
 const QTD_EXTRA_DEZENAS_MAX = 5;
@@ -21,16 +33,20 @@ const PRESET_MODO_SIMPLES = {
 };
 
 export default function GeradorClient({
+  codigoLoteria,
   dezenaMin,
   dezenaMax,
+  gridColunas,
   qtdDezenasPadrao,
   dados,
   nomeLoteria = "Loteria",
   modoAvancadoLiberado = false,
   logado = false,
 }: {
+  codigoLoteria: string;
   dezenaMin: number;
   dezenaMax: number;
+  gridColunas: number;
   qtdDezenasPadrao: number;
   dados: DadosGerador;
   nomeLoteria?: string;
@@ -440,21 +456,30 @@ export default function GeradorClient({
             </button>
           </div>
           <div className="lista-jogos-gerados">
-            {jogos.map((jogo, i) => (
-              <div key={i} className="jogo-gerado">
-                <Dezenas dezenas={jogo.dezenas} />
-                <div className="jogo-gerado__meta">
-                  <span>Soma: {jogo.soma}</span>
-                  <span>
-                    {jogo.pares} pares / {jogo.impares} ímpares
-                  </span>
-                  {!jogo.atendeuTodosFiltros && (
-                    <span className="badge badge--acumulou">Filtros parcialmente atendidos</span>
+            {jogos.map((jogo, i) => {
+              const leitura = analisar(jogo.dezenas, codigoLoteria, dezenaMin, dezenaMax, gridColunas);
+              return (
+                <div key={i} className="jogo-gerado">
+                  <Dezenas dezenas={jogo.dezenas} />
+                  <div className="jogo-gerado__meta">
+                    <span>Soma: {jogo.soma}</span>
+                    <span>
+                      {jogo.pares} pares / {jogo.impares} ímpares
+                    </span>
+                    {!jogo.atendeuTodosFiltros && (
+                      <span className="badge badge--acumulou">Filtros parcialmente atendidos</span>
+                    )}
+                    <BotaoCopiar texto={jogo.dezenas.map(formatarDezena).join(" - ")} />
+                  </div>
+                  {leitura && (
+                    <p className="jogo-gerado__leitura">
+                      {fraseLeitura(leitura.tipicas)} —{" "}
+                      <Link href={`/${codigoLoteria}/analisador`}>ver perfil completo ↗</Link>
+                    </p>
                   )}
-                  <BotaoCopiar texto={jogo.dezenas.map(formatarDezena).join(" - ")} />
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

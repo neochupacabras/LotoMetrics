@@ -86,8 +86,10 @@ export default async function GeradorPage({
       </div>
 
       <GeradorClient
+        codigoLoteria={codigoLoteria}
         dezenaMin={loteria.dezenaMin}
         dezenaMax={loteria.dezenaMax}
+        gridColunas={loteria.gridColunas}
         qtdDezenasPadrao={loteria.qtdDezenasSorteadas}
         dados={dados}
         nomeLoteria={loteria.nome}

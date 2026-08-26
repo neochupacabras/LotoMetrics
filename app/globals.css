@@ -1057,6 +1057,27 @@ footer.rodape {
   color: var(--ink-soft);
 }
 
+/* Leitura do Analisador aplicada a essa combinação — liga duas ferramentas
+   que hoje respondem a mesma pergunta sem nunca se referenciar. */
+.jogo-gerado__leitura {
+  margin: 10px 0 0;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+
+.jogo-gerado__leitura a {
+  color: var(--pine);
+  text-decoration: none;
+}
+
+.jogo-gerado__leitura a:hover {
+  text-decoration: underline;
+}
+
 .botao-copiar {
   margin-left: auto;
   padding: 5px 12px;
