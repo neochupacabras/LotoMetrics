@@ -18,7 +18,6 @@ export default function ArtigoNumerosAleatoriosPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--ochre">
-          <span className="mat-artigo-emoji">🎰</span>
           <div>
             <p className="mat-artigo-conceito">Aleatoriedade e geradores (em inglês: <em>randomness and pseudo-random number generators</em>)</p>
             <h1 className="titulo-edicao">O que é Aleatoriedade de Verdade</h1>
@@ -32,7 +31,7 @@ export default function ArtigoNumerosAleatoriosPage() {
         <p>Quando pedimos a alguém para "pensar num número aleatório de 1 a 10", o 7 é escolhido desproporcionalmente — entre 20% e 30% das vezes, dependendo da cultura, quando a frequência esperada seria 10%. Em estudos, 3 e 7 são os favoritos; 1 e 10 são evitados por parecerem "óbvios".</p>
         <p>Em sequências, humanos evitam repetir o número anterior. No simulador acima, uma sequência verdadeiramente aleatória de dígitos (0-9) deve ter aproximadamente 10% de repetições consecutivas. Humanos tipicamente produzem menos de 5% — porque "repetir parece menos aleatório".</p>
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">🧠 O paradoxo do viés de aleatoriedade</p>
+          <p className="mat-box__titulo">O paradoxo do viés de aleatoriedade</p>
           <p>Nosso cérebro evoluiu para detectar padrões — é uma vantagem de sobrevivência. Mas isso nos torna péssimos em reconhecer e gerar aleatoriedade genuína. Sequências verdadeiramente aleatórias parecem ter padrões ("o 7 saiu 3 vezes seguidas!"). Sequências que geramos parecem mais "equilibradas" — mas são na verdade mais previsíveis para quem conhece os vieses humanos.</p>
           <p style={{ marginTop: 8 }}>Este fenômeno tem nome: <strong>viés de apofenia</strong> (em inglês: <em>apophenia bias</em>) — a tendência de ver padrões em ruído aleatório. É a mesma razão pela qual vemos rostos em nuvens e ouvimos mensagens em faixas de ruído branco.</p>
         </div>

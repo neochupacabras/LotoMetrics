@@ -19,7 +19,7 @@ export function SimuladorSalarios() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">📏 Uma empresa com 8 funcionários</p>
+      <p className="mat-interativo__titulo">Uma empresa com 8 funcionários</p>
       <p style={{ fontSize: "0.85rem", color: "var(--ink-soft)", marginBottom: 12 }}>
         7 funcionários ganham entre R$2.800 e R$4.000. O dono ganha R$150.000.
         Observe como cada medida se comporta.

@@ -18,7 +18,6 @@ export default function ArtigoLeiDeBenfordPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--pine">
-          <span className="mat-artigo-emoji">🕵️</span>
           <div>
             <p className="mat-artigo-conceito">Distribuição do primeiro dígito (em inglês: <em>Benford's law</em>)</p>
             <h1 className="titulo-edicao">Lei de Benford</h1>
@@ -34,7 +33,7 @@ export default function ArtigoLeiDeBenfordPage() {
 
         <h2 className="mat-h2">A fórmula por trás da curva</h2>
         <div className="mat-box mat-box--pine">
-          <p className="mat-box__titulo">📐 A probabilidade do primeiro dígito ser d</p>
+          <p className="mat-box__titulo">A probabilidade do primeiro dígito ser d</p>
           <p style={{ fontFamily: "var(--font-mono)" }}>P(d) = log₁₀(1 + 1/d)</p>
           <p style={{ marginTop: 8 }}>
             Para d = 1: log₁₀(2) ≈ 30,1%. Para d = 9: log₁₀(1,111) ≈ 4,6%. A fórmula segue essa curva decrescente para todos os 9 dígitos possíveis.

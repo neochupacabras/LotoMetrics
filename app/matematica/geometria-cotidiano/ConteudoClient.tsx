@@ -22,7 +22,7 @@ export function ComparadorPizza() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🍕 Qual pizza é melhor negócio?</p>
+      <p className="mat-interativo__titulo">Qual pizza é melhor negócio?</p>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
         <div>
           <p style={{ fontWeight: 600, marginBottom: 8, fontSize: "0.9rem" }}>Pizza P</p>

@@ -4,12 +4,6 @@ import Masthead from "@/components/Masthead";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { ARTIGOS } from "@/lib/artigos";
 
-const COR_VAR: Record<string, string> = {
-  pine:  "var(--pine)",
-  ochre: "var(--ochre)",
-  rust:  "var(--rust)",
-};
-
 export const metadata: Metadata = {
   title: "Dicas e estratégias de loteria — o que funciona e o que é lenda",
   description:
@@ -49,10 +43,10 @@ export default function DicasPage() {
           conclusão.
         </p>
         <div className="grade-categorias">
-          {ARTIGOS.map((a) => (
+          {ARTIGOS.map((a, i) => (
             <Link key={a.slug} href={`/dicas/${a.slug}`} className="categoria-card">
-              <div className="categoria-card__topo" style={{ background: COR_VAR[a.cor] }}>
-                <span aria-hidden>{a.emoji}</span>
+              <div className="categoria-card__topo">
+                {String(i + 1).padStart(2, "0")}
               </div>
               <div className="categoria-card__corpo">
                 <p className="categoria-card__titulo">{a.titulo}</p>

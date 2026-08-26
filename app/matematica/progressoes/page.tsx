@@ -18,7 +18,6 @@ export default function ArtigoProgressoesPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--rust">
-          <span className="mat-artigo-emoji">🪜</span>
           <div>
             <p className="mat-artigo-conceito">PA e PG, crescimento linear vs exponencial (em inglês: <em>arithmetic and geometric progressions</em>)</p>
             <h1 className="titulo-edicao">Progressões Aritméticas e Geométricas</h1>
@@ -79,7 +78,7 @@ export default function ArtigoProgressoesPage() {
         </p>
 
         <div className="mat-box mat-box--rust">
-          <p className="mat-box__titulo">🌾 O tabuleiro de xadrez — a PG mais famosa da história</p>
+          <p className="mat-box__titulo">O tabuleiro de xadrez — a PG mais famosa da história</p>
           <p>
             A lenda diz que o inventor do xadrez pediu ao rei como recompensa:
             1 grão de arroz na primeira casa, 2 na segunda, 4 na terceira,
@@ -99,7 +98,7 @@ export default function ArtigoProgressoesPage() {
           cresce 20% ao mês:
         </p>
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">📊 Comparação prática (valores em R$)</p>
+          <p className="mat-box__titulo">Comparação prática (valores em R$)</p>
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", fontFamily: "var(--font-mono)" }}>
               <thead>

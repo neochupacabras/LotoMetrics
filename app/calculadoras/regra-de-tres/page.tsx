@@ -18,7 +18,7 @@ export default function CalcRegraDeTresPage() {
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>
         <div className="calc-header calc-header--rust">
-          <span className="calc-header__emoji">⚖️</span>
+          <span className="calc-header__emoji">️</span>
           <div>
             <p className="calc-header__cat">Matemática básica</p>
             <h1 className="titulo-edicao" style={{ marginBottom: 4 }}>Regra de Três</h1>
@@ -37,8 +37,8 @@ export default function CalcRegraDeTresPage() {
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>Outras calculadoras</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             {[
-              { href: "/calculadoras/porcentagem",    label: "🏷️ Porcentagem"  },
-              { href: "/calculadoras/media-ponderada",label: "🎓 Média Ponderada" },
+              { href: "/calculadoras/porcentagem",    label: "️ Porcentagem"  },
+              { href: "/calculadoras/media-ponderada",label: "Média Ponderada" },
             ].map(l => (
               <Link key={l.href} href={l.href} className="botao-copiar" style={{ fontSize: "0.85rem" }}>{l.label}</Link>
             ))}
@@ -46,7 +46,7 @@ export default function CalcRegraDeTresPage() {
         </div>
         {/* ── Manual de uso ─────────────────────────────────────────────── */}
         <div className="calc-manual">
-          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Regra de Três</p>
+          <p className="calc-manual__titulo">Como usar a Calculadora de Regra de Três</p>
           <ol className="calc-manual__passos">
           <li className="calc-manual__passo">
             <span className="calc-manual__num">1</span>
@@ -65,7 +65,7 @@ export default function CalcRegraDeTresPage() {
             <div className="calc-manual__texto"><strong>Dica para identificar direta ou inversa</strong> — <span dangerouslySetInnerHTML={{__html: "Pergunte: 'se A dobrar, D dobra também?' Se sim → direta. 'Se A dobrar, D cai pela metade?' → inversa."}} /></div>
           </li>
           </ol>
-          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Exemplo direto:</strong> 3 pintores pintam 1 casa em 2 dias. Quantos dias para 5 pintores? Aqui: mais pintores = menos dias → inversa. A=3, B=2, C=5, D = 3×2÷5 = 1,2 dias."}} />
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "<strong>Exemplo direto:</strong> 3 pintores pintam 1 casa em 2 dias. Quantos dias para 5 pintores? Aqui: mais pintores = menos dias → inversa. A=3, B=2, C=5, D = 3×2÷5 = 1,2 dias."}} />
         </div>
 
 

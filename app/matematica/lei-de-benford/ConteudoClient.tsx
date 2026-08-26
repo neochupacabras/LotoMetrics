@@ -37,7 +37,7 @@ export function VisualizadorBenford() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🕵️ Frequência do primeiro dígito</p>
+      <p className="mat-interativo__titulo">️ Frequência do primeiro dígito</p>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
         {(Object.keys(CONJUNTOS) as Conjunto[]).map(k => (
           <button
@@ -73,8 +73,8 @@ export function VisualizadorBenford() {
         })}
       </div>
       <div style={{ display: "flex", gap: 16, justifyContent: "center", fontSize: "0.78rem", color: "var(--ink-soft)", marginTop: 8 }}>
-        <span>🟢 Frequência real</span>
-        <span>🟡 Previsto pela Lei de Benford</span>
+        <span>Frequência real</span>
+        <span>Previsto pela Lei de Benford</span>
       </div>
 
       <div className="mat-interativo__resultado">

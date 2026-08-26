@@ -19,7 +19,7 @@ export function SimuladorCriptografia() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🔐 Multiplicar é fácil. Desfazer, nem tanto.</p>
+      <p className="mat-interativo__titulo">Multiplicar é fácil. Desfazer, nem tanto.</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Primo p</label>

@@ -25,7 +25,7 @@ export function SimuladorExponencial() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🦠 {modo === "crescimento" ? "Crescimento" : "Decaimento"} exponencial</p>
+      <p className="mat-interativo__titulo">{modo === "crescimento" ? "Crescimento" : "Decaimento"} exponencial</p>
       <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
         <button type="button" className="botao-copiar" onClick={() => setModo("crescimento")}
           style={{ background: modo === "crescimento" ? "var(--pine)" : undefined, color: modo === "crescimento" ? "var(--paper)" : undefined, fontSize: "0.82rem" }}>

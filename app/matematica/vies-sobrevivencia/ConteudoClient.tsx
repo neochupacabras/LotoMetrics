@@ -17,7 +17,7 @@ export function SimuladorSobrevivencia() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">✈️ Quantas pessoas você "veria" ganhar?</p>
+      <p className="mat-interativo__titulo">️ Quantas pessoas você "veria" ganhar?</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Pessoas que jogaram as mesmas 15 dezenas</label>
@@ -34,8 +34,8 @@ export function SimuladorSobrevivencia() {
         <div style={{ flex: 1, background: "var(--rust)", opacity: 0.35 }} title="Não ganhadores (invisíveis nas manchetes)" />
       </div>
       <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", fontSize: "0.78rem", color: "var(--ink-soft)" }}>
-        <span>🟢 Aparecem no noticiário</span>
-        <span>🟥 Nunca viram notícia nenhuma</span>
+        <span>Aparecem no noticiário</span>
+        <span>Nunca viram notícia nenhuma</span>
       </div>
 
       <div className="mat-interativo__resultado">

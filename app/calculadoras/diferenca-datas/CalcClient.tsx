@@ -76,7 +76,7 @@ export function CalcDatas() {
           <>
             <div className="calc-resultado-label">Data resultante</div>
             <div className="calc-resultado-numero" style={{ fontSize: "1.8rem" }}>{resAdd.dataFmt}</div>
-            <div className="calc-resultado-destaque" style={{ marginTop: 12 }}>📅 {resAdd.diaSemana}</div>
+            <div className="calc-resultado-destaque" style={{ marginTop: 12 }}>{resAdd.diaSemana}</div>
           </>
         ) : (
           <div style={{ color: "var(--ink-faint)", fontFamily: "var(--font-mono)", fontSize: "0.9rem" }}>Preencha os campos para calcular</div>

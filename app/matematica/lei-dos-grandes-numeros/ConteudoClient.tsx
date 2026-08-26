@@ -32,7 +32,7 @@ export function SimuladorLGN() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🎲 Dado honesto — frequência do número 1</p>
+      <p className="mat-interativo__titulo">Dado honesto — frequência do número 1</p>
       <p style={{ fontSize: "0.85rem", color: "var(--ink-soft)", marginBottom: 14 }}>
         A chance teórica de sair 1 num dado é 1/6 ≈ 16,67%. Veja como a frequência
         real converge para esse valor conforme o número de lançamentos aumenta.

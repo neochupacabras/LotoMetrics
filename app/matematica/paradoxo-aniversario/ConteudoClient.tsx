@@ -15,7 +15,7 @@ export function SimuladorAniversario() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🎂 Probabilidade de dois aniversários iguais</p>
+      <p className="mat-interativo__titulo">Probabilidade de dois aniversários iguais</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Número de pessoas na sala</label>

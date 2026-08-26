@@ -20,7 +20,7 @@ export function CalculadoraFatorial() {
     : "";
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">💥 Quanto é n! ?</p>
+      <p className="mat-interativo__titulo">Quanto é n! ?</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>n =</label>

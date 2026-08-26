@@ -18,7 +18,6 @@ export default function ArtigoTeoriaDosJogosPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--pine">
-          <span className="mat-artigo-emoji">🎯</span>
           <div>
             <p className="mat-artigo-conceito">Equilíbrio de Nash e estratégias (em inglês: <em>game theory</em>)</p>
             <h1 className="titulo-edicao">Teoria dos Jogos</h1>
@@ -35,7 +34,7 @@ export default function ArtigoTeoriaDosJogosPage() {
         <h2 className="mat-h2">O dilema do prisioneiro</h2>
         <p>Dois suspeitos são presos e interrogados em salas separadas, sem comunicação. Cada um pode cooperar (ficar em silêncio) ou trair (delatar o outro). Os resultados:</p>
         <div className="mat-box mat-box--pine">
-          <p className="mat-box__titulo">⚖️ A matriz de recompensas (anos de prisão)</p>
+          <p className="mat-box__titulo">️ A matriz de recompensas (anos de prisão)</p>
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", fontFamily: "var(--font-mono)" }}>
               <thead>

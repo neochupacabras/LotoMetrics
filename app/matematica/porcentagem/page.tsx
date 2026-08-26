@@ -18,7 +18,6 @@ export default function ArtigoPorcentagemPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--rust">
-          <span className="mat-artigo-emoji">🏷️</span>
           <div>
             <p className="mat-artigo-conceito">Razão, proporção e variação percentual (em inglês: <em>percentage and ratio</em>)</p>
             <h1 className="titulo-edicao">Porcentagem</h1>
@@ -90,7 +89,7 @@ export default function ArtigoPorcentagemPage() {
         </p>
 
         <div className="mat-box mat-box--rust">
-          <p className="mat-box__titulo">📰 Como manchetes enganam com porcentagens</p>
+          <p className="mat-box__titulo">Como manchetes enganam com porcentagens</p>
           <p>
             "Risco de câncer aumenta 100% com consumo de produto X."
             Parece alarmante. Mas se o risco base era de 0,001% (1 em 100.000),

@@ -105,7 +105,7 @@ export function CalcProbLoteria() {
             {tabela.map(({ acertos, prob, frase }) => (
               <tr key={acertos}>
                 <td style={{ fontWeight: acertos === lot.m ? 700 : 400 }}>
-                  {acertos === lot.m ? "🏆 " : ""}{acertos} acertos
+                  {acertos === lot.m ? "" : ""}{acertos} acertos
                   {acertos === lot.m ? " (faixa 1)" : ""}
                 </td>
                 <td className="num" style={{ color: corProb(prob), fontWeight: 600, fontFamily: "var(--font-mono)" }}>
@@ -121,7 +121,7 @@ export function CalcProbLoteria() {
 
         {qd > lot.k && (
           <div className="calc-resultado-destaque" style={{ marginTop: 16 }}>
-            💡 Apostando {qd} dezenas em vez de {lot.k}, você cobre {C(qd, lot.k).toLocaleString("pt-BR")} combinações.
+            Apostando {qd} dezenas em vez de {lot.k}, você cobre {C(qd, lot.k).toLocaleString("pt-BR")} combinações.
           </div>
         )}
       </div>

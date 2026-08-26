@@ -18,7 +18,7 @@ export function CalcParcelamento() {
   const fmt = (v: number, d=2) => v.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
 
   const cor = res ? (res.taxa_mensal < 2 ? "var(--pine)" : res.taxa_mensal < 5 ? "var(--ochre)" : "var(--rust)") : "var(--pine)";
-  const aviso = res ? (res.taxa_mensal < 2 ? "Taxa razoável" : res.taxa_mensal < 5 ? "Taxa moderada — avalie bem" : "⚠️ Taxa alta — considere pagar à vista") : "";
+  const aviso = res ? (res.taxa_mensal < 2 ? "Taxa razoável" : res.taxa_mensal < 5 ? "Taxa moderada — avalie bem" : "️ Taxa alta — considere pagar à vista") : "";
 
   return (
     <div className="calc-painel">

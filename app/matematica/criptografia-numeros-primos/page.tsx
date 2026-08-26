@@ -18,7 +18,6 @@ export default function ArtigoCriptografiaPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--rust">
-          <span className="mat-artigo-emoji">🔐</span>
           <div>
             <p className="mat-artigo-conceito">Fatoração de primos e criptografia de chave pública (em inglês: <em>RSA encryption</em>)</p>
             <h1 className="titulo-edicao">Criptografia e Números Primos</h1>
@@ -39,7 +38,7 @@ export default function ArtigoCriptografiaPage() {
         <h2 className="mat-h2">Por que "grande o bastante" muda tudo</h2>
         <p>No simulador acima, com primos de 2 dígitos, o produto tem no máximo 4 dígitos — pequeno o suficiente para testar todos os divisores possíveis em milissegundos. Só que a dificuldade de fatorar não cresce de forma linear com o tamanho dos primos: ela cresce <strong>exponencialmente</strong>. Primos reais usados em RSA têm centenas de dígitos cada, gerando produtos com 600 dígitos ou mais.</p>
         <div className="mat-box mat-box--rust">
-          <p className="mat-box__titulo">🧮 Uma tarefa impraticável, não impossível</p>
+          <p className="mat-box__titulo">Uma tarefa impraticável, não impossível</p>
           <p>Fatorar um número desses não é matematicamente impossível — é só impraticável com a tecnologia atual. Usando os melhores algoritmos conhecidos e os supercomputadores mais rápidos do mundo, estima-se que fatorar uma chave RSA de 2048 bits levaria mais tempo do que a idade do universo. É essa margem de segurança — não uma garantia teórica absoluta — que protege o tráfego criptografado da internet hoje.</p>
         </div>
 

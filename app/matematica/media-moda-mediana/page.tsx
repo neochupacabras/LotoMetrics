@@ -18,7 +18,6 @@ export default function ArtigoMediaModaMedianaPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--rust">
-          <span className="mat-artigo-emoji">📏</span>
           <div>
             <p className="mat-artigo-conceito">Medidas de tendência central (em inglês: <em>measures of central tendency</em>)</p>
             <h1 className="titulo-edicao">Média, Moda e Mediana</h1>
@@ -43,7 +42,7 @@ export default function ArtigoMediaModaMedianaPage() {
         </p>
 
         <div className="mat-box mat-box--rust">
-          <p className="mat-box__titulo">📐 As três medidas definidas</p>
+          <p className="mat-box__titulo">As três medidas definidas</p>
           <p>
             <strong>Média aritmética (em inglês: <em>arithmetic mean</em>):</strong>{" "}
             some todos os valores e divida pelo total de elementos. É a mais
@@ -102,7 +101,7 @@ export default function ArtigoMediaModaMedianaPage() {
         </p>
 
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">🗺️ Um exemplo clássico: renda nos EUA</p>
+          <p className="mat-box__titulo">️ Um exemplo clássico: renda nos EUA</p>
           <p>
             Em 2023, a renda média familiar nos EUA era de aproximadamente
             US$80.000 por ano. A renda mediana era de aproximadamente US$56.000.

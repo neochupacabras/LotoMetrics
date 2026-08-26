@@ -31,7 +31,7 @@ export function CurvaGaussiana() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🔔 Curva em sino — distribuição normal</p>
+      <p className="mat-interativo__titulo">Curva em sino — distribuição normal</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Média (μ)</label>

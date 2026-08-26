@@ -21,7 +21,7 @@ export function TesteLogica() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🔵 Verdadeiro ou Falso? — teste de lógica</p>
+      <p className="mat-interativo__titulo">Verdadeiro ou Falso? — teste de lógica</p>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {AFIRMACOES.map((a, i) => {
           const resp = respostas[i];
@@ -47,7 +47,7 @@ export function TesteLogica() {
                   Falso
                 </button>
                 {resp !== null && !correta && a.erro && (
-                  <span style={{ fontSize: "0.78rem", color: "var(--rust)", alignSelf: "center" }}>⚠️ {a.erro}</span>
+                  <span style={{ fontSize: "0.78rem", color: "var(--rust)", alignSelf: "center" }}>️ {a.erro}</span>
                 )}
                 {resp !== null && correta && (
                   <span style={{ fontSize: "0.78rem", color: "var(--pine)", alignSelf: "center" }}>✓ Correto!</span>

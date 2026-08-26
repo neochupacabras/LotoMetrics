@@ -21,12 +21,6 @@ export const metadata: Metadata = {
   },
 };
 
-const COR_VAR: Record<string, string> = {
-  pine:  "var(--pine)",
-  ochre: "var(--ochre)",
-  rust:  "var(--rust)",
-};
-
 const NIVEL_LABEL: Record<string, string> = {
   "básico": "Básico",
   "intermediário": "Intermediário",
@@ -70,10 +64,10 @@ export default function MatematicaPage() {
 
         {/* Grade de cards */}
         <div className="mat-grade">
-          {ARTIGOS_MATEMATICA.map((a) => (
+          {ARTIGOS_MATEMATICA.map((a, i) => (
             <Link key={a.slug} href={`/matematica/${a.slug}`} className="mat-card">
-              <div className="mat-card__topo" style={{ background: COR_VAR[a.cor] }}>
-                <span className="mat-card__emoji">{a.emoji}</span>
+              <div className="mat-card__topo">
+                <span className="mat-card__emoji">{String(i + 1).padStart(2, "0")}</span>
                 <span className="mat-card__nivel">{NIVEL_LABEL[a.nivel]}</span>
               </div>
               <div className="mat-card__corpo">
@@ -81,7 +75,7 @@ export default function MatematicaPage() {
                 <h2 className="mat-card__titulo">{a.titulo}</h2>
                 <p className="mat-card__subtitulo">{a.subtitulo}</p>
                 <div className="mat-card__rodape">
-                  <span className="mat-card__tempo">⏱ {a.tempoLeitura} min</span>
+                  <span className="mat-card__tempo">{a.tempoLeitura} min</span>
                   <span className="mat-card__cta">Ler →</span>
                 </div>
               </div>

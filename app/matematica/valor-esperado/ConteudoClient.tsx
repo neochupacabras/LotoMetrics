@@ -15,7 +15,7 @@ export function CalculadoraVE() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">⚖️ Calculadora de Valor Esperado</p>
+      <p className="mat-interativo__titulo">️ Calculadora de Valor Esperado</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Prêmio estimado (R$ milhões)</label>

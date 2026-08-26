@@ -18,7 +18,6 @@ export default function ArtigoTeoremaDeBayesPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--pine">
-          <span className="mat-artigo-emoji">🧪</span>
           <div>
             <p className="mat-artigo-conceito">Probabilidade condicional (em inglês: <em>Bayes' theorem</em>)</p>
             <h1 className="titulo-edicao">Teorema de Bayes</h1>
@@ -35,7 +34,7 @@ export default function ArtigoTeoremaDeBayesPage() {
         <h2 className="mat-h2">A fórmula por trás do simulador</h2>
         <p>O <strong>Teorema de Bayes</strong>, publicado postumamente em 1763 pelo reverendo Thomas Bayes, relaciona a probabilidade de uma causa dado um efeito observado com a probabilidade do efeito dado a causa:</p>
         <div className="mat-box mat-box--pine">
-          <p className="mat-box__titulo">📐 P(doente | positivo)</p>
+          <p className="mat-box__titulo">P(doente | positivo)</p>
           <p style={{ fontFamily: "var(--font-mono)" }}>
             P(doente | positivo) = P(positivo | doente) × P(doente) / P(positivo)
           </p>

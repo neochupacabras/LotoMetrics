@@ -2,14 +2,14 @@
 import { useState } from "react";
 
 const FAIXAS = [
-  { max: 16,   label: "Magreza grave",    cor: "#8e3a2a", bg: "color-mix(in srgb, #8e3a2a 15%, transparent)" },
+  { max: 16,   label: "Magreza grave",    cor: "#7a2e1f", bg: "color-mix(in srgb, #7a2e1f 15%, transparent)" },
   { max: 17,   label: "Magreza moderada", cor: "#b9802c", bg: "color-mix(in srgb, #b9802c 15%, transparent)" },
   { max: 18.5, label: "Magreza leve",     cor: "#b9802c", bg: "color-mix(in srgb, #b9802c 10%, transparent)" },
-  { max: 25,   label: "Peso normal",      cor: "#1e4b3c", bg: "color-mix(in srgb, #1e4b3c 15%, transparent)" },
+  { max: 25,   label: "Peso normal",      cor: "#166534", bg: "color-mix(in srgb, #166534 15%, transparent)" },
   { max: 30,   label: "Sobrepeso",        cor: "#b9802c", bg: "color-mix(in srgb, #b9802c 15%, transparent)" },
-  { max: 35,   label: "Obesidade grau I", cor: "#8e3a2a", bg: "color-mix(in srgb, #8e3a2a 12%, transparent)" },
-  { max: 40,   label: "Obesidade grau II",cor: "#8e3a2a", bg: "color-mix(in srgb, #8e3a2a 18%, transparent)" },
-  { max: 999,  label: "Obesidade grau III",cor:"#8e3a2a", bg: "color-mix(in srgb, #8e3a2a 25%, transparent)" },
+  { max: 35,   label: "Obesidade grau I", cor: "#7a2e1f", bg: "color-mix(in srgb, #7a2e1f 12%, transparent)" },
+  { max: 40,   label: "Obesidade grau II",cor: "#7a2e1f", bg: "color-mix(in srgb, #7a2e1f 18%, transparent)" },
+  { max: 999,  label: "Obesidade grau III",cor:"#7a2e1f", bg: "color-mix(in srgb, #7a2e1f 25%, transparent)" },
 ];
 
 export function CalcIMC() {

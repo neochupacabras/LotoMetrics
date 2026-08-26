@@ -18,7 +18,7 @@ export default function CalcCombinacoesPage() {
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>
         <div className="calc-header calc-header--ochre">
-          <span className="calc-header__emoji">🔢</span>
+          <span className="calc-header__emoji"></span>
           <div>
             <p className="calc-header__cat">Probabilidade</p>
             <h1 className="titulo-edicao" style={{ marginBottom: 4 }}>Combinações C(n, k)</h1>
@@ -32,14 +32,14 @@ export default function CalcCombinacoesPage() {
         <div style={{ marginTop: 28 }}>
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>Relacionados</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/calculadoras/probabilidade-loteria" className="botao-copiar" style={{ fontSize: "0.85rem" }}>🎯 Probabilidade de Loteria</Link>
-            <Link href="/matematica/combinatoria" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📖 Entender Combinatória</Link>
-            <Link href="/matematica/fatorial" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📖 Entender Fatorial</Link>
+            <Link href="/calculadoras/probabilidade-loteria" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Probabilidade de Loteria</Link>
+            <Link href="/matematica/combinatoria" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Entender Combinatória</Link>
+            <Link href="/matematica/fatorial" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Entender Fatorial</Link>
           </div>
         </div>
         {/* ── Manual de uso ─────────────────────────────────────────────── */}
         <div className="calc-manual">
-          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Combinações C(n,k)</p>
+          <p className="calc-manual__titulo">Como usar a Calculadora de Combinações C(n,k)</p>
           <ol className="calc-manual__passos">
           <li className="calc-manual__passo">
             <span className="calc-manual__num">1</span>
@@ -58,7 +58,7 @@ export default function CalcCombinacoesPage() {
             <div className="calc-manual__texto"><strong>Interprete o resultado</strong> — <span dangerouslySetInnerHTML={{__html: "C(n,k) é o número total de formas diferentes de escolher k itens de n, sem se importar com a ordem. O resultado também mostra a chance de acertar tudo (1 ÷ C(n,k))."}} /></div>
           </li>
           </ol>
-          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Quando a ordem importa</strong> (pódio, ranking), use a fórmula de arranjos: A(n,k) = n! ÷ (n−k)!. A calculadora de combinações é para quando a ordem NÃO importa."}} />
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "<strong>Quando a ordem importa</strong> (pódio, ranking), use a fórmula de arranjos: A(n,k) = n! ÷ (n−k)!. A calculadora de combinações é para quando a ordem NÃO importa."}} />
         </div>
 
 

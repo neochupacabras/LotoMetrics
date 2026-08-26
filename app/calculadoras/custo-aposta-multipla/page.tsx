@@ -18,7 +18,7 @@ export default function CalcCustoApostaMultiplaPage() {
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>
         <div className="calc-header calc-header--rust">
-          <span className="calc-header__emoji">🧾</span>
+          <span className="calc-header__emoji"></span>
           <div>
             <p className="calc-header__cat">Loteria</p>
             <h1 className="titulo-edicao" style={{ marginBottom: 4 }}>Custo da Aposta Múltipla</h1>
@@ -34,15 +34,15 @@ export default function CalcCustoApostaMultiplaPage() {
         <div style={{ marginTop: 28 }}>
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>Relacionados</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/dicas/fechamento" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📖 Como funciona um fechamento</Link>
-            <Link href="/dicas/mais-dezenas-vale-a-pena" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📖 Vale a pena apostar em mais dezenas?</Link>
-            <Link href="/calculadoras/combinacoes" className="botao-copiar" style={{ fontSize: "0.85rem" }}>🔢 Combinações C(n,k)</Link>
+            <Link href="/dicas/fechamento" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Como funciona um fechamento</Link>
+            <Link href="/dicas/mais-dezenas-vale-a-pena" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Vale a pena apostar em mais dezenas?</Link>
+            <Link href="/calculadoras/combinacoes" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Combinações C(n,k)</Link>
           </div>
         </div>
 
         {/* ── Manual de uso ─────────────────────────────────────────────── */}
         <div className="calc-manual">
-          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Custo da Aposta Múltipla</p>
+          <p className="calc-manual__titulo">Como usar a Calculadora de Custo da Aposta Múltipla</p>
           <ol className="calc-manual__passos">
             <li className="calc-manual__passo">
               <span className="calc-manual__num">1</span>
@@ -57,7 +57,7 @@ export default function CalcCustoApostaMultiplaPage() {
               <div className="calc-manual__texto"><strong>Veja o número de jogos equivalentes e o custo total</strong> — calculado por combinatória, não por tabela de preços fixa.</div>
             </li>
           </ol>
-          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Valores de referência:</strong> os preços usados são os valores oficiais vigentes em 2026. A Caixa reajusta preços periodicamente — confirme o valor exato no momento da aposta em loterias.caixa.gov.br."}} />
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "<strong>Valores de referência:</strong> os preços usados são os valores oficiais vigentes em 2026. A Caixa reajusta preços periodicamente — confirme o valor exato no momento da aposta em loterias.caixa.gov.br."}} />
         </div>
       </main>
     </>

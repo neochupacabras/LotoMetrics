@@ -18,7 +18,6 @@ export default function ArtigoEstatisticaDescritivaPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--pine">
-          <span className="mat-artigo-emoji">📦</span>
           <div>
             <p className="mat-artigo-conceito">Quartis e boxplot (em inglês: <em>descriptive statistics</em>)</p>
             <h1 className="titulo-edicao">Estatística Descritiva</h1>
@@ -34,7 +33,7 @@ export default function ArtigoEstatisticaDescritivaPage() {
         <h2 className="mat-h2">O resumo de cinco números</h2>
         <p>Proposto pelo estatístico americano John Tukey nos anos 1970, o <strong>resumo de cinco números</strong> (em inglês: <em>five-number summary</em>) captura a distribuição completa de um conjunto:</p>
         <div className="mat-box mat-box--pine">
-          <p className="mat-box__titulo">📐 Os cinco números</p>
+          <p className="mat-box__titulo">Os cinco números</p>
           <p><strong>Mínimo:</strong> menor valor (excluindo discrepantes extremos).</p>
           <p style={{ marginTop: 6 }}><strong>Q1 — 1º quartil:</strong> 25% dos dados estão abaixo deste valor.</p>
           <p style={{ marginTop: 6 }}><strong>Q2 — Mediana:</strong> 50% abaixo, 50% acima.</p>

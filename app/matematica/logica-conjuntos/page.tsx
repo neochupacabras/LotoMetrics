@@ -18,7 +18,6 @@ export default function ArtigoLogicaConjuntosPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--pine">
-          <span className="mat-artigo-emoji">🔵</span>
           <div>
             <p className="mat-artigo-conceito">Conjuntos e lógica proposicional (em inglês: <em>set theory and propositional logic</em>)</p>
             <h1 className="titulo-edicao">Lógica e Conjuntos</h1>
@@ -44,7 +43,7 @@ export default function ArtigoLogicaConjuntosPage() {
           (em inglês: <em>subset</em>) de "mamíferos", escrito como Cachorros ⊂ Mamíferos.
         </p>
         <div className="mat-box mat-box--pine">
-          <p className="mat-box__titulo">📐 Operações básicas com conjuntos</p>
+          <p className="mat-box__titulo">Operações básicas com conjuntos</p>
           <p><strong>Subconjunto (⊂):</strong> A ⊂ B significa que todo elemento de A também está em B.</p>
           <p style={{ marginTop: 6 }}><strong>União (∪):</strong> A ∪ B contém todos os elementos que estão em A ou em B (ou em ambos).</p>
           <p style={{ marginTop: 6 }}><strong>Interseção (∩):</strong> A ∩ B contém apenas os elementos que estão em A e em B simultaneamente.</p>
@@ -78,7 +77,7 @@ export default function ArtigoLogicaConjuntosPage() {
           quais são logicamente equivalentes:
         </p>
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">📐 As quatro formas da condicional</p>
+          <p className="mat-box__titulo">As quatro formas da condicional</p>
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem" }}>
               <thead>

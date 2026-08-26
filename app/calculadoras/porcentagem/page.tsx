@@ -18,7 +18,7 @@ export default function CalcPorcentagemPage() {
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>
         <div className="calc-header calc-header--ochre">
-          <span className="calc-header__emoji">🏷️</span>
+          <span className="calc-header__emoji">️</span>
           <div>
             <p className="calc-header__cat">Matemática básica</p>
             <h1 className="titulo-edicao" style={{ marginBottom: 4 }}>Calculadora de Porcentagem</h1>
@@ -43,19 +43,19 @@ export default function CalcPorcentagemPage() {
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>Outras calculadoras</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             {[
-              { href: "/calculadoras/juros-compostos", label: "📈 Juros Compostos" },
-              { href: "/calculadoras/regra-de-tres",   label: "⚖️ Regra de Três"  },
-              { href: "/calculadoras/parcelamento",    label: "💳 Parcelamento"    },
+              { href: "/calculadoras/juros-compostos", label: "Juros Compostos" },
+              { href: "/calculadoras/regra-de-tres",   label: "️ Regra de Três"  },
+              { href: "/calculadoras/parcelamento",    label: "Parcelamento"    },
             ].map(l => (
               <Link key={l.href} href={l.href} className="botao-copiar" style={{ fontSize: "0.85rem" }}>{l.label}</Link>
             ))}
           </div>
         </div>
 
-        <p style={{ marginTop: 24 }}><Link href="/matematica/porcentagem" className="breadcrumb">📖 Entenda a matemática de porcentagem →</Link></p>
+        <p style={{ marginTop: 24 }}><Link href="/matematica/porcentagem" className="breadcrumb">Entenda a matemática de porcentagem →</Link></p>
         {/* ── Manual de uso ─────────────────────────────────────────────── */}
         <div className="calc-manual">
-          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Porcentagem</p>
+          <p className="calc-manual__titulo">Como usar a Calculadora de Porcentagem</p>
           <ol className="calc-manual__passos">
           <li className="calc-manual__passo">
             <span className="calc-manual__num">1</span>
@@ -74,7 +74,7 @@ export default function CalcPorcentagemPage() {
             <div className="calc-manual__texto"><strong>Troque o modo sem perder o raciocínio</strong> — <span dangerouslySetInnerHTML={{__html: "Você pode mudar de modo a qualquer hora. Os campos são limpos ao trocar o modo — comece a digitação novamente para o novo cálculo."}} /></div>
           </li>
           </ol>
-          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Dica:</strong> para calcular quantos por cento uma parcela representa do total, use o modo 'X é % de Y' — coloque a parcela em X e o total em Y."}} />
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "<strong>Dica:</strong> para calcular quantos por cento uma parcela representa do total, use o modo 'X é % de Y' — coloque a parcela em X e o total em Y."}} />
         </div>
 
 

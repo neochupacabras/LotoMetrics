@@ -23,7 +23,6 @@ export default function ArtigoFatorialPage() {
           <Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link>
         </p>
         <div className="mat-artigo-header mat-artigo-header--rust">
-          <span className="mat-artigo-emoji">💥</span>
           <div>
             <p className="mat-artigo-conceito">Fatorial e crescimento explosivo (em inglês: <em>factorial and explosive growth</em>)</p>
             <h1 className="titulo-edicao">Fatorial</h1>
@@ -150,7 +149,7 @@ export default function ArtigoFatorialPage() {
           Compare com outras funções para n=10:
         </p>
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">📈 Crescimento comparado (n = 10, 20, 30)</p>
+          <p className="mat-box__titulo">Crescimento comparado (n = 10, 20, 30)</p>
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", fontFamily: "var(--font-mono)" }}>
               <thead>

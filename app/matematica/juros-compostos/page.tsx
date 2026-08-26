@@ -18,7 +18,6 @@ export default function ArtigoJurosCompostosPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--ochre">
-          <span className="mat-artigo-emoji">📈</span>
           <div>
             <p className="mat-artigo-conceito">Juros compostos e crescimento exponencial (em inglês: <em>compound interest</em>)</p>
             <h1 className="titulo-edicao">Juros Compostos</h1>
@@ -82,7 +81,7 @@ export default function ArtigoJurosCompostosPage() {
           Em dois anos: R$28.600.
         </p>
         <div className="mat-box mat-box--rust">
-          <p className="mat-box__titulo">⚠️ Comparação: investimento vs dívida</p>
+          <p className="mat-box__titulo">️ Comparação: investimento vs dívida</p>
           <p>R$1.000 investidos a 10% ao ano por 10 anos → R$2.593 (+159%)</p>
           <p style={{ marginTop: 6 }}>R$1.000 de dívida no cartão a 15% ao mês por 12 meses → R$5.350 (+435%)</p>
           <p style={{ marginTop: 6 }}>

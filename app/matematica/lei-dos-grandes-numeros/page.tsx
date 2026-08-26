@@ -18,7 +18,6 @@ export default function ArtigoLGNPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--pine">
-          <span className="mat-artigo-emoji">📊</span>
           <div>
             <p className="mat-artigo-conceito">Convergência e grandes amostras (em inglês: <em>Law of Large Numbers</em>)</p>
             <h1 className="titulo-edicao">Lei dos Grandes Números</h1>
@@ -45,7 +44,7 @@ export default function ArtigoLGNPage() {
           valor esperado com uma precisão que aumenta com o número de repetições.
         </p>
         <div className="mat-box mat-box--pine">
-          <p className="mat-box__titulo">📐 A lei em linguagem matemática</p>
+          <p className="mat-box__titulo">A lei em linguagem matemática</p>
           <p>
             Se X₁, X₂, X₃, ... são variáveis aleatórias independentes e
             identicamente distribuídas com média μ (mi), então a média amostral:
@@ -98,7 +97,7 @@ export default function ArtigoLGNPage() {
         </p>
 
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">⚠️ O erro mais comum: "compensação" não existe</p>
+          <p className="mat-box__titulo">️ O erro mais comum: "compensação" não existe</p>
           <p>
             A LGN <strong>não</strong> diz que desvios passados serão compensados.
             Se você jogar cara 10 vezes seguidas, os próximos lançamentos não

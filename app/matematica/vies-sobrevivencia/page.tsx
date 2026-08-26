@@ -18,7 +18,6 @@ export default function ArtigoViesSobrevivenciaPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--rust">
-          <span className="mat-artigo-emoji">✈️</span>
           <div>
             <p className="mat-artigo-conceito">Viés de sobrevivência (em inglês: <em>survivorship bias</em>)</p>
             <h1 className="titulo-edicao">Viés de Sobrevivência</h1>
@@ -38,7 +37,7 @@ export default function ArtigoViesSobrevivenciaPage() {
         <p><strong>Fundos de investimento:</strong> rankings de "melhores fundos da década" costumam incluir só fundos que ainda existem — os que tiveram desempenho ruim e foram fechados simplesmente somem da lista, inflando artificialmente a rentabilidade média aparente do mercado.</p>
 
         <div className="mat-box mat-box--rust">
-          <p className="mat-box__titulo">🎓 "Todo mundo que eu conheço que não estudou ficou rico"</p>
+          <p className="mat-box__titulo">"Todo mundo que eu conheço que não estudou ficou rico"</p>
           <p>Uma versão comum do viés de sobrevivência aparece em frases como "vários bilionários largaram a faculdade, então faculdade não é essencial para o sucesso". A frase ignora os milhões de pessoas que também largaram a faculdade e não ficaram ricas — elas simplesmente não viram uma biografia escrita sobre si.</p>
         </div>
 

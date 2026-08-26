@@ -22,7 +22,7 @@ export function VisualizadorDP() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">📉 Altura de 60 pessoas (cm)</p>
+      <p className="mat-interativo__titulo">Altura de 60 pessoas (cm)</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Dispersão do grupo</label>
@@ -47,8 +47,8 @@ export function VisualizadorDP() {
         })}
       </div>
       <div style={{ display: "flex", gap: 12, justifyContent: "center", fontSize: "0.78rem", color: "var(--ink-soft)", marginBottom: 12 }}>
-        <span>🟢 Dentro de 1 DP da média</span>
-        <span>🟡 Fora de 1 DP</span>
+        <span>Dentro de 1 DP da média</span>
+        <span>Fora de 1 DP</span>
       </div>
       <div className="mat-interativo__resultado">
         <div className="mat-resultado-numero">σ = {dp.toFixed(1)} cm</div>

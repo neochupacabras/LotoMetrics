@@ -16,7 +16,7 @@ export function BrincadeiraGuardaRoupa() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🎽 Quantas combinações de roupa você tem?</p>
+      <p className="mat-interativo__titulo">Quantas combinações de roupa você tem?</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Camisas</label>
@@ -84,7 +84,7 @@ export function CalculadoraCnk() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🔢 Calculadora C(n, k)</p>
+      <p className="mat-interativo__titulo">Calculadora C(n, k)</p>
       <p style={{ fontSize: "0.88rem", color: "var(--ink-soft)", marginBottom: 16 }}>
         Quantas formas de escolher <strong>k</strong> itens de um grupo de <strong>n</strong>, sem se importar com a ordem?
       </p>

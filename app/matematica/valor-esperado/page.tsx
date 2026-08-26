@@ -18,7 +18,6 @@ export default function ArtigoValorEsperadoPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--ochre">
-          <span className="mat-artigo-emoji">⚖️</span>
           <div>
             <p className="mat-artigo-conceito">Esperança matemática (em inglês: <em>expected value</em>)</p>
             <h1 className="titulo-edicao">Valor Esperado</h1>
@@ -94,7 +93,7 @@ export default function ArtigoValorEsperadoPage() {
         </p>
 
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">💡 Quando o VE da loteria fica positivo</p>
+          <p className="mat-box__titulo">Quando o VE da loteria fica positivo</p>
           <p>
             Em acúmulos muito grandes, o prêmio pode crescer tanto que o VE
             se torna positivo — matematicamente, vale a pena jogar. Isso

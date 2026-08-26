@@ -24,7 +24,6 @@ export default function ArtigoCombinatoriaPage() {
         </p>
 
         <div className="mat-artigo-header mat-artigo-header--pine">
-          <span className="mat-artigo-emoji">🎽</span>
           <div>
             <p className="mat-artigo-conceito">Combinações e arranjos (em inglês: <em>combinatorics</em>)</p>
             <h1 className="titulo-edicao">Combinatória</h1>
@@ -58,7 +57,7 @@ export default function ArtigoCombinatoriaPage() {
         </p>
 
         <div className="mat-box mat-box--pine">
-          <p className="mat-box__titulo">📐 Princípio Multiplicativo</p>
+          <p className="mat-box__titulo">Princípio Multiplicativo</p>
           <p>
             Se uma escolha pode ser feita de <strong>m</strong> formas e, para
             cada uma dessas formas, uma segunda escolha pode ser feita de{" "}
@@ -100,9 +99,9 @@ export default function ArtigoCombinatoriaPage() {
             <text x="10" y="28" fontFamily="var(--font-display)" fontSize="14" fill="var(--ink)" fontWeight="bold">Arranjo (ordem IMPORTA) — Ana→Bruno ≠ Bruno→Ana</text>
             {["Ana→Bruno", "Bruno→Ana", "Ana→Carla", "Carla→Ana", "..."].map((txt, i) => (
               <g key={i} transform={`translate(${10 + i * 130}, 40)`}>
-                <rect width="120" height="38" rx="4" fill={i % 2 === 0 ? "#1e4b3c" : "#8e3a2a"} opacity="0.12"/>
-                <rect width="120" height="38" rx="4" fill="none" stroke={i % 2 === 0 ? "#1e4b3c" : "#8e3a2a"} strokeWidth="1.5"/>
-                <text x="60" y="24" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="12" fill={i % 2 === 0 ? "#1e4b3c" : "#8e3a2a"}>{txt}</text>
+                <rect width="120" height="38" rx="4" fill={i % 2 === 0 ? "#c23b22" : "#7a2e1f"} opacity="0.12"/>
+                <rect width="120" height="38" rx="4" fill="none" stroke={i % 2 === 0 ? "#c23b22" : "#7a2e1f"} strokeWidth="1.5"/>
+                <text x="60" y="24" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="12" fill={i % 2 === 0 ? "#c23b22" : "#7a2e1f"}>{txt}</text>
               </g>
             ))}
             <text x="10" y="102" fontFamily="var(--font-mono)" fontSize="11" fill="var(--rust)">Total: 5 × 4 = 20 arranjos possíveis</text>
@@ -111,9 +110,9 @@ export default function ArtigoCombinatoriaPage() {
             <text x="10" y="140" fontFamily="var(--font-display)" fontSize="14" fill="var(--ink)" fontWeight="bold">Combinação (ordem NÃO importa) — Ana+Bruno = Bruno+Ana</text>
             {["Ana+Bruno", "Ana+Carla", "Ana+Diego", "Ana+Eva", "Bruno+Carla", "..."].map((txt, i) => (
               <g key={i} transform={`translate(${10 + (i % 3) * 215}, ${160 + Math.floor(i/3) * 44})`}>
-                <rect width="200" height="36" rx="4" fill="#1e4b3c" opacity="0.1"/>
-                <rect width="200" height="36" rx="4" fill="none" stroke="#1e4b3c" strokeWidth="1.5"/>
-                <text x="100" y="23" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="12" fill="#1e4b3c">{txt}</text>
+                <rect width="200" height="36" rx="4" fill="#c23b22" opacity="0.1"/>
+                <rect width="200" height="36" rx="4" fill="none" stroke="#c23b22" strokeWidth="1.5"/>
+                <text x="100" y="23" textAnchor="middle" fontFamily="var(--font-mono)" fontSize="12" fill="#c23b22">{txt}</text>
               </g>
             ))}
             <text x="10" y="260" fontFamily="var(--font-mono)" fontSize="11" fill="var(--pine)">Total: C(5,2) = 10 combinações únicas</text>
@@ -182,7 +181,7 @@ export default function ArtigoCombinatoriaPage() {
         </p>
 
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">🎯 Comparação entre loterias</p>
+          <p className="mat-box__titulo">Comparação entre loterias</p>
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.88rem", fontFamily: "var(--font-mono)" }}>
               <thead>

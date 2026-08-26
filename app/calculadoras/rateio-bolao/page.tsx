@@ -18,7 +18,7 @@ export default function CalcRateioBolaoPage() {
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>
         <div className="calc-header calc-header--pine">
-          <span className="calc-header__emoji">🤝</span>
+          <span className="calc-header__emoji"></span>
           <div>
             <p className="calc-header__cat">Loteria</p>
             <h1 className="titulo-edicao" style={{ marginBottom: 4 }}>Rateio de Bolão</h1>
@@ -35,14 +35,14 @@ export default function CalcRateioBolaoPage() {
         <div style={{ marginTop: 28 }}>
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>Relacionados</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/perguntas-frequentes" className="botao-copiar" style={{ fontSize: "0.85rem" }}>❓ Como funciona um bolão</Link>
-            <Link href="/glossario#bolao" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📖 Bolão no glossário</Link>
+            <Link href="/perguntas-frequentes" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Como funciona um bolão</Link>
+            <Link href="/glossario#bolao" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Bolão no glossário</Link>
           </div>
         </div>
 
         {/* ── Manual de uso ─────────────────────────────────────────────── */}
         <div className="calc-manual">
-          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Rateio de Bolão</p>
+          <p className="calc-manual__titulo">Como usar a Calculadora de Rateio de Bolão</p>
           <ol className="calc-manual__passos">
             <li className="calc-manual__passo">
               <span className="calc-manual__num">1</span>
@@ -57,7 +57,7 @@ export default function CalcRateioBolaoPage() {
               <div className="calc-manual__texto"><strong>Veja o valor por cota e por participante</strong> — calculado automaticamente e atualizado a cada mudança.</div>
             </li>
           </ol>
-          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Bolão registrado vs. informal:</strong> num bolão oficial, cada cota já tem comprovante próprio emitido pela Caixa. Num bolão informal (entre amigos), vale combinar por escrito como o grupo vai dividir o prêmio antes do sorteio."}} />
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "<strong>Bolão registrado vs. informal:</strong> num bolão oficial, cada cota já tem comprovante próprio emitido pela Caixa. Num bolão informal (entre amigos), vale combinar por escrito como o grupo vai dividir o prêmio antes do sorteio."}} />
         </div>
       </main>
     </>

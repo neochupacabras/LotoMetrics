@@ -18,7 +18,6 @@ export default function ArtigoDistribuicaoNormalPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--pine">
-          <span className="mat-artigo-emoji">🔔</span>
           <div>
             <p className="mat-artigo-conceito">Distribuição gaussiana (em inglês: <em>normal distribution / Gaussian distribution</em>)</p>
             <h1 className="titulo-edicao">Distribuição Normal</h1>
@@ -54,7 +53,7 @@ export default function ArtigoDistribuicaoNormalPage() {
         </p>
 
         <div className="mat-box mat-box--pine">
-          <p className="mat-box__titulo">📐 A fórmula da curva normal</p>
+          <p className="mat-box__titulo">A fórmula da curva normal</p>
           <p>
             A função de densidade de probabilidade da distribuição normal é:
           </p>
@@ -95,7 +94,7 @@ export default function ArtigoDistribuicaoNormalPage() {
           a seguinte regra se aplica com precisão:
         </p>
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">📊 Interpretando os intervalos</p>
+          <p className="mat-box__titulo">Interpretando os intervalos</p>
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem", fontFamily: "var(--font-mono)" }}>
               <thead>

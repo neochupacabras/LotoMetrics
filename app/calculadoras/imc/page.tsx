@@ -18,7 +18,7 @@ export default function CalcIMCPage() {
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>
         <div className="calc-header calc-header--rust">
-          <span className="calc-header__emoji">⚕️</span>
+          <span className="calc-header__emoji">️</span>
           <div>
             <p className="calc-header__cat">Matemática básica</p>
             <h1 className="titulo-edicao" style={{ marginBottom: 4 }}>IMC — Índice de Massa Corporal</h1>
@@ -32,13 +32,13 @@ export default function CalcIMCPage() {
         <div style={{ marginTop: 28 }}>
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>Outras calculadoras</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/calculadoras/media-ponderada" className="botao-copiar" style={{ fontSize: "0.85rem" }}>🎓 Média Ponderada</Link>
-            <Link href="/calculadoras/diferenca-datas" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📅 Diferença de Datas</Link>
+            <Link href="/calculadoras/media-ponderada" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Média Ponderada</Link>
+            <Link href="/calculadoras/diferenca-datas" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Diferença de Datas</Link>
           </div>
         </div>
         {/* ── Manual de uso ─────────────────────────────────────────────── */}
         <div className="calc-manual">
-          <p className="calc-manual__titulo">📖 Como usar a Calculadora de IMC</p>
+          <p className="calc-manual__titulo">Como usar a Calculadora de IMC</p>
           <ol className="calc-manual__passos">
           <li className="calc-manual__passo">
             <span className="calc-manual__num">1</span>
@@ -57,7 +57,7 @@ export default function CalcIMCPage() {
             <div className="calc-manual__texto"><strong>Entenda as limitações</strong> — <span dangerouslySetInnerHTML={{__html: "O IMC é uma medida de triagem populacional, não de saúde individual. Não considera massa muscular, distribuição de gordura, idade ou sexo. Consulte um médico para avaliação completa."}} /></div>
           </li>
           </ol>
-          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Lembrete:</strong> atletas com muita massa muscular podem ter IMC alto mesmo com baixo percentual de gordura. Da mesma forma, pessoas sedentárias podem ter IMC normal com excesso de gordura corporal."}} />
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "<strong>Lembrete:</strong> atletas com muita massa muscular podem ter IMC alto mesmo com baixo percentual de gordura. Da mesma forma, pessoas sedentárias podem ter IMC normal com excesso de gordura corporal."}} />
         </div>
 
 

@@ -18,7 +18,6 @@ export default function ArtigoExponencialPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--ochre">
-          <span className="mat-artigo-emoji">🦠</span>
           <div>
             <p className="mat-artigo-conceito">Funções exponenciais, meia-vida e tempo de duplicação</p>
             <h1 className="titulo-edicao">Crescimento e Decaimento Exponencial</h1>
@@ -43,7 +42,7 @@ export default function ArtigoExponencialPage() {
 
         <h2 className="mat-h2">A fórmula por trás do simulador</h2>
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">📐 Tempo de duplicação (ou meia-vida)</p>
+          <p className="mat-box__titulo">Tempo de duplicação (ou meia-vida)</p>
           <p style={{ fontFamily: "var(--font-mono)" }}>t = ln(2) / ln(1 + r)</p>
           <p style={{ marginTop: 8 }}>
             Onde r é a taxa de crescimento (ou decaimento) por período, em decimal. Repare que o resultado não depende do valor inicial — só da taxa. É por isso que, no simulador, mudar a taxa muda o tempo de duplicação, mas o formato da curva continua o mesmo em qualquer escala.

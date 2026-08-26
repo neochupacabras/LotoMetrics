@@ -18,7 +18,6 @@ export default function ArtigoMonteCarloPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--pine">
-          <span className="mat-artigo-emoji">🎲</span>
           <div>
             <p className="mat-artigo-conceito">Métodos de Monte Carlo (em inglês: <em>Monte Carlo simulation</em>)</p>
             <h1 className="titulo-edicao">Simulação de Monte Carlo</h1>

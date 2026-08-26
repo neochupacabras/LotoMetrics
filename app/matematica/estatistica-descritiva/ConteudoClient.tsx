@@ -31,7 +31,7 @@ export function BoxplotInterativo() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">📦 Boxplot — resumo de cinco números</p>
+      <p className="mat-interativo__titulo">Boxplot — resumo de cinco números</p>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
         {(Object.keys(DATASETS) as (keyof typeof DATASETS)[]).map(k => (
           <button key={k} type="button"
@@ -84,7 +84,7 @@ export function BoxplotInterativo() {
       </div>
       {outliers.length > 0 && (
         <div className="mat-resultado-extra" style={{ marginTop: 10 }}>
-          ⚠️ {outliers.length} outlier{outliers.length > 1 ? "s" : ""}: {outliers.map(fmt).join(", ")}
+          ️ {outliers.length} outlier{outliers.length > 1 ? "s" : ""}: {outliers.map(fmt).join(", ")}
         </div>
       )}
     </div>

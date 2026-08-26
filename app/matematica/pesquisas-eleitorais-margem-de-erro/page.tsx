@@ -18,7 +18,6 @@ export default function ArtigoPesquisasEleitoraisPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--rust">
-          <span className="mat-artigo-emoji">🗳️</span>
           <div>
             <p className="mat-artigo-conceito">Amostragem, margem de erro e intervalo de confiança</p>
             <h1 className="titulo-edicao">Pesquisas Eleitorais e Margem de Erro</h1>
@@ -35,7 +34,7 @@ export default function ArtigoPesquisasEleitoraisPage() {
         <h2 className="mat-h2">De onde vem a margem de erro</h2>
         <p>A margem de erro mede o quanto a estimativa de uma pesquisa pode se afastar do valor real da população, só por causa do acaso de quem foi sorteado para a amostra. Para uma pesquisa com nível de confiança de 95% (o padrão do setor):</p>
         <div className="mat-box mat-box--rust">
-          <p className="mat-box__titulo">📐 Margem de erro (caso mais conservador, p = 50%)</p>
+          <p className="mat-box__titulo">Margem de erro (caso mais conservador, p = 50%)</p>
           <p style={{ fontFamily: "var(--font-mono)" }}>margem ≈ 1,96 × √(0,25 / n)</p>
           <p style={{ marginTop: 8 }}>
             Onde <em>n</em> é o tamanho da amostra. Para n = 2.000, isso dá
@@ -57,7 +56,7 @@ export default function ArtigoPesquisasEleitoraisPage() {
         <p><strong>Erro de amostragem não-aleatória:</strong> se a amostra não for verdadeiramente aleatória (por exemplo, pesquisas feitas só pela internet excluem quem não tem acesso), o resultado pode ter um viés sistemático que nenhuma fórmula de margem de erro consegue capturar.</p>
 
         <div className="mat-box mat-box--pine">
-          <p className="mat-box__titulo">📚 O caso clássico: a pesquisa de 1936 com 2 milhões de pessoas que errou feio</p>
+          <p className="mat-box__titulo">O caso clássico: a pesquisa de 1936 com 2 milhões de pessoas que errou feio</p>
           <p>Em 1936, a revista americana <em>Literary Digest</em> enviou 10 milhões de cartas e recebeu 2,4 milhões de respostas — uma amostra gigantesca — prevendo a vitória de um candidato à presidência dos EUA. O instituto Gallup, com uma amostra de apenas 50 mil pessoas, mas escolhida de forma muito mais representativa, previu corretamente o resultado oposto. A lição, válida até hoje: uma amostra representativa de 50 mil vale mais que uma amostra enviesada de 2,4 milhões. Tamanho não substitui representatividade.</p>
         </div>
 

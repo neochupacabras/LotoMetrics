@@ -33,7 +33,7 @@ export function SimuladorMonteCarlo() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🎲 Estimando π com pontos aleatórios</p>
+      <p className="mat-interativo__titulo">Estimando π com pontos aleatórios</p>
       <div style={{ display: "flex", gap: 20, flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
         <svg viewBox={`0 0 ${tamanhoSvg} ${tamanhoSvg}`} width={tamanhoSvg} height={tamanhoSvg} style={{ background: "var(--paper)", borderRadius: 6, border: "1px solid var(--line)" }}>
           <path d={`M 0 ${tamanhoSvg} A ${tamanhoSvg} ${tamanhoSvg} 0 0 0 ${tamanhoSvg} 0 L 0 0 Z`} fill="color-mix(in srgb, var(--pine) 10%, transparent)" stroke="var(--pine)" strokeWidth="1" />
@@ -56,8 +56,8 @@ export function SimuladorMonteCarlo() {
       </div>
 
       <div style={{ display: "flex", gap: 16, justifyContent: "center", fontSize: "0.78rem", color: "var(--ink-soft)", marginTop: 12 }}>
-        <span>🟢 Dentro do quarto de círculo</span>
-        <span>🔴 Fora</span>
+        <span>Dentro do quarto de círculo</span>
+        <span>Fora</span>
       </div>
 
       <div className="mat-interativo__resultado">

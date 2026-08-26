@@ -18,7 +18,7 @@ export default function CalcProbLoteriaPage() {
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>
         <div className="calc-header calc-header--rust">
-          <span className="calc-header__emoji">🎯</span>
+          <span className="calc-header__emoji"></span>
           <div>
             <p className="calc-header__cat">Probabilidade</p>
             <h1 className="titulo-edicao" style={{ marginBottom: 4 }}>Probabilidade de Loteria</h1>
@@ -36,10 +36,10 @@ export default function CalcProbLoteriaPage() {
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>Veja também</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             {[
-              { href: "/calculadoras/combinacoes",    label: "🔢 Combinações C(n,k)" },
-              { href: "/lotofacil/probabilidades",    label: "📊 Probabilidades Lotofácil" },
-              { href: "/megasena/probabilidades",     label: "📊 Probabilidades Mega-Sena" },
-              { href: "/matematica/combinatoria",     label: "📖 Entenda combinatória"  },
+              { href: "/calculadoras/combinacoes",    label: "Combinações C(n,k)" },
+              { href: "/lotofacil/probabilidades",    label: "Probabilidades Lotofácil" },
+              { href: "/megasena/probabilidades",     label: "Probabilidades Mega-Sena" },
+              { href: "/matematica/combinatoria",     label: "Entenda combinatória"  },
             ].map(l => (
               <Link key={l.href} href={l.href} className="botao-copiar" style={{ fontSize: "0.85rem" }}>{l.label}</Link>
             ))}
@@ -47,7 +47,7 @@ export default function CalcProbLoteriaPage() {
         </div>
         {/* ── Manual de uso ─────────────────────────────────────────────── */}
         <div className="calc-manual">
-          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Probabilidade de Loteria</p>
+          <p className="calc-manual__titulo">Como usar a Calculadora de Probabilidade de Loteria</p>
           <ol className="calc-manual__passos">
           <li className="calc-manual__passo">
             <span className="calc-manual__num">1</span>
@@ -66,7 +66,7 @@ export default function CalcProbLoteriaPage() {
             <div className="calc-manual__texto"><strong>Compare entre loterias</strong> — <span dangerouslySetInnerHTML={{__html: "Troque a loteria selecionada e observe como as probabilidades mudam — útil para entender por que a Mega-Sena é mais difícil que a Lotofácil, mesmo com menos dezenas."}} /></div>
           </li>
           </ol>
-          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Dica:</strong> ao apostar mais dezenas, você não multiplica a chance por esse número — você cobre mais combinações. C(dezenas_apostadas, k) diz quantas combinações sua aposta cobre."}} />
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "<strong>Dica:</strong> ao apostar mais dezenas, você não multiplica a chance por esse número — você cobre mais combinações. C(dezenas_apostadas, k) diz quantas combinações sua aposta cobre."}} />
         </div>
 
 

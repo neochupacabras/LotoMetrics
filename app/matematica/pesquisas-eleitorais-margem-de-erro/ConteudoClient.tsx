@@ -30,7 +30,7 @@ export function SimuladorPesquisaEleitoral() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🗳️ Simulador: uma amostra reflete a população?</p>
+      <p className="mat-interativo__titulo">️ Simulador: uma amostra reflete a população?</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>% real do Candidato A na população (você define, como um "gabarito")</label>
@@ -49,7 +49,7 @@ export function SimuladorPesquisaEleitoral() {
       </div>
 
       <button type="button" className="botao-copiar" onClick={() => setSemente(s => s + 1)} style={{ fontSize: "0.82rem", marginTop: 4 }}>
-        🎲 Simular nova pesquisa
+        Simular nova pesquisa
       </button>
 
       <div className="mat-interativo__resultado">

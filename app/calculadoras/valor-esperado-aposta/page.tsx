@@ -18,7 +18,7 @@ export default function CalcValorEsperadoPage() {
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>
         <div className="calc-header calc-header--ochre">
-          <span className="calc-header__emoji">⚖️</span>
+          <span className="calc-header__emoji">️</span>
           <div>
             <p className="calc-header__cat">Probabilidade</p>
             <h1 className="titulo-edicao" style={{ marginBottom: 4 }}>Valor Esperado de uma Aposta</h1>
@@ -34,15 +34,15 @@ export default function CalcValorEsperadoPage() {
         <div style={{ marginTop: 28 }}>
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>Relacionados</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/matematica/valor-esperado" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📖 Entenda valor esperado</Link>
-            <Link href="/dicas/retorno-ao-apostador" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📖 Retorno ao apostador</Link>
-            <Link href="/calculadoras/probabilidade-loteria" className="botao-copiar" style={{ fontSize: "0.85rem" }}>🎯 Probabilidade de loteria</Link>
+            <Link href="/matematica/valor-esperado" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Entenda valor esperado</Link>
+            <Link href="/dicas/retorno-ao-apostador" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Retorno ao apostador</Link>
+            <Link href="/calculadoras/probabilidade-loteria" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Probabilidade de loteria</Link>
           </div>
         </div>
 
         {/* ── Manual de uso ─────────────────────────────────────────────── */}
         <div className="calc-manual">
-          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Valor Esperado</p>
+          <p className="calc-manual__titulo">Como usar a Calculadora de Valor Esperado</p>
           <ol className="calc-manual__passos">
             <li className="calc-manual__passo">
               <span className="calc-manual__num">1</span>
@@ -57,7 +57,7 @@ export default function CalcValorEsperadoPage() {
               <div className="calc-manual__texto"><strong>Informe a probabilidade</strong> — no formato "1 em quantos" (por exemplo, 50.063.860 para a sena da Mega-Sena). Use os exemplos prontos para começar rápido, ou pegue o número certo na <Link href="/calculadoras/probabilidade-loteria" className="breadcrumb">calculadora de probabilidade de loteria</Link>.</div>
             </li>
           </ol>
-          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Não é só para loteria:</strong> essa mesma conta serve para avaliar qualquer aposta ou jogo de sorte — de uma rifa entre amigos a um jogo de cassino."}} />
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "<strong>Não é só para loteria:</strong> essa mesma conta serve para avaliar qualquer aposta ou jogo de sorte — de uma rifa entre amigos a um jogo de cassino."}} />
         </div>
       </main>
     </>

@@ -27,7 +27,7 @@ export function SimuladorBayes() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🧪 Exame com 99% de sensibilidade e 95% de especificidade</p>
+      <p className="mat-interativo__titulo">Exame com 99% de sensibilidade e 95% de especificidade</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Prevalência da doença na população</label>

@@ -18,7 +18,6 @@ export default function ArtigoGeometriaCotidianoPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--rust">
-          <span className="mat-artigo-emoji">🍕</span>
           <div>
             <p className="mat-artigo-conceito">Área, volume e razão de escala (em inglês: <em>geometry in everyday life</em>)</p>
             <h1 className="titulo-edicao">Geometria no Cotidiano</h1>
@@ -58,7 +57,7 @@ export default function ArtigoGeometriaCotidianoPage() {
           de formas completamente diferentes:
         </p>
         <div className="mat-box mat-box--rust">
-          <p className="mat-box__titulo">📐 Como cada dimensão escala</p>
+          <p className="mat-box__titulo">Como cada dimensão escala</p>
           <p><strong>Comprimento (1D):</strong> escala linearmente. Dobrar o tamanho dobra o comprimento.</p>
           <p style={{ marginTop: 6 }}><strong>Área (2D):</strong> escala com o quadrado. Dobrar o tamanho quadruplica a área.</p>
           <p style={{ marginTop: 6 }}><strong>Volume (3D):</strong> escala com o cubo. Dobrar o tamanho multiplica o volume por 8.</p>

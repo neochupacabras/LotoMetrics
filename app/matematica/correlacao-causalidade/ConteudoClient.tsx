@@ -46,7 +46,7 @@ export function VisualizadorCorrelacao() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🍫 Correlação não é causalidade</p>
+      <p className="mat-interativo__titulo">Correlação não é causalidade</p>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
         {EXEMPLOS.map((e, i) => (
           <button key={i} type="button"

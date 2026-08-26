@@ -20,7 +20,7 @@ export function SimuladorProgressoes() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🪜 PA vs PG — crescimento linear vs exponencial</p>
+      <p className="mat-interativo__titulo">PA vs PG — crescimento linear vs exponencial</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Valor inicial (R$)</label>

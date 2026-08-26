@@ -18,7 +18,6 @@ export default function ArtigoRegressaoMediaPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--ochre">
-          <span className="mat-artigo-emoji">🎯</span>
           <div>
             <p className="mat-artigo-conceito">Regressão à média (em inglês: <em>regression to the mean</em>)</p>
             <h1 className="titulo-edicao">Regressão à Média</h1>

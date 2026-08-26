@@ -18,7 +18,7 @@ export default function CalcFinanciamentoPage() {
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>
         <div className="calc-header calc-header--pine">
-          <span className="calc-header__emoji">🏦</span>
+          <span className="calc-header__emoji"></span>
           <div>
             <p className="calc-header__cat">Financeira</p>
             <h1 className="titulo-edicao" style={{ marginBottom: 4 }}>Financiamento e Empréstimo</h1>
@@ -39,15 +39,15 @@ export default function CalcFinanciamentoPage() {
         <div style={{ marginTop: 28 }}>
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>Relacionados</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/calculadoras/juros-compostos" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📈 Juros Compostos</Link>
-            <Link href="/calculadoras/parcelamento" className="botao-copiar" style={{ fontSize: "0.85rem" }}>🧾 Parcelamento e Juros</Link>
-            <Link href="/matematica/juros-compostos" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📖 Entenda juros compostos</Link>
+            <Link href="/calculadoras/juros-compostos" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Juros Compostos</Link>
+            <Link href="/calculadoras/parcelamento" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Parcelamento e Juros</Link>
+            <Link href="/matematica/juros-compostos" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Entenda juros compostos</Link>
           </div>
         </div>
 
         {/* ── Manual de uso ─────────────────────────────────────────────── */}
         <div className="calc-manual">
-          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Financiamento</p>
+          <p className="calc-manual__titulo">Como usar a Calculadora de Financiamento</p>
           <ol className="calc-manual__passos">
             <li className="calc-manual__passo">
               <span className="calc-manual__num">1</span>
@@ -62,7 +62,7 @@ export default function CalcFinanciamentoPage() {
               <div className="calc-manual__texto"><strong>Veja o valor das parcelas e o total de juros</strong> — útil para comparar propostas de financiamento antes de assinar.</div>
             </li>
           </ol>
-          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Isso é uma simulação simplificada:</strong> financiamentos reais podem incluir seguros, taxas administrativas e correção monetária (como a TR em financiamentos imobiliários), que não entram nesta conta. Use como estimativa, e confirme sempre os valores exatos com a instituição financeira."}} />
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "<strong>Isso é uma simulação simplificada:</strong> financiamentos reais podem incluir seguros, taxas administrativas e correção monetária (como a TR em financiamentos imobiliários), que não entram nesta conta. Use como estimativa, e confirme sempre os valores exatos com a instituição financeira."}} />
         </div>
       </main>
     </>

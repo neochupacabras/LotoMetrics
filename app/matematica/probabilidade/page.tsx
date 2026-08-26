@@ -23,7 +23,6 @@ export default function ArtigoProbabilidadePage() {
           <Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link>
         </p>
         <div className="mat-artigo-header mat-artigo-header--ochre">
-          <span className="mat-artigo-emoji">🎲</span>
           <div>
             <p className="mat-artigo-conceito">Probabilidade clássica e frequentista (em inglês: <em>classical and frequentist probability</em>)</p>
             <h1 className="titulo-edicao">Probabilidade</h1>
@@ -50,7 +49,7 @@ export default function ArtigoProbabilidadePage() {
         </p>
 
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">📐 Duas definições de probabilidade</p>
+          <p className="mat-box__titulo">Duas definições de probabilidade</p>
           <p>
             <strong>Clássica (teórica):</strong> P(evento) = casos favoráveis ÷ casos possíveis.
             Funciona quando todos os resultados são igualmente prováveis.
@@ -92,7 +91,7 @@ export default function ArtigoProbabilidadePage() {
         </p>
 
         <div className="mat-box mat-box--rust">
-          <p className="mat-box__titulo">⚠️ Falácia do apostador</p>
+          <p className="mat-box__titulo">️ Falácia do apostador</p>
           <p>
             Acreditar que "coroa está devendo" depois de muitas caras seguidas
             é a <strong>falácia do apostador</strong> (em inglês:{" "}
@@ -175,7 +174,7 @@ export default function ArtigoProbabilidadePage() {
         </p>
 
         <div className="mat-box mat-box--pine">
-          <p className="mat-box__titulo">📐 Probabilidade condicional</p>
+          <p className="mat-box__titulo">Probabilidade condicional</p>
           <p>P(A | B) = P(A e B) ÷ P(B)</p>
           <p style={{ marginTop: 8 }}>
             Lê-se: "probabilidade de A dado B". O denominador P(B) "restringe"

@@ -18,7 +18,7 @@ export default function CalcConversorUnidadesPage() {
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>
         <div className="calc-header calc-header--pine">
-          <span className="calc-header__emoji">📏</span>
+          <span className="calc-header__emoji"></span>
           <div>
             <p className="calc-header__cat">Matemática</p>
             <h1 className="titulo-edicao" style={{ marginBottom: 4 }}>Conversor de Unidades</h1>
@@ -30,14 +30,14 @@ export default function CalcConversorUnidadesPage() {
         <div style={{ marginTop: 28 }}>
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>Relacionados</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/calculadoras/area-perimetro" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📐 Área e Perímetro</Link>
-            <Link href="/calculadoras/porcentagem" className="botao-copiar" style={{ fontSize: "0.85rem" }}>🏷️ Porcentagem</Link>
+            <Link href="/calculadoras/area-perimetro" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Área e Perímetro</Link>
+            <Link href="/calculadoras/porcentagem" className="botao-copiar" style={{ fontSize: "0.85rem" }}>️ Porcentagem</Link>
           </div>
         </div>
 
         {/* ── Manual de uso ─────────────────────────────────────────────── */}
         <div className="calc-manual">
-          <p className="calc-manual__titulo">📖 Como usar o Conversor de Unidades</p>
+          <p className="calc-manual__titulo">Como usar o Conversor de Unidades</p>
           <ol className="calc-manual__passos">
             <li className="calc-manual__passo">
               <span className="calc-manual__num">1</span>
@@ -52,7 +52,7 @@ export default function CalcConversorUnidadesPage() {
               <div className="calc-manual__texto"><strong>Veja o resultado instantâneo</strong> — atualizado a cada mudança, sem precisar clicar em nada.</div>
             </li>
           </ol>
-          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Temperatura funciona diferente:</strong> Celsius, Fahrenheit e Kelvin não têm um fator de multiplicação simples entre si — por isso essa categoria usa fórmulas próprias de conversão, calculadas por trás dos panos."}} />
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "<strong>Temperatura funciona diferente:</strong> Celsius, Fahrenheit e Kelvin não têm um fator de multiplicação simples entre si — por isso essa categoria usa fórmulas próprias de conversão, calculadas por trás dos panos."}} />
         </div>
       </main>
     </>

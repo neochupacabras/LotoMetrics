@@ -18,7 +18,7 @@ export default function CalcMediaPonderadaPage() {
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>
         <div className="calc-header calc-header--pine">
-          <span className="calc-header__emoji">🎓</span>
+          <span className="calc-header__emoji"></span>
           <div>
             <p className="calc-header__cat">Matemática básica</p>
             <h1 className="titulo-edicao" style={{ marginBottom: 4 }}>Média Ponderada</h1>
@@ -32,13 +32,13 @@ export default function CalcMediaPonderadaPage() {
         <div style={{ marginTop: 28 }}>
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>Relacionados</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <Link href="/matematica/media-moda-mediana" className="botao-copiar" style={{ fontSize: "0.85rem" }}>📖 Média, Moda e Mediana</Link>
-            <Link href="/calculadoras/porcentagem" className="botao-copiar" style={{ fontSize: "0.85rem" }}>🏷️ Porcentagem</Link>
+            <Link href="/matematica/media-moda-mediana" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Média, Moda e Mediana</Link>
+            <Link href="/calculadoras/porcentagem" className="botao-copiar" style={{ fontSize: "0.85rem" }}>️ Porcentagem</Link>
           </div>
         </div>
         {/* ── Manual de uso ─────────────────────────────────────────────── */}
         <div className="calc-manual">
-          <p className="calc-manual__titulo">📖 Como usar a Calculadora de Média Ponderada</p>
+          <p className="calc-manual__titulo">Como usar a Calculadora de Média Ponderada</p>
           <ol className="calc-manual__passos">
           <li className="calc-manual__passo">
             <span className="calc-manual__num">1</span>
@@ -57,7 +57,7 @@ export default function CalcMediaPonderadaPage() {
             <div className="calc-manual__texto"><strong>Interprete a comparação com a média simples</strong> — <span dangerouslySetInnerHTML={{__html: "O resultado mostra a média ponderada e também a média simples (sem pesos) para comparação. A diferença entre as duas mostra o quanto os pesos influenciam o resultado."}} /></div>
           </li>
           </ol>
-          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "💡 <strong>Exemplo de uso escolar:</strong> se uma prova tem peso 4, trabalho tem peso 2 e participação tem peso 1, coloque as notas nos valores e os pesos correspondentes (4, 2, 1). A média ponderada resultante é sua nota final."}} />
+          <div className="calc-manual__dica" dangerouslySetInnerHTML={{__html: "<strong>Exemplo de uso escolar:</strong> se uma prova tem peso 4, trabalho tem peso 2 e participação tem peso 1, coloque as notas nos valores e os pesos correspondentes (4, 2, 1). A média ponderada resultante é sua nota final."}} />
         </div>
 
 

@@ -18,7 +18,6 @@ export default function ArtigoDesvioPadraoPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--pine">
-          <span className="mat-artigo-emoji">📉</span>
           <div>
             <p className="mat-artigo-conceito">Variância e desvio padrão (em inglês: <em>variance and standard deviation</em>)</p>
             <h1 className="titulo-edicao">Desvio Padrão</h1>
@@ -90,7 +89,7 @@ export default function ArtigoDesvioPadraoPage() {
         </p>
 
         <div className="mat-box mat-box--pine">
-          <p className="mat-box__titulo">🔔 A regra 68-95-99,7</p>
+          <p className="mat-box__titulo">A regra 68-95-99,7</p>
           <p>
             Para dados com{" "}
             <Link href="/matematica/distribuicao-normal" className="breadcrumb">

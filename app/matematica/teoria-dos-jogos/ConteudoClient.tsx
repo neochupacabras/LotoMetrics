@@ -38,7 +38,7 @@ export function DilemaJogavel() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🎯 Dilema do prisioneiro — jogue contra o computador</p>
+      <p className="mat-interativo__titulo">Dilema do prisioneiro — jogue contra o computador</p>
       <p style={{ fontSize: "0.82rem", color: "var(--ink-soft)", marginBottom: 14 }}>
         Você e o computador escolhem simultaneamente. A matriz de payoff:
       </p>
@@ -57,11 +57,11 @@ export function DilemaJogavel() {
       <div style={{ display: "flex", gap: 12, justifyContent: "center", marginBottom: 20 }}>
         <button type="button" className="botao-gerar"
           onClick={() => jogar("cooperar")} style={{ background: "var(--pine)", borderColor: "var(--pine)" }}>
-          🤝 Cooperar
+          Cooperar
         </button>
         <button type="button" className="botao-gerar"
           onClick={() => jogar("trair")} style={{ background: "var(--rust)", borderColor: "var(--rust)" }}>
-          🗡️ Trair
+          ️ Trair
         </button>
         {rodadas > 0 && (
           <button type="button" className="botao-copiar" onClick={reiniciar}>

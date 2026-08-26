@@ -5,14 +5,14 @@ const SITE_URL = "https://lotoanalitica.com.br";
 
 // Paleta do design system
 const COR = {
-  pine:     "#1e4b3c",
+  pine:     "#c23b22",
   ochre:    "#b9802c",
-  rust:     "#8e3a2a",
-  paper:    "#efeee6",
-  ink:      "#1c1b17",
-  inkSoft:  "#5b5847",
-  inkFaint: "#8c8874",
-  line:     "#d8d4c5",
+  rust:     "#7a2e1f",
+  paper:    "#f3f1ea",
+  ink:      "#17171a",
+  inkSoft:  "#4a4a45",
+  inkFaint: "#6b6a63",
+  line:     "#d4d2c8",
   green:    "#166534",
 };
 
@@ -100,7 +100,7 @@ function jogoCard(
 ): string {
   const temPremio = !!faixa;
   const borderColor = temPremio ? COR.ochre : COR.line;
-  const bgColor = temPremio ? "#fef9ef" : "#fafaf8";
+  const bgColor = temPremio ? "#f5ecd8" : "#fafaf8";
 
   const resultadoHtml = temPremio
     ? `${chipPremio(faixa!)}${premio ? `&nbsp;<strong style="color:${COR.green};">R$&nbsp;${premio.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</strong>` : ""}`

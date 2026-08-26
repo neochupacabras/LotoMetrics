@@ -15,7 +15,7 @@ export function SimuladorDesconto() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🏷️ Aumento seguido de desconto</p>
+      <p className="mat-interativo__titulo">️ Aumento seguido de desconto</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Preço original (R$)</label>

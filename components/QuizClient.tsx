@@ -292,11 +292,11 @@ function embaralhar<T>(arr: T[]): T[] {
 
 function mensagemFinal(acertos: number, total: number) {
   const pct = acertos / total;
-  if (pct === 1) return { emoji: "🎯", texto: "Perfeito! Você conhece a matemática da loteria melhor que a maioria." };
+  if (pct === 1) return { texto: "Perfeito! Você conhece a matemática da loteria melhor que a maioria." };
   if (pct >= 0.8) return { emoji: "⭐", texto: "Excelente! Você domina bem a diferença entre fatos e mitos." };
-  if (pct >= 0.6) return { emoji: "📊", texto: "Bom resultado. Vale explorar os artigos de dicas para solidificar o conhecimento." };
-  if (pct >= 0.4) return { emoji: "🎲", texto: "Muitas crenças populares sobre loteria têm uma matemática surpreendente por trás. Leia os artigos!" };
-  return { emoji: "📚", texto: "A matemática da loteria desfaz muitos mitos populares. Os artigos de dicas explicam cada um deles." };
+  if (pct >= 0.6) return { texto: "Bom resultado. Vale explorar os artigos de dicas para solidificar o conhecimento." };
+  if (pct >= 0.4) return { texto: "Muitas crenças populares sobre loteria têm uma matemática surpreendente por trás. Leia os artigos!" };
+  return { texto: "A matemática da loteria desfaz muitos mitos populares. Os artigos de dicas explicam cada um deles." };
 }
 
 // ─── Componente ──────────────────────────────────────────────────────────────
@@ -380,7 +380,7 @@ export default function QuizClient() {
 
   // ── Tela de resultado ───────────────────────────────────────────────────
   if (fase === "resultado") {
-    const { emoji, texto } = mensagemFinal(acertos, TOTAL_POR_SESSAO);
+    const { texto } = mensagemFinal(acertos, TOTAL_POR_SESSAO);
     return (
       <div className="quiz-resultado">
         <p className="eyebrow">Resultado</p>
@@ -388,7 +388,6 @@ export default function QuizClient() {
           <span className="quiz-resultado-numero">{placarAnimado}</span>
           <span className="quiz-resultado-total">/{TOTAL_POR_SESSAO}</span>
         </div>
-        <p className="quiz-resultado-emoji">{emoji}</p>
         <p className="quiz-resultado-mensagem">{texto}</p>
 
         <div className="quiz-resultado-acoes">

@@ -31,19 +31,19 @@ export function TesteAleatoriedade() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🎰 Você consegue ser aleatório?</p>
+      <p className="mat-interativo__titulo">Você consegue ser aleatório?</p>
       <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
         <button type="button"
           className={modo === "humano" ? "botao-gerar" : "botao-copiar"}
           onClick={() => { setModo("humano"); setSequencia([]); }}
           style={{ fontSize: "0.85rem" }}>
-          ✋ Modo humano
+          Modo humano
         </button>
         <button type="button"
           className={modo === "computador" ? "botao-gerar" : "botao-copiar"}
           onClick={() => { setModo("computador"); gerarComputador(); }}
           style={{ fontSize: "0.85rem" }}>
-          💻 Gerar com computador
+          Gerar com computador
         </button>
       </div>
 
@@ -114,9 +114,9 @@ export function TesteAleatoriedade() {
             {sequencia.length >= 20 && (
               <div className="mat-resultado-extra" style={{ marginTop: 10 }}>
                 {+pctRep < 5
-                  ? "⚠️ Poucas repetições — humanos evitam repetir o mesmo número!"
+                  ? "️ Poucas repetições — humanos evitam repetir o mesmo número!"
                   : +pctRep > 18
-                  ? "⚠️ Muitas repetições para o esperado."
+                  ? "️ Muitas repetições para o esperado."
                   : "✓ Distribuição próxima do aleatório verdadeiro."}
               </div>
             )}

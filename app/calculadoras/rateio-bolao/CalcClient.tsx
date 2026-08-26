@@ -86,7 +86,7 @@ export function CalcRateioBolao() {
                   style={{ fontSize: "0.78rem", padding: "6px 10px" }}
                   aria-label="Remover participante"
                 >
-                  ✕
+                  
                 </button>
               </div>
             ))}

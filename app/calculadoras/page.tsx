@@ -18,18 +18,6 @@ export const metadata: Metadata = {
   },
 };
 
-const COR_BG: Record<string, string> = {
-  pine:  "var(--pine)",
-  ochre: "var(--ochre)",
-  rust:  "var(--rust)",
-};
-
-const COR_LIGHT: Record<string, string> = {
-  pine:  "color-mix(in srgb, var(--pine)  12%, transparent)",
-  ochre: "color-mix(in srgb, var(--ochre) 12%, transparent)",
-  rust:  "color-mix(in srgb, var(--rust)  12%, transparent)",
-};
-
 const categorias = Object.entries(CATEGORIAS_CALC) as [keyof typeof CATEGORIAS_CALC, { label: string; cor: string }][];
 
 export default function CalculadorasPage() {
@@ -67,19 +55,19 @@ export default function CalculadorasPage() {
             <section key={catKey} style={{ marginBottom: 40 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
                 <span style={{
-                  padding: "3px 12px", borderRadius: 20,
-                  background: COR_BG[catInfo.cor],
-                  color: "#fff", fontSize: "0.72rem", fontFamily: "var(--font-mono)",
+                  padding: "3px 12px", borderRadius: 0,
+                  border: "1px solid var(--ink)",
+                  color: "var(--ink)", fontSize: "0.72rem", fontFamily: "var(--font-mono)",
                   textTransform: "uppercase", letterSpacing: "0.07em",
                 }}>
                   {catInfo.label}
                 </span>
               </div>
               <div className="calc-grade">
-                {calcs.map(c => (
+                {calcs.map((c, i) => (
                   <Link key={c.slug} href={`/calculadoras/${c.slug}`} className="calc-card">
-                    <div className="calc-card__topo" style={{ background: COR_BG[c.cor] }}>
-                      <span className="calc-card__emoji">{c.emoji}</span>
+                    <div className="calc-card__topo">
+                      <span className="calc-card__emoji">{String(i + 1).padStart(2, "0")}</span>
                       <span className="calc-card__categoria">{CATEGORIAS_CALC[c.categoria].label}</span>
                     </div>
                     <div className="calc-card__corpo">

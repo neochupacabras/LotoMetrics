@@ -18,7 +18,6 @@ export default function ArtigoParadoxoAniversarioPage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--ochre">
-          <span className="mat-artigo-emoji">🎂</span>
           <div>
             <p className="mat-artigo-conceito">Probabilidade complementar (em inglês: <em>birthday problem / birthday paradox</em>)</p>
             <h1 className="titulo-edicao">Paradoxo do Aniversário</h1>
@@ -90,7 +89,7 @@ export default function ArtigoParadoxoAniversarioPage() {
         </p>
 
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">🎯 Aplicações práticas do paradoxo</p>
+          <p className="mat-box__titulo">Aplicações práticas do paradoxo</p>
           <p>
             <strong>Segurança em sistemas de computador:</strong> quando um
             sistema gera identificadores aleatórios de n bits, colisões

@@ -18,7 +18,7 @@ export function SimuladorRegressao() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🎯 Nota na Prova 1 → nota esperada na Prova 2</p>
+      <p className="mat-interativo__titulo">Nota na Prova 1 → nota esperada na Prova 2</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Nota na Prova 1 (média da turma: {media})</label>

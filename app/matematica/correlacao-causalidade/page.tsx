@@ -18,7 +18,6 @@ export default function ArtigoCorrelacaoCausalidadePage() {
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>
         <div className="mat-artigo-header mat-artigo-header--ochre">
-          <span className="mat-artigo-emoji">🍫</span>
           <div>
             <p className="mat-artigo-conceito">Correlação de Pearson (em inglês: <em>correlation vs causation</em>)</p>
             <h1 className="titulo-edicao">Correlação e Causalidade</h1>
@@ -63,7 +62,7 @@ export default function ArtigoCorrelacaoCausalidadePage() {
           em divulgação científica. Há três mecanismos distintos:
         </p>
         <div className="mat-box mat-box--ochre">
-          <p className="mat-box__titulo">🔍 Os três culpados</p>
+          <p className="mat-box__titulo">Os três culpados</p>
           <p>
             <strong>1. Variável de confusão</strong> (em inglês:{" "}
             <em>confounding variable</em>): uma terceira variável oculta causa

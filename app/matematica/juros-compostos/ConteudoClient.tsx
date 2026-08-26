@@ -19,7 +19,7 @@ export function SimuladorJuros() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">📈 Juros simples vs compostos</p>
+      <p className="mat-interativo__titulo">Juros simples vs compostos</p>
       <div className="mat-interativo__controles">
         <div className="mat-interativo__campo">
           <label>Capital inicial (R$)</label>

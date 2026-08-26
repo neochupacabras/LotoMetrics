@@ -32,7 +32,7 @@ export function SimuladorMoeda() {
 
   return (
     <div className="mat-interativo">
-      <p className="mat-interativo__titulo">🪙 Simulador de moeda justa</p>
+      <p className="mat-interativo__titulo">Simulador de moeda justa</p>
       <p style={{ fontSize: "0.85rem", color: "var(--ink-soft)", marginBottom: 16 }}>
         Lance a moeda e observe como a proporção de caras se aproxima de 50%
         conforme o número de lançamentos aumenta.
