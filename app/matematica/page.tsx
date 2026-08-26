@@ -65,7 +65,7 @@ export default function MatematicaPage() {
         {/* Grade de cards */}
         <div className="mat-grade">
           {ARTIGOS_MATEMATICA.map((a, i) => (
-            <Link key={a.slug} href={`/matematica/${a.slug}`} className="mat-card">
+            <Link key={a.slug} href={`/matematica/${a.slug}`} className="mat-card cartao-elevado">
               <div className="mat-card__topo">
                 <span className="mat-card__emoji">{String(i + 1).padStart(2, "0")}</span>
                 <span className="mat-card__nivel">{NIVEL_LABEL[a.nivel]}</span>

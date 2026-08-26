@@ -64,7 +64,7 @@ export default function CalculadorasPage() {
               </div>
               <div className="calc-grade">
                 {calcs.map((c, i) => (
-                  <Link key={c.slug} href={`/calculadoras/${c.slug}`} className="calc-card">
+                  <Link key={c.slug} href={`/calculadoras/${c.slug}`} className="calc-card cartao-elevado">
                     <div className="calc-card__topo">
                       <span className="calc-card__emoji">{String(i + 1).padStart(2, "0")}</span>
                       <span className="calc-card__categoria">{CATEGORIAS_CALC[c.categoria].label}</span>
