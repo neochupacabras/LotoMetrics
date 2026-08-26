@@ -3,9 +3,8 @@ import { ImageResponse } from "next/og";
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
-const PINE  = "#1e4b3c";
-const OCHRE = "#b9802c";
-const WHITE = "#ffffff";
+const INK = "#17171a";
+const PINE = "#c23b22";
 
 export default function Icon() {
   return new ImageResponse(
@@ -17,16 +16,13 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: PINE,
-          borderRadius: 6,
+          backgroundColor: INK,
         }}
       >
-        {/* "L" em branco + "A" em ocre — iniciais de LotoAnalítica */}
-        <span style={{ color: WHITE, fontSize: 16, fontWeight: 800, letterSpacing: -1, lineHeight: 1 }}>
+        {/* "L" de LotoAnalítica — mesma cor de destaque (coral) usada
+            em todo o site, sobre tinta, sem cantos arredondados */}
+        <span style={{ color: PINE, fontSize: 20, fontWeight: 700, lineHeight: 1 }}>
           L
-        </span>
-        <span style={{ color: OCHRE, fontSize: 16, fontWeight: 800, letterSpacing: -1, lineHeight: 1 }}>
-          A
         </span>
       </div>
     ),

@@ -7,12 +7,11 @@ export const contentType = "image/png";
 // Mesmas cores de app/globals.css — Satori (o motor por trás do
 // ImageResponse) não entende var(), então os valores hex precisam
 // estar repetidos aqui.
-const PAPER = "#efeee6";
-const INK = "#1c1b17";
-const INK_SOFT = "#5b5847";
-const PINE = "#1e4b3c";
-const OCHRE = "#b9802c";
-const LINE = "#d8d4c5";
+const PAPER = "#f3f1ea";
+const INK = "#17171a";
+const INK_SOFT = "#4a4a45";
+const PINE = "#c23b22";
+const LINE = "#d4d2c8";
 
 const DEZENAS_DECORATIVAS = [3, 8, 12, 17, 21, 25];
 
@@ -55,7 +54,7 @@ export default async function Image() {
               maxWidth: 820,
             }}
           >
-            Lotofácil e Mega-Sena: frequência, atraso, ciclos, gerador de jogos e
+            As 9 loterias da Caixa: frequência, atraso, ciclos, gerador de jogos e
             probabilidades reais
           </div>
         </div>
@@ -77,8 +76,8 @@ export default async function Image() {
                 justifyContent: "center",
                 width: 76,
                 height: 76,
-                borderRadius: 999,
-                backgroundColor: OCHRE,
+                border: `2px solid ${INK}`,
+                backgroundColor: PAPER,
                 color: INK,
                 fontSize: 32,
                 fontWeight: 700,

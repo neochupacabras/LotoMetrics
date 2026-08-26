@@ -3,9 +3,9 @@ import { ImageResponse } from "next/og";
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
-const PINE  = "#1e4b3c";
-const OCHRE = "#b9802c";
-const WHITE = "#ffffff";
+const INK = "#17171a";
+const PAPER = "#f3f1ea";
+const PINE = "#c23b22";
 
 export default function AppleIcon() {
   return new ImageResponse(
@@ -17,16 +17,24 @@ export default function AppleIcon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: PINE,
-          borderRadius: 36,
+          backgroundColor: INK,
         }}
       >
-        <div style={{ display: "flex", alignItems: "baseline", gap: 0 }}>
-          <span style={{ color: WHITE, fontSize: 88, fontWeight: 800, letterSpacing: -4, lineHeight: 1 }}>
+        {/* Chip quadrado com borda de tinta — o mesmo motivo usado nas
+            dezenas em todo o site (heatmap, resultados, gerador) */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 108,
+            height: 108,
+            border: `4px solid ${PINE}`,
+            backgroundColor: PAPER,
+          }}
+        >
+          <span style={{ color: INK, fontSize: 56, fontWeight: 700, letterSpacing: -1, lineHeight: 1 }}>
             L
-          </span>
-          <span style={{ color: OCHRE, fontSize: 88, fontWeight: 800, letterSpacing: -4, lineHeight: 1 }}>
-            A
           </span>
         </div>
       </div>
