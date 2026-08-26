@@ -4,8 +4,9 @@ import { useState, useTransition, useMemo } from "react";
 import { calcularEquilibrioAction } from "@/lib/equilibrio-actions";
 import type { ResultadoEquilibrio } from "@/lib/equilibrio";
 import { formatarDezena } from "@/lib/format";
+import AnelProgresso from "./AnelProgresso";
 
-// ── Gauge SVG semicircular ────────────────────────────────────────────────────
+// ── Gauge (reaproveita o mesmo anel usado em Ciclos) ──────────────────────────
 
 function ScoreCard({ nota, cor, classificacao, descricao }: {
   nota: number;
@@ -22,14 +23,20 @@ function ScoreCard({ nota, cor, classificacao, descricao }: {
 
   return (
     <div className="equilibrio-scorecard">
-      <div className="equilibrio-scorecard__nota" style={{ color: cor }}>
-        {nota}
-        <span className="equilibrio-scorecard__de100">/100</span>
-      </div>
-      <div className="equilibrio-scorecard__badge" style={{ background: cor }}>
-        {labels[classificacao] ?? classificacao}
-      </div>
-      <p className="equilibrio-scorecard__desc">{descricao}</p>
+      <AnelProgresso
+        percentual={nota}
+        legenda="DE 100"
+        sufixo=""
+        cor={cor}
+        texto={
+          <>
+            <span className="equilibrio-scorecard__badge" style={{ background: cor }}>
+              {labels[classificacao] ?? classificacao}
+            </span>
+            <p className="equilibrio-scorecard__desc">{descricao}</p>
+          </>
+        }
+      />
     </div>
   );
 }

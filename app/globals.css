@@ -6231,6 +6231,12 @@ footer.rodape {
   transition: stroke-dashoffset 0.6s ease;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .anel-progresso__circulo-valor {
+    transition: none;
+  }
+}
+
 .anel-progresso__numero {
   font-family: var(--font-display);
   font-weight: 400;
