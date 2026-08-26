@@ -6321,7 +6321,7 @@ footer.rodape {
   color: var(--ink-soft);
   background: color-mix(in srgb, var(--ochre) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--ochre) 30%, transparent);
-  border-radius: 3px;
+  border-radius: 0;
   padding: 4px 10px;
   text-align: center;
 }
