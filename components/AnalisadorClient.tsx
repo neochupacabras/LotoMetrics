@@ -41,6 +41,34 @@ const LINKS_ARTIGOS: Record<string, string> = {
   multiplos3: "/dicas/multiplos-de-3",
 };
 
+// Traduz a porcentagem fria em algo que soa como uma pessoa comentando,
+// não uma tabulação — o número exato continua disponível no detalhe.
+function fraseFrequencia(pct: number): string {
+  if (pct >= 50) return "Mais da metade dos jogos possíveis têm esse mesmo padrão";
+  if (pct >= 25) return "Cerca de 1 em cada 4 jogos tem esse padrão";
+  if (pct >= 10) return "Cerca de 1 em cada 10 jogos tem esse padrão";
+  if (pct >= 3) return "Só uma fatia pequena dos jogos tem esse padrão";
+  return "Isso é raro — poucos jogos têm exatamente esse padrão";
+}
+
+// Veredito com opinião em vez de só uma contagem ("4 de 7 métricas são
+// típicas"). Mesmo vocabulário raro/comum que os badges já usam.
+function fraseVeredito(tipicas: number): string {
+  if (tipicas === 7) {
+    return "é um perfil clássico — todas as 7 características batem com o que a maioria já jogou";
+  }
+  if (tipicas >= 5) {
+    return `é um perfil bem típico — ${tipicas} de 7 características batem com o que a maioria já jogou`;
+  }
+  if (tipicas >= 3) {
+    return `tem um perfil misto — ${tipicas} de 7 características são comuns, o resto foge um pouco do padrão`;
+  }
+  if (tipicas > 0) {
+    return `foge do padrão em ${7 - tipicas} de 7 pontos — não é bom nem ruim, só incomum`;
+  }
+  return "foge do padrão em quase tudo — nenhuma das 7 características é comum, mas isso não é bom nem ruim, só incomum";
+}
+
 function badgeClass(l: LabelTipicidade) {
   if (l === "Muito comum") return "analisador-badge analisador-badge--bom";
   if (l === "Comum") return "analisador-badge analisador-badge--ok";
@@ -59,13 +87,13 @@ function BarraFrequencia({ pct }: { pct: number }) {
 interface MetricaCardProps {
   titulo: string;
   valor: string;
-  detalhe: string;
+  contextoExtra?: string;
   pct: number;
   label: LabelTipicidade;
   link: string;
 }
 
-function MetricaCard({ titulo, valor, detalhe, pct, label, link }: MetricaCardProps) {
+function MetricaCard({ titulo, valor, contextoExtra, pct, label, link }: MetricaCardProps) {
   return (
     <div className="analisador-card cartao-elevado">
       <div className="analisador-card__topo">
@@ -75,7 +103,7 @@ function MetricaCard({ titulo, valor, detalhe, pct, label, link }: MetricaCardPr
       <div className="analisador-card__valor">{valor}</div>
       <BarraFrequencia pct={pct} />
       <div className="analisador-card__detalhe">
-        {detalhe}{" "}
+        {fraseFrequencia(pct)} ({pct.toFixed(1)}%){contextoExtra ? ` — ${contextoExtra}` : ""}{" "}
         <Link href={link} className="analisador-card__link">
           Saiba mais ↗
         </Link>
@@ -176,8 +204,7 @@ export default function AnalisadorClient({
           <div className="analisador-resumo">
             <span className="analisador-resumo__numero">{resultado.tipicas}</span>
             <span className="analisador-resumo__texto">
-              de 7 métricas são{" "}
-              <strong>típicas</strong> — similar à maioria das combinações possíveis
+              de 7 — esse jogo {fraseVeredito(resultado.tipicas)}
               {!completo && ` (${selecionadas.size}/${qtdDezenasSorteadas} dezenas)`}
             </span>
           </div>
@@ -187,7 +214,7 @@ export default function AnalisadorClient({
             <MetricaCard
               titulo="Soma das dezenas"
               valor={String(resultado.soma.valor)}
-              detalhe={`Percentil ${resultado.soma.percentil.toFixed(0)}% — faixa típica: ${FAIXA_TIPICA_SOMA[codigoLoteria] ?? "—"}`}
+              contextoExtra={`percentil ${resultado.soma.percentil.toFixed(0)}%, faixa típica ${FAIXA_TIPICA_SOMA[codigoLoteria] ?? "—"}`}
               pct={resultado.soma.pct}
               label={resultado.soma.label}
               link={LINKS_ARTIGOS.soma}
@@ -196,7 +223,6 @@ export default function AnalisadorClient({
             <MetricaCard
               titulo="Par / Ímpar"
               valor={`${resultado.parImpar.pares} pares · ${resultado.parImpar.impares} ímpares`}
-              detalhe={`${resultado.parImpar.pct.toFixed(1)}% das combinações têm essa distribuição`}
               pct={resultado.parImpar.pct}
               label={resultado.parImpar.label}
               link={LINKS_ARTIGOS.parImpar}
@@ -209,7 +235,6 @@ export default function AnalisadorClient({
                   ? "Nenhuma sequência"
                   : `${resultado.sequencias.maior} seguidas`
               }
-              detalhe={`${resultado.sequencias.pct.toFixed(1)}% das combinações têm essa sequência máxima`}
               pct={resultado.sequencias.pct}
               label={resultado.sequencias.label}
               link={LINKS_ARTIGOS.sequencias}
@@ -218,7 +243,6 @@ export default function AnalisadorClient({
             <MetricaCard
               titulo="Moldura / Centro"
               valor={`${resultado.molduraCentro.moldura} na borda · ${resultado.molduraCentro.centro} no miolo`}
-              detalhe={`${resultado.molduraCentro.pct.toFixed(1)}% das combinações têm essa distribuição no volante`}
               pct={resultado.molduraCentro.pct}
               label={resultado.molduraCentro.label}
               link={LINKS_ARTIGOS.molduraCentro}
@@ -227,7 +251,6 @@ export default function AnalisadorClient({
             <MetricaCard
               titulo="Primos"
               valor={`${resultado.primos.qtd} ${resultado.primos.qtd === 1 ? "primo" : "primos"}`}
-              detalhe={`${resultado.primos.pct.toFixed(1)}% das combinações têm exatamente esse número de primos`}
               pct={resultado.primos.pct}
               label={resultado.primos.label}
               link={LINKS_ARTIGOS.primos}
@@ -236,7 +259,6 @@ export default function AnalisadorClient({
             <MetricaCard
               titulo="Fibonacci"
               valor={`${resultado.fibonacci.qtd} de Fibonacci`}
-              detalhe={`${resultado.fibonacci.pct.toFixed(1)}% das combinações têm essa quantidade de Fibonacci`}
               pct={resultado.fibonacci.pct}
               label={resultado.fibonacci.label}
               link={LINKS_ARTIGOS.fibonacci}
@@ -245,7 +267,6 @@ export default function AnalisadorClient({
             <MetricaCard
               titulo="Múltiplos de 3"
               valor={`${resultado.multiplos3.qtd} ${resultado.multiplos3.qtd === 1 ? "múltiplo" : "múltiplos"} de 3`}
-              detalhe={`${resultado.multiplos3.pct.toFixed(1)}% das combinações têm essa quantidade`}
               pct={resultado.multiplos3.pct}
               label={resultado.multiplos3.label}
               link={LINKS_ARTIGOS.multiplos3}
