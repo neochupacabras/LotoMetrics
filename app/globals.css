@@ -5957,6 +5957,176 @@ footer.rodape {
 }
 
 /* Texto explicativo nas páginas de ferramentas */
+/* ── Insight destacado (achado editorial nas tabelas estatísticas) ── */
+.insight-destaque {
+  border: 1px solid var(--ink);
+  border-left: 4px solid var(--pine);
+  background: var(--paper-raised);
+  padding: 22px 26px;
+  margin: 24px 0 36px;
+}
+
+.insight-destaque__kicker {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--pine);
+  margin: 0 0 10px;
+}
+
+.insight-destaque__texto {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.4rem;
+  line-height: 1.4;
+  color: var(--ink);
+  margin: 0;
+}
+
+.insight-destaque__texto strong {
+  color: var(--pine);
+  font-weight: 400;
+  font-style: italic;
+}
+
+@media (max-width: 640px) {
+  .insight-destaque__texto { font-size: 1.15rem; }
+}
+
+/* ── Anel de progresso do ciclo ─────────────────────────────── */
+.anel-progresso {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 20px 0 28px;
+  flex-wrap: wrap;
+}
+
+.anel-progresso__svg { flex-shrink: 0; }
+
+.anel-progresso__circulo-fundo {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 10;
+}
+
+.anel-progresso__circulo-valor {
+  fill: none;
+  stroke: var(--pine);
+  stroke-width: 10;
+  stroke-linecap: butt;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.anel-progresso__numero {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.9rem;
+  fill: var(--ink);
+}
+
+.anel-progresso__legenda {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  fill: var(--ink-faint);
+}
+
+.anel-progresso__texto {
+  max-width: 320px;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+.anel-progresso__texto strong { color: var(--ink); }
+
+/* ── Calculadora "onde cai a sua soma" ──────────────────────── */
+.soma-calc {
+  border: 1px solid var(--ink);
+  background: var(--paper-raised);
+  padding: 22px 26px;
+  margin: 24px 0;
+}
+
+.soma-calc__titulo {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.3rem;
+  margin: 0 0 6px;
+}
+
+.soma-calc__nota {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.soma-calc__form {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.soma-calc__campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.soma-calc__campo label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.soma-calc__campo input {
+  width: 110px;
+  padding: 9px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  background: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.soma-calc__campo input:focus {
+  outline: none;
+  border-color: var(--pine);
+}
+
+.soma-calc__resultado {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 0.92rem;
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.soma-calc__resultado strong { color: var(--pine); font-weight: 700; }
+
+.soma-calc__barra-track {
+  margin-top: 10px;
+  height: 8px;
+  background: var(--line);
+  position: relative;
+}
+
+.soma-calc__barra-marcador {
+  position: absolute;
+  top: -4px;
+  width: 2px;
+  height: 16px;
+  background: var(--ink);
+  transition: left 0.3s ease;
+}
+
 .ferramenta-explicacao {
   background: var(--paper);
   border-left: 3px solid var(--pine);

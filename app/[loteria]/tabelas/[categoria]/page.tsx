@@ -4,10 +4,15 @@ import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
 import HeatmapVolante from "@/components/HeatmapVolante";
 import GraficoBarras from "@/components/GraficoBarras";
+import InsightCallout from "@/components/InsightCallout";
+import AnelProgresso from "@/components/AnelProgresso";
+import SomaCalculadora from "@/components/SomaCalculadora";
 import { SimuladorFrequenciaAleatoria } from "@/components/SimuladorFrequenciaAleatoria";
 import { getCategoriaPorSlug, getCategoriasParaLoteria } from "@/lib/categorias";
-import { getLoteriaPorCodigo } from "@/lib/queries";
+import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 import { formatarDezena, isCodigoLoteriaValido } from "@/lib/format";
+import { compararTempoComMundoReal, estimarDiasCorridos } from "@/lib/insights";
+import { AGENDA } from "@/lib/calendario";
 import * as Estat from "@/lib/estatisticas";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 
@@ -75,6 +80,7 @@ export default async function CategoriaPage({
 
       <ConteudoCategoria
         slug={slugCategoria}
+        codigoLoteria={codigoLoteria}
         loteriaId={loteria.id}
         dezenaMin={loteria.dezenaMin}
         dezenaMax={loteria.dezenaMax}
@@ -93,6 +99,7 @@ export default async function CategoriaPage({
 
 async function ConteudoCategoria({
   slug,
+  codigoLoteria,
   loteriaId,
   dezenaMin,
   dezenaMax,
@@ -100,6 +107,7 @@ async function ConteudoCategoria({
   qtdDezenasSorteadas,
 }: {
   slug: string;
+  codigoLoteria: string;
   loteriaId: number;
   dezenaMin: number;
   dezenaMax: number;
@@ -120,6 +128,7 @@ async function ConteudoCategoria({
     case "atraso":
       return (
         <ConteudoAtraso
+          codigoLoteria={codigoLoteria}
           loteriaId={loteriaId}
           dezenaMin={dezenaMin}
           dezenaMax={dezenaMax}
@@ -136,6 +145,7 @@ async function ConteudoCategoria({
       return (
         <ConteudoCategoriaBinaria
           loteriaId={loteriaId}
+          qtdDezenasSorteadas={qtdDezenasSorteadas}
           getFrequencia={Estat.getPrimosFrequencia}
           getDistribuicao={Estat.getPrimosDistribuicao}
           rotuloPositivo="primo"
@@ -143,11 +153,19 @@ async function ConteudoCategoria({
         />
       );
     case "soma":
-      return <ConteudoSoma loteriaId={loteriaId} />;
+      return (
+        <ConteudoSoma
+          loteriaId={loteriaId}
+          dezenaMin={dezenaMin}
+          dezenaMax={dezenaMax}
+          qtdDezenasSorteadas={qtdDezenasSorteadas}
+        />
+      );
     case "fibonacci":
       return (
         <ConteudoCategoriaBinaria
           loteriaId={loteriaId}
+          qtdDezenasSorteadas={qtdDezenasSorteadas}
           getFrequencia={Estat.getFibonacciFrequencia}
           getDistribuicao={Estat.getFibonacciDistribuicao}
           rotuloPositivo="fibonacci"
@@ -158,6 +176,7 @@ async function ConteudoCategoria({
       return (
         <ConteudoCategoriaBinaria
           loteriaId={loteriaId}
+          qtdDezenasSorteadas={qtdDezenasSorteadas}
           getFrequencia={Estat.getMultiplos3Frequencia}
           getDistribuicao={Estat.getMultiplos3Distribuicao}
           rotuloPositivo="multiplo_de_3"
@@ -171,7 +190,14 @@ async function ConteudoCategoria({
     case "linhas-colunas":
       return <ConteudoLinhasColunas loteriaId={loteriaId} />;
     case "duques-trincas":
-      return <ConteudoDuquesTrincas loteriaId={loteriaId} />;
+      return (
+        <ConteudoDuquesTrincas
+          loteriaId={loteriaId}
+          dezenaMin={dezenaMin}
+          dezenaMax={dezenaMax}
+          qtdDezenasSorteadas={qtdDezenasSorteadas}
+        />
+      );
     default:
       notFound();
   }
@@ -198,8 +224,17 @@ async function ConteudoFrequencia({
   const menosFrequentes = [...dados].sort((a, b) => a.frequencia - b.frequencia).slice(0, 10);
   const valoresPorDezena = Object.fromEntries(dados.map((d) => [d.dezena, d.frequencia]));
 
+  const campea = dados[0];
+  const mediaFreq = dados.reduce((s, d) => s + d.frequencia, 0) / dados.length;
+  const diffPct = Math.round(((campea.frequencia - mediaFreq) / mediaFreq) * 100);
+
   return (
     <>
+      <InsightCallout kicker="A campeã do histórico">
+        A dezena <strong>{formatarDezena(campea.dezena)}</strong> é a mais sorteada
+        de toda a história: já saiu <strong>{campea.frequencia} vezes</strong>,{" "}
+        {diffPct}% acima da média das demais dezenas.
+      </InsightCallout>
       <SimuladorFrequenciaAleatoria
         dezenaMin={dezenaMin}
         dezenaMax={dezenaMax}
@@ -253,11 +288,13 @@ async function ConteudoFrequencia({
 // ATRASO
 // ---------------------------------------------------------------
 async function ConteudoAtraso({
+  codigoLoteria,
   loteriaId,
   dezenaMin,
   dezenaMax,
   gridColunas,
 }: {
+  codigoLoteria: string;
   loteriaId: number;
   dezenaMin: number;
   dezenaMax: number;
@@ -265,8 +302,19 @@ async function ConteudoAtraso({
 }) {
   const dados = await Estat.getAtraso(loteriaId);
   const valoresPorDezena = Object.fromEntries(dados.map((d) => [d.dezena, d.atraso]));
+
+  const maisAtrasada = dados[0];
+  const sorteiosPorSemana = AGENDA.find((a) => a.codigo === codigoLoteria)?.dias.length ?? 3;
+  const diasEstimados = estimarDiasCorridos(maisAtrasada.atraso, sorteiosPorSemana);
+  const comparacao = compararTempoComMundoReal(diasEstimados);
+
   return (
     <div className="bloco">
+      <InsightCallout kicker="A mais sumida do momento">
+        A dezena <strong>{formatarDezena(maisAtrasada.dezena)}</strong> não aparece
+        há <strong>{maisAtrasada.atraso} concursos</strong> — cerca de{" "}
+        {diasEstimados} dias corridos, ou seja, {comparacao}.
+      </InsightCallout>
       <h2 className="bloco__titulo">Mapa de calor</h2>
       <p className="bloco__nota">
         Mesmo layout do volante — quanto mais vermelho, mais concursos a dezena está sem
@@ -323,6 +371,13 @@ async function ConteudoAtraso({
 // ---------------------------------------------------------------
 async function ConteudoCiclos({ loteriaId }: { loteriaId: number }) {
   const { atual, historico } = await Estat.getCiclos(loteriaId);
+  const totalNoCicloAtual = atual
+    ? atual.dezenasSorteadas.length + atual.dezenasFaltantes.length
+    : 0;
+  const pctCompleto = atual && totalNoCicloAtual > 0
+    ? Math.round((atual.dezenasSorteadas.length / totalNoCicloAtual) * 100)
+    : 0;
+
   return (
     <>
       {atual && (
@@ -332,6 +387,23 @@ async function ConteudoCiclos({ loteriaId }: { loteriaId: number }) {
             Em andamento desde o concurso #{atual.concursoInicio} ({atual.concursosNoCiclo}{" "}
             concursos até agora).
           </p>
+
+          <AnelProgresso
+            percentual={pctCompleto}
+            texto={
+              <>
+                {atual.dezenasFaltantes.length > 0 ? (
+                  <>
+                    Faltam apenas <strong>{atual.dezenasFaltantes.length} dezenas</strong> pra
+                    fechar esse ciclo — depois disso, todas as {totalNoCicloAtual} dezenas terão
+                    saído ao menos uma vez desde o concurso #{atual.concursoInicio}.
+                  </>
+                ) : (
+                  <>O ciclo está prestes a fechar no próximo concurso.</>
+                )}
+              </>
+            }
+          />
 
           <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.8rem", color: "var(--ink-soft)" }}>
             Já saíram neste ciclo:
@@ -358,6 +430,17 @@ async function ConteudoCiclos({ loteriaId }: { loteriaId: number }) {
 
       <div className="bloco">
         <h2 className="bloco__titulo">Últimos ciclos fechados</h2>
+        {historico.length > 0 && (
+          <p className="bloco__nota">
+            Em média, um ciclo leva{" "}
+            <strong>
+              {Math.round(historico.reduce((s, c) => s + c.qtdConcursos, 0) / historico.length)}
+            </strong>{" "}
+            concursos pra fechar — o mais rápido levou{" "}
+            {Math.min(...historico.map((c) => c.qtdConcursos))} e o mais demorado,{" "}
+            {Math.max(...historico.map((c) => c.qtdConcursos))}.
+          </p>
+        )}
         <GraficoBarras
           dados={[...historico]
             .reverse()
@@ -397,8 +480,31 @@ async function ConteudoCiclos({ loteriaId }: { loteriaId: number }) {
 // ---------------------------------------------------------------
 async function ConteudoSequencias({ loteriaId }: { loteriaId: number }) {
   const { distribuicao, consecutivasPorDezena } = await Estat.getSequencias(loteriaId);
+
+  const recordeSequencia = [...distribuicao]
+    .filter((d) => d.ocorrencias > 0)
+    .sort((a, b) => b.maiorSequencia - a.maiorSequencia)[0];
+  const recordistaConcursos = [...consecutivasPorDezena].sort(
+    (a, b) => b.maiorSequenciaConcursos - a.maiorSequenciaConcursos
+  )[0];
+
   return (
     <>
+      {recordeSequencia && (
+        <InsightCallout kicker="O maior encontro já visto">
+          A maior sequência dentro de um único sorteio já registrada foi de{" "}
+          <strong>{recordeSequencia.maiorSequencia} dezenas seguidas</strong> — algo
+          que aconteceu em {recordeSequencia.percentual}% dos concursos.
+          {recordistaConcursos && (
+            <>
+              {" "}Já a dezena <strong>{formatarDezena(recordistaConcursos.dezena)}</strong> detém
+              o outro recorde: saiu em{" "}
+              <strong>{recordistaConcursos.maiorSequenciaConcursos} concursos seguidos</strong>,
+              sem faltar um único.
+            </>
+          )}
+        </InsightCallout>
+      )}
       <div className="bloco">
         <h2 className="bloco__titulo">Maior sequência dentro de um sorteio</h2>
         <p className="bloco__nota">
@@ -449,8 +555,17 @@ async function ConteudoSequencias({ loteriaId }: { loteriaId: number }) {
 // ---------------------------------------------------------------
 async function ConteudoParesImpares({ loteriaId }: { loteriaId: number }) {
   const dados = await Estat.getParesImpares(loteriaId);
+  const maisComum = [...dados].sort((a, b) => b.ocorrencias - a.ocorrencias)[0];
   return (
     <div className="bloco">
+      {maisComum && (
+        <InsightCallout kicker="O equilíbrio mais frequente">
+          A combinação mais comum de todas é{" "}
+          <strong>{maisComum.pares} pares e {maisComum.impares} ímpares</strong> no
+          mesmo sorteio — presente em <strong>{maisComum.percentual}%</strong> de
+          todos os concursos já realizados.
+        </InsightCallout>
+      )}
       <GraficoBarras
         dados={[...dados]
           .sort((a, b) => a.pares - b.pares)
@@ -492,12 +607,14 @@ async function ConteudoParesImpares({ loteriaId }: { loteriaId: number }) {
 // ---------------------------------------------------------------
 async function ConteudoCategoriaBinaria({
   loteriaId,
+  qtdDezenasSorteadas,
   getFrequencia,
   getDistribuicao,
   rotuloPositivo,
   rotuloQuantidade,
 }: {
   loteriaId: number;
+  qtdDezenasSorteadas: number;
   getFrequencia: (id: number) => Promise<Estat.FrequenciaCategoria[]>;
   getDistribuicao: (id: number) => Promise<Estat.DistribuicaoQuantidade[]>;
   rotuloPositivo: string;
@@ -509,9 +626,18 @@ async function ConteudoCategoriaBinaria({
   ]);
   const positiva = frequencia.find((f) => f.categoria === rotuloPositivo);
   const negativa = frequencia.find((f) => f.categoria !== rotuloPositivo);
+  const mediaPorJogo = positiva ? (positiva.percentual / 100) * qtdDezenasSorteadas : 0;
 
   return (
     <>
+      {positiva && (
+        <InsightCallout kicker="Na balança">
+          Ao longo de toda a história, <strong>{positiva.percentual}%</strong> de
+          todas as dezenas já sorteadas eram {rotuloQuantidade} — isso dá, em
+          média, <strong>{mediaPorJogo.toFixed(1).replace(".0", "")}</strong> a cada{" "}
+          {qtdDezenasSorteadas} dezenas de um sorteio típico.
+        </InsightCallout>
+      )}
       <div className="bloco">
         <h2 className="bloco__titulo">Frequência geral</h2>
         <div className="tabela-scroll">
@@ -563,8 +689,20 @@ async function ConteudoCategoriaBinaria({
 // ---------------------------------------------------------------
 // SOMA
 // ---------------------------------------------------------------
-async function ConteudoSoma({ loteriaId }: { loteriaId: number }) {
+async function ConteudoSoma({
+  loteriaId,
+  dezenaMin,
+  dezenaMax,
+  qtdDezenasSorteadas,
+}: {
+  loteriaId: number;
+  dezenaMin: number;
+  dezenaMax: number;
+  qtdDezenasSorteadas: number;
+}) {
   const { estatisticas, histograma } = await Estat.getSoma(loteriaId);
+  const totalConcursos = histograma.reduce((s, h) => s + h.ocorrencias, 0);
+
   return (
     <>
       {estatisticas && (
@@ -586,6 +724,18 @@ async function ConteudoSoma({ loteriaId }: { loteriaId: number }) {
             <dd>{estatisticas.mediana}</dd>
           </div>
         </dl>
+      )}
+
+      {estatisticas && (
+        <SomaCalculadora
+          histograma={histograma}
+          totalConcursos={totalConcursos}
+          somaMinima={estatisticas.minimo}
+          somaMaxima={estatisticas.maximo}
+          dezenaMin={dezenaMin}
+          dezenaMax={dezenaMax}
+          qtdDezenasSorteadas={qtdDezenasSorteadas}
+        />
       )}
       <div className="bloco">
         <h2 className="bloco__titulo">Distribuição da soma (faixas de 10)</h2>
@@ -634,8 +784,16 @@ async function ConteudoSoma({ loteriaId }: { loteriaId: number }) {
 // ---------------------------------------------------------------
 async function ConteudoRepetidas({ loteriaId }: { loteriaId: number }) {
   const dados = await Estat.getRepetidas(loteriaId);
+  const maisComum = [...dados].sort((a, b) => b.ocorrencias - a.ocorrencias)[0];
   return (
     <div className="bloco">
+      {maisComum && (
+        <InsightCallout kicker="O padrão que mais se repete">
+          O mais comum é <strong>{maisComum.quantidade} dezena{maisComum.quantidade === 1 ? "" : "s"}</strong>{" "}
+          repetida{maisComum.quantidade === 1 ? "" : "s"} do concurso anterior — isso
+          acontece em <strong>{maisComum.percentual}%</strong> dos sorteios.
+        </InsightCallout>
+      )}
       <GraficoBarras
         dados={[...dados]
           .sort((a, b) => a.quantidade - b.quantidade)
@@ -656,8 +814,20 @@ async function ConteudoRepetidas({ loteriaId }: { loteriaId: number }) {
 // ---------------------------------------------------------------
 async function ConteudoMolduraCentro({ loteriaId }: { loteriaId: number }) {
   const { frequencia, distribuicao } = await Estat.getMolduraCentro(loteriaId);
+  const moldura = frequencia.find((f) => f.categoria.toLowerCase() === "moldura");
+  const centro = frequencia.find((f) => f.categoria.toLowerCase() === "centro");
   return (
     <>
+      {moldura && centro && (
+        <InsightCallout kicker="Moldura vs. centro">
+          As dezenas da <strong>moldura</strong> (bordas do volante) saem em{" "}
+          <strong>{moldura.percentual}%</strong> das vezes, contra{" "}
+          <strong>{centro.percentual}%</strong> das dezenas do{" "}
+          <strong>centro</strong> — {moldura.percentual > centro.percentual
+            ? "a borda leva vantagem."
+            : "o miolo do volante leva vantagem."}
+        </InsightCallout>
+      )}
       <div className="bloco">
         <h2 className="bloco__titulo">Frequência geral</h2>
         <GraficoBarras
@@ -723,8 +893,18 @@ async function ConteudoMolduraCentro({ loteriaId }: { loteriaId: number }) {
 // ---------------------------------------------------------------
 async function ConteudoLinhasColunas({ loteriaId }: { loteriaId: number }) {
   const { linhas, colunas } = await Estat.getLinhasColunas(loteriaId);
+  const linhaTop = [...linhas].sort((a, b) => b.frequencia - a.frequencia)[0];
+  const colunaTop = [...colunas].sort((a, b) => b.frequencia - a.frequencia)[0];
   return (
     <>
+      {linhaTop && colunaTop && (
+        <InsightCallout kicker="O ponto quente do volante">
+          A <strong>linha {linhaTop.posicao}</strong> e a{" "}
+          <strong>coluna {colunaTop.posicao}</strong> são as que mais entregam
+          dezenas sorteadas — {linhaTop.frequencia} e {colunaTop.frequencia}{" "}
+          ocorrências, respectivamente, ao longo de todo o histórico.
+        </InsightCallout>
+      )}
       <div className="bloco">
         <h2 className="bloco__titulo">Frequência por linha do volante</h2>
         <GraficoBarras
@@ -784,13 +964,47 @@ async function ConteudoLinhasColunas({ loteriaId }: { loteriaId: number }) {
 // ---------------------------------------------------------------
 // DUQUES E TRINCAS
 // ---------------------------------------------------------------
-async function ConteudoDuquesTrincas({ loteriaId }: { loteriaId: number }) {
-  const [duques, trincas] = await Promise.all([
+async function ConteudoDuquesTrincas({
+  loteriaId,
+  dezenaMin,
+  dezenaMax,
+  qtdDezenasSorteadas,
+}: {
+  loteriaId: number;
+  dezenaMin: number;
+  dezenaMax: number;
+  qtdDezenasSorteadas: number;
+}) {
+  const [duques, trincas, ultimoConcurso] = await Promise.all([
     Estat.getDuques(loteriaId, 20),
     Estat.getTrincas(loteriaId, 20),
+    getUltimoConcurso(loteriaId),
   ]);
+
+  const duqueTop = duques[0];
+  const totalConcursos = ultimoConcurso?.numero ?? 0;
+  const n = dezenaMax - dezenaMin + 1;
+  const k = qtdDezenasSorteadas;
+  // Probabilidade de duas dezenas específicas saírem juntas num sorteio de k
+  // entre n: C(n-2,k-2) / C(n,k), que simplifica pra k(k-1) / (n(n-1)).
+  const probParDeterminado = n > 1 ? (k * (k - 1)) / (n * (n - 1)) : 0;
+  const esperadoPorAcaso = probParDeterminado * totalConcursos;
+  const vezesMais = duqueTop && esperadoPorAcaso > 0
+    ? duqueTop.ocorrencias / esperadoPorAcaso
+    : 0;
+
   return (
     <>
+      {duqueTop && esperadoPorAcaso > 0 && (
+        <InsightCallout kicker="A dupla mais grudenta">
+          A dupla <strong>{duqueTop.dezenas.map(formatarDezena).join(" - ")}</strong> já
+          saiu junta <strong>{duqueTop.ocorrencias} vezes</strong>. Pela pura
+          matemática da chance, o esperado seria algo perto de{" "}
+          {esperadoPorAcaso.toFixed(1)} vezes — ou seja, essa dupla apareceu
+          cerca de <strong>{vezesMais.toFixed(1)}x</strong> o esperado, o tipo de
+          desvio normal que a aleatoriedade produz em qualquer amostra grande.
+        </InsightCallout>
+      )}
       <div className="bloco">
         <h2 className="bloco__titulo">Duques mais frequentes</h2>
         <GraficoBarras
