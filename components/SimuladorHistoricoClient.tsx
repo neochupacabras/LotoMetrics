@@ -7,6 +7,7 @@ import {
 } from "recharts";
 import { simularHistorico, compararJogos, type ResultadoSimulacao, type ResultadoComparacao } from "@/lib/simulador-actions";
 import { salvarJogoAction } from "@/lib/jogo-actions";
+import InsightCallout from "./InsightCallout";
 import { formatarDezena } from "@/lib/format";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -383,6 +384,16 @@ export default function SimuladorHistoricoClient({
             </div>
           </div>
 
+          <InsightCallout kicker="Traduzindo pra reais">
+            Se você tivesse jogado esse jogo desde sempre, {resultado.saldoFinal >= 0
+              ? "teria fechado no positivo"
+              : "teria perdido dinheiro"}: saldo final de{" "}
+            <strong>{formatarReaisSimples(resultado.saldoFinal)}</strong> — um retorno de{" "}
+            <strong>{resultado.retornoPct.toFixed(1)}%</strong> do que foi gasto,{" "}
+            {resultado.retornoPct >= 43 ? "acima" : "abaixo"} da média histórica de ~43% pra
+            qualquer combinação.
+          </InsightCallout>
+
           <CardsResumo r={resultado} />
 
           {/* Card drawdown */}
@@ -423,7 +434,7 @@ export default function SimuladorHistoricoClient({
                     tickFormatter={v => formatarReais(v)} domain={[yMin*1.05,"auto"]} width={72} />
                   <Tooltip content={<TooltipSimples />} />
                   <ReferenceLine y={0} stroke="#6b6a63" strokeWidth={1.5} strokeDasharray="6 3" />
-                  <Line type="monotone" dataKey="saldo" stroke="#b9802c" strokeWidth={1.5} dot={false} isAnimationActive={false} />
+                  <Line type="monotone" dataKey="saldo" stroke="#b9802c" strokeWidth={1.5} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -514,8 +525,8 @@ export default function SimuladorHistoricoClient({
                   <Tooltip content={<TooltipComparado />} />
                   <ReferenceLine y={0} stroke="#6b6a63" strokeWidth={1.5} strokeDasharray="6 3" />
                   <Legend wrapperStyle={{ fontFamily:"var(--font-mono)", fontSize:"0.78rem" }} />
-                  <Line type="monotone" dataKey="saldoA" name="Jogo A" stroke="#b9802c" strokeWidth={2} dot={false} isAnimationActive={false} />
-                  <Line type="monotone" dataKey="saldoB" name="Jogo B" stroke="#17171a" strokeWidth={2} dot={false} isAnimationActive={false} />
+                  <Line type="monotone" dataKey="saldoA" name="Jogo A" stroke="#b9802c" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="saldoB" name="Jogo B" stroke="#17171a" strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
