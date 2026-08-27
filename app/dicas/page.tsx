@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { ARTIGOS } from "@/lib/artigos";
 
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
 export default function DicasPage() {
   return (
     <>
+      <BreadcrumbJsonLd itens={[{ nome: "Dicas", caminho: "/dicas" }]} />
       <Masthead dicasAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow">Guia</p>

@@ -59,12 +59,14 @@ export function metadataPagina(
 }
 
 // JSON-LD de Article — para páginas de conteúdo editorial (análises,
-// dicas) que têm data de publicação. `caminho` é relativo (ex: "/dicas/x").
+// dicas). `caminho` é relativo (ex: "/dicas/x"). `dataPublicacao` é
+// opcional: os artigos de /dicas não têm data de publicação no modelo de
+// dados atual, e é melhor omitir o campo do que inventar uma data.
 export function articleJsonLd(opts: {
   titulo: string;
   descricao: string;
   caminho: string;
-  dataPublicacao: string; // YYYY-MM-DD
+  dataPublicacao?: string; // YYYY-MM-DD
 }) {
   const url = `${SITE_URL}${opts.caminho}`;
   return {
@@ -73,7 +75,7 @@ export function articleJsonLd(opts: {
     headline: opts.titulo,
     description: opts.descricao,
     url,
-    datePublished: opts.dataPublicacao,
+    ...(opts.dataPublicacao ? { datePublished: opts.dataPublicacao } : {}),
     author: { "@type": "Organization", name: SITE_NAME },
     publisher: { "@type": "Organization", name: SITE_NAME },
     mainEntityOfPage: { "@type": "WebPage", "@id": url },

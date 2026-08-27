@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 const TITULO = "Timemania: 7 de 80 dezenas e o Time do Coração";
 const DESCRICAO =
@@ -22,6 +23,20 @@ export const metadata: Metadata = {
 export default function ArtigoTimemaniaPage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Dicas", caminho: "/dicas" },
+          { nome: TITULO, caminho: "/dicas/timemania" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: TITULO, descricao: DESCRICAO, caminho: "/dicas/timemania" })
+          ),
+        }}
+      />
       <Masthead dicasAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow">
