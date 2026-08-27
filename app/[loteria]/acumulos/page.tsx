@@ -74,7 +74,7 @@ export default async function AcumulosPage({
           <p>
             Para entender os detalhes de como os prêmios são calculados a partir da
             arrecadação e dos acúmulos, veja o artigo sobre{" "}
-            <a href={`/${codigoLoteria}/dicas/como-os-premios-sao-calculados`} className="breadcrumb">
+            <a href={`/dicas/como-os-premios-sao-calculados`} className="breadcrumb">
               como os prêmios são calculados
             </a>.
           </p>

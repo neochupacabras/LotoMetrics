@@ -15,6 +15,17 @@ import { SITE_URL, SITE_NAME, NOME_LOTERIA } from "@/lib/seo";
 // página do zero e pode esgotar o pool de conexões do Supabase sob carga.
 export const revalidate = 86400; // 24 horas
 
+// Necessário para o `revalidate` acima realmente funcionar: um segmento
+// dinâmico aninhado (aqui, [numero] dentro de [loteria]) só é elegível
+// para cache se ele mesmo declarar generateStaticParams — o do layout pai
+// cobre só o parâmetro `loteria`, não este. Devolvemos vazio de propósito
+// (são milhares de concursos por loteria, não vale pré-gerar tudo no
+// build): com `dynamicParams` no padrão (true), cada concurso é renderizado
+// e cacheado sob demanda no primeiro acesso, exatamente como pretendido.
+export async function generateStaticParams() {
+  return [];
+}
+
 export async function generateMetadata({
   params,
 }: {

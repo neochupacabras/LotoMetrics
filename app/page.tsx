@@ -10,7 +10,10 @@ import { getAnalisesRecentes } from "@/lib/analises";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 import { ARTIGOS } from "@/lib/artigos";
 
-export const dynamic = "force-dynamic"; // Depende do banco e de auth em runtime
+// Só lê dados públicos do banco (já cacheados via unstable_cache em
+// lib/queries.ts) — sem motivo pra ser dinâmica; o login agora é checado
+// no cliente (ver components/auth/PlanoUsuarioProvider.tsx).
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "LotoAnalítica — Resultado Lotofácil e Mega-Sena hoje, estatísticas e ferramentas",

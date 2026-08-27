@@ -1,4 +1,6 @@
-import { getPlanoPremium } from "@/lib/plano";
+"use client";
+
+import { usePlanoUsuario } from "@/components/auth/PlanoUsuarioProvider";
 import AnuncioDisplay from "./AnuncioDisplay";
 
 interface Props {
@@ -7,13 +9,15 @@ interface Props {
   className?: string;
 }
 
-// Server Component — verifica o plano no servidor.
-// Se o usuário for premium, não renderiza nada e o script do AdSense
-// nunca é chamado. Se for free, renderiza o AnuncioDisplay (Client Component).
-export default async function Anuncio({ slot, formato, className }: Props) {
-  const { premium } = await getPlanoPremium();
+// Client Component — checa o plano no navegador (ver PlanoUsuarioProvider).
+// Se o usuário for premium (ou o plano ainda estiver carregando), não
+// renderiza nada e o AdSense nunca é chamado para esse slot. Antes lia o
+// plano no servidor, o que forçava a página inteira a renderizar
+// dinamicamente mesmo sem nenhum outro motivo pra isso.
+export default function Anuncio({ slot, formato, className }: Props) {
+  const { carregando, isPremium } = usePlanoUsuario();
 
-  if (premium) return null;
+  if (carregando || isPremium) return null;
 
   return <AnuncioDisplay slot={slot} formato={formato} className={className} />;
 }

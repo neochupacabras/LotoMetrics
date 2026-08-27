@@ -103,7 +103,7 @@ export default async function HeatmapPage({
             A interpretação correta é importante: as diferenças de intensidade que você
             vê não indicam dezenas "melhores" ou "piores" para jogar. Como explicado no
             artigo sobre{" "}
-            <a href={`/${codigoLoteria}/dicas/frequencia`} className="breadcrumb">
+            <a href={`/dicas/frequencia`} className="breadcrumb">
               frequência
             </a>, a variação observada está dentro do intervalo esperado por pura
             aleatoriedade — qualquer sorteio honesto produz esse tipo de distribuição

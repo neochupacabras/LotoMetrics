@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, Work_Sans, IBM_Plex_Mono } from "next/font/google";
-import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Footer from "@/components/Footer";
+import AdsenseGate from "@/components/AdsenseGate";
+import { PlanoUsuarioProvider } from "@/components/auth/PlanoUsuarioProvider";
 import { SITE_URL } from "@/lib/seo";
-import { getPlanoPremium } from "@/lib/plano";
 import "./globals.css";
 
 const instrumentSerif = Instrument_Serif({
@@ -44,33 +44,21 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Verifica o plano no servidor — o script do AdSense só é incluído
-  // no HTML quando o usuário NÃO é premium. Para assinantes, o script
-  // nunca chega ao navegador.
-  const { premium } = await getPlanoPremium();
-
   return (
     <html lang="pt-BR" className={`${instrumentSerif.variable} ${workSans.variable} ${plexMono.variable}`}>
       <body suppressHydrationWarning>
-        {children}
-        <Footer />
-        <Analytics />
-        <SpeedInsights />
-
-        {/* Script do AdSense — NUNCA carregado para usuários premium */}
-        {!premium && (
-          <Script
-            async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2396097789128007"
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
+        <PlanoUsuarioProvider>
+          {children}
+          <Footer />
+          <Analytics />
+          <SpeedInsights />
+          <AdsenseGate />
+        </PlanoUsuarioProvider>
       </body>
     </html>
   );

@@ -4,6 +4,7 @@ import BolaoClient from "@/components/BolaoClient";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+import { temOpcoesBolao } from "@/lib/bolao-opcoes";
 
 export async function generateMetadata({
   params,
@@ -32,76 +33,104 @@ export default async function BolaoPage({
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) notFound();
 
+  const disponivel = temOpcoesBolao(codigoLoteria);
+
   return (
     <div className="container secao">
       <p className="eyebrow">{loteria.nome}</p>
       <h1 className="titulo-edicao">Otimizador de bolão</h1>
 
-      <div style={{ maxWidth: 660 }}>
-        <p className="subtitulo-edicao">
-          Para quem joga em grupo: diga quanto o grupo quer gastar e o sistema
-          organiza os bilhetes usando fechamento de dezenas — um conjunto de jogos
-          arranjados para que, se as dezenas escolhidas aparecerem no sorteio, pelo
-          menos um bilhete capture uma boa pontuação.
-        </p>
-        <p className="subtitulo-edicao">
-          No final, gera um PDF completo para compartilhar com o grupo, com todos
-          os bilhetes e o valor por participante.
-        </p>
-      </div>
+      {disponivel && (
+        <div style={{ maxWidth: 660 }}>
+          <p className="subtitulo-edicao">
+            Para quem joga em grupo: diga quanto o grupo quer gastar e o sistema
+            organiza os bilhetes usando fechamento de dezenas — um conjunto de jogos
+            arranjados para que, se as dezenas escolhidas aparecerem no sorteio, pelo
+            menos um bilhete capture uma boa pontuação.
+          </p>
+          <p className="subtitulo-edicao">
+            No final, gera um PDF completo para compartilhar com o grupo, com todos
+            os bilhetes e o valor por participante.
+          </p>
+        </div>
+      )}
 
-      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
-        <h2 className="bloco__titulo">Como montar um bolão com fechamento</h2>
-        <p>
-          Um bolão com fechamento funciona assim: o grupo escolhe um conjunto maior de
-          dezenas ("o pool") — por exemplo, 18 dezenas que o grupo acredita serem boas
-          candidatas para o próximo sorteio. O sistema então gera um conjunto de bilhetes
-          que cobre esse pool de forma sistemática, garantindo que se as dezenas sorteadas
-          estiverem dentro do pool, pelo menos um bilhete vai capturar uma boa pontuação.
-        </p>
-        <p>
-          A vantagem em relação a jogar bilhetes avulsos é a cobertura: ao invés de
-          vários bilhetes com dezenas sobrepostas por acaso, o fechamento distribui as
-          combinações de forma a não deixar "buracos" na cobertura do pool. Em um bolão
-          bem configurado, se 15 das 18 dezenas do pool aparecerem no sorteio, pelo menos
-          um bilhete acerta 15 pontos.
-        </p>
-        <p>
-          O otimizador abaixo gera planos de bolão por orçamento: diga quanto o grupo
-          quer gastar, escolha as dezenas do pool e o sistema seleciona o fechamento mais
-          eficiente para aquele orçamento — com o maior nível de cobertura possível pelo
-          valor disponível. No final, um PDF com todos os bilhetes pode ser gerado para
-          compartilhar com os participantes.
-        </p>
-        <p>
-          Para entender a fundo como funciona o fechamento e o que ele pode e não pode
-          fazer, veja o{" "}
-          <a href={`/${codigoLoteria}/dicas/fechamento`} className="breadcrumb">
-            artigo explicativo sobre fechamentos
-          </a>.
-        </p>
-      </div>
+      {disponivel && (
+        <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
+          <h2 className="bloco__titulo">Como montar um bolão com fechamento</h2>
+          <p>
+            Um bolão com fechamento funciona assim: o grupo escolhe um conjunto maior de
+            dezenas ("o pool") — por exemplo, 18 dezenas que o grupo acredita serem boas
+            candidatas para o próximo sorteio. O sistema então gera um conjunto de bilhetes
+            que cobre esse pool de forma sistemática, garantindo que se as dezenas sorteadas
+            estiverem dentro do pool, pelo menos um bilhete vai capturar uma boa pontuação.
+          </p>
+          <p>
+            A vantagem em relação a jogar bilhetes avulsos é a cobertura: ao invés de
+            vários bilhetes com dezenas sobrepostas por acaso, o fechamento distribui as
+            combinações de forma a não deixar "buracos" na cobertura do pool. Em um bolão
+            bem configurado, se 15 das 18 dezenas do pool aparecerem no sorteio, pelo menos
+            um bilhete acerta 15 pontos.
+          </p>
+          <p>
+            O otimizador abaixo gera planos de bolão por orçamento: diga quanto o grupo
+            quer gastar, escolha as dezenas do pool e o sistema seleciona o fechamento mais
+            eficiente para aquele orçamento — com o maior nível de cobertura possível pelo
+            valor disponível. No final, um PDF com todos os bilhetes pode ser gerado para
+            compartilhar com os participantes.
+          </p>
+          <p>
+            Para entender a fundo como funciona o fechamento e o que ele pode e não pode
+            fazer, veja o{" "}
+            <a href={`/dicas/fechamento`} className="breadcrumb">
+              artigo explicativo sobre fechamentos
+            </a>.
+          </p>
+        </div>
+      )}
 
-      <BolaoClient
-        codigoLoteria={codigoLoteria}
-        nomeLoteria={loteria.nome}
-        dezenaMin={loteria.dezenaMin}
-        dezenaMax={loteria.dezenaMax}
-      />
+      {disponivel ? (
+        <>
+          <BolaoClient
+            codigoLoteria={codigoLoteria}
+            nomeLoteria={loteria.nome}
+            dezenaMin={loteria.dezenaMin}
+            dezenaMax={loteria.dezenaMax}
+          />
 
-      <div className="aviso-legal">
-        <strong>O que é o fechamento usado aqui:</strong> uma forma de organizar os
-        bilhetes do grupo para que, se as dezenas escolhidas estiverem entre as
-        sorteadas, pelo menos um bilhete capture uma boa pontuação. Isso é diferente
-        de "aumentar a chance de ganhar" — a probabilidade de qualquer dezena ser
-        sorteada é sempre a mesma para todo mundo, independente do sistema usado.
-        <br /><br />
-        Se quiser entender o funcionamento do fechamento com mais detalhes, veja a
-        aba <strong>Fechamentos</strong> ou o{" "}
-        <a href="/dicas/fechamento" style={{ color: "var(--pine)" }}>
-          artigo explicativo
-        </a>.
-      </div>
+          <div className="aviso-legal">
+            <strong>O que é o fechamento usado aqui:</strong> uma forma de organizar os
+            bilhetes do grupo para que, se as dezenas escolhidas estiverem entre as
+            sorteadas, pelo menos um bilhete capture uma boa pontuação. Isso é diferente
+            de "aumentar a chance de ganhar" — a probabilidade de qualquer dezena ser
+            sorteada é sempre a mesma para todo mundo, independente do sistema usado.
+            <br /><br />
+            Se quiser entender o funcionamento do fechamento com mais detalhes, veja a
+            aba <strong>Fechamentos</strong> ou o{" "}
+            <a href="/dicas/fechamento" style={{ color: "var(--pine)" }}>
+              artigo explicativo
+            </a>.
+          </div>
+        </>
+      ) : (
+        <div className="ferramenta-explicacao" style={{ maxWidth: 680 }}>
+          <h2 className="bloco__titulo">Por que não há otimizador de bolão para {loteria.nome}</h2>
+          <p>
+            O bolão organizado aqui depende de fechamento de dezenas — escolher{" "}
+            <em>mais dezenas do que o mínimo</em> exigido pela aposta. A{" "}
+            {loteria.nome} não se encaixa nesse modelo:{" "}
+            {loteria.qtdDezenasSorteadas === 20
+              ? "a aposta aqui já é sempre um número fixo de 50 dezenas, sem opção de escolher mais."
+              : "o formato de aposta dela (colunas independentes) é diferente do de escolher dezenas de um universo comum."}
+          </p>
+          <p>
+            Para organizar um bolão em grupo na {loteria.nome} hoje, a alternativa é
+            dividir o custo de vários bilhetes simples entre os participantes — veja o{" "}
+            <a href={`/${codigoLoteria}/gerador`}>gerador de jogos</a> para gerar as
+            combinações.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

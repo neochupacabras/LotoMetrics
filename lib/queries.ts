@@ -1,25 +1,37 @@
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import pool from "./db";
 import { Concurso, ConcursoResumo, Loteria, PremiacaoFaixa } from "./types";
 
-export const getLoteriaPorCodigo = cache(async (codigo: string): Promise<Loteria | null> => {
-  const { rows } = await pool.query(
-    `SELECT id, codigo, nome, dezena_min, dezena_max, qtd_dezenas_sorteadas, grid_colunas
-     FROM loteria WHERE codigo = $1`,
-    [codigo]
-  );
-  if (rows.length === 0) return null;
-  const r = rows[0];
-  return {
-    id: r.id,
-    codigo: r.codigo,
-    nome: r.nome,
-    dezenaMin: r.dezena_min,
-    dezenaMax: r.dezena_max,
-    qtdDezenasSorteadas: r.qtd_dezenas_sorteadas,
-    gridColunas: r.grid_colunas,
-  };
-});
+// unstable_cache (não o cache() do React, que só dedup dentro de uma
+// mesma requisição): esse cache persiste ENTRE requisições. É o que
+// realmente evita bater no Postgres a cada visita, já que o site inteiro
+// hoje é renderizado dinamicamente (UserMenu lê cookies de auth em toda
+// página, o que no Next.js força a rota inteira a pular o cache de rota
+// mesmo em páginas com `revalidate` declarado). Invalidado via
+// revalidateTag em /api/revalidar após cada importação de concursos.
+export const getLoteriaPorCodigo = unstable_cache(
+  async (codigo: string): Promise<Loteria | null> => {
+    const { rows } = await pool.query(
+      `SELECT id, codigo, nome, dezena_min, dezena_max, qtd_dezenas_sorteadas, grid_colunas
+       FROM loteria WHERE codigo = $1`,
+      [codigo]
+    );
+    if (rows.length === 0) return null;
+    const r = rows[0];
+    return {
+      id: r.id,
+      codigo: r.codigo,
+      nome: r.nome,
+      dezenaMin: r.dezena_min,
+      dezenaMax: r.dezena_max,
+      qtdDezenasSorteadas: r.qtd_dezenas_sorteadas,
+      gridColunas: r.grid_colunas,
+    };
+  },
+  ["loteria-por-codigo"],
+  { tags: ["loterias"], revalidate: 86400 }
+);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapConcursoRow(r: any): Omit<Concurso, "premiacoes"> {
@@ -59,16 +71,20 @@ async function getPremiacoes(concursoId: number): Promise<PremiacaoFaixa[]> {
   }));
 }
 
-export const getUltimoConcurso = cache(async (loteriaId: number): Promise<Concurso | null> => {
-  const { rows } = await pool.query(
-    `SELECT * FROM concurso WHERE loteria_id = $1 ORDER BY numero DESC LIMIT 1`,
-    [loteriaId]
-  );
-  if (rows.length === 0) return null;
-  const concurso = mapConcursoRow(rows[0]);
-  const premiacoes = await getPremiacoes(rows[0].id);
-  return { ...concurso, premiacoes };
-});
+export const getUltimoConcurso = unstable_cache(
+  async (loteriaId: number): Promise<Concurso | null> => {
+    const { rows } = await pool.query(
+      `SELECT * FROM concurso WHERE loteria_id = $1 ORDER BY numero DESC LIMIT 1`,
+      [loteriaId]
+    );
+    if (rows.length === 0) return null;
+    const concurso = mapConcursoRow(rows[0]);
+    const premiacoes = await getPremiacoes(rows[0].id);
+    return { ...concurso, premiacoes };
+  },
+  ["ultimo-concurso"],
+  { tags: ["concursos"], revalidate: 300 }
+);
 
 // Versão leve, só número + data — usada para montar o sitemap.xml sem
 // puxar dezenas/premiações de milhares de concursos.

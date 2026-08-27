@@ -22,6 +22,18 @@ import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 // deixar a tabela desatualizada por muito tempo depois de um novo sorteio.
 export const revalidate = 3600; // 1 hora
 
+// Necessário para o `revalidate` acima realmente funcionar: um segmento
+// dinâmico aninhado (aqui, [categoria] dentro de [loteria]) só é elegível
+// para cache se ele mesmo declarar generateStaticParams — o do layout pai
+// cobre só o parâmetro `loteria`, não este.
+export async function generateStaticParams({
+  params,
+}: {
+  params: { loteria: string };
+}) {
+  return getCategoriasParaLoteria(params.loteria).map((c) => ({ categoria: c.slug }));
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -67,6 +79,12 @@ export default async function CategoriaPage({
     notFound();
   }
 
+  // Todas as estatísticas abaixo assumem pelo menos 1 concurso no histórico
+  // (ex: "dezena mais frequente" precisa de um primeiro lugar). Sem isso —
+  // só possível numa loteria recém-cadastrada, antes da primeira importação
+  // — mostra um estado vazio em vez de quebrar.
+  const ultimoConcurso = await getUltimoConcurso(loteria.id);
+
   return (
     <div className="container secao">
       <Link href={`/${codigoLoteria}/tabelas`} className="breadcrumb">
@@ -78,15 +96,24 @@ export default async function CategoriaPage({
         {categoria.descricao}
       </p>
 
-      <ConteudoCategoria
-        slug={slugCategoria}
-        codigoLoteria={codigoLoteria}
-        loteriaId={loteria.id}
-        dezenaMin={loteria.dezenaMin}
-        dezenaMax={loteria.dezenaMax}
-        gridColunas={loteria.gridColunas}
-        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
-      />
+      {ultimoConcurso ? (
+        <ConteudoCategoria
+          slug={slugCategoria}
+          codigoLoteria={codigoLoteria}
+          loteriaId={loteria.id}
+          dezenaMin={loteria.dezenaMin}
+          dezenaMax={loteria.dezenaMax}
+          gridColunas={loteria.gridColunas}
+          qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        />
+      ) : (
+        <div className="bloco">
+          <p className="bloco__nota">
+            Ainda não há concursos suficientes de {loteria.nome} pra montar essa
+            estatística. Volte depois do primeiro sorteio.
+          </p>
+        </div>
+      )}
 
       <div className="aviso-legal">
         <strong>Lembrete:</strong> esta tabela descreve o histórico, não prevê o

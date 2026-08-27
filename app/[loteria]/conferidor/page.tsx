@@ -62,7 +62,7 @@ export default async function ConferidorPage({
         </p>
         <p>
           Esse é o antídoto para o viés de confirmação descrito no artigo sobre{" "}
-          <a href={`/${codigoLoteria}/dicas/vieses-cognitivos`} className="breadcrumb">
+          <a href={`/dicas/vieses-cognitivos`} className="breadcrumb">
             vieses cognitivos
           </a>: em vez de lembrar seletivamente dos concursos em que um jogo "quase ganhou",
           o conferidor mostra todos os concursos — incluindo os que ficaram longe.
@@ -73,7 +73,7 @@ export default async function ConferidorPage({
           essa combinação em todos os concursos do período, os prêmios brutos que teria
           ganho e o saldo final — que quase sempre é negativo, refletindo o retorno
           ao apostador de{" "}
-          <a href={`/${codigoLoteria}/dicas/retorno-ao-apostador`} className="breadcrumb">
+          <a href={`/dicas/retorno-ao-apostador`} className="breadcrumb">
             ~43% da arrecadação
           </a>{" "}que a Caixa destina a prêmios.
         </p>

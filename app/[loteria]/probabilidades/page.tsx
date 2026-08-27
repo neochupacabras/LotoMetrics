@@ -1,4 +1,6 @@
-export const dynamic = "force-dynamic";
+// Recalcula projeção de acúmulo a partir do último concurso conhecido —
+// isso só muda quando sai um novo resultado, daí caber cache de 1h.
+export const revalidate = 3600;
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import ProbabilidadesClient from "@/components/ProbabilidadesClient";

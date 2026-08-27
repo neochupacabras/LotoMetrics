@@ -1,4 +1,6 @@
-export const dynamic = "force-dynamic";
+// Redireciona pro concurso mais recente conhecido — só muda quando sai um
+// novo resultado, daí caber cache de 1h em vez de recalcular a cada acesso.
+export const revalidate = 3600;
 import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";

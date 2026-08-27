@@ -1,4 +1,6 @@
-export const dynamic = "force-dynamic";
+// Recalcula o índice a partir do histórico completo — muda no máximo uma
+// vez por dia (um concurso novo), daí caber cache de 1h.
+export const revalidate = 3600;
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";

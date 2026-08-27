@@ -1,5 +1,6 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
+import { LOTERIAS } from "@/lib/format";
 
 // Chame este endpoint após rodar o importador.py para limpar o cache da home.
 // Protegido por um token secreto para não ser chamado por qualquer pessoa.
@@ -23,10 +24,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 
-  // Revalida a home e as páginas de resultados de ambas as loterias
+  // Limpa o cache de dados (unstable_cache) usado por getUltimoConcurso e
+  // getLoteriaPorCodigo em lib/queries.ts — é isso que realmente evita
+  // servir resultado desatualizado, já que a maioria das rotas hoje é
+  // renderizada dinamicamente (não passa pelo cache de rota do Next).
+  revalidateTag("concursos", "max");
+  revalidateTag("loterias", "max");
+
+  // Revalida a home e a página de resultados de todas as 9 loterias.
   revalidatePath("/");
-  revalidatePath("/lotofacil/resultados");
-  revalidatePath("/megasena/resultados");
+  for (const codigo of Object.keys(LOTERIAS)) {
+    revalidatePath(`/${codigo}/resultados`);
+  }
 
   return NextResponse.json({
     revalidated: true,

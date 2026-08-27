@@ -71,7 +71,7 @@ export default async function AnalisadorPage({
           ímpares), maior sequência consecutiva, divisão moldura/centro do volante,
           quantidade de primos, múltiplos de 3 e números de Fibonacci no jogo. Para cada
           uma dessas métricas, existe um artigo explicativo na seção{" "}
-          <a href={`/${codigoLoteria}/dicas`} className="breadcrumb">Dicas e estratégias</a>.
+          <a href={`/dicas`} className="breadcrumb">Dicas e estratégias</a>.
         </p>
         <p>
           O objetivo do analisador é responder: "esse jogo tem um perfil estatístico

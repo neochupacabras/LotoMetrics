@@ -1,12 +1,16 @@
+"use client";
+
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { usePlanoUsuario } from "@/components/auth/PlanoUsuarioProvider";
 
-// Server Component — lê a sessão no servidor, sem flash de conteúdo
-export default async function UserMenu() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+export default function UserMenu() {
+  const { carregando, logado, isPremium } = usePlanoUsuario();
 
-  if (!user) {
+  if (carregando) {
+    return <div className="usermenu--carregando" aria-hidden="true" />;
+  }
+
+  if (!logado) {
     return (
       <div className="usermenu">
         <Link href="/entrar" className="usermenu-entrar">
@@ -19,15 +23,6 @@ export default async function UserMenu() {
     );
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("display_name, plan")
-    .eq("id", user.id)
-    .single();
-
-  const isPremium = profile?.plan === "premium";
-  const inicial = (profile?.display_name ?? user.email ?? "U")[0].toUpperCase();
-
   return (
     <div className="usermenu">
       {!isPremium && (
@@ -36,7 +31,10 @@ export default async function UserMenu() {
         </Link>
       )}
       <Link href="/conta" className="usermenu-conta">
-        Minha conta{isPremium && <span className="usermenu-badge-inline" aria-label="Premium">✦</span>}
+        Minha conta
+        {isPremium && (
+          <span className="usermenu-badge-inline" aria-label="Premium">✦</span>
+        )}
       </Link>
     </div>
   );

@@ -3150,6 +3150,27 @@ footer.rodape {
   border: 2px solid var(--paper);
 }
 
+/* Placeholder neutro enquanto o UserMenu checa o login no cliente — evita
+   piscar "Entrar" antes de trocar para "Minha conta" (ver components/auth/UserMenu.tsx). */
+.usermenu--carregando {
+  width: 104px;
+  height: 27px;
+  margin-left: 16px;
+  border-radius: 3px;
+  background: var(--line);
+  opacity: 0.5;
+  animation: usermenu-pulso 1.1s ease-in-out infinite;
+}
+
+@keyframes usermenu-pulso {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .usermenu--carregando { animation: none; }
+}
+
 /* ==========================================================
    CONTA — área do usuário /conta
    ========================================================== */

@@ -70,7 +70,7 @@ export default async function GeradorPage({
           subconjunto de sua preferência. Por exemplo, filtrar por distribuição par/ímpar
           próxima de 7-8 exclui as combinações extremas (0-15 ou 15-0), que existem mas
           são raras historicamente — como explicado no artigo sobre{" "}
-          <a href={`/${codigoLoteria}/dicas/par-impar`} className="breadcrumb">
+          <a href={`/dicas/par-impar`} className="breadcrumb">
             distribuição par/ímpar
           </a>.
         </p>
