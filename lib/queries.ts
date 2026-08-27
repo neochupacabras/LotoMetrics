@@ -275,6 +275,7 @@ export async function getAcumulos(loteriaId: number): Promise<AcumuloData[]> {
 
 export interface ConcessaoSimulacao {
   numero: number;
+  dataSorteio: string;
   dezenas: number[];
   trevos: number[] | null; // +Milionária
   // Prêmio por faixa (faixa 1 = maior, ordem crescente de dificuldade)
@@ -282,22 +283,24 @@ export interface ConcessaoSimulacao {
 }
 
 export async function getDrawsParaSimulacao(
-  loteriaId: number
+  loteriaId: number,
+  dataDesde?: string // ISO — usado pela Carteira do apostador (só concursos após salvar o jogo)
 ): Promise<ConcessaoSimulacao[]> {
   // Busca todos os sorteios com prêmios por faixa em uma query só
   const { rows } = await pool.query(
-    `SELECT c.numero, c.dezenas, c.trevos,
+    `SELECT c.numero, c.data_sorteio, c.dezenas, c.trevos,
        json_object_agg(pf.faixa, pf.valor_premio) AS premios
      FROM concurso c
      JOIN premiacao_faixa pf ON pf.concurso_id = c.id
-     WHERE c.loteria_id = $1
-     GROUP BY c.numero, c.dezenas, c.trevos
+     WHERE c.loteria_id = $1 ${dataDesde ? "AND c.data_sorteio >= $2" : ""}
+     GROUP BY c.numero, c.data_sorteio, c.dezenas, c.trevos
      ORDER BY c.numero`,
-    [loteriaId]
+    dataDesde ? [loteriaId, dataDesde] : [loteriaId]
   );
 
   return rows.map((r) => ({
     numero: r.numero,
+    dataSorteio: r.data_sorteio instanceof Date ? r.data_sorteio.toISOString() : r.data_sorteio,
     dezenas: r.dezenas as number[],
     trevos: r.trevos ?? null,
     premios: Object.fromEntries(

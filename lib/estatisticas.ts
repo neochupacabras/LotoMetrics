@@ -338,3 +338,68 @@ export async function getTrincas(loteriaId: number, top = 20): Promise<DuqueOuTr
     ocorrencias: Number(r.ocorrencias),
   }));
 }
+
+export interface CoberturaTrincas {
+  totalPossiveis: number;
+  totalJaSairam: number;
+  totalNuncaSairam: number;
+  percentualCobertura: number; // 0-100
+  amostraNuncaSairam: number[][]; // até 30 trincas, amostra aleatória
+}
+
+function combinacoesDeTamanho3(itens: number[]): number[][] {
+  const resultado: number[][] = [];
+  for (let i = 0; i < itens.length; i++) {
+    for (let j = i + 1; j < itens.length; j++) {
+      for (let k = j + 1; k < itens.length; k++) {
+        resultado.push([itens[i], itens[j], itens[k]]);
+      }
+    }
+  }
+  return resultado;
+}
+
+// Quantas das C(n,3) trincas possíveis dessa loteria já saíram juntas em
+// algum concurso, e uma amostra das que nunca saíram. `fn_trincas_mais_frequentes`
+// só enumera trincas que OCORRERAM (GROUP BY sobre os concursos reais) — não
+// existe uma lista pronta das que nunca ocorreram, então a única forma de
+// achar isso é enumerar todas as combinações possíveis e comparar.
+export async function getCoberturaTrincas(
+  loteriaId: number,
+  dezenaMin: number,
+  dezenaMax: number
+): Promise<CoberturaTrincas> {
+  const { rows } = await pool.query(
+    `SELECT dezena_1, dezena_2, dezena_3 FROM fn_trincas_mais_frequentes($1, $2)`,
+    [loteriaId, 10_000_000] // "todas", não só as mais frequentes
+  );
+  const sairam = new Set(rows.map((r) => `${r.dezena_1}-${r.dezena_2}-${r.dezena_3}`));
+
+  const universo = Array.from({ length: dezenaMax - dezenaMin + 1 }, (_, i) => dezenaMin + i);
+  const todasAsTrincas = combinacoesDeTamanho3(universo);
+
+  const nuncaSairam = todasAsTrincas.filter(
+    ([a, b, c]) => !sairam.has(`${a}-${b}-${c}`)
+  );
+
+  // Amostra aleatória (Fisher-Yates parcial) em vez de sempre as mesmas 30
+  // primeiras — mais interessante pra quem revisita a página.
+  const amostra = [...nuncaSairam];
+  for (let i = amostra.length - 1; i > 0 && i > amostra.length - 31; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [amostra[i], amostra[j]] = [amostra[j], amostra[i]];
+  }
+
+  const totalPossiveis = todasAsTrincas.length;
+  const totalNuncaSairam = nuncaSairam.length;
+
+  return {
+    totalPossiveis,
+    totalJaSairam: totalPossiveis - totalNuncaSairam,
+    totalNuncaSairam,
+    percentualCobertura: totalPossiveis > 0
+      ? Math.round(((totalPossiveis - totalNuncaSairam) / totalPossiveis) * 1000) / 10
+      : 0,
+    amostraNuncaSairam: amostra.slice(-30).reverse(),
+  };
+}

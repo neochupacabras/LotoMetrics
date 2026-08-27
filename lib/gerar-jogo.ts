@@ -121,3 +121,51 @@ function amostrarAleatorio(pool: number[], qtd: number): number[] {
 export function amostrarSubconjunto(pool: number[], qtd: number): number[] {
   return amostrarAleatorio(pool, Math.min(qtd, pool.length));
 }
+
+// PRNG determinístico (mulberry32) — mesma seed sempre produz a mesma
+// sequência. Usado pelo "jogo da data especial": a mesma data sempre gera
+// o mesmo jogo, em vez de um resultado novo a cada clique.
+function criarGeradorComSeed(seed: number): () => number {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+export interface JogoDaData {
+  dezenas: number[];
+  trevos?: number[]; // +Milionária
+}
+
+// Gera um jogo "de mentirinha personalizado" a partir de uma data —
+// determinístico (a mesma data sempre dá o mesmo jogo), mas isso não muda
+// a probabilidade real de nada: é só uma forma memorável de escolher
+// números, equivalente a jogar qualquer outra combinação.
+export function gerarJogoDaData(
+  data: Date,
+  dezenaMin: number,
+  dezenaMax: number,
+  qtdDezenas: number,
+  qtdTrevos?: number
+): JogoDaData {
+  const seed = data.getFullYear() * 10000 + (data.getMonth() + 1) * 100 + data.getDate();
+  const rand = criarGeradorComSeed(seed);
+
+  function embaralharEPegar(min: number, max: number, qtd: number): number[] {
+    const pool = Array.from({ length: max - min + 1 }, (_, i) => min + i);
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(rand() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, qtd).sort((a, b) => a - b);
+  }
+
+  const dezenas = embaralharEPegar(dezenaMin, dezenaMax, qtdDezenas);
+  const trevos = qtdTrevos ? embaralharEPegar(1, 6, qtdTrevos) : undefined;
+
+  return { dezenas, trevos };
+}

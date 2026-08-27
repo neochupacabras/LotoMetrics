@@ -7,7 +7,7 @@ import type { CodigoLoteria } from "@/lib/types";
 type AbaAtiva =
   | "resultados" | "tabelas" | "gerador" | "simulador" | "probabilidades"
   | "fechamentos" | "conferidor" | "destaques" | "bolao" | "analisador"
-  | "heatmap" | "acumulos" | "equilibrio";
+  | "heatmap" | "acumulos" | "equilibrio" | "ineditas" | "data-da-sorte" | "ao-vivo";
 
 const ABAS_COMPLETAS: { slug: AbaAtiva; label: string }[] = [
   { slug: "resultados",     label: "Resultados"     },
@@ -23,6 +23,9 @@ const ABAS_COMPLETAS: { slug: AbaAtiva; label: string }[] = [
   { slug: "acumulos",       label: "Acúmulos"       },
   { slug: "probabilidades", label: "Probabilidades" },
   { slug: "equilibrio",     label: "Equilíbrio"     },
+  { slug: "ineditas",       label: "Inéditas"       },
+  { slug: "data-da-sorte",  label: "Data da sorte"  },
+  { slug: "ao-vivo",        label: "Ao vivo"        },
 ];
 
 // Lotomania e Super Sete não têm Fechamentos nem Bolão — a mecânica de
@@ -34,6 +37,13 @@ const ABAS_SEM_FECHAMENTO_BOLAO = ABAS_COMPLETAS.filter(
   (a) => a.slug !== "fechamentos" && a.slug !== "bolao"
 );
 
+// Super Sete não tem "trincas de dezenas" nem "escolher dezenas de um
+// universo comum" — a mecânica é de colunas independentes de 0 a 9 (mesmo
+// critério de exclusão de lib/categorias.ts para "duques-trincas").
+const ABAS_SUPERSETE = ABAS_SEM_FECHAMENTO_BOLAO.filter(
+  (a) => a.slug !== "ineditas" && a.slug !== "data-da-sorte"
+);
+
 const ABAS_POR_LOTERIA: Record<string, { slug: AbaAtiva; label: string }[]> = {
   lotofacil: ABAS_COMPLETAS,
   megasena:  ABAS_COMPLETAS,
@@ -43,7 +53,7 @@ const ABAS_POR_LOTERIA: Record<string, { slug: AbaAtiva; label: string }[]> = {
   timemania:  ABAS_COMPLETAS,
   duplasena:  ABAS_COMPLETAS,
   lotomania:  ABAS_SEM_FECHAMENTO_BOLAO,
-  supersete:  ABAS_SEM_FECHAMENTO_BOLAO,
+  supersete:  ABAS_SUPERSETE,
 };
 
 export default function Subnav({

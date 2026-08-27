@@ -153,6 +153,23 @@ export default async function ContaPage({
           )}
         </section>
 
+        {/* ── Carteira do apostador ────────────────────────────────── */}
+        {jogos.length > 0 && (
+          <section className="conta-secao">
+            <div className="conta-secao-header">
+              <h2 className="conta-secao-titulo">
+                Carteira do apostador{!isPremium && <span className="usermenu-badge-inline" aria-label="Premium">✦</span>}
+              </h2>
+              <Link href="/conta/carteira" className="conta-link-acao">
+                {isPremium ? "Ver saldo →" : "Assinar para ver →"}
+              </Link>
+            </div>
+            <p className="conta-alertas-desc">
+              Quanto você teria gasto e ganho com cada jogo salvo, desde que o salvou.
+            </p>
+          </section>
+        )}
+
         {/* ── Alertas de acúmulo ────────────────────────────────────── */}
         <section className="conta-secao">
           <h2 className="conta-secao-titulo">Alertas de acúmulo</h2>

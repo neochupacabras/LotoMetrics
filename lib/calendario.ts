@@ -57,6 +57,20 @@ export function proximoSorteio(codigo: CodigoLoteria, referencia: Date): Date {
   return referencia; // nunca deve chegar aqui — toda loteria tem ao menos 1 dia de sorteio
 }
 
+// Instante exato (UTC real) do próximo sorteio — não só o dia, a hora
+// também. Usado pela contagem regressiva de "sorteio ao vivo": o cliente
+// compara isso com `new Date()` local dele, então precisa ser um instante
+// absoluto e correto, não um horário "de Brasília" solto.
+export function dataHoraProximoSorteio(codigo: CodigoLoteria, referencia: Date): Date {
+  const agenda = AGENDA.find((a) => a.codigo === codigo)!;
+  const dia = proximoSorteio(codigo, referencia);
+  const hora = Number(agenda.horario.match(/\d+/)?.[0] ?? 21);
+  // `dia` já representa a data de calendário em Brasília (ver agoraBrasilia).
+  // Brasília é sempre UTC-3 (sem horário de verão), então a hora do sorteio
+  // em UTC é sempre hora+3 no mesmo dia.
+  return new Date(Date.UTC(dia.getFullYear(), dia.getMonth(), dia.getDate(), hora + 3, 0, 0));
+}
+
 export function getAgendaOrdenadaPorProximoSorteio(referencia: Date) {
   return AGENDA
     .map((a) => ({ ...a, proxima: proximoSorteio(a.codigo, referencia) }))

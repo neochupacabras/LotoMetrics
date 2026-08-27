@@ -159,6 +159,7 @@ const COMPARATIVO = [
   { feature: "Conferidor por foto (OCR)",          free: false, premium: true  },
   { feature: "Rastreamento automático de jogos",   free: false, premium: true  },
   { feature: "Relatório mensal em PDF",            free: false, premium: true  },
+  { feature: "Carteira do apostador",              free: false, premium: true  },
   { feature: "Exportação de histórico (CSV)",      free: false, premium: true  },
   { feature: "API de dados históricos",            free: false, premium: true  },
 ];

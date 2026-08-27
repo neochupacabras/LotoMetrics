@@ -48,6 +48,7 @@ const BENEFICIOS = [
   "Gerador avançado com todos os filtros combinados",
   "Conferidor ilimitado com histórico salvo",
   "Simulador histórico com todo o acervo",
+  "Carteira do apostador — saldo real dos seus jogos salvos",
   "Exportação do histórico completo em CSV",
   "Relatório mensal em PDF com seus resultados",
   "Sem anúncios em nenhuma página",

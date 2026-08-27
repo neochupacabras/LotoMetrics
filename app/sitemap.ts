@@ -27,6 +27,9 @@ const ABAS: [string, number, MetadataRoute.Sitemap[number]["changeFrequency"]][]
   ["acumulos", 0.6, "daily"],
   ["probabilidades", 0.5, "monthly"],
   ["equilibrio",     0.6, "monthly"],
+  ["ineditas",       0.5, "weekly"],
+  ["data-da-sorte",  0.5, "yearly"],
+  ["ao-vivo",        0.6, "daily"],
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
