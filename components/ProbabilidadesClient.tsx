@@ -2,15 +2,19 @@
 
 import { useState } from "react";
 import { calcularProbabilidades, FaixaProbabilidade } from "@/lib/probabilidades";
+import { AGENDA } from "@/lib/calendario";
+import InsightCallout from "./InsightCallout";
 
 const QTD_EXTRA_DEZENAS_MAX = 5;
 
 export default function ProbabilidadesClient({
+  codigoLoteria,
   dezenaMax,
   qtdDezenasSorteadas,
   qtdDezenasPadrao,
   faixasPremiadas,
 }: {
+  codigoLoteria: string;
   dezenaMax: number;
   qtdDezenasSorteadas: number;
   qtdDezenasPadrao: number;
@@ -26,9 +30,31 @@ export default function ProbabilidadesClient({
   );
 
   const faixaPrincipal = Math.max(...faixasPremiadas);
+  const dadosFaixaPrincipal = faixas.find((f) => f.acertos === faixaPrincipal);
+
+  // Traduz "1 em X" pra uma escala de tempo real, usando a frequência real
+  // de sorteios da loteria — não é uma comparação externa (raio, avião),
+  // é a própria matemática do site (mesma ideia de estimarDiasCorridos do
+  // Atraso), então não precisa de nenhum fato novo pra verificar.
+  const sorteiosPorSemana = AGENDA.find((a) => a.codigo === codigoLoteria)?.dias.length ?? 3;
+  const anosParaEsperarAcerto = dadosFaixaPrincipal
+    ? dadosFaixaPrincipal.umEm / sorteiosPorSemana / 52
+    : 0;
 
   return (
     <div>
+      {dadosFaixaPrincipal && (
+        <InsightCallout kicker="Pra sair da tabela e virar sensação">
+          Apostando esse mesmo jogo em <strong>todo sorteio</strong> — sem pular nenhum —
+          seriam necessários, em média,{" "}
+          <strong>
+            {anosParaEsperarAcerto >= 1000
+              ? `${Math.round(anosParaEsperarAcerto).toLocaleString("pt-BR")} anos`
+              : `${anosParaEsperarAcerto.toFixed(1)} anos`}
+          </strong>{" "}
+          pra esperar acertar a faixa principal uma única vez.
+        </InsightCallout>
+      )}
       <div className="campo-filtro" style={{ margin: "24px 0" }}>
         <label htmlFor="qtdApostada">Dezenas apostadas</label>
         <input
