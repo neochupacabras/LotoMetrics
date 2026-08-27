@@ -13,7 +13,7 @@ import { getCategoriaPorSlug, getCategoriasParaLoteria } from "@/lib/categorias"
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 import { formatarDezena, isCodigoLoteriaValido } from "@/lib/format";
 import { compararTempoComMundoReal, estimarDiasCorridos } from "@/lib/insights";
-import { AGENDA } from "@/lib/calendario";
+import { qtdSorteiosPorSemana } from "@/lib/calendario";
 import * as Estat from "@/lib/estatisticas";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 
@@ -342,7 +342,7 @@ async function ConteudoAtraso({
   const valoresPorDezena = Object.fromEntries(dados.map((d) => [d.dezena, d.atraso]));
 
   const maisAtrasada = dados[0];
-  const sorteiosPorSemana = AGENDA.find((a) => a.codigo === codigoLoteria)?.dias.length ?? 3;
+  const sorteiosPorSemana = qtdSorteiosPorSemana(codigoLoteria);
   const diasEstimados = estimarDiasCorridos(maisAtrasada.atraso, sorteiosPorSemana);
   const comparacao = compararTempoComMundoReal(diasEstimados);
 

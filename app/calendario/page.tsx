@@ -76,26 +76,30 @@ export default function CalendarioPage() {
                       {nomeLoteria(a.codigo)}
                     </Link>
                   </td>
-                  {DIAS_SEMANA_ABREV.map((_, i) => (
-                    <td
-                      key={i}
-                      className={`num ${i === diaSemanaHoje ? "calendario-grade__hoje" : ""}`}
-                    >
-                      {a.dias.includes(i) ? (
-                        <span className="calendario-grade__ponto" title={`Sorteio às ${a.horario}`} />
-                      ) : (
-                        "—"
-                      )}
-                    </td>
-                  ))}
+                  {DIAS_SEMANA_ABREV.map((_, i) => {
+                    const janela = a.sorteios.find((j) => j.dias.includes(i));
+                    return (
+                      <td
+                        key={i}
+                        className={`num ${i === diaSemanaHoje ? "calendario-grade__hoje" : ""}`}
+                      >
+                        {janela ? (
+                          <span className="calendario-grade__ponto" title={`Sorteio às ${janela.horario}`} />
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
         <p style={{ fontSize: "0.82rem", color: "var(--ink-faint)", marginTop: 8 }}>
-          Coluna destacada = hoje ({DIAS_SEMANA[diaSemanaHoje]}). Nenhuma loteria
-          sorteia aos domingos.
+          Coluna destacada = hoje ({DIAS_SEMANA[diaSemanaHoje]}). Desde 19/07/2026, o sorteio
+          de sábado de Lotofácil, Mega-Sena, Quina, Dia de Sorte, +Milionária e Timemania passou
+          para domingo às 11h — Lotomania, Dupla Sena e Super Sete não sorteiam fim de semana.
         </p>
 
         {/* Próximos sorteios */}

@@ -6,7 +6,7 @@ import AoVivoClient from "@/components/AoVivoClient";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 import { isCodigoLoteriaValido, formatarData } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
-import { agoraBrasilia, dataHoraProximoSorteio, AGENDA } from "@/lib/calendario";
+import { agoraBrasilia, dataHoraProximoSorteio, AGENDA, descricaoAgenda } from "@/lib/calendario";
 import type { CodigoLoteria } from "@/lib/types";
 
 // A contagem em si roda no cliente — o servidor só precisa saber o horário
@@ -79,7 +79,8 @@ export default async function AoVivoPage({
         <div className="aviso-legal" style={{ marginTop: 24 }}>
           {agenda && (
             <>
-              A {loteria.nome} sorteia às {agenda.horario} (horário de Brasília). Consulte o{" "}
+              A {loteria.nome} sorteia {descricaoAgenda(codigoLoteria as CodigoLoteria)} (horário
+              de Brasília). Consulte o{" "}
             </>
           )}
           <a href="/calendario" style={{ color: "var(--pine)" }}>calendário completo</a> para

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { calcularProbabilidades, FaixaProbabilidade } from "@/lib/probabilidades";
-import { AGENDA } from "@/lib/calendario";
+import { qtdSorteiosPorSemana } from "@/lib/calendario";
 import InsightCallout from "./InsightCallout";
 
 const QTD_EXTRA_DEZENAS_MAX = 5;
@@ -43,7 +43,7 @@ export default function ProbabilidadesClient({
   // de sorteios da loteria — não é uma comparação externa (raio, avião),
   // é a própria matemática do site (mesma ideia de estimarDiasCorridos do
   // Atraso), então não precisa de nenhum fato novo pra verificar.
-  const sorteiosPorSemana = AGENDA.find((a) => a.codigo === codigoLoteria)?.dias.length ?? 3;
+  const sorteiosPorSemana = qtdSorteiosPorSemana(codigoLoteria);
   const anosParaEsperarAcerto = dadosFaixaPrincipal
     ? dadosFaixaPrincipal.umEm / sorteiosPorSemana / 52
     : 0;
