@@ -201,3 +201,23 @@ export function compararComHistorico(
     percentualSequencia,
   };
 }
+
+// ---------- Super Sete: comparação por coluna ----------
+//
+// A Super Sete não escolhe dezenas de um universo compartilhado — são 7
+// colunas independentes, cada uma sorteando um dígito de 0 a 9 (o mesmo
+// dígito pode repetir em colunas diferentes). Por isso um jogo "acerta"
+// pela posição (coluna 3 do jogo bate com a coluna 3 do sorteio), não por
+// interseção de conjuntos como nas outras 8 loterias.
+//
+// `jogo` e `sorteio` são arrays de 7 dígitos onde o índice é a coluna
+// (índice 0 = coluna 1, ..., índice 6 = coluna 7) — a mesma convenção já
+// usada em `concurso.dezenas` pra essa loteria (vem direto da ordem que a
+// Caixa publica, nunca é reordenado no importador).
+export function contarColunasAcertadas(jogo: number[], sorteio: number[]): number {
+  let acertos = 0;
+  for (let i = 0; i < Math.min(jogo.length, sorteio.length); i++) {
+    if (jogo[i] === sorteio[i]) acertos++;
+  }
+  return acertos;
+}

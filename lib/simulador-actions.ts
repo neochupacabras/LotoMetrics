@@ -2,7 +2,8 @@
 
 import { getLoteriaPorCodigo, getDrawsParaSimulacao, getMapaFaixasPorAcertos, ConcessaoSimulacao } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
-import { PARAMS_LOTERIA, FAIXAS_MILIONARIA } from "@/lib/probabilidades";
+import { PARAMS_LOTERIA, FAIXAS_MILIONARIA, FAIXAS_DUPLASENA_POR_SORTEIO } from "@/lib/probabilidades";
+import { contarColunasAcertadas } from "@/lib/classificacao";
 
 export interface ResultadoSimulacao {
   nomeLoteria: string;
@@ -39,36 +40,80 @@ export interface ResultadoSimulacao {
 // incompleta, que deixou a ferramenta quebrada pra 7 das 9 loterias).
 
 interface Pontuacao {
-  faixa: number | undefined;
-  premio: number;      // 0 se não bateu faixa premiada, ou se a faixa acumulou sem prêmio
+  faixa: number;
+  premio: number;
   acertosExibicao: number; // valor mostrado na UI (acertos de dezenas)
   descricao: string;
 }
 
+// `jogo` é sempre o array original (não um Set): a Super Sete precisa da
+// ordem (índice = coluna), então converter cedo demais pra Set perderia
+// exatamente a informação que decide o acerto.
+//
+// Retorna uma lista (não um valor único) porque a Dupla Sena confere o
+// MESMO jogo duas vezes por concurso — 1º e 2º sorteio, cada um podendo
+// bater uma faixa premiada de forma independente. Pra todas as outras
+// loterias a lista tem no máximo 1 item.
 function pontuarDraw(
   draw: ConcessaoSimulacao,
-  dezenasSet: Set<number>,
+  jogo: number[],
   contexto:
-    | { milionaria: false; mapaFaixas: Record<number, number> }
-    | { milionaria: true; trevosSet: Set<number> }
-): Pontuacao {
+    | { tipo: "padrao"; mapaFaixas: Record<number, number> }
+    | { tipo: "milionaria"; trevosSet: Set<number> }
+    | { tipo: "supersete"; mapaFaixas: Record<number, number> }
+    | { tipo: "duplasena" }
+): Pontuacao[] {
+  if (contexto.tipo === "supersete") {
+    const acertos = contarColunasAcertadas(jogo, draw.dezenas);
+    const faixa = contexto.mapaFaixas[acertos];
+    const premio = faixa !== undefined ? (draw.premios[faixa] ?? 0) : 0;
+    return premio > 0
+      ? [{ faixa, premio, acertosExibicao: acertos, descricao: `${acertos} colunas certas` }]
+      : [];
+  }
+
+  if (contexto.tipo === "duplasena") {
+    const jogoSet = new Set(jogo);
+    const acertos1 = draw.dezenas.filter((d) => jogoSet.has(d)).length;
+    const acertos2 = (draw.dezenasSegundoSorteio ?? []).filter((d) => jogoSet.has(d)).length;
+    const hits: Pontuacao[] = [];
+    const faixa1 = FAIXAS_DUPLASENA_POR_SORTEIO[1][acertos1];
+    if (faixa1 !== undefined) {
+      const premio = draw.premios[faixa1] ?? 0;
+      if (premio > 0) {
+        hits.push({ faixa: faixa1, premio, acertosExibicao: acertos1, descricao: `${acertos1} acertos (1º sorteio)` });
+      }
+    }
+    const faixa2 = FAIXAS_DUPLASENA_POR_SORTEIO[2][acertos2];
+    if (faixa2 !== undefined) {
+      const premio = draw.premios[faixa2] ?? 0;
+      if (premio > 0) {
+        hits.push({ faixa: faixa2, premio, acertosExibicao: acertos2, descricao: `${acertos2} acertos (2º sorteio)` });
+      }
+    }
+    return hits;
+  }
+
+  const dezenasSet = new Set(jogo);
   const acertos = draw.dezenas.filter((d) => dezenasSet.has(d)).length;
 
-  if (contexto.milionaria) {
+  if (contexto.tipo === "milionaria") {
     const acertosTrevos = (draw.trevos ?? []).filter((t) => contexto.trevosSet.has(t)).length;
     const faixa = FAIXAS_MILIONARIA[`${acertos},${acertosTrevos}`];
     const premio = faixa !== undefined ? (draw.premios[faixa] ?? 0) : 0;
-    return {
-      faixa,
-      premio,
-      acertosExibicao: acertos,
-      descricao: `${acertos} acertos + ${acertosTrevos} trevo${acertosTrevos !== 1 ? "s" : ""}`,
-    };
+    return premio > 0
+      ? [{
+          faixa,
+          premio,
+          acertosExibicao: acertos,
+          descricao: `${acertos} acertos + ${acertosTrevos} trevo${acertosTrevos !== 1 ? "s" : ""}`,
+        }]
+      : [];
   }
 
   const faixa = contexto.mapaFaixas[acertos];
   const premio = faixa !== undefined ? (draw.premios[faixa] ?? 0) : 0;
-  return { faixa, premio, acertosExibicao: acertos, descricao: `${acertos} acertos` };
+  return premio > 0 ? [{ faixa, premio, acertosExibicao: acertos, descricao: `${acertos} acertos` }] : [];
 }
 
 function precoAposta(codigoLoteria: string): number {
@@ -82,14 +127,26 @@ async function contextoPontuacao(
   trevos?: number[]
 ): Promise<
   | { erro: string }
-  | { milionaria: false; mapaFaixas: Record<number, number> }
-  | { milionaria: true; trevosSet: Set<number> }
+  | { tipo: "padrao"; mapaFaixas: Record<number, number> }
+  | { tipo: "milionaria"; trevosSet: Set<number> }
+  | { tipo: "supersete"; mapaFaixas: Record<number, number> }
+  | { tipo: "duplasena" }
 > {
   if (codigoLoteria === "maismilionaria") {
     if (!trevos || trevos.length !== 2) return { erro: "Selecione exatamente 2 trevos." };
-    return { milionaria: true, trevosSet: new Set(trevos) };
+    return { tipo: "milionaria", trevosSet: new Set(trevos) };
   }
-  return { milionaria: false, mapaFaixas: await getMapaFaixasPorAcertos(loteriaId) };
+  if (codigoLoteria === "supersete") {
+    return { tipo: "supersete", mapaFaixas: await getMapaFaixasPorAcertos(loteriaId) };
+  }
+  // Dupla Sena: as faixas por acertos não são únicas (1º e 2º sorteio
+  // compartilham a mesma descrição — "6 acertos" etc.), então o mapa
+  // derivado do texto real (getMapaFaixasPorAcertos) não serve aqui. Usa
+  // o mapeamento fixo de índice de faixa da Caixa (FAIXAS_DUPLASENA_POR_SORTEIO).
+  if (codigoLoteria === "duplasena") {
+    return { tipo: "duplasena" };
+  }
+  return { tipo: "padrao", mapaFaixas: await getMapaFaixasPorAcertos(loteriaId) };
 }
 
 export async function simularHistorico(
@@ -113,7 +170,6 @@ export async function simularHistorico(
   const todosDraws = await getDrawsParaSimulacao(loteria.id);
   // Aplica limite: free usa últimos N concursos, premium usa todos
   const draws = limiteHistorico ? todosDraws.slice(-limiteHistorico) : todosDraws;
-  const dezenasSet = new Set(dezenas);
   const preco = precoAposta(codigoLoteria);
 
   let saldoCumulativo = 0;
@@ -134,9 +190,9 @@ export async function simularHistorico(
   for (const draw of draws) {
     saldoCumulativo -= preco;
 
-    const { faixa, premio, acertosExibicao, descricao } = pontuarDraw(draw, dezenasSet, contexto);
+    const hits = pontuarDraw(draw, dezenas, contexto);
 
-    if (faixa !== undefined && premio > 0) {
+    for (const { faixa, premio, acertosExibicao, descricao } of hits) {
       saldoCumulativo += premio;
       totalGanho += premio;
       const entry = porFaixaMap.get(faixa) ?? { descricao, qtd: 0, ganhoTotal: 0 };
@@ -147,7 +203,7 @@ export async function simularHistorico(
     }
 
     // Drawdown: rastrear seca (concursos sem prêmio)
-    if (!(faixa !== undefined && premio > 0)) {
+    if (hits.length === 0) {
       secaAtual++;
       if (secaAtual === 1) inicioSecaAtual = draw.numero;
       if (secaAtual > maiorSeca) {
@@ -230,8 +286,6 @@ export async function compararJogos(
   const todosDraws = await getDrawsParaSimulacao(loteria.id);
   const draws = limiteHistorico ? todosDraws.slice(-limiteHistorico) : todosDraws;
 
-  const setA = new Set(dezenasA);
-  const setB = new Set(dezenasB);
   const preco = precoAposta(codigoLoteria);
 
   let saldoA = 0, saldoB = 0;
@@ -246,8 +300,7 @@ export async function compararJogos(
     saldoA -= preco;
     saldoB -= preco;
 
-    const pA = pontuarDraw(draw, setA, contextoA);
-    if (pA.faixa !== undefined && pA.premio > 0) {
+    for (const pA of pontuarDraw(draw, dezenasA, contextoA)) {
       saldoA += pA.premio; ganhoA += pA.premio;
       const entry = faixaMapA.get(pA.faixa) ?? { descricao: pA.descricao, qtd: 0, ganhoTotal: 0 };
       entry.qtd++; entry.ganhoTotal += pA.premio;
@@ -255,8 +308,7 @@ export async function compararJogos(
       melhoresA.push({ numero: draw.numero, acertos: pA.acertosExibicao, premio: pA.premio });
     }
 
-    const pB = pontuarDraw(draw, setB, contextoB);
-    if (pB.faixa !== undefined && pB.premio > 0) {
+    for (const pB of pontuarDraw(draw, dezenasB, contextoB)) {
       saldoB += pB.premio; ganhoB += pB.premio;
       const entry = faixaMapB.get(pB.faixa) ?? { descricao: pB.descricao, qtd: 0, ganhoTotal: 0 };
       entry.qtd++; entry.ganhoTotal += pB.premio;

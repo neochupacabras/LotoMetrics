@@ -9,6 +9,7 @@ import { simularHistorico, compararJogos, type ResultadoSimulacao, type Resultad
 import { salvarJogoAction } from "@/lib/jogo-actions";
 import InsightCallout from "./InsightCallout";
 import { formatarDezena } from "@/lib/format";
+import SeletorColunasSuperSete from "./SeletorColunasSuperSete";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -234,15 +235,18 @@ export default function SimuladorHistoricoClient({
 }: Props) {
   const [modo, setModo] = useState<Modo>("simples");
   const usaTrevos = codigoLoteria === "maismilionaria";
+  const ehSuperSete = codigoLoteria === "supersete";
 
   // Estado — modo simples
   const [selA, setSelA] = useState<Set<number>>(new Set());
   const [trevosA, setTrevosA] = useState<Set<number>>(new Set());
+  const [colA, setColA] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
   const [resultado, setResultado] = useState<ResultadoSimulacao | null>(null);
 
   // Estado — modo comparar
   const [selB, setSelB] = useState<Set<number>>(new Set());
   const [trevosB, setTrevosB] = useState<Set<number>>(new Set());
+  const [colB, setColB] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
   const [comparacao, setComparacao] = useState<ResultadoComparacao | null>(null);
 
   const [erro, setErro] = useState<string | null>(null);
@@ -251,6 +255,7 @@ export default function SimuladorHistoricoClient({
   function limpar() {
     setSelA(new Set()); setSelB(new Set());
     setTrevosA(new Set()); setTrevosB(new Set());
+    setColA([0, 0, 0, 0, 0, 0, 0]); setColB([0, 0, 0, 0, 0, 0, 0]);
     setResultado(null); setComparacao(null); setErro(null);
   }
 
@@ -259,7 +264,7 @@ export default function SimuladorHistoricoClient({
       setErro("Selecione exatamente 2 trevos.");
       return;
     }
-    const dezenas = Array.from(selA).sort((a, b) => a - b);
+    const dezenas = ehSuperSete ? colA : Array.from(selA).sort((a, b) => a - b);
     startTransition(async () => {
       setErro(null);
       const res = await simularHistorico(
@@ -276,8 +281,8 @@ export default function SimuladorHistoricoClient({
       setErro("Selecione exatamente 2 trevos em cada jogo.");
       return;
     }
-    const dA = Array.from(selA).sort((a, b) => a - b);
-    const dB = Array.from(selB).sort((a, b) => a - b);
+    const dA = ehSuperSete ? colA : Array.from(selA).sort((a, b) => a - b);
+    const dB = ehSuperSete ? colB : Array.from(selB).sort((a, b) => a - b);
     startTransition(async () => {
       setErro(null);
       const res = await compararJogos(
@@ -290,10 +295,10 @@ export default function SimuladorHistoricoClient({
     });
   }
 
-  const dezenasA = Array.from(selA).sort((a, b) => a - b);
-  const dezenasB = Array.from(selB).sort((a, b) => a - b);
-  const completoA = selA.size === qtdDezenasSorteadas;
-  const completoB = selB.size === qtdDezenasSorteadas;
+  const dezenasA = ehSuperSete ? colA : Array.from(selA).sort((a, b) => a - b);
+  const dezenasB = ehSuperSete ? colB : Array.from(selB).sort((a, b) => a - b);
+  const completoA = ehSuperSete || selA.size === qtdDezenasSorteadas;
+  const completoB = ehSuperSete || selB.size === qtdDezenasSorteadas;
 
   // Gráfico simples amostrado
   const graficoAmostrado = useMemo(() => {
@@ -380,11 +385,15 @@ export default function SimuladorHistoricoClient({
             concurso — a simulação verifica esse jogo em cada sorteio da história
             da {nomeLoteria}.
           </p>
-          <SeletorDezenas
-            dezenaMin={dezenaMin} dezenaMax={dezenaMax}
-            qtd={qtdDezenasSorteadas} selecionadas={selA} onChange={setSelA}
-            label=""
-          />
+          {ehSuperSete ? (
+            <SeletorColunasSuperSete valores={colA} onChange={setColA} />
+          ) : (
+            <SeletorDezenas
+              dezenaMin={dezenaMin} dezenaMax={dezenaMax}
+              qtd={qtdDezenasSorteadas} selecionadas={selA} onChange={setSelA}
+              label=""
+            />
+          )}
           {usaTrevos && <SeletorTrevos selecionados={trevosA} onChange={setTrevosA} label="" />}
           {erro && <p className="simulador-erro">{erro}</p>}
           <div style={{ display:"flex", gap:"12px", marginTop:"20px" }}>
@@ -392,7 +401,7 @@ export default function SimuladorHistoricoClient({
               disabled={!completoA || (usaTrevos && trevosA.size !== 2) || pending} onClick={handleSimular}>
               {pending ? "Simulando…" : "Simular →"}
             </button>
-            {selA.size > 0 && <button type="button" className="botao-copiar" onClick={limpar}>Limpar</button>}
+            {(ehSuperSete || selA.size > 0) && <button type="button" className="botao-copiar" onClick={limpar}>Limpar</button>}
           </div>
         </div>
       )}
@@ -405,19 +414,33 @@ export default function SimuladorHistoricoClient({
           </p>
           <div className="simulador-comparar-grid">
             <div>
-              <SeletorDezenas
-                dezenaMin={dezenaMin} dezenaMax={dezenaMax}
-                qtd={qtdDezenasSorteadas} selecionadas={selA} onChange={setSelA}
-                label="Jogo A"
-              />
+              {ehSuperSete ? (
+                <>
+                  <p className="simulador-seletor__label">Jogo A</p>
+                  <SeletorColunasSuperSete valores={colA} onChange={setColA} />
+                </>
+              ) : (
+                <SeletorDezenas
+                  dezenaMin={dezenaMin} dezenaMax={dezenaMax}
+                  qtd={qtdDezenasSorteadas} selecionadas={selA} onChange={setSelA}
+                  label="Jogo A"
+                />
+              )}
               {usaTrevos && <SeletorTrevos selecionados={trevosA} onChange={setTrevosA} label="Trevos A" />}
             </div>
             <div>
-              <SeletorDezenas
-                dezenaMin={dezenaMin} dezenaMax={dezenaMax}
-                qtd={qtdDezenasSorteadas} selecionadas={selB} onChange={setSelB}
-                label="Jogo B"
-              />
+              {ehSuperSete ? (
+                <>
+                  <p className="simulador-seletor__label">Jogo B</p>
+                  <SeletorColunasSuperSete valores={colB} onChange={setColB} />
+                </>
+              ) : (
+                <SeletorDezenas
+                  dezenaMin={dezenaMin} dezenaMax={dezenaMax}
+                  qtd={qtdDezenasSorteadas} selecionadas={selB} onChange={setSelB}
+                  label="Jogo B"
+                />
+              )}
               {usaTrevos && <SeletorTrevos selecionados={trevosB} onChange={setTrevosB} label="Trevos B" />}
             </div>
           </div>
@@ -438,7 +461,7 @@ export default function SimuladorHistoricoClient({
         <>
           <div className="simulador-hist-jogo">
             <span className="simulador-hist-jogo-label">Jogo simulado:</span>
-            {dezenasA.map(d => <span key={d} className="simulador-hist-dezena">{formatarDezena(d)}</span>)}
+            {dezenasA.map((d, i) => <span key={i} className="simulador-hist-dezena">{formatarDezena(d)}</span>)}
             {usaTrevos && Array.from(trevosA).sort((a, b) => a - b).map(t => (
               <span key={`trevo-${t}`} className="simulador-hist-dezena" style={{ background: "var(--ochre-soft)" }}>
                 {t}
@@ -538,10 +561,10 @@ export default function SimuladorHistoricoClient({
                 <table className="tabela-dados">
                   <thead><tr><th className="num">Concurso</th><th>Faixa</th><th className="num">Prêmio</th></tr></thead>
                   <tbody>
-                    {resultado.melhores.map(m => (
-                      <tr key={m.numero}>
+                    {resultado.melhores.map((m, i) => (
+                      <tr key={`${m.numero}-${i}`}>
                         <td className="num" style={{ fontFamily:"var(--font-mono)" }}>#{m.numero}</td>
-                        <td style={{ fontFamily:"var(--font-mono)", fontSize:"0.85rem" }}>{m.acertos} acertos</td>
+                        <td style={{ fontFamily:"var(--font-mono)", fontSize:"0.85rem" }}>{m.acertos} {ehSuperSete ? "colunas certas" : "acertos"}</td>
                         <td className="num" style={{ fontFamily:"var(--font-mono)", color:"var(--pine)", fontWeight:700 }}>
                           {formatarReaisSimples(m.premio)}
                         </td>

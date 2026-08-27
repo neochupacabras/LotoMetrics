@@ -94,6 +94,7 @@ export default async function ProbabilidadesPage({
       {/* ── Tabela de probabilidades ─────────────────────────────────────── */}
       <ProbabilidadesClient
         codigoLoteria={codigoLoteria}
+        dezenaMin={loteria.dezenaMin}
         dezenaMax={loteria.dezenaMax}
         qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
         qtdDezenasPadrao={loteria.qtdDezenasSorteadas}

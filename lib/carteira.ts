@@ -1,6 +1,7 @@
 import { getLoteriaPorCodigo, getDrawsParaSimulacao, getMapaFaixasPorAcertos } from "@/lib/queries";
-import { PARAMS_LOTERIA } from "@/lib/probabilidades";
+import { PARAMS_LOTERIA, FAIXAS_DUPLASENA_POR_SORTEIO } from "@/lib/probabilidades";
 import { LOTERIAS } from "@/lib/format";
+import { contarColunasAcertadas } from "@/lib/classificacao";
 
 export interface JogoSalvoBasico {
   id: number;
@@ -58,6 +59,8 @@ export async function calcularCarteira(jogosSalvos: JogoSalvoBasico[]): Promise<
 
     const nomeLoteria = LOTERIAS[codigoLoteria as keyof typeof LOTERIAS]?.nome ?? loteria.nome;
     const naoCalculavel = LOTERIAS_SEM_CALCULO_FINANCEIRO.has(codigoLoteria);
+    const ehSuperSete = codigoLoteria === "supersete";
+    const ehDuplaSena = codigoLoteria === "duplasena";
     const preco = precoAposta(codigoLoteria);
 
     // Busca só a partir do jogo salvo mais antigo dessa loteria — cobre
@@ -77,7 +80,24 @@ export async function calcularCarteira(jogosSalvos: JogoSalvoBasico[]): Promise<
       let ganho = 0;
       for (const draw of draws) {
         if (naoCalculavel) continue;
-        const acertos = draw.dezenas.filter((d) => dezenasSet.has(d)).length;
+
+        // Dupla Sena: o mesmo jogo é conferido duas vezes por concurso (1º
+        // e 2º sorteio), cada um podendo bater uma faixa independente — ver
+        // FAIXAS_DUPLASENA_POR_SORTEIO (mapaFaixas não serve aqui porque a
+        // descrição da faixa se repete entre os dois sorteios).
+        if (ehDuplaSena) {
+          const acertos1 = draw.dezenas.filter((d) => dezenasSet.has(d)).length;
+          const acertos2 = (draw.dezenasSegundoSorteio ?? []).filter((d) => dezenasSet.has(d)).length;
+          const faixa1 = FAIXAS_DUPLASENA_POR_SORTEIO[1][acertos1];
+          const faixa2 = FAIXAS_DUPLASENA_POR_SORTEIO[2][acertos2];
+          if (faixa1 !== undefined) ganho += draw.premios[faixa1] ?? 0;
+          if (faixa2 !== undefined) ganho += draw.premios[faixa2] ?? 0;
+          continue;
+        }
+
+        const acertos = ehSuperSete
+          ? contarColunasAcertadas(jogo.dezenas, draw.dezenas)
+          : draw.dezenas.filter((d) => dezenasSet.has(d)).length;
         const faixa = mapaFaixas[acertos];
         if (faixa !== undefined) {
           ganho += draw.premios[faixa] ?? 0;

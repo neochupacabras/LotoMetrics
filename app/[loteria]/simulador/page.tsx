@@ -120,14 +120,12 @@ export default async function SimuladorPage({
         </div>
       )}
 
-      {/* ── Aviso Dupla Sena: simulador confere só o 1º sorteio ──────────── */}
       {codigoLoteria === "duplasena" && (
         <div className="aviso-legal" style={{ marginBottom: 20 }}>
-          <strong>Dupla Sena:</strong> o simulador confere seu jogo apenas contra o{" "}
-          <strong>1º sorteio</strong> de cada concurso. O 2º sorteio existe e aparece
-          nos resultados, mas não é considerado nesta simulação histórica. Isso significa
-          que os prêmios calculados podem ser subestimados — na prática, seu jogo também
-          teria sido conferido contra o 2º sorteio a cada concurso.
+          <strong>Dupla Sena:</strong> cada concurso tem dois sorteios, e o simulador
+          confere seu jogo contra os dois — se ele bater faixa premiada no 1º e no 2º
+          sorteio do mesmo concurso, os dois prêmios entram na conta, exatamente como
+          aconteceria na prática.
         </div>
       )}
 

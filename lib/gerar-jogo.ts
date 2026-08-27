@@ -136,6 +136,13 @@ function criarGeradorComSeed(seed: number): () => number {
   };
 }
 
+// Super Sete: 7 colunas independentes, dígito de 0 a 9 cada, repetição
+// livre entre colunas — não "escolha 7 dezenas distintas de um universo",
+// que é o que gerarJogo() faz pras outras 8 loterias.
+export function gerarJogoSuperSete(): number[] {
+  return Array.from({ length: 7 }, () => Math.floor(Math.random() * 10));
+}
+
 export interface JogoDaData {
   dezenas: number[];
   trevos?: number[]; // +Milionária

@@ -9,12 +9,14 @@ const QTD_EXTRA_DEZENAS_MAX = 5;
 
 export default function ProbabilidadesClient({
   codigoLoteria,
+  dezenaMin,
   dezenaMax,
   qtdDezenasSorteadas,
   qtdDezenasPadrao,
   faixasPremiadas,
 }: {
   codigoLoteria: string;
+  dezenaMin: number;
   dezenaMax: number;
   qtdDezenasSorteadas: number;
   qtdDezenasPadrao: number;
@@ -22,8 +24,13 @@ export default function ProbabilidadesClient({
 }) {
   const [qtdApostada, setQtdApostada] = useState(qtdDezenasPadrao);
 
+  // Tamanho real do universo de dezenas — dezenaMax sozinho só coincide com
+  // isso quando a loteria começa em 1 (todas, menos a Lotomania, que vai de
+  // 0 a 99: 100 dezenas possíveis, não 99).
+  const universoTotal = dezenaMax - dezenaMin + 1;
+
   const faixas: FaixaProbabilidade[] = calcularProbabilidades(
-    dezenaMax,
+    universoTotal,
     qtdDezenasSorteadas,
     qtdApostada,
     faixasPremiadas
@@ -61,7 +68,7 @@ export default function ProbabilidadesClient({
           id="qtdApostada"
           type="number"
           min={qtdDezenasPadrao}
-          max={Math.min(dezenaMax, qtdDezenasPadrao + QTD_EXTRA_DEZENAS_MAX)}
+          max={Math.min(universoTotal, qtdDezenasPadrao + QTD_EXTRA_DEZENAS_MAX)}
           value={qtdApostada}
           onChange={(e) => setQtdApostada(Number(e.target.value))}
         />

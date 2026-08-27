@@ -3,6 +3,7 @@
 import { useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { salvarJogoAction } from "@/lib/jogo-actions";
+import SeletorColunasSuperSete from "@/components/SeletorColunasSuperSete";
 
 const LOTERIAS = [
   { codigo: "lotofacil",     nome: "Lotofácil",   min: 1,  max: 25, qtd: 15 },
@@ -19,7 +20,7 @@ const LOTERIAS = [
 // Loterias com mecânica especial que exige nota na interface
 const NOTAS: Record<string, string> = {
   lotomania: "Na Lotomania você marca 50 dezenas — a Caixa sorteia 20. Selecione exatamente 50.",
-  supersete: "Na Super Sete cada dezena representa uma coluna (C1 a C7). Dezenas podem se repetir.",
+  supersete: "Na Super Sete cada coluna (C1 a C7) sorteia um dígito independente — o mesmo dígito pode repetir em colunas diferentes.",
   maismilionaria: "O jogo tem 6 dezenas (1–50). Os 2 trevos (1–6) são sorteados automaticamente.",
 };
 
@@ -30,10 +31,13 @@ function formatarDezena(n: number, max: number) {
 export default function NovoJogoClient() {
   const [loteria, setLoteria] = useState(LOTERIAS[0]);
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
+  const [colunas, setColunas] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
   const [label, setLabel] = useState("");
   const [erro, setErro] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const router = useRouter();
+
+  const ehSuperSete = loteria.codigo === "supersete";
 
   const todas = useMemo(
     () => Array.from({ length: loteria.max - loteria.min + 1 }, (_, i) => i + loteria.min),
@@ -44,6 +48,7 @@ export default function NovoJogoClient() {
     const l = LOTERIAS.find(l => l.codigo === codigo)!;
     setLoteria(l);
     setSelecionadas(new Set());
+    setColunas([0, 0, 0, 0, 0, 0, 0]);
     setErro(null);
   }
 
@@ -57,12 +62,13 @@ export default function NovoJogoClient() {
   }
 
   function handleSalvar() {
-    if (selecionadas.size !== loteria.qtd) {
+    const dezenas = ehSuperSete ? colunas : Array.from(selecionadas).sort((a, b) => a - b);
+
+    if (!ehSuperSete && selecionadas.size !== loteria.qtd) {
       setErro(`Selecione exatamente ${loteria.qtd} dezenas.`);
       return;
     }
     setErro(null);
-    const dezenas = Array.from(selecionadas).sort((a, b) => a - b);
     startTransition(async () => {
       const res = await salvarJogoAction(loteria.codigo, dezenas, label);
       if (res.ok) {
@@ -73,7 +79,7 @@ export default function NovoJogoClient() {
     });
   }
 
-  const completo = selecionadas.size === loteria.qtd;
+  const completo = ehSuperSete || selecionadas.size === loteria.qtd;
   const nota = NOTAS[loteria.codigo];
 
   return (
@@ -100,35 +106,41 @@ export default function NovoJogoClient() {
         </p>
       )}
 
-      {/* Grade de dezenas */}
-      <div className="grade-dezenas">
-        {todas.map(d => (
-          <button
-            key={d}
-            type="button"
-            className="dezena-selecionavel"
-            data-selecionada={selecionadas.has(d)}
-            disabled={!selecionadas.has(d) && selecionadas.size >= loteria.qtd}
-            onClick={() => toggle(d)}
-          >
-            {formatarDezena(d, loteria.max)}
-          </button>
-        ))}
-      </div>
+      {ehSuperSete ? (
+        <SeletorColunasSuperSete valores={colunas} onChange={setColunas} />
+      ) : (
+        <>
+          {/* Grade de dezenas */}
+          <div className="grade-dezenas">
+            {todas.map(d => (
+              <button
+                key={d}
+                type="button"
+                className="dezena-selecionavel"
+                data-selecionada={selecionadas.has(d)}
+                disabled={!selecionadas.has(d) && selecionadas.size >= loteria.qtd}
+                onClick={() => toggle(d)}
+              >
+                {formatarDezena(d, loteria.max)}
+              </button>
+            ))}
+          </div>
 
-      {/* Progresso */}
-      <div className="analisador-progresso-wrapper">
-        <div className="analisador-progresso-fundo">
-          <div
-            className="analisador-progresso-fill"
-            data-completo={completo}
-            style={{ width: `${(selecionadas.size / loteria.qtd) * 100}%` }}
-          />
-        </div>
-        <span className="analisador-progresso-label">
-          {selecionadas.size} de {loteria.qtd} dezenas
-        </span>
-      </div>
+          {/* Progresso */}
+          <div className="analisador-progresso-wrapper">
+            <div className="analisador-progresso-fundo">
+              <div
+                className="analisador-progresso-fill"
+                data-completo={completo}
+                style={{ width: `${(selecionadas.size / loteria.qtd) * 100}%` }}
+              />
+            </div>
+            <span className="analisador-progresso-label">
+              {selecionadas.size} de {loteria.qtd} dezenas
+            </span>
+          </div>
+        </>
+      )}
 
       {/* Nome do jogo (opcional) */}
       <div className="auth-campo" style={{ maxWidth: 340, marginTop: 20 }}>
@@ -158,7 +170,7 @@ export default function NovoJogoClient() {
         <button
           type="button"
           className="botao-copiar"
-          onClick={() => setSelecionadas(new Set())}
+          onClick={() => { setSelecionadas(new Set()); setColunas([0, 0, 0, 0, 0, 0, 0]); }}
         >
           Limpar
         </button>

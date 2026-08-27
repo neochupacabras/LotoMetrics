@@ -3,6 +3,8 @@
 import pool from "./db";
 import {
   conferirJogo,
+  conferirJogoSuperSete,
+  conferirJogoDuplaSena,
   ResultadoConferidor,
   calcularRetornoFinanceiro,
   RetornoFinanceiro,
@@ -26,6 +28,21 @@ export async function conferirJogoAction(
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) {
     return { ok: false, erro: "Loteria não encontrada." };
+  }
+
+  // Super Sete: cada uma das 7 posições é uma coluna independente — o
+  // mesmo dígito pode (e costuma) repetir entre colunas, então a checagem
+  // de "sem repetidos" das outras 8 loterias não se aplica aqui.
+  if (codigoLoteria === "supersete") {
+    if (dezenas.length !== loteria.qtdDezenasSorteadas) {
+      return { ok: false, erro: `Selecione um dígito para cada uma das ${loteria.qtdDezenasSorteadas} colunas.` };
+    }
+    if (dezenas.some((d) => d < loteria.dezenaMin || d > loteria.dezenaMax)) {
+      return { ok: false, erro: "Há um dígito fora da faixa válida (0 a 9)." };
+    }
+    const faixasPremiadas = FAIXAS_PREMIADAS[codigoLoteria] ?? [];
+    const dados = await conferirJogoSuperSete(loteria.id, dezenas, faixasPremiadas);
+    return { ok: true, dados };
   }
 
   const dezenasUnicas = Array.from(new Set(dezenas));
@@ -79,7 +96,11 @@ export async function conferirJogoAction(
     };
   }
 
-  const dados = await conferirJogo(loteria.id, dezenas, faixasPremiadas);
+  // Dupla Sena: o jogo é conferido contra os dois sorteios do concurso, não
+  // só o primeiro (ver conferirJogoDuplaSena).
+  const dados = codigoLoteria === "duplasena"
+    ? await conferirJogoDuplaSena(loteria.id, dezenas, faixasPremiadas)
+    : await conferirJogo(loteria.id, dezenas, faixasPremiadas);
   return { ok: true, dados };
 }
 

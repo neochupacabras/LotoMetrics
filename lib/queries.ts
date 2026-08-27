@@ -277,6 +277,7 @@ export interface ConcessaoSimulacao {
   numero: number;
   dataSorteio: string;
   dezenas: number[];
+  dezenasSegundoSorteio: number[] | null; // Dupla Sena: 2º sorteio do mesmo concurso
   trevos: number[] | null; // +Milionária
   // Prêmio por faixa (faixa 1 = maior, ordem crescente de dificuldade)
   premios: Record<number, number>;  // { 1: valor, 2: valor, ... }
@@ -288,12 +289,12 @@ export async function getDrawsParaSimulacao(
 ): Promise<ConcessaoSimulacao[]> {
   // Busca todos os sorteios com prêmios por faixa em uma query só
   const { rows } = await pool.query(
-    `SELECT c.numero, c.data_sorteio, c.dezenas, c.trevos,
+    `SELECT c.numero, c.data_sorteio, c.dezenas, c.dezenas_segundo_sorteio, c.trevos,
        json_object_agg(pf.faixa, pf.valor_premio) AS premios
      FROM concurso c
      JOIN premiacao_faixa pf ON pf.concurso_id = c.id
      WHERE c.loteria_id = $1 ${dataDesde ? "AND c.data_sorteio >= $2" : ""}
-     GROUP BY c.numero, c.data_sorteio, c.dezenas, c.trevos
+     GROUP BY c.numero, c.data_sorteio, c.dezenas, c.dezenas_segundo_sorteio, c.trevos
      ORDER BY c.numero`,
     dataDesde ? [loteriaId, dataDesde] : [loteriaId]
   );
@@ -302,6 +303,7 @@ export async function getDrawsParaSimulacao(
     numero: r.numero,
     dataSorteio: r.data_sorteio instanceof Date ? r.data_sorteio.toISOString() : r.data_sorteio,
     dezenas: r.dezenas as number[],
+    dezenasSegundoSorteio: r.dezenas_segundo_sorteio ?? null,
     trevos: r.trevos ?? null,
     premios: Object.fromEntries(
       Object.entries(r.premios as Record<string, string>).map(([k, v]) => [

@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import Dezenas from "./Dezenas";
+import SeletorColunasSuperSete from "./SeletorColunasSuperSete";
 import dynamic from "next/dynamic";
 import { conferirJogoAction, calcularRetornoFinanceiroAction, ConferidorActionResult } from "@/lib/conferidor-actions";
 import { formatarData, formatarDezena } from "@/lib/format";
@@ -28,8 +29,10 @@ export default function ConferidorClient({
   logado?: boolean;
   isPremium?: boolean;
 }) {
+  const ehSuperSete = codigoLoteria === "supersete";
   const [aba, setAba] = useState<"manual" | "foto">("manual");
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
+  const [colunas, setColunas] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
   const [trevosSelecionados, setTrevosSelecionados] = useState<Set<number>>(new Set());
   const [textoColar, setTextoColar] = useState("");
   const [resultado, setResultado] = useState<ConferidorActionResult | null>(null);
@@ -76,6 +79,7 @@ export default function ConferidorClient({
 
   function limpar() {
     setSelecionadas(new Set());
+    setColunas([0, 0, 0, 0, 0, 0, 0]);
     setTrevosSelecionados(new Set());
     setTextoColar("");
     setResultado(null);
@@ -97,7 +101,7 @@ export default function ConferidorClient({
     setErro(null);
     setResultado(null);
 
-    if (selecionadas.size !== qtdDezenasSorteadas) {
+    if (!ehSuperSete && selecionadas.size !== qtdDezenasSorteadas) {
       setErro(`Selecione exatamente ${qtdDezenasSorteadas} dezenas.`);
       return;
     }
@@ -109,7 +113,7 @@ export default function ConferidorClient({
     startTransition(async () => {
       const r = await conferirJogoAction(
         codigoLoteria,
-        Array.from(selecionadas),
+        ehSuperSete ? colunas : Array.from(selecionadas),
         usaTrevos ? Array.from(trevosSelecionados) : undefined
       );
       if (!r.ok) {
@@ -123,29 +127,32 @@ export default function ConferidorClient({
 
   return (
     <div>
-      {/* Toggle Manual / Foto */}
-      <div className="modo-toggle" style={{ alignSelf: "flex-start", marginBottom: 20 }}>
-        <button
-          type="button"
-          className="modo-toggle__botao"
-          data-ativo={aba === "manual"}
-          onClick={() => setAba("manual")}
-        >
-          Digitar dezenas
-        </button>
-        <button
-          type="button"
-          className="modo-toggle__botao"
-          data-ativo={aba === "foto"}
-          onClick={() => setAba("foto")}
-        >
-          Foto do bilhete
-          {!isPremium && <span className="modo-toggle__lock">✦ Premium</span>}
-        </button>
-      </div>
+      {/* Toggle Manual / Foto — Super Sete não tem aba de foto: o OCR foi
+          treinado pra reconhecer dezenas de um volante comum, não colunas. */}
+      {!ehSuperSete && (
+        <div className="modo-toggle" style={{ alignSelf: "flex-start", marginBottom: 20 }}>
+          <button
+            type="button"
+            className="modo-toggle__botao"
+            data-ativo={aba === "manual"}
+            onClick={() => setAba("manual")}
+          >
+            Digitar dezenas
+          </button>
+          <button
+            type="button"
+            className="modo-toggle__botao"
+            data-ativo={aba === "foto"}
+            onClick={() => setAba("foto")}
+          >
+            Foto do bilhete
+            {!isPremium && <span className="modo-toggle__lock">✦ Premium</span>}
+          </button>
+        </div>
+      )}
 
       {/* Aba Foto */}
-      {aba === "foto" && (
+      {!ehSuperSete && aba === "foto" && (
         <ConferidorFoto
           codigoLoteria={codigoLoteria}
           qtdDezenasSorteadas={qtdDezenasSorteadas}
@@ -156,8 +163,17 @@ export default function ConferidorClient({
       )}
 
       {/* Aba Manual */}
-      {aba === "manual" && (
+      {(ehSuperSete || aba === "manual") && (
       <>
+      {ehSuperSete ? (
+        <>
+          <p className="bloco__nota">
+            Escolha o dígito de cada uma das 7 colunas do seu jogo.
+          </p>
+          <SeletorColunasSuperSete valores={colunas} onChange={setColunas} />
+        </>
+      ) : (
+        <>
       <p className="bloco__nota">
         Selecione as {qtdDezenasSorteadas} dezenas do seu jogo, ou cole abaixo (aceita
         qualquer formato, inclusive o que o gerador de jogos copia).
@@ -201,6 +217,8 @@ export default function ConferidorClient({
       <p className="fechamento-resumo">
         {selecionadas.size} de {qtdDezenasSorteadas} dezenas selecionadas
       </p>
+        </>
+      )}
 
       {usaTrevos && (
         <>
@@ -347,11 +365,13 @@ function ResultadoConferidor({
               </tr>
             </thead>
             <tbody>
-              {dados.acertosNasFaixas.map((r) => (
-                <tr key={r.numero}>
+              {dados.acertosNasFaixas.map((r, i) => (
+                <tr key={`${r.numero}-${i}`}>
                   <td>#{r.numero}</td>
                   <td>{formatarData(r.dataSorteio)}</td>
-                  <td className="num">{r.pontos}</td>
+                  <td className="num">
+                    {r.pontos}{r.sorteio ? ` (${r.sorteio}º sorteio)` : ""}
+                  </td>
                 </tr>
               ))}
             </tbody>

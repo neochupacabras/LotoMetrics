@@ -20,7 +20,9 @@ export interface FaixaProbabilidade {
   umEm: number; // 1 / probabilidade, arredondado
 }
 
-// n = universo de dezenas da loteria (dezena_max)
+// n = tamanho do universo de dezenas da loteria (dezena_max - dezena_min + 1
+//     — NÃO é só dezena_max: só coincide com dezena_max quando a loteria
+//     começa em 1, o que não vale pra Lotomania, que vai de 0 a 99)
 // m = quantas dezenas a loteria sorteia
 // b = quantas dezenas o apostador escolheu (>= m para apostas estendidas)
 export function calcularProbabilidades(
@@ -60,15 +62,32 @@ export const FAIXAS_PREMIADAS: Record<string, number[]> = {
   lotofacil: [11, 12, 13, 14, 15],
   megasena:  [4, 5, 6],
   quina:     [2, 3, 4, 5],
-  // Lotomania: apostador marca 50, sorteia 20. Faixas especiais incluem 0 acertos.
-  // O cálculo padrão cobre 15,16,17,18,19,20 — 0 acertos é tratado na UI.
-  lotomania:  [15, 16, 17, 18, 19, 20],
+  // Lotomania paga 0 acertos além de 15-20 — é a faixa mais rara e mais
+  // fácil de esquecer, já que "zero acertos" soa como "não ganhou nada".
+  lotomania:  [0, 15, 16, 17, 18, 19, 20],
   // Dia de Sorte: faixas de 2 a 7 acertos
   diadesorte:     [2, 3, 4, 5, 6, 7],
   maismilionaria: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
   timemania:  [3, 4, 5, 6, 7],
-  duplasena:  [1, 2, 3, 4, 5, 6, 7, 8],
+  // Dupla Sena paga 3, 4, 5 ou 6 acertos — o mesmo jogo é conferido duas
+  // vezes (1º e 2º sorteio), cada um com sua própria faixa (ver
+  // FAIXAS_DUPLASENA_POR_SORTEIO), mas o "número de acertos" que paga é
+  // sempre um desses 4 valores.
+  duplasena:  [3, 4, 5, 6],
   supersete:  [3, 4, 5, 6, 7],
+};
+
+// Dupla Sena sorteia duas vezes por concurso, e a Caixa registra os prêmios
+// de cada sorteio como faixas separadas (1-4 = 1º sorteio, 5-8 = 2º
+// sorteio) — mas com a MESMA descrição textual ("6 acertos", "5 acertos"...)
+// nas duas, então não dá pra distinguir por texto qual faixa é de qual
+// sorteio (ver getMapaFaixasPorAcertos, que assume descrição única por
+// contagem de acertos — não serve aqui). Índices confirmados direto na API
+// da Caixa (concurso 3001: faixa 1-4 com valores de 1º sorteio, 5-8 com
+// valores de 2º sorteio, mesmo texto nos dois grupos).
+export const FAIXAS_DUPLASENA_POR_SORTEIO: Record<1 | 2, Record<number, number>> = {
+  1: { 6: 1, 5: 2, 4: 3, 3: 4 },
+  2: { 6: 5, 5: 6, 4: 7, 3: 8 },
 };
 
 // Probabilidade de PELO MENOS k das m dezenas sorteadas estarem dentro de

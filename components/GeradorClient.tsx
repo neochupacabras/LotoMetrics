@@ -4,7 +4,7 @@ import { useState } from "react";
 import Dezenas from "./Dezenas";
 import BotaoCopiar from "./BotaoCopiar";
 import Link from "next/link";
-import { gerarJogo, amostrarSubconjunto, ResultadoGeracao } from "@/lib/gerar-jogo";
+import { gerarJogo, gerarJogoSuperSete, amostrarSubconjunto, ResultadoGeracao } from "@/lib/gerar-jogo";
 import { DadosGerador } from "@/lib/gerador";
 import { formatarDezena } from "@/lib/format";
 import { analisar } from "@/lib/analisador";
@@ -53,6 +53,7 @@ export default function GeradorClient({
   modoAvancadoLiberado?: boolean;
   logado?: boolean;
 }) {
+  const ehSuperSete = codigoLoteria === "supersete";
   const [modo, setModo] = useState<"simples" | "avancado">("simples");
   const [qtdJogos, setQtdJogos] = useState(1);
 
@@ -144,12 +145,30 @@ export default function GeradorClient({
     return resultado;
   }
 
+  // Super Sete: 7 colunas independentes com repetição livre — nenhum dos
+  // filtros estatísticos abaixo (atraso, ciclo, soma comum...) se aplica a
+  // um universo compartilhado como nas outras 8 loterias, então o gerador
+  // aqui é só o palpite simples de 7 dígitos.
+  function gerarUmSuperSete(): ResultadoGeracao {
+    const dezenas = gerarJogoSuperSete();
+    const pares = dezenas.filter((d) => d % 2 === 0).length;
+    return {
+      dezenas,
+      soma: dezenas.reduce((s, d) => s + d, 0),
+      pares,
+      impares: dezenas.length - pares,
+      atendeuTodosFiltros: true,
+    };
+  }
+
   function handleGerar() {
     setErro(null);
     try {
       const resultados: ResultadoGeracao[] = [];
       for (let i = 0; i < qtdJogos; i++) {
-        resultados.push(modo === "simples" ? gerarUmSimples() : gerarUmAvancado());
+        resultados.push(
+          ehSuperSete ? gerarUmSuperSete() : modo === "simples" ? gerarUmSimples() : gerarUmAvancado()
+        );
       }
       setJogos(resultados);
     } catch (e) {
@@ -213,26 +232,35 @@ export default function GeradorClient({
 
   return (
     <div>
-      <div className="modo-toggle">
-        <button
-          type="button"
-          className="modo-toggle__botao"
-          data-ativo={modo === "simples"}
-          onClick={() => setModo("simples")}
-        >
-          Modo simples
-        </button>
-        <button
-          type="button"
-          className="modo-toggle__botao"
-          data-ativo={modo === "avancado"}
-          onClick={() => setModo("avancado")}
-        >
-          Modo avançado {!modoAvancadoLiberado && <span className="modo-toggle__lock">✦ Premium</span>}
-        </button>
-      </div>
+      {!ehSuperSete && (
+        <div className="modo-toggle">
+          <button
+            type="button"
+            className="modo-toggle__botao"
+            data-ativo={modo === "simples"}
+            onClick={() => setModo("simples")}
+          >
+            Modo simples
+          </button>
+          <button
+            type="button"
+            className="modo-toggle__botao"
+            data-ativo={modo === "avancado"}
+            onClick={() => setModo("avancado")}
+          >
+            Modo avançado {!modoAvancadoLiberado && <span className="modo-toggle__lock">✦ Premium</span>}
+          </button>
+        </div>
+      )}
 
       <div className="gerador-form">
+        {ehSuperSete && (
+          <p className="modo-simples-nota">
+            Cada dígito é sorteado de forma independente pra cada uma das 7 colunas — os
+            filtros estatísticos do modo avançado (atraso, soma, ciclo...) não se aplicam
+            aqui, porque não existe um universo compartilhado de dezenas na Super Sete.
+          </p>
+        )}
         <div className="campo-filtro">
           <label htmlFor="qtdJogos">Quantidade de jogos</label>
           <input
@@ -245,7 +273,7 @@ export default function GeradorClient({
           />
         </div>
 
-        {modo === "avancado" && !modoAvancadoLiberado && (
+        {!ehSuperSete && modo === "avancado" && !modoAvancadoLiberado && (
           <div className="gerador-premium-overlay">
             <div className="gerador-premium-overlay__card">
               <p className="gerador-premium-overlay__icone">✦</p>
@@ -267,7 +295,7 @@ export default function GeradorClient({
           </div>
         )}
 
-        {modo === "simples" ? (
+        {!ehSuperSete && (modo === "simples" ? (
           <p className="modo-simples-nota">
             Aplicamos automaticamente, no jogo padrão de {qtdDezenasPadrao} dezenas: inclusão de{" "}
             {PRESET_MODO_SIMPLES.qtdAtrasadas} dezenas atrasadas
@@ -444,10 +472,10 @@ export default function GeradorClient({
               </label>
             ))}
           </>
-        ) : null}
+        ) : null)}
 
         <button type="button" className="botao-gerar" onClick={handleGerar}
-          disabled={modo === "avancado" && !modoAvancadoLiberado}>
+          disabled={!ehSuperSete && modo === "avancado" && !modoAvancadoLiberado}>
           Gerar {qtdJogos > 1 ? `${qtdJogos} jogos` : "jogo"}
         </button>
       </div>
