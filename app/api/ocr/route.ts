@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { calcularIsPremium } from "@/lib/plano";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -72,9 +73,7 @@ export async function POST(request: Request) {
     .eq("id", user.id)
     .single();
 
-  const isPremium =
-    profile?.plan === "premium" &&
-    (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date());
+  const isPremium = calcularIsPremium(profile);
 
   if (!isPremium) {
     return NextResponse.json(

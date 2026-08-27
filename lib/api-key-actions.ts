@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { gerarApiKey, hashApiKey, prefixoApiKey } from "@/lib/api-auth";
+import { calcularIsPremium } from "@/lib/plano";
 
 // ── Criar nova API key ────────────────────────────────────────────────────────
 export async function criarApiKeyAction(
@@ -19,9 +20,7 @@ export async function criarApiKeyAction(
     .eq("id", user.id)
     .single();
 
-  const isPremium =
-    profile?.plan === "premium" &&
-    (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date());
+  const isPremium = calcularIsPremium(profile);
 
   if (!isPremium) {
     return { ok: false, erro: "A API de dados é exclusiva para assinantes Premium." };
@@ -47,7 +46,10 @@ export async function criarApiKeyAction(
     limite_mes: 1000,
   });
 
-  if (error) return { ok: false, erro: "Erro ao criar a chave. Tente novamente." };
+  if (error) {
+    console.error("[criarApiKeyAction] Supabase error:", error.message, error.code, error.details);
+    return { ok: false, erro: "Erro ao criar a chave. Tente novamente." };
+  }
 
   revalidatePath("/conta/api");
   // Retornar a chave UMA ÚNICA VEZ — nunca mais será exibida
@@ -68,7 +70,10 @@ export async function revogarApiKeyAction(
     .eq("id", keyId)
     .eq("user_id", user.id);
 
-  if (error) return { ok: false, erro: "Erro ao revogar a chave." };
+  if (error) {
+    console.error("[revogarApiKeyAction] Supabase error:", error.message, error.code, error.details);
+    return { ok: false, erro: "Erro ao revogar a chave." };
+  }
 
   revalidatePath("/conta/api");
   return { ok: true };

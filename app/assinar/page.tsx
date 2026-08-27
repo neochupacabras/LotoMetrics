@@ -48,6 +48,7 @@ const BENEFICIOS = [
   "Gerador avançado com todos os filtros combinados",
   "Conferidor ilimitado com histórico salvo",
   "Simulador histórico com todo o acervo",
+  "Exportação do histórico completo em CSV",
   "Relatório mensal em PDF com seus resultados",
   "Sem anúncios em nenhuma página",
   "Acesso antecipado a novas ferramentas",
@@ -56,6 +57,19 @@ const BENEFICIOS = [
 export default async function AssinarPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+
+  // Trial de 7 dias só pra quem nunca assinou antes — quem não está logado
+  // ainda não tem como ter usado, então mostramos a oferta por padrão.
+  let elegivelParaTrial = true;
+  if (user) {
+    const { data: assinaturaAnterior } = await supabase
+      .from("subscriptions")
+      .select("id")
+      .eq("user_id", user.id)
+      .limit(1)
+      .maybeSingle();
+    elegivelParaTrial = !assinaturaAnterior;
+  }
 
   return (
     <>
@@ -68,7 +82,9 @@ export default async function AssinarPage() {
               Todas as ferramentas,<br />sem anúncios.
             </h1>
             <p className="assinar-subtitulo">
-              Cancele quando quiser. Sem taxa de adesão.
+              {elegivelParaTrial
+                ? "7 dias grátis para testar. Cancele quando quiser, sem taxa de adesão."
+                : "Cancele quando quiser. Sem taxa de adesão."}
             </p>
           </div>
 
@@ -90,10 +106,16 @@ export default async function AssinarPage() {
                 {plano.economia && (
                   <p className="assinar-plano-economia">{plano.economia}</p>
                 )}
+                {elegivelParaTrial && (
+                  <p className="assinar-plano-economia">
+                    7 dias grátis, depois {plano.preco}{plano.periodo}
+                  </p>
+                )}
                 <CheckoutButton
                   priceId={plano.stripePrice}
                   userId={user?.id}
                   destaque={plano.destaque}
+                  trial={elegivelParaTrial}
                 />
               </div>
             ))}
@@ -114,7 +136,8 @@ export default async function AssinarPage() {
 
           <p className="assinar-nota">
             Pagamento seguro via Stripe. Aceitamos cartão de crédito e débito.
-            Ao assinar, você concorda com nossos{" "}
+            {elegivelParaTrial && " O cartão só é cobrado após os 7 dias de teste — cancele antes disso e não paga nada."}
+            {" "}Ao assinar, você concorda com nossos{" "}
             <Link href="/termos" className="assinar-link">Termos de uso</Link> e{" "}
             <Link href="/privacidade" className="assinar-link">Política de Privacidade</Link>.
           </p>

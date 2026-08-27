@@ -7,6 +7,7 @@ import Masthead from "@/components/Masthead";
 import AlertasForm from "@/components/conta/AlertasForm";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/auth-actions";
+import { calcularIsPremium } from "@/lib/plano";
 
 export const metadata: Metadata = {
   title: "Minha conta — LotoAnalítica",
@@ -50,9 +51,7 @@ export default async function ContaPage({
   const jogos = jogosRes.data ?? [];
   const alertas = alertasRes.data ?? [];
 
-  const isPremium =
-    profile?.plan === "premium" &&
-    (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date());
+  const isPremium = calcularIsPremium(profile);
 
   const expiresAt = profile?.plan_expires_at
     ? new Date(profile.plan_expires_at).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" })

@@ -86,6 +86,38 @@ export const getUltimoConcurso = unstable_cache(
   { tags: ["concursos"], revalidate: 300 }
 );
 
+export interface ConcursoParaExportacao {
+  numero: number;
+  dataSorteio: string;
+  dezenas: number[];
+  acumulado: boolean;
+  trevos: number[] | null;
+  mesSorte: string | null;
+  dezenasSegundoSorteio: number[] | null;
+}
+
+// Histórico completo de uma loteria pra exportação em CSV (recurso
+// Premium) — sem premiações por faixa (seria uma junção pesada pra
+// milhares de concursos); só o essencial de cada sorteio.
+export async function getConcursosParaExportacao(
+  loteriaId: number
+): Promise<ConcursoParaExportacao[]> {
+  const { rows } = await pool.query(
+    `SELECT numero, data_sorteio, dezenas, acumulado, trevos, mes_sorte, dezenas_segundo_sorteio
+     FROM concurso WHERE loteria_id = $1 ORDER BY numero`,
+    [loteriaId]
+  );
+  return rows.map((r) => ({
+    numero: r.numero,
+    dataSorteio: r.data_sorteio instanceof Date ? r.data_sorteio.toISOString() : r.data_sorteio,
+    dezenas: r.dezenas as number[],
+    acumulado: r.acumulado,
+    trevos: r.trevos ?? null,
+    mesSorte: r.mes_sorte ?? null,
+    dezenasSegundoSorteio: r.dezenas_segundo_sorteio ?? null,
+  }));
+}
+
 // Versão leve, só número + data — usada para montar o sitemap.xml sem
 // puxar dezenas/premiações de milhares de concursos.
 export async function getNumerosConcursos(

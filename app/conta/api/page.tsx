@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import Masthead from "@/components/Masthead";
 import ApiKeysClient from "@/components/conta/ApiKeysClient";
 import { createClient } from "@/lib/supabase/server";
+import { calcularIsPremium } from "@/lib/plano";
 
 export const metadata: Metadata = {
   title: "API de dados — LotoAnalítica",
@@ -22,9 +23,7 @@ export default async function ContaApiPage() {
     .eq("id", user.id)
     .single();
 
-  const isPremium =
-    profile?.plan === "premium" &&
-    (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date());
+  const isPremium = calcularIsPremium(profile);
 
   const { data: keys } = await supabase
     .from("api_keys")

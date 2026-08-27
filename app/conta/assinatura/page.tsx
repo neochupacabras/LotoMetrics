@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import Masthead from "@/components/Masthead";
 import { createClient } from "@/lib/supabase/server";
 import PortalStripeButton from "@/components/conta/PortalStripeButton";
+import { calcularIsPremium } from "@/lib/plano";
 
 export const metadata: Metadata = {
   title: "Minha assinatura — LotoAnalítica",
@@ -30,9 +31,7 @@ export default async function AssinaturaPage() {
     .limit(1)
     .single();
 
-  const isPremium =
-    profile?.plan === "premium" &&
-    (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date());
+  const isPremium = calcularIsPremium(profile);
 
   const renovaEm = sub?.current_period_end
     ? new Date(sub.current_period_end).toLocaleDateString("pt-BR", {

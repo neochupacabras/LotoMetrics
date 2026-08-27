@@ -7,10 +7,12 @@ export default function CheckoutButton({
   priceId,
   userId,
   destaque,
+  trial,
 }: {
   priceId: string;
   userId?: string;
   destaque?: boolean;
+  trial?: boolean;
 }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -50,7 +52,11 @@ export default function CheckoutButton({
       disabled={loading}
       className={`botao-gerar assinar-checkout-btn ${destaque ? "" : "assinar-checkout-btn--sec"}`}
     >
-      {loading ? "Redirecionando..." : userId ? "Assinar agora" : "Criar conta e assinar"}
+      {loading
+        ? "Redirecionando..."
+        : userId
+          ? (trial ? "Começar grátis por 7 dias" : "Assinar agora")
+          : "Criar conta e assinar"}
     </button>
   );
 }

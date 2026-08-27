@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { gerarRelatorioPdf, type DadosRelatorio, type JogoRelatorio, type ResumoLoteria } from "@/lib/relatorio-pdf";
 import pool from "@/lib/db";
+import { calcularIsPremium } from "@/lib/plano";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -56,11 +57,11 @@ export async function GET(request: Request) {
     .eq("id", user.id)
     .single();
 
-  const isPremium =
-    profile?.plan === "premium" &&
-    (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date());
+  if (!profile) {
+    return NextResponse.json({ erro: "Perfil não encontrado." }, { status: 404 });
+  }
 
-  if (!isPremium) {
+  if (!calcularIsPremium(profile)) {
     return NextResponse.json({ erro: "Recurso exclusivo para assinantes Premium." }, { status: 403 });
   }
 

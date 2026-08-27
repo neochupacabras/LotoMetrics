@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from "crypto";
 import { createAdminClient } from "@/lib/supabase/server";
+import { calcularIsPremium } from "@/lib/plano";
 
 // ── Gerar nova API key ────────────────────────────────────────────────────────
 // Formato: la_[32 bytes hex] — "la" de LotoAnalítica
@@ -68,9 +69,7 @@ export async function validarApiKey(
     .eq("id", apiKey.user_id)
     .single();
 
-  const isPremium =
-    profile?.plan === "premium" &&
-    (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date());
+  const isPremium = calcularIsPremium(profile);
 
   if (!isPremium) {
     return { ok: false, status: 403, erro: "A conta associada a esta chave não possui assinatura Premium ativa." };

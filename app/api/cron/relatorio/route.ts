@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { gerarRelatorioPdf, type DadosRelatorio, type JogoRelatorio, type ResumoLoteria } from "@/lib/relatorio-pdf";
 import { emailRelatorioMensal } from "@/lib/email-templates";
 import pool from "@/lib/db";
+import { calcularIsPremium } from "@/lib/plano";
 
 export const runtime = "nodejs";
 export const maxDuration = 300; // 5 minutos — pode ser pesado com muitos usuários
@@ -69,10 +70,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: "Nenhum jogo ativo." });
   }
 
-  const jogosPremium = jogosAtivos.filter(j => {
-    const p = j.profiles as any;
-    return p?.plan === "premium" && (!p.plan_expires_at || new Date(p.plan_expires_at) > new Date());
-  });
+  const jogosPremium = jogosAtivos.filter(j => calcularIsPremium(j.profiles as any));
 
   // Agrupar por usuário
   const porUsuario = new Map<string, typeof jogosPremium>();

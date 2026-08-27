@@ -6,6 +6,7 @@ import Anuncio from "@/components/Anuncio";
 import { getConcursosPaginado, getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 import { formatarData, formatarMoeda, isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+import { getPlanoPremium } from "@/lib/plano";
 
 const POR_PAGINA = 20;
 
@@ -58,9 +59,10 @@ export default async function ResultadosPage({
 
   const pagina = Math.max(1, Number(paginaParam) || 1);
 
-  const [ultimo, { concursos, total }] = await Promise.all([
+  const [ultimo, { concursos, total }, { premium }] = await Promise.all([
     getUltimoConcurso(loteria.id),
     getConcursosPaginado(loteria.id, pagina, POR_PAGINA),
+    getPlanoPremium(),
   ]);
 
   const totalPaginas = Math.max(1, Math.ceil(total / POR_PAGINA));
@@ -164,9 +166,20 @@ export default async function ResultadosPage({
         sorteio futuro — cada concurso é um evento independente.
       </div>
 
-      <p className="eyebrow" style={{ marginTop: "44px" }}>
-        Histórico de concursos
-      </p>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginTop: "44px" }}>
+        <p className="eyebrow" style={{ margin: 0 }}>
+          Histórico de concursos
+        </p>
+        {premium ? (
+          <a href={`/api/${codigoLoteria}/exportar`} className="botao-copiar" style={{ fontSize: "0.85rem" }}>
+            ↓ Baixar histórico completo (CSV)
+          </a>
+        ) : (
+          <Link href="/assinar" className="botao-copiar" style={{ fontSize: "0.85rem" }}>
+            ↓ Baixar histórico (CSV) <span className="modo-toggle__lock">✦ Premium</span>
+          </Link>
+        )}
+      </div>
 
       <div className="ledger">
         {concursos.map((c) => (

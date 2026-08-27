@@ -7,6 +7,7 @@ import JogosListaClient from "@/components/conta/JogosListaClient";
 import BotaoRelatorio from "@/components/conta/BotaoRelatorio";
 import { createClient } from "@/lib/supabase/server";
 import { formatarDezena } from "@/lib/format";
+import { calcularIsPremium } from "@/lib/plano";
 
 export const metadata: Metadata = {
   title: "Meus jogos — LotoAnalítica",
@@ -30,9 +31,7 @@ export default async function ContaJogosPage() {
     .eq("id", user.id)
     .single();
 
-  const isPremium =
-    profile?.plan === "premium" &&
-    (!profile.plan_expires_at || new Date(profile.plan_expires_at) > new Date());
+  const isPremium = calcularIsPremium(profile);
 
   return (
     <>

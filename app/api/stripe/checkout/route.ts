@@ -44,6 +44,18 @@ export async function POST(request: Request) {
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lotoanalitica.com.br";
 
+  // Trial de 7 dias só pra quem nunca teve uma assinatura antes — o Stripe
+  // não bloqueia trial repetido sozinho, então a checagem de elegibilidade
+  // é nossa: qualquer linha em `subscriptions` (mesmo cancelada) já usou.
+  const { data: assinaturaAnterior } = await supabase
+    .from("subscriptions")
+    .select("id")
+    .eq("user_id", user.id)
+    .limit(1)
+    .maybeSingle();
+
+  const elegivelParaTrial = !assinaturaAnterior;
+
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: "subscription",
@@ -52,6 +64,7 @@ export async function POST(request: Request) {
     cancel_url: `${baseUrl}/assinar`,
     subscription_data: {
       metadata: { supabase_user_id: user.id },
+      ...(elegivelParaTrial ? { trial_period_days: 7 } : {}),
     },
     allow_promotion_codes: true,
     locale: "pt-BR",

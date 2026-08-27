@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import pool from "@/lib/db";
 import { emailResultadoConcurso } from "@/lib/email-templates";
+import { calcularIsPremium } from "@/lib/plano";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -140,11 +141,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ message: "Nenhum jogo ativo encontrado." });
   }
 
-  const jogosPremium = jogosAtivos.filter(j => {
-    const p = j.profiles as any;
-    return p?.plan === "premium" &&
-      (!p.plan_expires_at || new Date(p.plan_expires_at) > new Date());
-  });
+  const jogosPremium = jogosAtivos.filter(j => calcularIsPremium(j.profiles as any));
 
   if (jogosPremium.length === 0) {
     return NextResponse.json({ message: "Nenhum usuário premium com jogos ativos." });

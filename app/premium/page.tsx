@@ -69,6 +69,12 @@ const GRUPOS = [
         link: null,
       },
       {
+        nome: "Exportação de histórico em CSV",
+        detalhe:
+          "Baixe o histórico completo de qualquer loteria — todos os concursos, dezenas e resultados — em um arquivo CSV pronto para abrir no Excel ou usar em outra ferramenta.",
+        link: null,
+      },
+      {
         nome: "Alertas de acúmulo",
         detalhe:
           "Configure o valor de prêmio ou o número de sorteios sem ganhador que dispara um alerta. Você recebe um e-mail quando a Mega-Sena passar de R$80M, por exemplo. (Disponível também no plano gratuito.)",
@@ -153,6 +159,7 @@ const COMPARATIVO = [
   { feature: "Conferidor por foto (OCR)",          free: false, premium: true  },
   { feature: "Rastreamento automático de jogos",   free: false, premium: true  },
   { feature: "Relatório mensal em PDF",            free: false, premium: true  },
+  { feature: "Exportação de histórico (CSV)",      free: false, premium: true  },
   { feature: "API de dados históricos",            free: false, premium: true  },
 ];
 
