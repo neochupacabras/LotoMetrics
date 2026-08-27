@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { conferirJogoAction, calcularRetornoFinanceiroAction, ConferidorActionResult } from "@/lib/conferidor-actions";
 import { formatarData, formatarDezena } from "@/lib/format";
 import GraficoBarras from "./GraficoBarras";
+import InsightCallout from "./InsightCallout";
 
 // Importação dinâmica para não incluir no bundle inicial
 const ConferidorFoto = dynamic(() => import("./ConferidorFoto"), { ssr: false });
@@ -249,11 +250,16 @@ function ResultadoConferidor({
       )}
 
       {dados.melhorResultado && (
-        <p className="bloco__nota">
-          Melhor resultado já obtido por esse jogo em {dados.totalConcursosAnalisados} concursos
-          analisados: <strong>{dados.melhorResultado.pontos} pontos</strong>, no concurso #
-          {dados.melhorResultado.numero} ({formatarData(dados.melhorResultado.dataSorteio)}).
-        </p>
+        <InsightCallout kicker="Resumo desse jogo no histórico">
+          Em <strong>{dados.totalConcursosAnalisados} concursos</strong> já sorteados, esse jogo
+          bateu uma faixa premiada{" "}
+          <strong>
+            {dados.acertosNasFaixas.length}{" "}
+            {dados.acertosNasFaixas.length === 1 ? "vez" : "vezes"}
+          </strong>
+          . O melhor resultado foi <strong>{dados.melhorResultado.pontos} pontos</strong>, no
+          concurso #{dados.melhorResultado.numero} ({formatarData(dados.melhorResultado.dataSorteio)}).
+        </InsightCallout>
       )}
 
       <h2 className="bloco__titulo" style={{ marginTop: "24px" }}>
