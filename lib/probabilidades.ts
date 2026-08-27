@@ -45,6 +45,17 @@ export function calcularProbabilidades(
     });
 }
 
+// Faixas da +Milionária são (acertos_dezenas, acertos_trevos) combinados —
+// não dá pra derivar de "N acertos" como as outras loterias. Usado tanto
+// pelo Conferidor quanto pelo Simulador.
+export const FAIXAS_MILIONARIA: Record<string, number> = {
+  "6,2": 1, "6,1": 2, "6,0": 2,
+  "5,2": 3, "5,1": 4, "5,0": 4,
+  "4,2": 5, "4,1": 6, "4,0": 6,
+  "3,2": 7, "3,1": 8,
+  "2,2": 9, "2,1": 10,
+};
+
 export const FAIXAS_PREMIADAS: Record<string, number[]> = {
   lotofacil: [11, 12, 13, 14, 15],
   megasena:  [4, 5, 6],

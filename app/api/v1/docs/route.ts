@@ -27,7 +27,7 @@ export async function GET() {
         metodo: "GET",
         descricao: "Resultados dos concursos com premiações por faixa",
         parametros: [
-          { nome: "loteria", tipo: "string", obrigatorio: false, default: "lotofacil", valores: ["lotofacil", "megasena"] },
+          { nome: "loteria", tipo: "string", obrigatorio: false, default: "lotofacil", valores: ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "duplasena", "supersete"] },
           { nome: "pagina",  tipo: "integer", obrigatorio: false, default: 1 },
           { nome: "limite",  tipo: "integer", obrigatorio: false, default: 20, max: 100 },
         ],
@@ -38,7 +38,7 @@ export async function GET() {
         metodo: "GET",
         descricao: "Tabelas estatísticas processadas — frequência, atraso, distribuições e mais",
         parametros: [
-          { nome: "loteria", tipo: "string", obrigatorio: false, default: "lotofacil", valores: ["lotofacil", "megasena"] },
+          { nome: "loteria", tipo: "string", obrigatorio: false, default: "lotofacil", valores: ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "duplasena", "supersete"] },
           {
             nome: "tipo",
             tipo: "string",
@@ -94,6 +94,14 @@ print(r.json())
 r = requests.get(
     "https://lotoanalitica.com.br/api/v1/estatisticas",
     params={"loteria": "megasena", "tipo": "frequencia"},
+    headers=headers
+)
+print(r.json())
+
+# Funciona com as 9 loterias — ex: atraso da Timemania
+r = requests.get(
+    "https://lotoanalitica.com.br/api/v1/estatisticas",
+    params={"loteria": "timemania", "tipo": "atraso"},
     headers=headers
 )
 print(r.json())`,

@@ -9,6 +9,7 @@ import Subnav from "@/components/Subnav";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+import { qtdCriteriosEquilibrio } from "@/lib/equilibrio";
 
 export async function generateMetadata({
   params,
@@ -18,11 +19,12 @@ export async function generateMetadata({
   const { loteria: codigoLoteria } = await params;
   if (!isCodigoLoteriaValido(codigoLoteria)) return {};
   const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
+  const qtdCriterios = qtdCriteriosEquilibrio(codigoLoteria);
   return metadataPagina(
     codigoLoteria,
     "/equilibrio",
     `Índice de Equilíbrio — ${nome}`,
-    `Pontue seu jogo de 0 a 100 e veja o quão típico ele é em relação ao histórico da ${nome} — em 7 métricas combinadas numa nota única.`
+    `Pontue seu jogo de 0 a 100 e veja o quão típico ele é em relação ao histórico da ${nome} — em ${qtdCriterios} métricas combinadas numa nota única.`
   );
 }
 
@@ -54,6 +56,8 @@ export default async function EquilibrioPage({
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) notFound();
 
+  const qtdCriterios = qtdCriteriosEquilibrio(codigoLoteria);
+
   return (
     <>
       <Subnav codigoLoteria={codigoLoteria} ativa="equilibrio" />
@@ -63,7 +67,7 @@ export default async function EquilibrioPage({
         <p className="subtitulo-edicao" style={{ maxWidth: 620 }}>
           Selecione as dezenas do seu jogo e receba uma nota de 0 a 100 indicando
           o quão típico ele é em relação ao histórico da {loteria.nome} — combinando
-          7 critérios estatísticos em um único indicador visual.
+          {" "}{qtdCriterios} critérios estatísticos em um único indicador visual.
         </p>
 
         {/* Link cruzado com o Analisador */}

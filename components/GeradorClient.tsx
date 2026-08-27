@@ -80,6 +80,7 @@ export default function GeradorClient({
   const [jogos, setJogos] = useState<ResultadoGeracao[]>([]);
   const [erro, setErro] = useState<string | null>(null);
 
+  const usaTrevos = codigoLoteria === "maismilionaria";
   const tamanhoPadrao = qtdDezenas === qtdDezenasPadrao;
   const cicloDisponivel = dados.dezenasFaltantesCiclo.length > 0;
   const duquesDisponiveis = dados.duquesQuentes.length > 0;
@@ -96,7 +97,7 @@ export default function GeradorClient({
         obrigatorias.add(d)
       );
     }
-    return gerarJogo({
+    const resultado = gerarJogo({
       dezenaMin,
       dezenaMax,
       qtdDezenas: qtdDezenasPadrao,
@@ -106,6 +107,8 @@ export default function GeradorClient({
       parImparAlvo: dados.parImparComum,
       primosAlvo: dados.primosComuns,
     });
+    if (usaTrevos) resultado.trevos = amostrarSubconjunto([1, 2, 3, 4, 5, 6], 2).sort((a, b) => a - b);
+    return resultado;
   }
 
   function gerarUmAvancado(): ResultadoGeracao {
@@ -125,7 +128,7 @@ export default function GeradorClient({
       ? dados.maisFrequentes.slice(0, qtdExcluirFrequentes)
       : [];
 
-    return gerarJogo({
+    const resultado = gerarJogo({
       dezenaMin,
       dezenaMax,
       qtdDezenas,
@@ -137,6 +140,8 @@ export default function GeradorClient({
       fibonacciAlvo: tamanhoPadrao && usarFibonacciComum ? dados.fibonacciComuns : undefined,
       multiplos3Alvo: tamanhoPadrao && usarMultiplos3Comum ? dados.multiplos3Comuns : undefined,
     });
+    if (usaTrevos) resultado.trevos = amostrarSubconjunto([1, 2, 3, 4, 5, 6], 2).sort((a, b) => a - b);
+    return resultado;
   }
 
   function handleGerar() {
@@ -178,9 +183,11 @@ export default function GeradorClient({
     const linhas = jogos.flatMap((jogo, i) => {
       const dezenas = jogo.dezenas.map(formatarDezena).join(" - ");
       const meta = `Soma ${jogo.soma} · ${jogo.pares} pares / ${jogo.impares} ímpares`;
+      const linhaTrevos = jogo.trevos ? [`            Trevos: ${jogo.trevos.join(" - ")}`] : [];
       return [
         `  Jogo ${String(i + 1).padStart(2, "0")}   ${dezenas}`,
         `            ${meta}`,
+        ...linhaTrevos,
         "",
       ];
     });
@@ -461,6 +468,16 @@ export default function GeradorClient({
               return (
                 <div key={i} className="jogo-gerado">
                   <Dezenas dezenas={jogo.dezenas} />
+                  {jogo.trevos && jogo.trevos.length > 0 && (
+                    <div className="resultado-trevos">
+                      <span className="resultado-trevos__label">Trevos</span>
+                      <div className="resultado-trevos__bolinhas">
+                        {jogo.trevos.map((t) => (
+                          <span key={t} className="resultado-trevo-bolinha">{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <div className="jogo-gerado__meta">
                     <span>Soma: {jogo.soma}</span>
                     <span>
@@ -469,7 +486,12 @@ export default function GeradorClient({
                     {!jogo.atendeuTodosFiltros && (
                       <span className="badge badge--acumulou">Filtros parcialmente atendidos</span>
                     )}
-                    <BotaoCopiar texto={jogo.dezenas.map(formatarDezena).join(" - ")} />
+                    <BotaoCopiar
+                      texto={
+                        jogo.dezenas.map(formatarDezena).join(" - ") +
+                        (jogo.trevos ? ` | Trevos: ${jogo.trevos.join(" - ")}` : "")
+                      }
+                    />
                   </div>
                   {leitura && (
                     <p className="jogo-gerado__leitura">

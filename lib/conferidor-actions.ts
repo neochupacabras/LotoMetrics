@@ -9,7 +9,7 @@ import {
   ResultadoConcurso,
 } from "./conferidor";
 import { getLoteriaPorCodigo } from "./queries";
-import { FAIXAS_PREMIADAS } from "./probabilidades";
+import { FAIXAS_PREMIADAS, FAIXAS_MILIONARIA } from "./probabilidades";
 
 export interface ConferidorActionResult {
   ok: boolean;
@@ -17,15 +17,6 @@ export interface ConferidorActionResult {
   dados?: ResultadoConferidor;
   trevos?: number[];
 }
-
-// Faixas da +Milionária por (acertos_dezenas, acertos_trevos)
-const FAIXAS_MILIONARIA: Record<string, number> = {
-  "6,2": 1, "6,1": 2, "6,0": 2,
-  "5,2": 3, "5,1": 4, "5,0": 4,
-  "4,2": 5, "4,1": 6, "4,0": 6,
-  "3,2": 7, "3,1": 8,
-  "2,2": 9, "2,1": 10,
-};
 
 export async function conferirJogoAction(
   codigoLoteria: string,

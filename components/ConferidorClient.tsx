@@ -30,7 +30,7 @@ export default function ConferidorClient({
 }) {
   const [aba, setAba] = useState<"manual" | "foto">("manual");
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
-  const [treVosSelecionados, setTrevosSelecionados] = useState<Set<number>>(new Set());
+  const [trevosSelecionados, setTrevosSelecionados] = useState<Set<number>>(new Set());
   const [textoColar, setTextoColar] = useState("");
   const [resultado, setResultado] = useState<ConferidorActionResult | null>(null);
   const [erro, setErro] = useState<string | null>(null);
@@ -91,6 +91,8 @@ export default function ConferidorClient({
     });
   }
 
+  const usaTrevos = codigoLoteria === "maismilionaria";
+
   function handleConferir() {
     setErro(null);
     setResultado(null);
@@ -99,9 +101,17 @@ export default function ConferidorClient({
       setErro(`Selecione exatamente ${qtdDezenasSorteadas} dezenas.`);
       return;
     }
+    if (usaTrevos && trevosSelecionados.size !== 2) {
+      setErro("Selecione exatamente 2 trevos.");
+      return;
+    }
 
     startTransition(async () => {
-      const r = await conferirJogoAction(codigoLoteria, Array.from(selecionadas));
+      const r = await conferirJogoAction(
+        codigoLoteria,
+        Array.from(selecionadas),
+        usaTrevos ? Array.from(trevosSelecionados) : undefined
+      );
       if (!r.ok) {
         setErro(r.erro ?? "Não foi possível conferir esse jogo.");
       } else {
@@ -191,6 +201,31 @@ export default function ConferidorClient({
       <p className="fechamento-resumo">
         {selecionadas.size} de {qtdDezenasSorteadas} dezenas selecionadas
       </p>
+
+      {usaTrevos && (
+        <>
+          <p className="bloco__nota" style={{ marginTop: 16 }}>
+            Selecione os 2 trevos do seu jogo.
+          </p>
+          <div className="grade-dezenas" style={{ maxWidth: 260 }}>
+            {[1, 2, 3, 4, 5, 6].map((t) => (
+              <button
+                key={t}
+                type="button"
+                className="dezena-selecionavel"
+                data-selecionada={trevosSelecionados.has(t)}
+                disabled={!trevosSelecionados.has(t) && trevosSelecionados.size >= 2}
+                onClick={() => toggleTrevo(t)}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+          <p className="fechamento-resumo">
+            {trevosSelecionados.size} de 2 trevos selecionados
+          </p>
+        </>
+      )}
 
       <div style={{ display: "flex", gap: "10px" }}>
         <button type="button" className="botao-gerar" onClick={handleConferir} disabled={pending || (jogoUnico && jogoUsado)}>

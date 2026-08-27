@@ -6,7 +6,7 @@ import { SITE_URL } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "API de dados de loteria — LotoAnalítica",
   description:
-    "Acesse resultados históricos e estatísticas processadas de Lotofácil e Mega-Sena via REST API. Frequência, atraso, soma, pares, primos e muito mais — sem precisar processar do zero.",
+    "Acesse resultados históricos e estatísticas processadas das 9 loterias da Caixa via REST API. Frequência, atraso, soma, pares, primos e muito mais — sem precisar processar do zero.",
   alternates: { canonical: `${SITE_URL}/api-dados` },
 };
 
@@ -104,7 +104,7 @@ export default function ApiDadosPage() {
               Dados históricos de loteria,<br />prontos para usar.
             </h1>
             <p className="api-hero__sub">
-              Resultados completos e estatísticas processadas de Lotofácil e Mega-Sena
+              Resultados completos e estatísticas processadas das 9 loterias da Caixa
               via REST API autenticada. Sem precisar raspar a API da Caixa, sem processar
               dados brutos, sem montar suas próprias queries.
             </p>

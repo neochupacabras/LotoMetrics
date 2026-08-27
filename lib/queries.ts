@@ -244,6 +244,7 @@ export async function getAcumulos(loteriaId: number): Promise<AcumuloData[]> {
 export interface ConcessaoSimulacao {
   numero: number;
   dezenas: number[];
+  trevos: number[] | null; // +Milionária
   // Prêmio por faixa (faixa 1 = maior, ordem crescente de dificuldade)
   premios: Record<number, number>;  // { 1: valor, 2: valor, ... }
 }
@@ -253,12 +254,12 @@ export async function getDrawsParaSimulacao(
 ): Promise<ConcessaoSimulacao[]> {
   // Busca todos os sorteios com prêmios por faixa em uma query só
   const { rows } = await pool.query(
-    `SELECT c.numero, c.dezenas,
+    `SELECT c.numero, c.dezenas, c.trevos,
        json_object_agg(pf.faixa, pf.valor_premio) AS premios
      FROM concurso c
      JOIN premiacao_faixa pf ON pf.concurso_id = c.id
      WHERE c.loteria_id = $1
-     GROUP BY c.numero, c.dezenas
+     GROUP BY c.numero, c.dezenas, c.trevos
      ORDER BY c.numero`,
     [loteriaId]
   );
@@ -266,6 +267,7 @@ export async function getDrawsParaSimulacao(
   return rows.map((r) => ({
     numero: r.numero,
     dezenas: r.dezenas as number[],
+    trevos: r.trevos ?? null,
     premios: Object.fromEntries(
       Object.entries(r.premios as Record<string, string>).map(([k, v]) => [
         Number(k),
@@ -274,6 +276,31 @@ export async function getDrawsParaSimulacao(
     ),
   }));
 }
+
+// Deriva "quantos acertos" -> "qual faixa" a partir do texto real da Caixa
+// (descricao_faixa, ex: "15 acertos") em vez de manter um mapa hardcoded
+// por loteria — funciona para qualquer loteria cujas faixas sejam descritas
+// por contagem de acertos (não serve para +Milionária, cuja faixa depende
+// também dos trevos: ver FAIXAS_MILIONARIA em lib/probabilidades.ts).
+export const getMapaFaixasPorAcertos = unstable_cache(
+  async (loteriaId: number): Promise<Record<number, number>> => {
+    const { rows } = await pool.query(
+      `SELECT DISTINCT pf.faixa, pf.descricao_faixa
+       FROM premiacao_faixa pf
+       JOIN concurso c ON c.id = pf.concurso_id
+       WHERE c.loteria_id = $1`,
+      [loteriaId]
+    );
+    const mapa: Record<number, number> = {};
+    for (const r of rows) {
+      const m = String(r.descricao_faixa ?? "").match(/(\d+)\s*acertos?/i);
+      if (m) mapa[Number(m[1])] = r.faixa;
+    }
+    return mapa;
+  },
+  ["mapa-faixas-por-acertos"],
+  { tags: ["concursos"], revalidate: 86400 }
+);
 
 // Conta quantos concursos seguidos a faixa 1 ficou acumulada (sem ganhador)
 export async function getConcursosAcumulados(loteriaId: number): Promise<number> {

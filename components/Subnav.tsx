@@ -25,29 +25,25 @@ const ABAS_COMPLETAS: { slug: AbaAtiva; label: string }[] = [
   { slug: "equilibrio",     label: "Equilíbrio"     },
 ];
 
-const ABAS_QUINA_LOTOMANIA: { slug: AbaAtiva; label: string }[] = [
-  { slug: "resultados",     label: "Resultados"     },
-  { slug: "destaques",      label: "Destaques"      },
-  { slug: "tabelas",        label: "Tabelas"        },
-  { slug: "gerador",        label: "Gerador"        },
-  { slug: "simulador",      label: "Simulador"      },
-  { slug: "conferidor",     label: "Conferidor"     },
-  { slug: "analisador",     label: "Analisador"     },
-  { slug: "heatmap",        label: "Heatmap"        },
-  { slug: "acumulos",       label: "Acúmulos"       },
-  { slug: "probabilidades", label: "Probabilidades" },
-];
+// Lotomania e Super Sete não têm Fechamentos nem Bolão — a mecânica de
+// aposta de nenhuma das duas se encaixa no modelo de fechamento (ver
+// lib/fechamento-config.ts e lib/bolao-opcoes.ts). Equilíbrio continua na
+// lista: é calculado para as 9 loterias (com pesos redistribuídos quando
+// não há moldura/centro — ver lib/equilibrio.ts).
+const ABAS_SEM_FECHAMENTO_BOLAO = ABAS_COMPLETAS.filter(
+  (a) => a.slug !== "fechamentos" && a.slug !== "bolao"
+);
 
 const ABAS_POR_LOTERIA: Record<string, { slug: AbaAtiva; label: string }[]> = {
   lotofacil: ABAS_COMPLETAS,
   megasena:  ABAS_COMPLETAS,
-  quina:      ABAS_QUINA_LOTOMANIA,
-  lotomania:  ABAS_QUINA_LOTOMANIA,
-  diadesorte:     ABAS_QUINA_LOTOMANIA,
-  maismilionaria: ABAS_QUINA_LOTOMANIA,
-  timemania:  ABAS_QUINA_LOTOMANIA,
-  duplasena:  ABAS_QUINA_LOTOMANIA,
-  supersete:  ABAS_QUINA_LOTOMANIA,
+  quina:      ABAS_COMPLETAS,
+  diadesorte:     ABAS_COMPLETAS,
+  maismilionaria: ABAS_COMPLETAS,
+  timemania:  ABAS_COMPLETAS,
+  duplasena:  ABAS_COMPLETAS,
+  lotomania:  ABAS_SEM_FECHAMENTO_BOLAO,
+  supersete:  ABAS_SEM_FECHAMENTO_BOLAO,
 };
 
 export default function Subnav({
@@ -57,7 +53,7 @@ export default function Subnav({
   codigoLoteria: CodigoLoteria;
   ativa: AbaAtiva;
 }) {
-  const ABAS = ABAS_POR_LOTERIA[codigoLoteria] ?? ABAS_QUINA_LOTOMANIA;
+  const ABAS = ABAS_POR_LOTERIA[codigoLoteria] ?? ABAS_COMPLETAS;
   const navRef = useRef<HTMLElement>(null);
   const [canLeft, setCanLeft]   = useState(false);
   const [canRight, setCanRight] = useState(false);

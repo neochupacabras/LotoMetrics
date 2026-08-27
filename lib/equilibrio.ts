@@ -34,7 +34,14 @@ export interface ResultadoEquilibrio {
 }
 
 // ── Pesos por loteria ─────────────────────────────────────────────────────────
-// Soma tem peso maior por ser a métrica mais correlacionada com a tipicidade
+// Soma tem peso maior por ser a métrica mais correlacionada com a tipicidade.
+//
+// Lotofácil e Mega-Sena têm pesos próprios, calibrados individualmente. As
+// outras 7 loterias usam a mesma prioridade relativa da Lotofácil — não é um
+// fallback silencioso: quando a loteria não tem o conceito de moldura/centro
+// (Lotomania e Super Sete, ver lib/categorias.ts), o peso que seria da
+// moldura é redistribuído proporcionalmente entre os outros 6 critérios, em
+// vez de simplesmente sumir da nota ou ser preenchido com uma pontuação fixa.
 
 const PESOS: Record<string, Record<string, number>> = {
   lotofacil: {
@@ -46,6 +53,29 @@ const PESOS: Record<string, Record<string, number>> = {
     primos: 0.10, fibonacci: 0.10, multiplos3: 0.10, moldura: 0.00,
   },
 };
+
+// Loterias sem o conceito de moldura/centro (mesmo critério de
+// lib/categorias.ts: CATEGORIAS_EXCLUIDAS["moldura-centro"]).
+const SEM_MOLDURA = new Set(["lotomania", "supersete"]);
+
+// Usado pela página (título/metadados) pra saber se são 6 ou 7 critérios.
+export function qtdCriteriosEquilibrio(codigoLoteria: string): number {
+  return pesosParaLoteria(codigoLoteria).moldura > 0 ? 7 : 6;
+}
+
+function pesosParaLoteria(codigoLoteria: string): Record<string, number> {
+  const base = PESOS[codigoLoteria];
+  if (base) return base;
+
+  if (!SEM_MOLDURA.has(codigoLoteria)) return PESOS.lotofacil;
+
+  const { moldura, ...resto } = PESOS.lotofacil;
+  const fator = 1 / (1 - moldura);
+  return {
+    ...Object.fromEntries(Object.entries(resto).map(([k, v]) => [k, v * fator])),
+    moldura: 0,
+  };
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -115,8 +145,16 @@ export async function calcularEquilibrio(
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) return { erro: "Loteria não encontrada." };
 
-  const config = { dezenaMax: loteria.dezenaMax, gridColunas: loteria.dezenaMax <= 25 ? 5 : 10 };
+  // grid_colunas vem do banco (não é sempre "5 até 25, senão 10" — ex:
+  // Dia de Sorte tem 31 dezenas em 7 colunas, Mega-Sena tem 60 em 6).
+  const config = { dezenaMax: loteria.dezenaMax, gridColunas: loteria.gridColunas };
   const analise = classificarJogo(dezenas, config);
+
+  // Mega-Sena tem moldura/centro como categoria válida (mostrada em
+  // /tabelas), mas o peso dela na nota final é 0 desde sempre (calibração
+  // própria, ver PESOS.megasena) — então nem vale buscar/mostrar a métrica.
+  const pesos = pesosParaLoteria(codigoLoteria);
+  const temMoldura = pesos.moldura > 0;
 
   // Buscar todas as distribuições históricas em paralelo
   const [
@@ -126,7 +164,7 @@ export async function calcularEquilibrio(
     distPrimos,
     distFibs,
     distMult3,
-    { distribuicao: distMoldura },
+    distMoldura,
   ] = await Promise.all([
     getSoma(loteria.id),
     getParesImpares(loteria.id),
@@ -134,11 +172,10 @@ export async function calcularEquilibrio(
     getPrimosDistribuicao(loteria.id),
     getFibonacciDistribuicao(loteria.id),
     getMultiplos3Distribuicao(loteria.id),
-    getMolduraCentro(loteria.id),
+    temMoldura ? getMolduraCentro(loteria.id).then((r) => r.distribuicao) : Promise.resolve([]),
   ]);
 
   const totalConcursos = distPares.reduce((s, p) => s + p.ocorrencias, 0);
-  const pesos = PESOS[codigoLoteria] ?? PESOS.lotofacil;
 
   // ── Calcular score de cada métrica ────────────────────────────────────────
 
@@ -168,10 +205,12 @@ export async function calcularEquilibrio(
   const pctMult3 = percentualExato(analise.multiplos3, distMult3);
   const scoreMult3 = percentualParaScore(pctMult3);
 
-  // 7. Moldura/centro
-  let scoreMoldura = 50; // default se não há dados
+  // 7. Moldura/centro — só se aplica a loterias com volante 2D regular
+  // (ver SEM_MOLDURA acima); nessas o peso já vem zerado, então o score
+  // aqui não entra na nota final de qualquer forma.
+  let scoreMoldura = 0;
   let pctMoldura = 0;
-  if (codigoLoteria === "lotofacil" && distMoldura.length > 0) {
+  if (temMoldura && distMoldura.length > 0) {
     const entrada = distMoldura.find(
       m => m.qtdMoldura === analise.moldura && m.qtdCentro === analise.centro
     );
@@ -247,7 +286,7 @@ export async function calcularEquilibrio(
     },
   ];
 
-  if (codigoLoteria === "lotofacil") {
+  if (temMoldura) {
     metricas.push({
       nome: "Moldura e centro",
       valor: analise.moldura,

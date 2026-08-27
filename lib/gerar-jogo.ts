@@ -23,6 +23,7 @@ export interface ResultadoGeracao {
   pares: number;
   impares: number;
   atendeuTodosFiltros: boolean;
+  trevos?: number[]; // +Milionária: 2 trevos de 1 a 6, sorteados à parte das dezenas
 }
 
 function contar(dezenas: number[], teste: (n: number) => boolean): number {

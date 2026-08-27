@@ -106,6 +106,42 @@ function SeletorDezenas({
   );
 }
 
+// ─── Seletor de trevos (+Milionária) ──────────────────────────────────────────
+
+function SeletorTrevos({
+  selecionados, onChange, label,
+}: {
+  selecionados: Set<number>; onChange: (s: Set<number>) => void; label: string;
+}) {
+  function toggle(t: number) {
+    const next = new Set(selecionados);
+    if (next.has(t)) next.delete(t);
+    else if (next.size < 2) next.add(t);
+    onChange(next);
+  }
+
+  return (
+    <div className="simulador-seletor" style={{ marginTop: 12 }}>
+      {label && <p className="simulador-seletor__label">{label}</p>}
+      <p className="bloco__nota">Selecione os 2 trevos.</p>
+      <div className="grade-dezenas" style={{ maxWidth: 260 }}>
+        {[1, 2, 3, 4, 5, 6].map((t) => (
+          <button
+            key={t} type="button"
+            className="dezena-selecionavel"
+            data-selecionada={selecionados.has(t)}
+            disabled={!selecionados.has(t) && selecionados.size >= 2}
+            onClick={() => toggle(t)}
+          >
+            {t}
+          </button>
+        ))}
+      </div>
+      <span className="analisador-progresso-label">{selecionados.size} de 2 trevos</span>
+    </div>
+  );
+}
+
 // ─── Cards de resumo ──────────────────────────────────────────────────────────
 
 function CardsResumo({ r, cor }: { r: ResultadoSimulacao; cor?: string }) {
@@ -197,13 +233,16 @@ export default function SimuladorHistoricoClient({
   qtdDezenasSorteadas, limiteHistorico = null, logado = false, premium = false,
 }: Props) {
   const [modo, setModo] = useState<Modo>("simples");
+  const usaTrevos = codigoLoteria === "maismilionaria";
 
   // Estado — modo simples
   const [selA, setSelA] = useState<Set<number>>(new Set());
+  const [trevosA, setTrevosA] = useState<Set<number>>(new Set());
   const [resultado, setResultado] = useState<ResultadoSimulacao | null>(null);
 
   // Estado — modo comparar
   const [selB, setSelB] = useState<Set<number>>(new Set());
+  const [trevosB, setTrevosB] = useState<Set<number>>(new Set());
   const [comparacao, setComparacao] = useState<ResultadoComparacao | null>(null);
 
   const [erro, setErro] = useState<string | null>(null);
@@ -211,25 +250,41 @@ export default function SimuladorHistoricoClient({
 
   function limpar() {
     setSelA(new Set()); setSelB(new Set());
+    setTrevosA(new Set()); setTrevosB(new Set());
     setResultado(null); setComparacao(null); setErro(null);
   }
 
   function handleSimular() {
+    if (usaTrevos && trevosA.size !== 2) {
+      setErro("Selecione exatamente 2 trevos.");
+      return;
+    }
     const dezenas = Array.from(selA).sort((a, b) => a - b);
     startTransition(async () => {
       setErro(null);
-      const res = await simularHistorico(codigoLoteria, dezenas, limiteHistorico ?? undefined);
+      const res = await simularHistorico(
+        codigoLoteria, dezenas, limiteHistorico ?? undefined,
+        usaTrevos ? Array.from(trevosA) : undefined
+      );
       if ("erro" in res) setErro(res.erro);
       else setResultado(res);
     });
   }
 
   function handleComparar() {
+    if (usaTrevos && (trevosA.size !== 2 || trevosB.size !== 2)) {
+      setErro("Selecione exatamente 2 trevos em cada jogo.");
+      return;
+    }
     const dA = Array.from(selA).sort((a, b) => a - b);
     const dB = Array.from(selB).sort((a, b) => a - b);
     startTransition(async () => {
       setErro(null);
-      const res = await compararJogos(codigoLoteria, dA, dB, limiteHistorico ?? undefined);
+      const res = await compararJogos(
+        codigoLoteria, dA, dB, limiteHistorico ?? undefined,
+        usaTrevos ? Array.from(trevosA) : undefined,
+        usaTrevos ? Array.from(trevosB) : undefined
+      );
       if ("erro" in res) setErro(res.erro);
       else setComparacao(res);
     });
@@ -330,10 +385,11 @@ export default function SimuladorHistoricoClient({
             qtd={qtdDezenasSorteadas} selecionadas={selA} onChange={setSelA}
             label=""
           />
+          {usaTrevos && <SeletorTrevos selecionados={trevosA} onChange={setTrevosA} label="" />}
           {erro && <p className="simulador-erro">{erro}</p>}
           <div style={{ display:"flex", gap:"12px", marginTop:"20px" }}>
             <button type="button" className="botao-gerar"
-              disabled={!completoA || pending} onClick={handleSimular}>
+              disabled={!completoA || (usaTrevos && trevosA.size !== 2) || pending} onClick={handleSimular}>
               {pending ? "Simulando…" : "Simular →"}
             </button>
             {selA.size > 0 && <button type="button" className="botao-copiar" onClick={limpar}>Limpar</button>}
@@ -348,21 +404,28 @@ export default function SimuladorHistoricoClient({
             Monte dois jogos para comparar o desempenho histórico lado a lado.
           </p>
           <div className="simulador-comparar-grid">
-            <SeletorDezenas
-              dezenaMin={dezenaMin} dezenaMax={dezenaMax}
-              qtd={qtdDezenasSorteadas} selecionadas={selA} onChange={setSelA}
-              label="Jogo A"
-            />
-            <SeletorDezenas
-              dezenaMin={dezenaMin} dezenaMax={dezenaMax}
-              qtd={qtdDezenasSorteadas} selecionadas={selB} onChange={setSelB}
-              label="Jogo B"
-            />
+            <div>
+              <SeletorDezenas
+                dezenaMin={dezenaMin} dezenaMax={dezenaMax}
+                qtd={qtdDezenasSorteadas} selecionadas={selA} onChange={setSelA}
+                label="Jogo A"
+              />
+              {usaTrevos && <SeletorTrevos selecionados={trevosA} onChange={setTrevosA} label="Trevos A" />}
+            </div>
+            <div>
+              <SeletorDezenas
+                dezenaMin={dezenaMin} dezenaMax={dezenaMax}
+                qtd={qtdDezenasSorteadas} selecionadas={selB} onChange={setSelB}
+                label="Jogo B"
+              />
+              {usaTrevos && <SeletorTrevos selecionados={trevosB} onChange={setTrevosB} label="Trevos B" />}
+            </div>
           </div>
           {erro && <p className="simulador-erro">{erro}</p>}
           <div style={{ display:"flex", gap:"12px", marginTop:"20px" }}>
             <button type="button" className="botao-gerar"
-              disabled={!completoA || !completoB || pending} onClick={handleComparar}>
+              disabled={!completoA || !completoB || (usaTrevos && (trevosA.size !== 2 || trevosB.size !== 2)) || pending}
+              onClick={handleComparar}>
               {pending ? "Comparando…" : "Comparar →"}
             </button>
             <button type="button" className="botao-copiar" onClick={limpar}>Limpar</button>
@@ -376,6 +439,11 @@ export default function SimuladorHistoricoClient({
           <div className="simulador-hist-jogo">
             <span className="simulador-hist-jogo-label">Jogo simulado:</span>
             {dezenasA.map(d => <span key={d} className="simulador-hist-dezena">{formatarDezena(d)}</span>)}
+            {usaTrevos && Array.from(trevosA).sort((a, b) => a - b).map(t => (
+              <span key={`trevo-${t}`} className="simulador-hist-dezena" style={{ background: "var(--ochre-soft)" }}>
+                {t}
+              </span>
+            ))}
             <div className="simulador-hist-jogo-acoes">
               <button type="button" className="botao-copiar simulador-hist-refazer" onClick={limpar}>
                 Simular outro jogo
@@ -447,7 +515,7 @@ export default function SimuladorHistoricoClient({
                 <thead><tr><th>Faixa</th><th className="num">Vezes</th><th className="num">Total</th><th className="num">Média</th></tr></thead>
                 <tbody>
                   {resultado.porFaixa.map(f => (
-                    <tr key={f.acertos}>
+                    <tr key={f.faixa}>
                       <td>{f.descricao}</td>
                       <td className="num" style={{ fontFamily:"var(--font-mono)" }}>{f.qtd > 0 ? f.qtd : "—"}</td>
                       <td className="num" style={{ fontFamily:"var(--font-mono)", color: f.ganhoTotal > 0 ? "var(--pine)" : "var(--ink-faint)" }}>
@@ -499,12 +567,18 @@ export default function SimuladorHistoricoClient({
           <div className="simulador-comparar-cabecalho">
             <div className="simulador-comparar-jogo" data-cor="a">
               <span className="simulador-comparar-jogo__label">Jogo A</span>
-              <span className="simulador-comparar-jogo__dezenas">{dezenasParaTexto(comparacao.jogoA.dezenas)}</span>
+              <span className="simulador-comparar-jogo__dezenas">
+                {dezenasParaTexto(comparacao.jogoA.dezenas)}
+                {usaTrevos && ` · Trevos: ${Array.from(trevosA).sort((a, b) => a - b).join(" ")}`}
+              </span>
             </div>
             <div className="simulador-comparar-vs">VS</div>
             <div className="simulador-comparar-jogo" data-cor="b">
               <span className="simulador-comparar-jogo__label">Jogo B</span>
-              <span className="simulador-comparar-jogo__dezenas">{dezenasParaTexto(comparacao.jogoB.dezenas)}</span>
+              <span className="simulador-comparar-jogo__dezenas">
+                {dezenasParaTexto(comparacao.jogoB.dezenas)}
+                {usaTrevos && ` · Trevos: ${Array.from(trevosB).sort((a, b) => a - b).join(" ")}`}
+              </span>
             </div>
           </div>
 
