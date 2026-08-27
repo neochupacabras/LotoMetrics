@@ -43,6 +43,9 @@ function corTexto(t: number): string {
 // ─── Insight dinâmico baseado no período selecionado ─────────────────────────
 function insightTexto(periodo: PeriodoData, loteria: Loteria): string {
   const { totalConcursos, frequencias } = periodo;
+  if (totalConcursos === 0) {
+    return `Ainda não há concursos suficientes da ${loteria.nome} pra calcular essa estatística.`;
+  }
   const taxaSorteio = loteria.qtdDezenasSorteadas / (loteria.dezenaMax - loteria.dezenaMin + 1);
   const esperado = totalConcursos * taxaSorteio;
   const freqs = frequencias.map((f) => f.frequencia);
@@ -56,6 +59,31 @@ function insightTexto(periodo: PeriodoData, loteria: Loteria): string {
   } else {
     return `Com apenas ${totalConcursos} concursos, a variação aparente é de ${variacaoPct}% — bem maior do que o histórico completo. Isso não é uma tendência: é ruído estatístico. Períodos curtos sempre parecem mais "desiguais" mesmo num sorteio perfeitamente honesto.`;
   }
+}
+
+// Mesma ideia do insightTexto acima, mas com a mecânica certa da Super
+// Sete: cada concurso sorteia 7 dígitos independentes (um por coluna,
+// 0-9 cada, com reposição) — não 1 dezena entre N como nas outras
+// loterias. O "esperado" e o desvio padrão usam n = totalConcursos × 7
+// tentativas com p = 1/10, não totalConcursos com a taxa da loteria.
+function insightTextoSuperSete(periodo: PeriodoData): string {
+  const { totalConcursos, frequencias } = periodo;
+  if (totalConcursos === 0) {
+    return "Ainda não há concursos suficientes da Super Sete pra calcular essa estatística.";
+  }
+  const n = totalConcursos * 7;
+  const p = 1 / 10;
+  const esperado = n * p;
+  const dpEsperado = Math.sqrt(n * p * (1 - p));
+  const freqs = frequencias.map((f) => f.frequencia);
+  const minFreq = Math.min(...freqs);
+  const maxFreq = Math.max(...freqs);
+  const variacaoPct = ((maxFreq - minFreq) / esperado * 100).toFixed(1);
+
+  if (totalConcursos >= 500) {
+    return `Com ${totalConcursos.toLocaleString("pt-BR")} concursos — ${n.toLocaleString("pt-BR")} dígitos sorteados ao todo, contando as 7 colunas — a variação entre o valor mais e menos frequente é de apenas ${variacaoPct}% em relação à média — exatamente o esperado pela teoria estatística (±${(dpEsperado * 2).toFixed(0)} aparições dentro de 2 desvios padrão).`;
+  }
+  return `Com apenas ${totalConcursos} concursos, a variação aparente é de ${variacaoPct}% — bem maior do que o histórico completo. Isso não é uma tendência: é ruído estatístico. Períodos curtos sempre parecem mais "desiguais" mesmo num sorteio perfeitamente honesto.`;
 }
 
 // ─── Componente ──────────────────────────────────────────────────────────────
@@ -91,7 +119,9 @@ function HeatmapSuperSete({
   const maxF = Math.max(...allFreqs, 1);
   const intervalo = maxF - minF || 1;
 
-  const esperado = totalConcursos * (1/10); // cada valor tem 10% de chance em cada coluna
+  // Cada concurso sorteia 7 dígitos (um por coluna) — o esperado por
+  // valor soma as 7 chances, não só uma.
+  const esperado = totalConcursos * 7 * (1/10);
 
   return (
     <div className="heatmap-supersete">
@@ -135,8 +165,15 @@ function HeatmapSuperSete({
         })}
       </div>
       <p className="heatmap-supersete__media">
-        Média esperada por valor: {esperado.toFixed(0)} aparições ({(100/10).toFixed(0)}% dos sorteios por coluna)
+        Média esperada por valor: {esperado.toFixed(0)} aparições — cada concurso sorteia 7
+        dígitos (um por coluna), cada um com 10% de chance de ser esse valor.
       </p>
+
+      {/* Insight educativo dinâmico — mesma ideia do heatmap principal,
+          adaptado pra mecânica de 7 colunas independentes da Super Sete. */}
+      <div className="heatmap-insight">
+        <p>{insightTextoSuperSete(periodo)}</p>
+      </div>
     </div>
   );
 }
