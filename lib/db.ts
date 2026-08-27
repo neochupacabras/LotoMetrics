@@ -23,7 +23,12 @@ const pool = new Pool(
         ssl: { rejectUnauthorized: false },
         max: 1,              // 1 conexão por instância serverless
         idleTimeoutMillis: 10_000,   // fechar conexão ociosa após 10s
-        connectionTimeoutMillis: 5_000, // falhar rápido se banco indisponível
+        // 10s em vez de 5s: builds na Vercel (iad1) cruzam até o pooler em
+        // sa-east-1, e essa latência entre provedores por vezes passa dos
+        // 5s originais mesmo com o pooler saudável — visto em builds que
+        // falhavam com "timeout exceeded when trying to connect" enquanto
+        // o runtime (mesma DATABASE_URL) conectava normalmente.
+        connectionTimeoutMillis: 10_000,
       }
     : {
         host: process.env.PGHOST || "localhost",
@@ -59,17 +64,32 @@ function ehErroTransitorio(err: unknown): boolean {
   return ERROS_TRANSITORIOS.some((padrao) => msg.toLowerCase().includes(padrao.toLowerCase()));
 }
 
+// Builds na Vercel geram até centenas de páginas estáticas em sequência a
+// partir de UM único processo — isso significa uma rajada de conexões
+// novas ao pooler num período curto, diferente do runtime (tráfego real
+// espalhado no tempo, e cada instância serverless costuma reaproveitar sua
+// própria conexão). Se o pool_size real do Supabase estiver ocupado no
+// momento, a rajada do build pode não conseguir uma vaga a tempo mesmo com
+// o pooler saudável — daí várias tentativas com espera crescente, dando
+// tempo pra uma vaga liberar, em vez de desistir rápido.
 const queryOriginal = pool.query.bind(pool);
+const MAX_TENTATIVAS = 4;
 // @ts-expect-error — sobrescrevendo com uma versão compatível que adiciona retry
 pool.query = async (...args: Parameters<typeof queryOriginal>) => {
-  try {
-    return await queryOriginal(...args);
-  } catch (err) {
-    if (!ehErroTransitorio(err)) throw err;
-    console.warn("pg query falhou (erro transitório), tentando 1x mais:", (err as Error).message);
-    await new Promise((r) => setTimeout(r, 300));
-    return await queryOriginal(...args);
+  for (let tentativa = 1; tentativa <= MAX_TENTATIVAS; tentativa++) {
+    try {
+      return await queryOriginal(...args);
+    } catch (err) {
+      if (!ehErroTransitorio(err) || tentativa === MAX_TENTATIVAS) throw err;
+      const espera = 300 * 2 ** (tentativa - 1); // 300ms, 600ms, 1200ms
+      console.warn(
+        `pg query falhou (erro transitório, tentativa ${tentativa}/${MAX_TENTATIVAS}), tentando de novo em ${espera}ms:`,
+        (err as Error).message
+      );
+      await new Promise((r) => setTimeout(r, espera));
+    }
   }
+  throw new Error("inalcançável"); // MAX_TENTATIVAS sempre lança ou retorna acima
 };
 
 export default pool;
