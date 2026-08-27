@@ -118,6 +118,15 @@ export const CALCULADORAS: Calculadora[] = [
     descricao: "Calculadora de rateio de bolão de loteria: informe o valor do prêmio e as cotas de cada participante para descobrir quanto cada um recebe.",
   },
   {
+    slug: "imposto-premio-loteria",
+    titulo: "Imposto sobre Prêmio de Loteria",
+    subtitulo: "Quanto o Leão leva de um prêmio de loteria — e quanto sobra líquido",
+    emoji: "🦁",
+    cor: "rust",
+    categoria: "loteria",
+    descricao: "Calculadora de imposto de renda sobre prêmio de loteria: os 30% retidos na fonte pela Caixa incidem sobre qualquer prêmio, de qualquer faixa, em qualquer uma das 9 loterias — descubra quanto sobra líquido.",
+  },
+  {
     slug: "financiamento",
     titulo: "Financiamento e Empréstimo",
     subtitulo: "Simule parcelas pelo sistema Price (fixas) ou SAC (decrescentes)",

@@ -16,6 +16,7 @@ export default function Masthead({
   glossarioAtivo,
   calendarioAtivo,
   faqAtivo,
+  comparadorAtivo,
 }: {
   loteriaAtiva?: CodigoLoteria;
   dicasAtiva?: boolean;
@@ -27,6 +28,7 @@ export default function Masthead({
   glossarioAtivo?: boolean;
   calendarioAtivo?: boolean;
   faqAtivo?: boolean;
+  comparadorAtivo?: boolean;
 }) {
   // Loterias — vão para o dropdown
   const loterias = Object.values(LOTERIAS).map((l) => ({
@@ -43,6 +45,7 @@ export default function Masthead({
     { href: "/analises",     label: "Análises",     ativo: !!analisesAtiva     },
     { href: "/glossario",    label: "Glossário",    ativo: !!glossarioAtivo    },
     { href: "/calendario",   label: "Calendário",   ativo: !!calendarioAtivo   },
+    { href: "/comparador",   label: "Comparador",   ativo: !!comparadorAtivo   },
     { href: "/perguntas-frequentes", label: "Perguntas frequentes", ativo: !!faqAtivo },
     { href: "/quiz",         label: "Quiz",         ativo: !!quizAtivo         },
     { href: "/premium",      label: "✦ Premium",    ativo: !!premiumAtivo,
