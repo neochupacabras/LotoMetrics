@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import ProbabilidadesClient from "@/components/ProbabilidadesClient";
 import ProjecaoAcumuloCard from "@/components/ProjecaoAcumuloCard";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getLoteriaPorCodigo, getUltimoConcurso, getConcursosAcumulados } from "@/lib/queries";
 import { FAIXAS_PREMIADAS, calcularProjecao, PARAMS_LOTERIA } from "@/lib/probabilidades";
 import { isCodigoLoteriaValido } from "@/lib/format";
@@ -63,6 +64,13 @@ export default async function ProbabilidadesPage({
   }
 
   return (
+    <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Probabilidades", caminho: `/${codigoLoteria}/probabilidades` },
+        ]}
+      />
     <div className="container secao">
       <p className="eyebrow">{loteria.nome}</p>
       <h1 className="titulo-edicao">Probabilidades reais</h1>
@@ -191,5 +199,6 @@ export default async function ProbabilidadesPage({
         principal continua extremamente baixa.
       </div>
     </div>
+    </>
   );
 }

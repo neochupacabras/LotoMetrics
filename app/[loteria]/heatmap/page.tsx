@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import HeatmapPageClient, { type PeriodoData } from "@/components/HeatmapPageClient";
 import Subnav from "@/components/Subnav";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getLoteriaPorCodigo, getFrequenciaHeatmap } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -80,6 +81,12 @@ export default async function HeatmapPage({
 
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Heatmap", caminho: `/${codigoLoteria}/heatmap` },
+        ]}
+      />
       <Subnav codigoLoteria={codigoLoteria} ativa="heatmap" />
       <div className="container secao">
         <p className="eyebrow">Estatísticas de {loteria.nome}</p>

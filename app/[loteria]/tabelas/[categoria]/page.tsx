@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import HeatmapVolante from "@/components/HeatmapVolante";
 import GraficoBarras from "@/components/GraficoBarras";
 import InsightCallout from "@/components/InsightCallout";
@@ -84,8 +85,17 @@ export default async function CategoriaPage({
   // só possível numa loteria recém-cadastrada, antes da primeira importação
   // — mostra um estado vazio em vez de quebrar.
   const ultimoConcurso = await getUltimoConcurso(loteria.id);
+  const nomeLoteria = NOME_LOTERIA[codigoLoteria] ?? loteria.nome;
 
   return (
+    <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: nomeLoteria, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Tabelas", caminho: `/${codigoLoteria}/tabelas` },
+          { nome: categoria.titulo, caminho: `/${codigoLoteria}/tabelas/${slugCategoria}` },
+        ]}
+      />
     <div className="container secao">
       <Link href={`/${codigoLoteria}/tabelas`} className="breadcrumb">
         ← Todas as tabelas
@@ -121,6 +131,7 @@ export default async function CategoriaPage({
         altera a probabilidade do próximo concurso.
       </div>
     </div>
+    </>
   );
 }
 

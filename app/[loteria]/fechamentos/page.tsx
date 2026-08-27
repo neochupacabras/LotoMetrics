@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import FechamentoClient from "@/components/FechamentoClient";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -48,6 +49,13 @@ export default async function FechamentosPage({
   const ex = EXEMPLOS[codigoLoteria];
 
   return (
+    <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Fechamentos", caminho: `/${codigoLoteria}/fechamentos` },
+        ]}
+      />
     <div className="container secao">
       <p className="eyebrow">{loteria.nome}</p>
       <h1 className="titulo-edicao">Fechamentos</h1>
@@ -149,5 +157,6 @@ export default async function FechamentosPage({
         qualquer dezena ser sorteada é sempre a mesma, independente do sistema usado.
       </div>
     </div>
+    </>
   );
 }

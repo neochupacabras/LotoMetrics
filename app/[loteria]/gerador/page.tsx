@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import GeradorClient from "@/components/GeradorClient";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { prepararDadosGerador } from "@/lib/gerador";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
@@ -45,6 +46,13 @@ export default async function GeradorPage({
   const dados = await prepararDadosGerador(loteria.id);
 
   return (
+    <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Gerador", caminho: `/${codigoLoteria}/gerador` },
+        ]}
+      />
     <div className="container secao">
       <p className="eyebrow">{loteria.nome}</p>
       <h1 className="titulo-edicao">Gerador de jogos</h1>
@@ -103,5 +111,6 @@ export default async function GeradorPage({
         nenhum filtro aqui altera a probabilidade real de premiação.
       </div>
     </div>
+    </>
   );
 }

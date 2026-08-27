@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Anuncio from "@/components/Anuncio";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import type { Metadata } from "next";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { gerarDestaques } from "@/lib/destaques";
@@ -45,6 +46,13 @@ export default async function DestaquesPage({
   });
 
   return (
+    <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Destaques", caminho: `/${codigoLoteria}/destaques` },
+        ]}
+      />
     <div className="container secao">
       <p className="eyebrow">{loteria.nome}</p>
       <h1 className="titulo-edicao">Destaques</h1>
@@ -74,5 +82,6 @@ export default async function DestaquesPage({
         independente.
       </div>
     </div>
+    </>
   );
 }

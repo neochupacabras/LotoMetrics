@@ -14,6 +14,10 @@ export const NOME_LOTERIA: Record<string, string> = {
   quina:     "Quina",
   lotomania:  "Lotomania",
   diadesorte: "Dia de Sorte",
+  maismilionaria: "+Milionária",
+  timemania:  "Timemania",
+  duplasena:  "Dupla Sena",
+  supersete:  "Super Sete",
 };
 
 // Helper compartilhado pelas páginas por loteria (Destaques, Tabelas,
@@ -51,5 +55,52 @@ export function metadataPagina(
       description: descricao,
       images: [imagem],
     },
+  };
+}
+
+// JSON-LD de Article — para páginas de conteúdo editorial (análises,
+// dicas) que têm data de publicação. `caminho` é relativo (ex: "/dicas/x").
+export function articleJsonLd(opts: {
+  titulo: string;
+  descricao: string;
+  caminho: string;
+  dataPublicacao: string; // YYYY-MM-DD
+}) {
+  const url = `${SITE_URL}${opts.caminho}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: opts.titulo,
+    description: opts.descricao,
+    url,
+    datePublished: opts.dataPublicacao,
+    author: { "@type": "Organization", name: SITE_NAME },
+    publisher: { "@type": "Organization", name: SITE_NAME },
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    image: `${SITE_URL}/opengraph-image`,
+  };
+}
+
+export interface ItemTrilha {
+  nome: string;
+  caminho: string; // relativo, ex: "/lotofacil/resultados" — vira URL absoluta
+}
+
+// JSON-LD de BreadcrumbList (schema.org) — usado por <BreadcrumbJsonLd>.
+// Recebe a trilha SEM o item "Início", que é adicionado automaticamente
+// como posição 1 em toda página.
+export function breadcrumbJsonLd(itens: ItemTrilha[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Início", item: SITE_URL },
+      ...itens.map((item, i) => ({
+        "@type": "ListItem",
+        position: i + 2,
+        name: item.nome,
+        item: `${SITE_URL}${item.caminho}`,
+      })),
+    ],
   };
 }

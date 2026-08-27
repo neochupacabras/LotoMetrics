@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getConcursoPorNumero, getLoteriaPorCodigo } from "@/lib/queries";
 import { analisarConcurso } from "@/lib/analise-concurso";
 import { formatarData, formatarMoeda, isCodigoLoteriaValido } from "@/lib/format";
@@ -54,7 +55,9 @@ export async function generateMetadata({
   const titulo = `Resultado ${nomeLoteria} ${concurso.numero} — ${data} — Dezenas: ${dezenasStr}`;
   const descricao = `Resultado do concurso ${concurso.numero} da ${nomeLoteria} sorteado em ${data}. Dezenas: ${dezenasStr}. ${statusPremio} Confira a premiação por faixa, ganhadores e análise estatística completa.`;
   const url = `${SITE_URL}/${codigoLoteria}/resultados/${concurso.numero}`;
-  const imagem = `${SITE_URL}/opengraph-image`;
+  // Imagem própria com as dezenas sorteadas (app/[loteria]/resultados/[numero]/opengraph-image.tsx),
+  // não a genérica do site — melhora o CTR do link compartilhado.
+  const imagem = `${url}/opengraph-image`;
 
   return {
     title: titulo,
@@ -113,7 +116,17 @@ export default async function DetalheConcursoPage({
     { dezenaMax: loteria.dezenaMax, gridColunas: loteria.gridColunas }
   );
 
+  const nomeLoteria = NOME_LOTERIA[codigoLoteria] ?? loteria.nome;
+
   return (
+    <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: nomeLoteria, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Resultados", caminho: `/${codigoLoteria}/resultados` },
+          { nome: `Concurso ${concurso.numero}`, caminho: `/${codigoLoteria}/resultados/${concurso.numero}` },
+        ]}
+      />
     <div className="container secao">
       <p className="eyebrow">Boletim do concurso</p>
       <h1 className="titulo-edicao">Concurso {concurso.numero}</h1>
@@ -298,5 +311,6 @@ export default async function DetalheConcursoPage({
         </Link>
       </nav>
     </div>
+    </>
   );
 }

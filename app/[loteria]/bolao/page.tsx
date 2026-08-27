@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import BolaoClient from "@/components/BolaoClient";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -36,6 +37,13 @@ export default async function BolaoPage({
   const disponivel = temOpcoesBolao(codigoLoteria);
 
   return (
+    <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Bolão", caminho: `/${codigoLoteria}/bolao` },
+        ]}
+      />
     <div className="container secao">
       <p className="eyebrow">{loteria.nome}</p>
       <h1 className="titulo-edicao">Otimizador de bolão</h1>
@@ -132,5 +140,6 @@ export default async function BolaoPage({
         </div>
       )}
     </div>
+    </>
   );
 }

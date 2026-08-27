@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { getAnalise, getAnalisesRecentes } from "@/lib/analises";
 
 const BADGE: Record<string, string> = {
@@ -78,6 +79,25 @@ export default async function AnalisePage({
 
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Análises", caminho: "/analises" },
+          { nome: analise.titulo, caminho: `/analises/${analise.slug}` },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({
+              titulo: analise.titulo,
+              descricao: analise.resumo,
+              caminho: `/analises/${analise.slug}`,
+              dataPublicacao: analise.data,
+            })
+          ),
+        }}
+      />
       {jsonLdFaq && (
         <script
           type="application/ld+json"

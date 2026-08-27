@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
 import Anuncio from "@/components/Anuncio";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getConcursosPaginado, getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 import { formatarData, formatarMoeda, isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -68,6 +69,13 @@ export default async function ResultadosPage({
   const totalPaginas = Math.max(1, Math.ceil(total / POR_PAGINA));
 
   return (
+    <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Resultados", caminho: `/${codigoLoteria}/resultados` },
+        ]}
+      />
     <div className="container secao">
       <p className="eyebrow">Edição mais recente</p>
 
@@ -220,5 +228,6 @@ export default async function ResultadosPage({
         )}
       </div>
     </div>
+    </>
   );
 }

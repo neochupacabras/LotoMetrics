@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import AcumulosClient from "@/components/AcumulosClient";
 import Subnav from "@/components/Subnav";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getLoteriaPorCodigo, getAcumulos } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -38,6 +39,12 @@ export default async function AcumulosPage({
 
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Acúmulos", caminho: `/${codigoLoteria}/acumulos` },
+        ]}
+      />
       <Subnav codigoLoteria={codigoLoteria} ativa="acumulos" />
       <div className="container secao">
         <p className="eyebrow">Estatísticas de {loteria.nome}</p>

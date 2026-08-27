@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
 import ConferidorClient from "@/components/ConferidorClient";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -42,6 +43,13 @@ export default async function ConferidorPage({
   if (!loteria) notFound();
 
   return (
+    <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Conferidor", caminho: `/${codigoLoteria}/conferidor` },
+        ]}
+      />
     <div className="container secao">
       <p className="eyebrow">{loteria.nome}</p>
       <h1 className="titulo-edicao">Conferidor de jogos</h1>
@@ -98,5 +106,6 @@ export default async function ConferidorPage({
         isPremium={premium}
       />
     </div>
+    </>
   );
 }

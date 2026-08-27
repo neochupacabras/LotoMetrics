@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import EquilibrioClient from "@/components/EquilibrioClient";
 import Subnav from "@/components/Subnav";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -60,6 +61,12 @@ export default async function EquilibrioPage({
 
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Equilíbrio", caminho: `/${codigoLoteria}/equilibrio` },
+        ]}
+      />
       <Subnav codigoLoteria={codigoLoteria} ativa="equilibrio" />
       <div className="container secao">
         <p className="eyebrow">Ferramentas de {loteria.nome}</p>

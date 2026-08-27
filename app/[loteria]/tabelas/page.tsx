@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getCategoriasParaLoteria } from "@/lib/categorias";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
@@ -39,6 +40,13 @@ export default async function TabelasIndexPage({
   }
 
   return (
+    <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Tabelas", caminho: `/${codigoLoteria}/tabelas` },
+        ]}
+      />
     <div className="container secao">
       <p className="eyebrow">Estatísticas de {loteria.nome}</p>
       <h1 className="titulo-edicao">Tabelas estatísticas</h1>
@@ -73,5 +81,6 @@ export default async function TabelasIndexPage({
         históricos não alteram a probabilidade do próximo concurso.
       </div>
     </div>
+    </>
   );
 }

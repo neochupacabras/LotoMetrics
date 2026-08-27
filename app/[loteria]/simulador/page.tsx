@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import SimuladorHistoricoClient from "@/components/SimuladorHistoricoClient";
 import BloqueadoPremium from "@/components/BloqueadoPremium";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
@@ -57,6 +58,13 @@ export default async function SimuladorPage({
   const totalConcursosLabel = totalLabel[codigoLoteria] ?? "histórico completo";
 
   return (
+    <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
+          { nome: "Simulador", caminho: `/${codigoLoteria}/simulador` },
+        ]}
+      />
     <div className="container secao">
       <p className="eyebrow">Estatísticas de {loteria.nome}</p>
       <h1 className="titulo-edicao">E se eu tivesse jogado todo concurso?</h1>
@@ -134,5 +142,6 @@ export default async function SimuladorPage({
         premium={premium}
       />
     </div>
+    </>
   );
 }
