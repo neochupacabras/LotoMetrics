@@ -65,6 +65,7 @@ jobs:
       PGUSER: ${{ secrets.PGUSER }}
       PGPASSWORD: ${{ secrets.PGPASSWORD }}
       PGSSLMODE: require
+      REVALIDAR_SECRET: ${{ secrets.REVALIDAR_SECRET }}
 
     steps:
       - name: Checkout do repositório

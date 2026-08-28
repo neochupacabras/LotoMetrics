@@ -43,6 +43,7 @@ HEADERS = {
 TIMEOUT_SEGUNDOS = 10
 INTERVALO_ENTRE_CHAMADAS = 1.0
 MAX_TENTATIVAS = 3
+SITE_URL = os.environ.get("SITE_URL", "https://lotoanalitica.com.br").rstrip("/")
 
 LOTERIAS_CODIGO_API = {
     "lotofacil": "lotofacil",
@@ -251,19 +252,19 @@ def importar_intervalo(conn, loteria_codigo: str, inicio: int, fim: int) -> None
     log.info("Backfill de %s concluido: %d/%d concursos importados com sucesso.", loteria_codigo, sucesso, total)
 
 
-def importar_incremental(conn, loteria_codigo: str) -> None:
+def importar_incremental(conn, loteria_codigo: str) -> bool:
     loteria_id = obter_loteria_id(conn, loteria_codigo)
     ultimo_salvo = obter_ultimo_numero_salvo(conn, loteria_id)
 
     dados_recentes = buscar_resultado_api(LOTERIAS_CODIGO_API[loteria_codigo])
     if not dados_recentes:
         log.error("Nao foi possivel obter o ultimo concurso de %s na API.", loteria_codigo)
-        return
+        return False
 
     ultimo_disponivel = dados_recentes.get("numero")
     if ultimo_disponivel is None:
         log.error("Resposta da API para %s sem campo 'numero'.", loteria_codigo)
-        return
+        return False
 
     if ultimo_salvo == 0:
         log.warning(
@@ -271,17 +272,38 @@ def importar_incremental(conn, loteria_codigo: str) -> None:
             "(--modo backfill --inicio 1 --fim %d).",
             loteria_codigo, ultimo_disponivel,
         )
-        return
+        return False
 
     if ultimo_disponivel <= ultimo_salvo:
         log.info(
             "%s ja esta em dia (ultimo salvo: %d, ultimo disponivel: %d).",
             loteria_codigo, ultimo_salvo, ultimo_disponivel,
         )
-        return
+        return False
 
     log.info("%s: importando concursos %d a %d.", loteria_codigo, ultimo_salvo + 1, ultimo_disponivel)
     importar_intervalo(conn, loteria_codigo, ultimo_salvo + 1, ultimo_disponivel)
+    return True
+
+
+def invalidar_cache_site() -> None:
+    """Avisa o site pra descartar o cache de resultados (getUltimoConcurso/
+    getLoteriaPorCodigo em lib/queries.ts), senao a home/pagina de resultados
+    continua mostrando o concurso anterior ate o cache expirar sozinho."""
+    token = os.environ.get("REVALIDAR_SECRET")
+    if not token:
+        log.warning("REVALIDAR_SECRET nao configurado; pulando invalidacao de cache do site.")
+        return
+
+    url = f"{SITE_URL}/api/revalidar"
+    try:
+        resposta = requests.post(url, headers={"Authorization": f"Bearer {token}"}, timeout=TIMEOUT_SEGUNDOS)
+        if resposta.ok:
+            log.info("Cache do site invalidado com sucesso (%s).", url)
+        else:
+            log.warning("Falha ao invalidar cache do site: HTTP %d - %s", resposta.status_code, resposta.text[:200])
+    except requests.RequestException as e:
+        log.warning("Erro ao chamar endpoint de revalidacao (%s): %s", url, e)
 
 
 def main():
@@ -295,13 +317,16 @@ def main():
 
     loterias = ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "duplasena", "supersete"] if args.loteria == "todas" else [args.loteria]
 
+    houve_atualizacao = False
+
     conn = conectar_banco()
     try:
         for loteria_codigo in loterias:
             log.info("=== Processando %s (modo=%s) ===", loteria_codigo, args.modo)
 
             if args.modo == "incremental":
-                importar_incremental(conn, loteria_codigo)
+                if importar_incremental(conn, loteria_codigo):
+                    houve_atualizacao = True
 
             elif args.modo == "backfill":
                 if args.inicio is None or args.fim is None:
@@ -314,9 +339,13 @@ def main():
                     log.error("Modo unico requer --numero.")
                     sys.exit(1)
                 loteria_id = obter_loteria_id(conn, loteria_codigo)
-                importar_concurso(conn, loteria_codigo, loteria_id, args.numero)
+                if importar_concurso(conn, loteria_codigo, loteria_id, args.numero):
+                    houve_atualizacao = True
     finally:
         conn.close()
+
+    if houve_atualizacao:
+        invalidar_cache_site()
 
 
 if __name__ == "__main__":

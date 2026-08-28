@@ -2,19 +2,13 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { LOTERIAS } from "@/lib/format";
 
-// Chame este endpoint após rodar o importador.py para limpar o cache da home.
+// Chamado pelo importador.py (invalidar_cache_site) logo após uma
+// importação que trouxe concurso novo, pra limpar o cache da home.
 // Protegido por um token secreto para não ser chamado por qualquer pessoa.
 //
-// Uso:
+// Uso manual:
 //   curl -X POST https://lotoanalitica.com.br/api/revalidar \
 //        -H "Authorization: Bearer SEU_TOKEN_AQUI"
-//
-// Ou no importador.py, adicione ao final:
-//   import requests
-//   requests.post(
-//     "https://lotoanalitica.com.br/api/revalidar",
-//     headers={"Authorization": f"Bearer {REVALIDAR_TOKEN}"}
-//   )
 
 export async function POST(request: Request) {
   const auth = request.headers.get("authorization");
