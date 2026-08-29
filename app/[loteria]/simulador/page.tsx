@@ -73,7 +73,37 @@ export default async function SimuladorPage({
         esse mesmo jogo {premium ? `em cada um dos ${totalConcursosLabel} concursos` : "nos últimos 100 concursos"} da história da {loteria.nome} — com os prêmios históricos reais.
       </p>
 
-      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
+      {!premium && (
+        <div className="simulador-aviso-free">
+          <span className="simulador-aviso-free__badge">Free</span>
+          Simulação limitada aos últimos {LIMITE_FREE} concursos.{" "}
+          <a href="/assinar" className="simulador-aviso-free__link">
+            Assine o Premium para rodar no histórico completo →
+          </a>
+        </div>
+      )}
+
+      {codigoLoteria === "duplasena" && (
+        <div className="aviso-legal" style={{ marginBottom: 20 }}>
+          <strong>Dupla Sena:</strong> cada concurso tem dois sorteios, e o simulador
+          confere seu jogo contra os dois — se ele bater faixa premiada no 1º e no 2º
+          sorteio do mesmo concurso, os dois prêmios entram na conta, exatamente como
+          aconteceria na prática.
+        </div>
+      )}
+
+      <SimuladorHistoricoClient
+        codigoLoteria={codigoLoteria}
+        nomeLoteria={loteria.nome}
+        dezenaMin={loteria.dezenaMin}
+        dezenaMax={loteria.dezenaMax}
+        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        limiteHistorico={premium ? null : LIMITE_FREE}
+        logado={logado}
+        premium={premium}
+      />
+
+      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 40 }}>
         <h2 className="bloco__titulo">Como funciona o simulador histórico</h2>
         <p>
           O simulador responde à pergunta: "e se eu tivesse jogado esse jogo todo
@@ -109,36 +139,6 @@ export default async function SimuladorPage({
           da loteria.
         </p>
       </div>
-
-      {!premium && (
-        <div className="simulador-aviso-free">
-          <span className="simulador-aviso-free__badge">Free</span>
-          Simulação limitada aos últimos {LIMITE_FREE} concursos.{" "}
-          <a href="/assinar" className="simulador-aviso-free__link">
-            Assine o Premium para rodar no histórico completo →
-          </a>
-        </div>
-      )}
-
-      {codigoLoteria === "duplasena" && (
-        <div className="aviso-legal" style={{ marginBottom: 20 }}>
-          <strong>Dupla Sena:</strong> cada concurso tem dois sorteios, e o simulador
-          confere seu jogo contra os dois — se ele bater faixa premiada no 1º e no 2º
-          sorteio do mesmo concurso, os dois prêmios entram na conta, exatamente como
-          aconteceria na prática.
-        </div>
-      )}
-
-      <SimuladorHistoricoClient
-        codigoLoteria={codigoLoteria}
-        nomeLoteria={loteria.nome}
-        dezenaMin={loteria.dezenaMin}
-        dezenaMax={loteria.dezenaMax}
-        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
-        limiteHistorico={premium ? null : LIMITE_FREE}
-        logado={logado}
-        premium={premium}
-      />
     </div>
     </>
   );

@@ -63,7 +63,16 @@ export default async function AnalisadorPage({
         {loteria.nome}.
       </p>
 
-      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
+      <AnalisadorClient
+        codigoLoteria={codigoLoteria}
+        nomeLoteria={loteria.nome}
+        dezenaMin={loteria.dezenaMin}
+        dezenaMax={loteria.dezenaMax}
+        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        gridColunas={loteria.gridColunas}
+      />
+
+      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 40 }}>
         <h2 className="bloco__titulo">O que o analisador calcula</h2>
         <p>
           O analisador recebe uma combinação de dezenas e calcula, em tempo real, o
@@ -89,15 +98,6 @@ export default async function AnalisadorPage({
           entender onde o jogo se encaixa no espaço de todas as possibilidades.
         </p>
       </div>
-
-      <AnalisadorClient
-        codigoLoteria={codigoLoteria}
-        nomeLoteria={loteria.nome}
-        dezenaMin={loteria.dezenaMin}
-        dezenaMax={loteria.dezenaMax}
-        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
-        gridColunas={loteria.gridColunas}
-      />
     </div>
     </>
   );

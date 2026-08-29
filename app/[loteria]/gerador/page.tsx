@@ -61,7 +61,25 @@ export default async function GeradorPage({
         estatísticas desta loteria.
       </p>
 
-      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
+      <GeradorClient
+        codigoLoteria={codigoLoteria}
+        dezenaMin={loteria.dezenaMin}
+        dezenaMax={loteria.dezenaMax}
+        gridColunas={loteria.gridColunas}
+        qtdDezenasPadrao={loteria.qtdDezenasSorteadas}
+        dados={dados}
+        nomeLoteria={loteria.nome}
+        modoAvancadoLiberado={premium}
+        logado={logado}
+      />
+
+      <div className="aviso-legal">
+        <strong>Importante:</strong> a geração segue critérios estatísticos definidos
+        por você; não há garantia de acerto. Loterias são jogos de sorteio aleatório —
+        nenhum filtro aqui altera a probabilidade real de premiação.
+      </div>
+
+      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 40 }}>
         <h2 className="bloco__titulo">Como o gerador funciona</h2>
         <p>
           O gerador sorteia combinações aleatórias dentro do universo de dezenas da
@@ -91,24 +109,6 @@ export default async function GeradorPage({
           aleatórias que atendam a todos os critérios selecionados — se nenhuma
           combinação for possível com os filtros definidos, o sistema avisa.
         </p>
-      </div>
-
-      <GeradorClient
-        codigoLoteria={codigoLoteria}
-        dezenaMin={loteria.dezenaMin}
-        dezenaMax={loteria.dezenaMax}
-        gridColunas={loteria.gridColunas}
-        qtdDezenasPadrao={loteria.qtdDezenasSorteadas}
-        dados={dados}
-        nomeLoteria={loteria.nome}
-        modoAvancadoLiberado={premium}
-        logado={logado}
-      />
-
-      <div className="aviso-legal">
-        <strong>Importante:</strong> a geração segue critérios estatísticos definidos
-        por você; não há garantia de acerto. Loterias são jogos de sorteio aleatório —
-        nenhum filtro aqui altera a probabilidade real de premiação.
       </div>
     </div>
     </>

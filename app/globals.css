@@ -69,6 +69,23 @@ img {
   display: block;
 }
 
+/* Anel de foco visível — só aparece pra navegação por teclado (:focus-visible
+   ignora clique de mouse/toque), então não some com a "poluição visual" que
+   costuma levar times a tirar o outline padrão do navegador. Regra global
+   pra cobrir todo elemento interativo que não tem um tratamento próprio;
+   componentes com :focus customizado (inputs de formulário, ver
+   .auth-input/.calc-input/etc.) ganham a mesma régua onde faltava. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--pine);
+  outline-offset: 2px;
+}
+
 .container {
   max-width: var(--container-width);
   margin: 0 auto;
@@ -141,7 +158,11 @@ img {
   letter-spacing: 0.12em;
   color: var(--ink-faint);
   margin-top: 4px;
-  max-height: 20px;
+  /* Generoso o bastante pra caber em 2 linhas — em telas estreitas o texto
+     quebra linha, e um max-height cravado numa única linha cortava a
+     segunda linha (overflow: hidden) em vez de só limitar a transição de
+     colapso do estado "encolhido" abaixo. */
+  max-height: 40px;
   opacity: 1;
   overflow: hidden;
   transition: max-height 0.2s ease, opacity 0.15s ease, margin 0.2s ease;
@@ -604,7 +625,7 @@ footer.rodape {
 }
 
 .rodape__aviso {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   max-width: 640px;
   line-height: 1.6;
@@ -798,7 +819,7 @@ footer.rodape {
 .breadcrumb {
   font-family: var(--font-body);
   font-weight: 600;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-faint);
   text-decoration: none;
   margin-bottom: 18px;
@@ -849,7 +870,7 @@ footer.rodape {
 .subnav a {
   font-family: var(--font-body);
   font-weight: 500;
-  font-size: 0.84rem;
+  font-size: 0.85rem;
   text-decoration: none;
   color: var(--ink-faint);
   padding: 14px 0;
@@ -1406,7 +1427,7 @@ footer.rodape {
 
 .analisador-instrucao {
   font-family: var(--font-mono);
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   margin-bottom: 16px;
 }
@@ -1513,7 +1534,7 @@ footer.rodape {
 }
 
 .analisador-card__detalhe {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   line-height: 1.45;
 }
@@ -1603,7 +1624,7 @@ footer.rodape {
   flex-wrap: wrap;
   gap: 8px;
   font-family: var(--font-mono);
-  font-size: 0.80rem;
+  font-size: 0.8rem;
   color: var(--ink-faint);
   margin: 16px 0 32px;
 }
@@ -1847,7 +1868,7 @@ footer.rodape {
   display: inline-block;
   padding: 11px 22px;
   font-family: var(--font-mono);
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   text-decoration: none;
 }
 
@@ -1891,7 +1912,7 @@ footer.rodape {
   transition: background 0.15s ease, color 0.15s ease;
   gap: 2px;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink);
 }
 
@@ -1913,7 +1934,7 @@ footer.rodape {
 }
 
 .heatmap-periodo-meta {
-  font-size: 0.70rem;
+  font-size: 0.7rem;
   color: var(--ink-faint);
   font-weight: 400;
 }
@@ -2045,7 +2066,7 @@ footer.rodape {
 
 .heatmap-info-vazio {
   font-family: var(--font-mono);
-  font-size: 0.80rem;
+  font-size: 0.8rem;
   color: var(--ink-faint);
   align-self: center;
 }
@@ -2115,7 +2136,7 @@ footer.rodape {
 
 .acumulos-stat-rotulo {
   font-family: var(--font-mono);
-  font-size: 0.70rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--ink-faint);
@@ -2207,7 +2228,7 @@ footer.rodape {
 }
 
 .acumulos-tooltip-periodo {
-  font-size: 0.70rem;
+  font-size: 0.7rem;
   opacity: 0.6;
   margin-top: 2px;
 }
@@ -2326,7 +2347,7 @@ footer.rodape {
 
 .simulador-hist-card-detalhe {
   font-family: var(--font-mono);
-  font-size: 0.70rem;
+  font-size: 0.7rem;
   color: var(--ink-faint);
   line-height: 1.4;
 }
@@ -2523,7 +2544,7 @@ footer.rodape {
 
 .home-resultado-numero {
   font-family: var(--font-mono);
-  font-size: 0.80rem;
+  font-size: 0.8rem;
   color: var(--ink-soft);
   margin-top: 2px;
 }
@@ -2728,7 +2749,7 @@ footer.rodape {
 }
 
 .home-ferramenta-desc {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   line-height: 1.55;
   flex: 1;
@@ -2799,7 +2820,7 @@ footer.rodape {
 .mais-loterias__item {
   display: block;
   padding: 7px 10px;
-  font-size: 0.84rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   text-decoration: none;
   white-space: nowrap;
@@ -2827,7 +2848,7 @@ footer.rodape {
 
 .home-quiz-eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.70rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--paper);
@@ -3004,7 +3025,7 @@ footer.rodape {
 }
 
 .auth-label {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-family: var(--font-mono);
   color: var(--ink-soft);
   text-transform: uppercase;
@@ -3025,7 +3046,6 @@ footer.rodape {
 }
 
 .auth-input:focus {
-  outline: none;
   border-color: var(--pine);
 }
 
@@ -3042,7 +3062,7 @@ footer.rodape {
 }
 
 .auth-link-secundario {
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   text-decoration: none;
 }
@@ -3052,7 +3072,7 @@ footer.rodape {
 }
 
 .auth-sep {
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: var(--line-strong);
 }
 
@@ -3069,7 +3089,7 @@ footer.rodape {
 
 .usermenu-entrar {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--ink);
@@ -3088,7 +3108,7 @@ footer.rodape {
 }
 
 .usermenu-cadastrar {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   padding: 6px 14px;
 }
 
@@ -3109,7 +3129,7 @@ footer.rodape {
 }
 
 .usermenu-conta {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--paper);
   background: var(--pine);
   text-decoration: none;
@@ -3283,7 +3303,7 @@ footer.rodape {
 .conta-upgrade-btn { white-space: nowrap; }
 
 .conta-link-gerenciar {
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: var(--pine);
   text-decoration: none;
 }
@@ -3550,7 +3570,7 @@ footer.rodape {
 .bloqueado-premium__cta { white-space: nowrap; }
 
 .bloqueado-premium__entrar {
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   text-decoration: none;
 }
@@ -3627,7 +3647,7 @@ footer.rodape {
 .conferidor-premium-cta__entrar {
   display: block;
   margin-top: 10px;
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   text-decoration: none;
 }
@@ -3674,7 +3694,7 @@ footer.rodape {
 .gerador-premium-overlay__entrar {
   display: block;
   margin-top: 12px;
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   text-decoration: none;
 }
@@ -3731,7 +3751,7 @@ footer.rodape {
 .heatmap-premium-overlay__entrar {
   display: block;
   margin-top: 12px;
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   text-decoration: none;
 }
@@ -3808,7 +3828,7 @@ footer.rodape {
 
 .simulador-comparar-jogo__dezenas {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink);
   word-break: break-all;
 }
@@ -3963,7 +3983,7 @@ footer.rodape {
 
 .conta-jogo-preview__dezenas {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink);
   flex: 1;
 }
@@ -4077,7 +4097,7 @@ footer.rodape {
 
 .jogo-card__dezena {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   background: var(--paper);
   border: 1px solid var(--line-strong);
   border-radius: 3px;
@@ -4218,7 +4238,7 @@ footer.rodape {
 .alertas-form__linha .auth-campo { flex: 1; min-width: 180px; }
 
 .alertas-form__separador {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-faint);
   padding-bottom: 10px;
   flex-shrink: 0;
@@ -4236,7 +4256,7 @@ footer.rodape {
 .alertas-form__prefixo {
   padding: 10px 10px;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   background: var(--paper);
   border-right: 1px solid var(--line-strong);
@@ -4331,7 +4351,7 @@ footer.rodape {
 }
 
 .ocr-dropzone__sub {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   margin: 0;
 }
@@ -4422,13 +4442,13 @@ footer.rodape {
 }
 
 .ocr-resultado__aviso {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: #92400e;
   margin: 0;
 }
 
 .ocr-resultado__ok {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: #166534;
   margin: 0;
 }
@@ -4624,7 +4644,7 @@ footer.rodape {
 
 .projecao-barra-pct {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 700;
   width: 54px;
   text-align: right;
@@ -4641,7 +4661,7 @@ footer.rodape {
 }
 
 .projecao-card__um-ticket-nota {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   margin: 0;
   line-height: 1.5;
@@ -4709,7 +4729,7 @@ footer.rodape {
 
 .api-nova-chave__titulo {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: #166534;
   font-weight: 700;
   margin: 0;
@@ -4724,7 +4744,7 @@ footer.rodape {
 
 .api-nova-chave__code {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   background: #fff;
   border: 1px solid #86efac;
   border-radius: 3px;
@@ -4979,7 +4999,7 @@ footer.rodape {
 }
 
 .api-endpoint-card__params {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   margin: 0 0 16px;
 }
@@ -5018,19 +5038,19 @@ footer.rodape {
 
 .api-tipo-card__tipo {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--pine);
   font-weight: 700;
 }
 
 .api-tipo-card__descricao {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   margin: 0;
 }
 
 .api-tipos-nota {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   margin: 0;
 }
@@ -5115,7 +5135,7 @@ footer.rodape {
 }
 
 .api-preco-card__nota {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   margin: 0;
   line-height: 1.5;
@@ -5357,7 +5377,7 @@ footer.rodape {
 .premium-hero__cta:hover { background: #a0701f; border-color: #a0701f; }
 
 .premium-hero__nota {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: rgba(243,241,234,0.5);
   margin: 0;
 }
@@ -6047,7 +6067,7 @@ footer.rodape {
 }
 
 .contato-topico__desc {
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   margin: 0;
   line-height: 1.5;
@@ -6354,7 +6374,6 @@ footer.rodape {
 }
 
 .soma-calc__campo input:focus {
-  outline: none;
   border-color: var(--pine);
 }
 
@@ -6491,7 +6510,7 @@ footer.rodape {
 }
 
 .home-analise-resumo {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   line-height: 1.55;
   display: -webkit-box;
@@ -6514,7 +6533,7 @@ footer.rodape {
 
 /* ── Dia de Sorte: mês da sorte no card de resultado ─────────────────── */
 .home-mes-sorte {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   background: color-mix(in srgb, var(--ochre) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--ochre) 30%, transparent);
@@ -6662,7 +6681,7 @@ footer.rodape {
 }
 
 .resultado-segundo-sorteio__titulo {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-family: var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -6772,7 +6791,7 @@ footer.rodape {
 }
 
 .heatmap-supersete__aviso {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   background: color-mix(in srgb, var(--ochre) 8%, transparent);
   border: 1px solid color-mix(in srgb, var(--ochre) 20%, transparent);
@@ -6958,7 +6977,7 @@ footer.rodape {
 }
 
 .mat-card__subtitulo {
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   line-height: 1.45;
   flex: 1;
@@ -7097,7 +7116,7 @@ footer.rodape {
 }
 
 .mat-resultado-desc {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   margin-top: 4px;
 }
@@ -7271,7 +7290,7 @@ footer.rodape {
 }
 
 .calc-card__cta {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--pine);
   border-top: 1px solid var(--line);
@@ -7365,7 +7384,6 @@ footer.rodape {
 }
 
 .calc-input:focus {
-  outline: none;
   border-color: var(--pine);
 }
 
@@ -7386,7 +7404,7 @@ footer.rodape {
   cursor: pointer;
 }
 
-.calc-select:focus { outline: none; border-color: var(--pine); }
+.calc-select:focus { border-color: var(--pine); }
 
 /* ── Botões de modo ──────────────────────────────────────────── */
 .calc-modos {
@@ -7401,7 +7419,7 @@ footer.rodape {
   border-radius: 20px;
   border: 1.5px solid var(--line-strong);
   background: transparent;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-family: var(--font-body);
   color: var(--ink-soft);
   cursor: pointer;
@@ -7428,7 +7446,7 @@ footer.rodape {
 .calc-resultado-numero--rust  { color: var(--rust);  }
 
 .calc-resultado-label {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-faint);
   font-family: var(--font-mono);
   margin-top: 4px;
@@ -7577,7 +7595,7 @@ footer.rodape {
   background: var(--ink);
   font-family: var(--font-body);
   font-weight: 500;
-  font-size: 0.84rem;
+  font-size: 0.85rem;
   color: var(--paper);
   cursor: pointer;
   white-space: nowrap;
@@ -7641,7 +7659,7 @@ footer.rodape {
   display: block;
   padding: 7px 12px;
   border-radius: 0;
-  font-size: 0.84rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   text-decoration: none;
   transition: background 0.1s, color 0.1s;
@@ -7719,14 +7737,14 @@ footer.rodape {
 }
 
 .home-destaque-card__sub {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   line-height: 1.5;
   margin-bottom: 12px;
 }
 
 .home-destaque-card__cta {
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--pine);
 }
@@ -7798,7 +7816,7 @@ footer.rodape {
   background: color-mix(in srgb, var(--ochre) 8%, transparent);
   border-left: 3px solid var(--ochre);
   border-radius: 3px;
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   line-height: 1.5;
 }
@@ -7822,7 +7840,7 @@ footer.rodape {
   width: 28px;
   height: 28px;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--pine);
   border-radius: 0;
@@ -8101,7 +8119,7 @@ footer.rodape {
 }
 
 .categoria-card__descricao {
-  font-size: 0.83rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   line-height: 1.5;
   flex: 1;
@@ -8248,7 +8266,7 @@ footer.rodape {
   display: inline-block;
   margin-top: 14px;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--pine);
 }
@@ -8312,7 +8330,7 @@ footer.rodape {
 
 .gerador-relampago__placeholder {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-faint);
   align-self: center;
 }
@@ -8321,7 +8339,7 @@ footer.rodape {
   margin-top: 14px;
   padding-top: 12px;
   border-top: 1px dashed var(--line-strong);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: var(--ink-soft);
   line-height: 1.5;
 }
@@ -8431,7 +8449,6 @@ footer.rodape {
 }
 
 .glossario-busca__input:focus {
-  outline: none;
   border-color: var(--pine);
 }
 

@@ -60,7 +60,21 @@ export default async function FechamentosPage({
       <p className="eyebrow">{loteria.nome}</p>
       <h1 className="titulo-edicao">Fechamentos</h1>
 
-      <div className="bloco fechamento-explicacao" style={{ maxWidth: 680 }}>
+      <FechamentoClient
+        codigoLoteria={codigoLoteria}
+        dezenaMin={loteria.dezenaMin}
+        dezenaMax={loteria.dezenaMax}
+        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        nomeLoteria={loteria.nome}
+      />
+
+      <div className="aviso-legal">
+        O fechamento é uma técnica de organização de bilhetes — não uma forma de
+        prever sorteios ou aumentar a probabilidade de acerto. A probabilidade de
+        qualquer dezena ser sorteada é sempre a mesma, independente do sistema usado.
+      </div>
+
+      <div className="bloco fechamento-explicacao" style={{ maxWidth: 680, marginTop: 40 }}>
 
         <h2 className="bloco__titulo">O que é um fechamento?</h2>
         {ex ? (
@@ -141,20 +155,6 @@ export default async function FechamentosPage({
           </>
         )}
 
-      </div>
-
-      <FechamentoClient
-        codigoLoteria={codigoLoteria}
-        dezenaMin={loteria.dezenaMin}
-        dezenaMax={loteria.dezenaMax}
-        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
-        nomeLoteria={loteria.nome}
-      />
-
-      <div className="aviso-legal">
-        O fechamento é uma técnica de organização de bilhetes — não uma forma de
-        prever sorteios ou aumentar a probabilidade de acerto. A probabilidade de
-        qualquer dezena ser sorteada é sempre a mesma, independente do sistema usado.
       </div>
     </div>
     </>

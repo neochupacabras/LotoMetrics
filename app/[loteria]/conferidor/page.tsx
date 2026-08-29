@@ -59,7 +59,17 @@ export default async function ConferidorPage({
         {!premium && <span className="conferidor-aviso-free"> (Free: 1 jogo por sessão)</span>}
       </p>
 
-      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
+      <ConferidorClient
+        codigoLoteria={codigoLoteria}
+        dezenaMin={loteria.dezenaMin}
+        dezenaMax={loteria.dezenaMax}
+        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        jogoUnico={!premium}
+        logado={logado}
+        isPremium={premium}
+      />
+
+      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 40 }}>
         <h2 className="bloco__titulo">O que o conferidor mostra</h2>
         <p>
           O conferidor analisa uma combinação de dezenas contra todo o histórico de
@@ -95,16 +105,6 @@ export default async function ConferidorPage({
           feitas na lotérica.
         </p>
       </div>
-
-      <ConferidorClient
-        codigoLoteria={codigoLoteria}
-        dezenaMin={loteria.dezenaMin}
-        dezenaMax={loteria.dezenaMax}
-        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
-        jogoUnico={!premium}
-        logado={logado}
-        isPremium={premium}
-      />
     </div>
     </>
   );

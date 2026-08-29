@@ -85,7 +85,15 @@ export default async function EquilibrioPage({
           </Link>
         </p>
 
-        <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
+        <EquilibrioClient
+          codigoLoteria={codigoLoteria}
+          nomeLoteria={loteria.nome}
+          dezenaMin={loteria.dezenaMin}
+          dezenaMax={loteria.dezenaMax}
+          qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        />
+
+        <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 40 }}>
           <h2 className="bloco__titulo">O que é o Índice de Equilíbrio</h2>
           <p>
             O Índice de Equilíbrio combina 7 critérios estatísticos em uma única nota
@@ -122,14 +130,6 @@ export default async function EquilibrioPage({
             O índice é uma ferramenta de caracterização, não de predição.
           </p>
         </div>
-
-        <EquilibrioClient
-          codigoLoteria={codigoLoteria}
-          nomeLoteria={loteria.nome}
-          dezenaMin={loteria.dezenaMin}
-          dezenaMax={loteria.dezenaMax}
-          qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
-        />
       </div>
     </>
   );

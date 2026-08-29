@@ -55,7 +55,18 @@ export default async function AcumulosPage({
           quanto foi pago ao final de cada sequência.
         </p>
 
-        <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
+        <AcumulosClient
+          acumulos={acumulos}
+          nomeLoteria={loteria.nome}
+          codigoLoteria={codigoLoteria}
+        />
+
+        <div className="aviso-legal" style={{ marginTop: "32px" }}>
+          Dados históricos oficiais. Padrões de acúmulo passados não preveem
+          comportamento futuro — cada sorteio é independente dos anteriores.
+        </div>
+
+        <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 40 }}>
           <h2 className="bloco__titulo">O que é um acúmulo e como ele funciona</h2>
           <p>
             Um acúmulo ocorre quando nenhum apostador acerta todas as dezenas da faixa
@@ -85,17 +96,6 @@ export default async function AcumulosPage({
               como os prêmios são calculados
             </a>.
           </p>
-        </div>
-
-        <AcumulosClient
-          acumulos={acumulos}
-          nomeLoteria={loteria.nome}
-          codigoLoteria={codigoLoteria}
-        />
-
-        <div className="aviso-legal" style={{ marginTop: "32px" }}>
-          Dados históricos oficiais. Padrões de acúmulo passados não preveem
-          comportamento futuro — cada sorteio é independente dos anteriores.
         </div>
       </div>
     </>

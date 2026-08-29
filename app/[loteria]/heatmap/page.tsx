@@ -97,7 +97,20 @@ export default async function HeatmapPage({
           aleatoriedade.
         </p>
 
-        <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginBottom: 32 }}>
+        <HeatmapPageClient
+          loteria={loteria}
+          periodos={periodosData}
+          premium={premium}
+          logado={logado}
+        />
+
+        <div className="aviso-legal" style={{ marginTop: "36px" }}>
+          Frequência histórica não prevê sorteios futuros. Cada concurso é independente
+          dos anteriores — a distribuição observada descreve o passado, não o que vai
+          acontecer.
+        </div>
+
+        <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 40 }}>
           <h2 className="bloco__titulo">Como ler o heatmap</h2>
           <p>
             O heatmap colore cada dezena do volante de acordo com sua frequência no
@@ -132,19 +145,6 @@ export default async function HeatmapPage({
             a comparação entre o comportamento histórico de longo prazo e o comportamento
             recente.
           </p>
-        </div>
-
-        <HeatmapPageClient
-          loteria={loteria}
-          periodos={periodosData}
-          premium={premium}
-          logado={logado}
-        />
-
-        <div className="aviso-legal" style={{ marginTop: "36px" }}>
-          Frequência histórica não prevê sorteios futuros. Cada concurso é independente
-          dos anteriores — a distribuição observada descreve o passado, não o que vai
-          acontecer.
         </div>
       </div>
     </>
