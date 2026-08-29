@@ -274,7 +274,7 @@ export default function BolaoClient({
           </p>
 
           <button type="button" className="botao-gerar" onClick={handleGerar} disabled={pending}>
-            {pending ? "Gerando..." : "Gerar jogos do bolão"}
+            {pending ? (<><span className="spinner-inline" aria-hidden /> Gerando...</>) : "Gerar jogos do bolão"}
           </button>
 
           {erroGeracao && <p className="gerador-erro">{erroGeracao}</p>}

@@ -399,7 +399,7 @@ export default function SimuladorHistoricoClient({
           <div style={{ display:"flex", gap:"12px", marginTop:"20px" }}>
             <button type="button" className="botao-gerar"
               disabled={!completoA || (usaTrevos && trevosA.size !== 2) || pending} onClick={handleSimular}>
-              {pending ? "Simulando…" : "Simular →"}
+              {pending ? (<><span className="spinner-inline" aria-hidden /> Simulando…</>) : "Simular →"}
             </button>
             {(ehSuperSete || selA.size > 0) && <button type="button" className="botao-copiar" onClick={limpar}>Limpar</button>}
           </div>
@@ -449,7 +449,7 @@ export default function SimuladorHistoricoClient({
             <button type="button" className="botao-gerar"
               disabled={!completoA || !completoB || (usaTrevos && (trevosA.size !== 2 || trevosB.size !== 2)) || pending}
               onClick={handleComparar}>
-              {pending ? "Comparando…" : "Comparar →"}
+              {pending ? (<><span className="spinner-inline" aria-hidden /> Comparando…</>) : "Comparar →"}
             </button>
             <button type="button" className="botao-copiar" onClick={limpar}>Limpar</button>
           </div>

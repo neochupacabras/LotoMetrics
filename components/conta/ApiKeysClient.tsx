@@ -40,7 +40,7 @@ function KeyCard({ k, onRevogar }: { k: ApiKey; onRevogar: (id: string) => void 
           disabled={pending}
           style={{ color: "var(--rust)", borderColor: "var(--rust)", whiteSpace: "nowrap" }}
         >
-          {pending ? "Revogando…" : "Revogar chave"}
+          {pending ? (<><span className="spinner-inline" aria-hidden /> Revogando…</>) : "Revogar chave"}
         </button>
       </div>
 
@@ -155,7 +155,7 @@ export default function ApiKeysClient({ keys: keysInicial }: { keys: ApiKey[] })
               onClick={handleCriar}
               disabled={pending}
             >
-              {pending ? "Criando…" : "Criar chave →"}
+              {pending ? (<><span className="spinner-inline" aria-hidden /> Criando…</>) : "Criar chave →"}
             </button>
           </div>
           {erro && <p className="simulador-erro">{erro}</p>}

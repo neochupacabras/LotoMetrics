@@ -269,7 +269,7 @@ export default function FechamentoClient({
       )}
 
       <button type="button" className="botao-gerar" onClick={handleGerar} disabled={pending}>
-        {pending ? "Calculando..." : "Gerar fechamento"}
+        {pending ? (<><span className="spinner-inline" aria-hidden /> Calculando...</>) : "Gerar fechamento"}
       </button>
 
       {erro && <p className="gerador-erro">{erro}</p>}

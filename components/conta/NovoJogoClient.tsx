@@ -165,7 +165,7 @@ export default function NovoJogoClient() {
           disabled={!completo || pending}
           onClick={handleSalvar}
         >
-          {pending ? "Salvando…" : "Salvar jogo →"}
+          {pending ? (<><span className="spinner-inline" aria-hidden /> Salvando…</>) : "Salvar jogo →"}
         </button>
         <button
           type="button"

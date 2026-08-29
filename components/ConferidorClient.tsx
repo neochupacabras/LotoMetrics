@@ -247,7 +247,7 @@ export default function ConferidorClient({
 
       <div style={{ display: "flex", gap: "10px" }}>
         <button type="button" className="botao-gerar" onClick={handleConferir} disabled={pending || (jogoUnico && jogoUsado)}>
-          {pending ? "Conferindo..." : "Conferir contra todo o histórico"}
+          {pending ? (<><span className="spinner-inline" aria-hidden /> Conferindo...</>) : "Conferir contra todo o histórico"}
         </button>
         <button type="button" className="botao-copiar" onClick={limpar}>
           Limpar
@@ -451,7 +451,7 @@ function RetornoFinanceiroSection({
           }}
         />
         <button type="button" className="botao-gerar" onClick={handleCalcular} disabled={pending}>
-          {pending ? "Calculando..." : "Calcular retorno"}
+          {pending ? (<><span className="spinner-inline" aria-hidden /> Calculando...</>) : "Calcular retorno"}
         </button>
       </div>
 

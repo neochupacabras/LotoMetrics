@@ -94,6 +94,13 @@ export default function Subnav({
           ‹
         </button>
 
+        {/* Gradiente esquerdo — espelha o da direita */}
+        <div
+          className="subnav__fade-esq"
+          aria-hidden="true"
+          style={{ opacity: canLeft ? 1 : 0 }}
+        />
+
         {/* Nav rolável */}
         <nav
           className="subnav__inner"

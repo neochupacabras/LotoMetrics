@@ -73,7 +73,7 @@ function AlertaAtivoCard({ alerta }: { alerta: Alerta }) {
         disabled={pending}
         style={{ color: "var(--rust)", borderColor: "var(--rust)", fontSize: "0.78rem" }}
       >
-        {pending ? "Desativando…" : "Desativar"}
+        {pending ? (<><span className="spinner-inline" aria-hidden /> Desativando…</>) : "Desativar"}
       </button>
     </div>
   );
@@ -180,7 +180,7 @@ export default function AlertasForm({
           onClick={handleSalvar}
           style={{ marginTop: 16 }}
         >
-          {pending ? "Salvando…" : "Salvar alerta"}
+          {pending ? (<><span className="spinner-inline" aria-hidden /> Salvando…</>) : "Salvar alerta"}
         </button>
       </div>
     </div>

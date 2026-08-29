@@ -228,6 +228,20 @@ summary:focus-visible,
   z-index: 2;
 }
 
+/* Espelho do gradiente acima, do lado esquerdo (ver .subnav__fade-esq —
+   mesma lógica: sem isso, só dava pra ver que havia mais conteúdo rolando
+   pra um lado, nunca voltando). */
+.nav-loterias-fade-esq {
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 32px;
+  background: linear-gradient(to right, var(--paper) 30%, transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
 /* Nav em si — sempre scroll horizontal */
 .nav-loterias {
   position: relative;
@@ -728,7 +742,7 @@ footer.rodape {
 .cartao-categoria:hover {
   border-color: var(--pine);
   transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 4px 4px 0 var(--ink);
 }
 
 .cartao-categoria__titulo {
@@ -940,6 +954,21 @@ footer.rodape {
   z-index: 2;
 }
 
+/* Espelho do gradiente acima, do lado esquerdo — antes só o lado direito
+   tinha essa pista visual de "tem mais conteúdo pra rolar"; rolando pra
+   direita, o usuário perdia a mesma indicação ao voltar pra esquerda. */
+.subnav__fade-esq {
+  position: absolute;
+  left: 28px; /* largura da seta esquerda */
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  background: linear-gradient(to right, var(--paper) 30%, transparent);
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 2;
+}
+
 
 /* ---------- Gerador de jogos ---------- */
 
@@ -1039,10 +1068,42 @@ footer.rodape {
   font-size: 0.9rem;
   cursor: pointer;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .botao-gerar:hover {
   background: var(--pine-deep);
+}
+
+/* Indicador de carregamento discreto — some ao lado do texto do botão
+   ("Simulando…", "Calculando…") enquanto uma Server Action está em
+   andamento. Usa currentColor pra herdar a cor do texto do botão, então
+   funciona em qualquer botão sem precisar de uma cor própria. */
+.spinner-inline {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  opacity: 0.85;
+  animation: spinner-girar 0.6s linear infinite;
+}
+
+@keyframes spinner-girar {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner-inline {
+    animation: none;
+    /* Sem giro, ainda dá pra ver que é um indicador de carregamento —
+       um anel parado em vez de um círculo cheio, não só sumir. */
+    opacity: 0.5;
+  }
 }
 
 .gerador-erro {
@@ -1111,6 +1172,9 @@ footer.rodape {
   color: var(--ink);
   cursor: pointer;
   transition: border-color 0.15s, color 0.15s, background 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .botao-copiar:hover {
@@ -1764,13 +1828,13 @@ footer.rodape {
 
 .quiz-btn-verdade:hover {
   background: color-mix(in srgb, var(--pine) 18%, var(--paper));
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--pine) 20%, transparent);
+  box-shadow: 3px 3px 0 var(--pine);
   transform: translateY(-1px);
 }
 
 .quiz-btn-mito:hover {
   background: color-mix(in srgb, var(--rust) 18%, var(--paper));
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--rust) 20%, transparent);
+  box-shadow: 3px 3px 0 var(--rust);
   transform: translateY(-1px);
 }
 
@@ -2429,7 +2493,7 @@ footer.rodape {
   .hero-bolinhas__item { transition: none; }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 640px) {
   .hero-bolinhas {
     display: none;
   }
@@ -2519,7 +2583,7 @@ footer.rodape {
   gap: 20px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .home-resultados-grid {
     grid-template-columns: 1fr;
   }
@@ -2939,7 +3003,7 @@ footer.rodape {
 }
 
 /* ── Responsivo ────────────────────────────────────────────── */
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .home-stats-sep { display: none; }
   .home-stats-inner { gap: 6px 16px; }
   .home-quiz-inner { flex-direction: column; align-items: flex-start; }
@@ -6109,7 +6173,7 @@ footer.rodape {
 .analise-card:hover {
   border-color: var(--pine);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(194, 59, 34, 0.1);
+  box-shadow: 4px 4px 0 var(--pine);
 }
 
 .analise-card--compacta {
@@ -6430,7 +6494,7 @@ footer.rodape {
   color: var(--ochre);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .analise-card {
     padding: 16px;
   }
@@ -7699,7 +7763,7 @@ footer.rodape {
   padding: 48px 0 20px;  /* padding no grid interno, não margin no container */
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .home-destaques-secoes { grid-template-columns: 1fr; }
 }
 
@@ -8277,7 +8341,7 @@ footer.rodape {
   gap: 20px;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 640px) {
   .analises-grade {
     grid-template-columns: 1fr;
   }
@@ -8292,7 +8356,7 @@ footer.rodape {
   padding: 40px 0;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 640px) {
   .gerador-relampago {
     grid-template-columns: 1fr;
   }

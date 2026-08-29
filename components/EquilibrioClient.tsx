@@ -167,7 +167,7 @@ export default function EquilibrioClient({
             disabled={!completo || pending}
             onClick={handleCalcular}
           >
-            {pending ? "Calculando…" : "Calcular índice →"}
+            {pending ? (<><span className="spinner-inline" aria-hidden /> Calculando…</>) : "Calcular índice →"}
           </button>
           {selecionadas.size > 0 && (
             <button

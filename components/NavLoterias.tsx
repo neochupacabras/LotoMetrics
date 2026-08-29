@@ -166,6 +166,8 @@ export default function NavLoterias({
         ‹
       </button>
 
+      {canLeft && <div className="nav-loterias-fade-esq" aria-hidden />}
+
       <div
         ref={navRef}
         className="nav-loterias"
