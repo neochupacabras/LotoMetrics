@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { CalcConversorUnidades } from "./CalcClient";
 
 export const metadata: Metadata = {
@@ -14,6 +15,20 @@ export const metadata: Metadata = {
 export default function CalcConversorUnidadesPage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Calculadoras", caminho: "/calculadoras" },
+          { nome: "Conversor de Unidades — LotoAnalítica", caminho: "/calculadoras/conversor-unidades" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: "Conversor de Unidades — LotoAnalítica", descricao: "Converta comprimento, peso, volume e temperatura entre as principais unidades do sistema métrico e imperial. Resultado instantâneo.", caminho: "/calculadoras/conversor-unidades" })
+          ),
+        }}
+      />
       <Masthead calculadorasAtiva />
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>

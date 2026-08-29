@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { CalcParcelamento } from "./CalcClient";
 
 export const metadata: Metadata = {
@@ -14,6 +15,20 @@ export const metadata: Metadata = {
 export default function CalcParcelamentoPage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Calculadoras", caminho: "/calculadoras" },
+          { nome: "Calculadora de Parcelamento — LotoAnalítica", caminho: "/calculadoras/parcelamento" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: "Calculadora de Parcelamento — LotoAnalítica", descricao: "Descubra a taxa de juros real embutida em qualquer parcelamento. Informe o preço à vista, número de parcelas e valor de cada parcela.", caminho: "/calculadoras/parcelamento" })
+          ),
+        }}
+      />
       <Masthead calculadorasAtiva />
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>

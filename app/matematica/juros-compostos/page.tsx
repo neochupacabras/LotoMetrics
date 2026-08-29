@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { SimuladorJuros } from "./ConteudoClient";
 
 export const metadata: Metadata = {
@@ -14,6 +15,20 @@ export const metadata: Metadata = {
 export default function ArtigoJurosCompostosPage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Matemática", caminho: "/matematica" },
+          { nome: "Juros Compostos — Matemática sem mistério | LotoAnalítica", caminho: "/matematica/juros-compostos" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: "Juros Compostos — Matemática sem mistério | LotoAnalítica", descricao: "O segredo que bancos sabem e a maioria ignora. Entenda juros simples vs compostos, a Regra do 72 e por que dívida de cartão de crédito cresce tão rápido.", caminho: "/matematica/juros-compostos" })
+          ),
+        }}
+      />
       <Masthead matematicaAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>

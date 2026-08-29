@@ -2778,6 +2778,7 @@ footer.rodape {
 }
 
 .mais-loterias__painel {
+  display: none;
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
@@ -2788,8 +2789,11 @@ footer.rodape {
   box-shadow: 3px 3px 0 var(--ink);
   padding: 6px;
   min-width: 160px;
-  display: flex;
   flex-direction: column;
+}
+
+.mais-loterias__painel[data-aberto="true"] {
+  display: flex;
 }
 
 .mais-loterias__item {

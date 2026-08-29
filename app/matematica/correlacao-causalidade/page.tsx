@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { VisualizadorCorrelacao } from "./ConteudoClient";
 
 export const metadata: Metadata = {
@@ -14,6 +15,20 @@ export const metadata: Metadata = {
 export default function ArtigoCorrelacaoCausalidadePage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Matemática", caminho: "/matematica" },
+          { nome: "Correlação e Causalidade — Matemática sem mistério | LotoAnalítica", caminho: "/matematica/correlacao-causalidade" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: "Correlação e Causalidade — Matemática sem mistério | LotoAnalítica", descricao: "Países que comem mais chocolate ganham mais Nobel — mas isso não significa o que parece. Aprenda a diferença entre correlação e causalidade com exemplos reais.", caminho: "/matematica/correlacao-causalidade" })
+          ),
+        }}
+      />
       <Masthead matematicaAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>

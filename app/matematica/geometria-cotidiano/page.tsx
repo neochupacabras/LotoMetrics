@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { ComparadorPizza } from "./ConteudoClient";
 
 export const metadata: Metadata = {
@@ -14,6 +15,20 @@ export const metadata: Metadata = {
 export default function ArtigoGeometriaCotidianoPage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Matemática", caminho: "/matematica" },
+          { nome: "Geometria no Cotidiano — Matemática sem mistério | LotoAnalítica", caminho: "/matematica/geometria-cotidiano" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: "Geometria no Cotidiano — Matemática sem mistério | LotoAnalítica", descricao: "Por que uma pizza grande é quase sempre melhor negócio que duas pequenas. A área cresce com o quadrado do raio — e isso muda tudo no dia a dia.", caminho: "/matematica/geometria-cotidiano" })
+          ),
+        }}
+      />
       <Masthead matematicaAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>

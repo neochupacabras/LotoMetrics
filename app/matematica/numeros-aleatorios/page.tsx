@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { TesteAleatoriedade } from "./ConteudoClient";
 
 export const metadata: Metadata = {
@@ -14,6 +15,20 @@ export const metadata: Metadata = {
 export default function ArtigoNumerosAleatoriosPage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Matemática", caminho: "/matematica" },
+          { nome: "Aleatoriedade de Verdade — Matemática sem mistério | LotoAnalítica", caminho: "/matematica/numeros-aleatorios" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: "Aleatoriedade de Verdade — Matemática sem mistério | LotoAnalítica", descricao: "Por que humanos são péssimos em gerar números aleatórios — e o que isso tem a ver com segurança de senhas, fraudes em loterias e geradores pseudoaleatórios.", caminho: "/matematica/numeros-aleatorios" })
+          ),
+        }}
+      />
       <Masthead matematicaAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>

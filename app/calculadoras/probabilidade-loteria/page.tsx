@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { CalcProbLoteria } from "./CalcClient";
 
 export const metadata: Metadata = {
@@ -14,6 +15,20 @@ export const metadata: Metadata = {
 export default function CalcProbLoteriaPage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Calculadoras", caminho: "/calculadoras" },
+          { nome: "Calculadora de Probabilidade de Loteria — LotoAnalítica", caminho: "/calculadoras/probabilidade-loteria" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: "Calculadora de Probabilidade de Loteria — LotoAnalítica", descricao: "Descubra a chance exata de acertar qualquer faixa em Lotofácil, Mega-Sena, Quina, Lotomania, Dia de Sorte, +Milionária, Timemania, Dupla Sena e Super Sete.", caminho: "/calculadoras/probabilidade-loteria" })
+          ),
+        }}
+      />
       <Masthead calculadorasAtiva />
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>

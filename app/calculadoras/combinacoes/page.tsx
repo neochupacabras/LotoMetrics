@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { CalcCombinacoes } from "./CalcClient";
 
 export const metadata: Metadata = {
@@ -14,6 +15,20 @@ export const metadata: Metadata = {
 export default function CalcCombinacoesPage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Calculadoras", caminho: "/calculadoras" },
+          { nome: "Calculadora de Combinações C(n,k) — LotoAnalítica", caminho: "/calculadoras/combinacoes" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: "Calculadora de Combinações C(n,k) — LotoAnalítica", descricao: "Calcule C(n,k) — quantas formas existem de escolher k itens de n sem importar a ordem. Com exemplos de loteria, pôquer e outros casos práticos.", caminho: "/calculadoras/combinacoes" })
+          ),
+        }}
+      />
       <Masthead calculadorasAtiva />
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>

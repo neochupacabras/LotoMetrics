@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { BoxplotInterativo } from "./ConteudoClient";
 
 export const metadata: Metadata = {
@@ -14,6 +15,20 @@ export const metadata: Metadata = {
 export default function ArtigoEstatisticaDescritivaPage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Matemática", caminho: "/matematica" },
+          { nome: "Estatística Descritiva — Matemática sem mistério | LotoAnalítica", caminho: "/matematica/estatistica-descritiva" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: "Estatística Descritiva — Matemática sem mistério | LotoAnalítica", descricao: "Como resumir qualquer conjunto de dados em 5 números com quartis e boxplot. Entenda o que a média esconde e quando usar cada medida estatística.", caminho: "/matematica/estatistica-descritiva" })
+          ),
+        }}
+      />
       <Masthead matematicaAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow"><Link href="/matematica" className="breadcrumb">← Matemática sem mistério</Link></p>

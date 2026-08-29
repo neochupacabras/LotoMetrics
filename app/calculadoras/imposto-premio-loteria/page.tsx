@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { CalcImpostoPremio } from "./CalcClient";
 
 export const metadata: Metadata = {
@@ -14,6 +15,20 @@ export const metadata: Metadata = {
 export default function CalcImpostoPremioPage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Calculadoras", caminho: "/calculadoras" },
+          { nome: "Calculadora de Imposto sobre Prêmio de Loteria — LotoAnalítica", caminho: "/calculadoras/imposto-premio-loteria" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: "Calculadora de Imposto sobre Prêmio de Loteria — LotoAnalítica", descricao: "Quanto o Leão leva de um prêmio de loteria: os 30% de imposto de renda retidos na fonte pela Caixa incidem sobre qualquer prêmio, de qualquer faixa, em Mega-Sena, Lotofácil e as outras loterias.", caminho: "/calculadoras/imposto-premio-loteria" })
+          ),
+        }}
+      />
       <Masthead calculadorasAtiva />
       <main className="container secao" style={{ maxWidth: 720 }}>
         <p className="eyebrow"><Link href="/calculadoras" className="breadcrumb">← Calculadoras</Link></p>

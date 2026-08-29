@@ -2,43 +2,21 @@
 // novo resultado, daí caber cache de 1h em vez de recalcular a cada acesso.
 export const revalidate = 3600;
 import { redirect, notFound } from "next/navigation";
-import type { Metadata } from "next";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
-import { isCodigoLoteriaValido, formatarData } from "@/lib/format";
-import { SITE_URL, SITE_NAME, NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+import { isCodigoLoteriaValido } from "@/lib/format";
 
 // Esta página captura buscas como:
 //   "resultado lotofácil hoje"
 //   "resultado mega-sena agora"
 //   "último resultado lotofácil"
 // e redireciona para a página do concurso mais recente.
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ loteria: string }>;
-}): Promise<Metadata> {
-  const { loteria: codigoLoteria } = await params;
-  if (!isCodigoLoteriaValido(codigoLoteria)) return {};
-
-  const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
-  const loteria = await getLoteriaPorCodigo(codigoLoteria);
-  const ultimo = loteria ? await getUltimoConcurso(loteria.id) : null;
-
-  const titulo = ultimo
-    ? `Resultado ${nome} hoje — Concurso ${ultimo.numero} de ${formatarData(ultimo.dataSorteio)}`
-    : `Resultado ${nome} hoje — último concurso`;
-
-  const dezenas = ultimo
-    ? ultimo.dezenas.map((d: number) => String(d).padStart(2, "0")).join(", ")
-    : "";
-
-  const descricao = ultimo
-    ? `Resultado do último concurso da ${nome}: ${dezenas}. Confira as dezenas sorteadas, premiação completa e estatísticas do concurso ${ultimo.numero}.`
-    : `Resultado do último concurso da ${nome} com dezenas sorteadas e premiação completa.`;
-
-  return metadataPagina(codigoLoteria, "/resultado", titulo, descricao);
-}
+//
+// Sem generateMetadata aqui de propósito: essa rota sempre chama redirect()
+// antes de renderizar qualquer HTML, e um redirect() do Next.js interrompe
+// a resposta com um 307 — não existe `<head>` pra carregar title/canonical
+// nesse meio de caminho. Definir metadata (inclusive um canonical pra si
+// mesma) era código morto: nunca chegava a ser servido a ninguém, nem ao
+// Googlebot, que só vê o redirect e segue direto pra URL de destino.
 
 export default async function ResultadoHojePage({
   params,

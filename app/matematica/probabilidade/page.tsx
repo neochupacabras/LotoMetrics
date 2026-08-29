@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { SimuladorMoeda } from "./ConteudoClient";
 
 const TITULO = "Probabilidade: o que significa '50% de chance' — e por que isso não é o que parece";
@@ -17,6 +18,20 @@ export const metadata: Metadata = {
 export default function ArtigoProbabilidadePage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Matemática", caminho: "/matematica" },
+          { nome: TITULO, caminho: "/matematica/probabilidade" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: TITULO, descricao: DESCRICAO, caminho: "/matematica/probabilidade" })
+          ),
+        }}
+      />
       <Masthead matematicaAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow">

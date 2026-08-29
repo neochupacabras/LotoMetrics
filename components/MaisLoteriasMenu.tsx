@@ -36,20 +36,22 @@ export default function MaisLoteriasMenu({ ferramentaSlug }: { ferramentaSlug: s
       >
         +{outras.length} loterias ▾
       </button>
-      {aberto && (
-        <div className="mais-loterias__painel">
-          {outras.map((codigo) => (
-            <Link
-              key={codigo}
-              href={`/${codigo}/${ferramentaSlug}`}
-              className="mais-loterias__item"
-              onClick={() => setAberto(false)}
-            >
-              {LOTERIAS[codigo].nome}
-            </Link>
-          ))}
-        </div>
-      )}
+      {/* Sempre no HTML (não só quando `aberto`) — os links das outras 7
+          loterias precisam existir no SSR pra serem rastreados/seguidos
+          pelo Google, não só depois de um clique. A visibilidade é só CSS
+          (ver .mais-loterias__painel[data-aberto]). */}
+      <div className="mais-loterias__painel" data-aberto={aberto}>
+        {outras.map((codigo) => (
+          <Link
+            key={codigo}
+            href={`/${codigo}/${ferramentaSlug}`}
+            className="mais-loterias__item"
+            onClick={() => setAberto(false)}
+          >
+            {LOTERIAS[codigo].nome}
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

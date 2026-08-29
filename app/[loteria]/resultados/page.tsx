@@ -13,12 +13,25 @@ const POR_PAGINA = 20;
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ loteria: string }>;
+  searchParams: Promise<{ pagina?: string }>;
 }): Promise<Metadata> {
   const { loteria: codigoLoteria } = await params;
   if (!isCodigoLoteriaValido(codigoLoteria)) return {};
   const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
+
+  // Páginas 2+ do histórico mostram concursos diferentes da página 1 — sem
+  // título/descrição/canonical próprios, o Google via elas como conteúdo
+  // duplicado da página 1 (mesmo texto, mesmo canonical, tabela diferente).
+  const { pagina: paginaParam } = await searchParams;
+  const pagina = Math.max(1, Number(paginaParam) || 1);
+  if (pagina > 1) {
+    const titulo = `Histórico de resultados da ${nome} — página ${pagina}`;
+    const descricao = `Concursos mais antigos já sorteados da ${nome}, com dezenas, premiação por faixa e status de acumulado — página ${pagina} do histórico completo.`;
+    return metadataPagina(codigoLoteria, `/resultados?pagina=${pagina}`, titulo, descricao);
+  }
 
   // Buscar último concurso para enriquecer título e descrição
   const loteria = await getLoteriaPorCodigo(codigoLoteria);

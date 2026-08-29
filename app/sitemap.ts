@@ -13,7 +13,10 @@ export const dynamic = "force-dynamic";
 const LOTERIAS = ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "duplasena", "supersete"] as const;
 
 const ABAS: [string, number, MetadataRoute.Sitemap[number]["changeFrequency"]][] = [
-  ["resultado", 1.0, "daily"],   // alias para o último concurso — alta prioridade SEO
+  // "resultado" (singular) não entra aqui de propósito: é só um alias que
+  // sempre redireciona pro concurso mais recente (ver app/[loteria]/resultado/page.tsx)
+  // — nunca serve conteúdo, então não deveria estar num sitemap (o Google
+  // trata URL-que-só-redireciona no sitemap como sinal de qualidade ruim).
   ["resultados", 0.9, "daily"],
   ["destaques", 0.7, "daily"],
   ["tabelas", 0.6, "weekly"],

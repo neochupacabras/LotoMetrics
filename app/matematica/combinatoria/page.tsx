@@ -1,7 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
-import { SITE_URL, SITE_NAME } from "@/lib/seo";
+import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { BrincadeiraGuardaRoupa, CalculadoraCnk } from "./ConteudoClient";
 
 const TITULO = "Combinatória: a matemática de contar escolhas sem contar de um em um";
@@ -17,6 +18,20 @@ export const metadata: Metadata = {
 export default function ArtigoCombinatoriaPage() {
   return (
     <>
+      <BreadcrumbJsonLd
+        itens={[
+          { nome: "Matemática", caminho: "/matematica" },
+          { nome: TITULO, caminho: "/matematica/combinatoria" },
+        ]}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            articleJsonLd({ titulo: TITULO, descricao: DESCRICAO, caminho: "/matematica/combinatoria" })
+          ),
+        }}
+      />
       <Masthead matematicaAtiva />
       <main className="container secao" style={{ maxWidth: 760 }}>
         <p className="eyebrow">
