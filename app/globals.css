@@ -2849,17 +2849,20 @@ footer.rodape {
 }
 
 .mais-loterias__btn {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.78rem;
   color: var(--ink-faint);
   background: none;
   border: none;
+  text-decoration: none;
   cursor: pointer;
   padding: 0;
 }
 
 .mais-loterias__btn:hover {
   color: var(--pine);
+  text-decoration: underline;
 }
 
 .mais-loterias__painel {
