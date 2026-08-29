@@ -160,7 +160,11 @@ export default async function ResultadosPage({
             </table>
           )}
 
-          <Link href={`/${codigoLoteria}/resultados/${ultimo.numero}`}>
+          <Link
+            href={`/${codigoLoteria}/resultados/${ultimo.numero}`}
+            className="botao-gerar"
+            style={{ marginTop: 20, display: "inline-block" }}
+          >
             Ver detalhes do concurso {ultimo.numero} →
           </Link>
         </>
