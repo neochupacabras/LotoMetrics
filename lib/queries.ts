@@ -119,13 +119,21 @@ export async function getConcursosParaExportacao(
 }
 
 // Versão leve, só número + data — usada para montar o sitemap.xml sem
-// puxar dezenas/premiações de milhares de concursos.
+// puxar dezenas/premiações de milhares de concursos. `limite` (opcional)
+// pega só os N mais recentes — usado pelo sitemap pra não crescer sem
+// controle (concursos antigos continuam acessíveis via a paginação de
+// /resultados e os links de anterior/próximo em cada página de concurso;
+// só não precisam ficar reanunciados num sitemap que só faz sentido
+// destacar conteúdo atual).
 export async function getNumerosConcursos(
-  loteriaId: number
+  loteriaId: number,
+  limite?: number
 ): Promise<{ numero: number; dataSorteio: string }[]> {
   const { rows } = await pool.query(
-    `SELECT numero, data_sorteio FROM concurso WHERE loteria_id = $1 ORDER BY numero ASC`,
-    [loteriaId]
+    limite
+      ? `SELECT numero, data_sorteio FROM concurso WHERE loteria_id = $1 ORDER BY numero DESC LIMIT $2`
+      : `SELECT numero, data_sorteio FROM concurso WHERE loteria_id = $1 ORDER BY numero DESC`,
+    limite ? [loteriaId, limite] : [loteriaId]
   );
   return rows.map((r) => ({
     numero: r.numero,

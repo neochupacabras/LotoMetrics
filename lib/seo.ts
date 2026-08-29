@@ -58,6 +58,32 @@ export function metadataPagina(
   };
 }
 
+// JSON-LD de Organization + WebSite — renderizado uma vez no layout raiz
+// (aplica-se ao site inteiro, não a uma página específica). Ajuda o Google
+// a montar o "knowledge panel"/sitelinks da marca. Sem `potentialAction`
+// de busca (SearchAction) de propósito: o site não tem uma busca central
+// por URL com parâmetro de query — só a busca do glossário, que é local à
+// página — e anunciar uma SearchAction que não funciona de verdade viola
+// as diretrizes de dados estruturados do Google.
+export function organizationJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/opengraph-image`,
+  };
+}
+
+export function websiteJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+  };
+}
+
 // JSON-LD de Article — para páginas de conteúdo editorial (análises,
 // dicas). `caminho` é relativo (ex: "/dicas/x"). `dataPublicacao` é
 // opcional: os artigos de /dicas não têm data de publicação no modelo de

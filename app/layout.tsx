@@ -5,7 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import Footer from "@/components/Footer";
 import AdsenseGate from "@/components/AdsenseGate";
 import { PlanoUsuarioProvider } from "@/components/auth/PlanoUsuarioProvider";
-import { SITE_URL } from "@/lib/seo";
+import { SITE_URL, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import "./globals.css";
 
 const instrumentSerif = Instrument_Serif({
@@ -52,6 +52,14 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className={`${instrumentSerif.variable} ${workSans.variable} ${plexMono.variable}`}>
       <body suppressHydrationWarning>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd()) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd()) }}
+        />
         <PlanoUsuarioProvider>
           {children}
           <Footer />

@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import type { CodigoLoteria } from "@/lib/types";
+import { abaAplicavel } from "@/lib/abas-loteria";
 
 type AbaAtiva =
   | "resultados" | "tabelas" | "gerador" | "simulador" | "probabilidades"
@@ -28,34 +29,6 @@ const ABAS_COMPLETAS: { slug: AbaAtiva; label: string }[] = [
   { slug: "ao-vivo",        label: "Ao vivo"        },
 ];
 
-// Lotomania e Super Sete não têm Fechamentos nem Bolão — a mecânica de
-// aposta de nenhuma das duas se encaixa no modelo de fechamento (ver
-// lib/fechamento-config.ts e lib/bolao-opcoes.ts). Equilíbrio continua na
-// lista: é calculado para as 9 loterias (com pesos redistribuídos quando
-// não há moldura/centro — ver lib/equilibrio.ts).
-const ABAS_SEM_FECHAMENTO_BOLAO = ABAS_COMPLETAS.filter(
-  (a) => a.slug !== "fechamentos" && a.slug !== "bolao"
-);
-
-// Super Sete não tem "trincas de dezenas" nem "escolher dezenas de um
-// universo comum" — a mecânica é de colunas independentes de 0 a 9 (mesmo
-// critério de exclusão de lib/categorias.ts para "duques-trincas").
-const ABAS_SUPERSETE = ABAS_SEM_FECHAMENTO_BOLAO.filter(
-  (a) => a.slug !== "ineditas" && a.slug !== "data-da-sorte"
-);
-
-const ABAS_POR_LOTERIA: Record<string, { slug: AbaAtiva; label: string }[]> = {
-  lotofacil: ABAS_COMPLETAS,
-  megasena:  ABAS_COMPLETAS,
-  quina:      ABAS_COMPLETAS,
-  diadesorte:     ABAS_COMPLETAS,
-  maismilionaria: ABAS_COMPLETAS,
-  timemania:  ABAS_COMPLETAS,
-  duplasena:  ABAS_COMPLETAS,
-  lotomania:  ABAS_SEM_FECHAMENTO_BOLAO,
-  supersete:  ABAS_SUPERSETE,
-};
-
 export default function Subnav({
   codigoLoteria,
   ativa,
@@ -63,7 +36,12 @@ export default function Subnav({
   codigoLoteria: CodigoLoteria;
   ativa: AbaAtiva;
 }) {
-  const ABAS = ABAS_POR_LOTERIA[codigoLoteria] ?? ABAS_COMPLETAS;
+  // Equilíbrio continua na lista pra todas: é calculado para as 9 loterias
+  // (com pesos redistribuídos quando não há moldura/centro — ver
+  // lib/equilibrio.ts). As exclusões (fechamentos/bolão pra Lotomania e
+  // Super Sete, inéditas/data-da-sorte só pra Super Sete) vêm de
+  // lib/abas-loteria.ts — mesma fonte usada pelo sitemap, pra não divergir.
+  const ABAS = ABAS_COMPLETAS.filter((a) => abaAplicavel(codigoLoteria, a.slug));
   const navRef = useRef<HTMLElement>(null);
   const [canLeft, setCanLeft]   = useState(false);
   const [canRight, setCanRight] = useState(false);

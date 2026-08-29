@@ -1,16 +1,25 @@
 import type { MetadataRoute } from "next";
 import { getLoteriaPorCodigo, getNumerosConcursos } from "@/lib/queries";
-import { CATEGORIAS } from "@/lib/categorias";
+import { getCategoriasParaLoteria } from "@/lib/categorias";
 import { ARTIGOS } from "@/lib/artigos";
 import { ANALISES } from "@/lib/analises";
 import { ARTIGOS_MATEMATICA } from "@/lib/matematica";
 import { CALCULADORAS } from "@/lib/calculadoras";
 import { SITE_URL } from "@/lib/seo";
+import { abaAplicavel } from "@/lib/abas-loteria";
 
 // Forçar geração em runtime (não em build time) — o sitemap depende do banco
 export const dynamic = "force-dynamic";
 
 const LOTERIAS = ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "duplasena", "supersete"] as const;
+
+// Limite de concursos por loteria no sitemap — sem isso, o arquivo cresce
+// pra sempre (uma URL por concurso já sorteado, de 9 loterias, algumas
+// quase diárias desde os anos 90) até se aproximar do limite de 50.000 URLs
+// por sitemap. Concursos fora da janela continuam indexáveis via a
+// paginação de /resultados e os links de anterior/próximo em cada página
+// de concurso — só não ficam reanunciados aqui pra sempre.
+const MAX_CONCURSOS_POR_LOTERIA = 500;
 
 const ABAS: [string, number, MetadataRoute.Sitemap[number]["changeFrequency"]][] = [
   // "resultado" (singular) não entra aqui de propósito: é só um alias que
@@ -92,6 +101,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       if (!loteria) continue;
 
       for (const [aba, priority, changeFrequency] of ABAS) {
+        if (!abaAplicavel(codigoLoteria, aba)) continue;
         entradas.push({
           url: `${SITE_URL}/${codigoLoteria}/${aba}`,
           changeFrequency,
@@ -99,7 +109,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         });
       }
 
-      for (const categoria of CATEGORIAS) {
+      for (const categoria of getCategoriasParaLoteria(codigoLoteria)) {
         entradas.push({
           url: `${SITE_URL}/${codigoLoteria}/tabelas/${categoria.slug}`,
           changeFrequency: "daily",
@@ -107,7 +117,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         });
       }
 
-      const concursos = await getNumerosConcursos(loteria.id);
+      const concursos = await getNumerosConcursos(loteria.id, MAX_CONCURSOS_POR_LOTERIA);
       for (const c of concursos) {
         entradas.push({
           url: `${SITE_URL}/${codigoLoteria}/resultados/${c.numero}`,
