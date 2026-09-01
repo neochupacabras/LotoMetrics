@@ -21,7 +21,7 @@ export async function generateMetadata({
   return metadataPagina(
     codigoLoteria,
     "/simulador",
-    `Simulador histórico — e se eu tivesse jogado todo concurso? ${nome}`,
+    `${nome}: simulador histórico — e se eu tivesse jogado todo concurso?`,
     `Escolha qualquer combinação e veja quanto teria gasto e ganho se tivesse jogado esse jogo em cada concurso da história da ${nome}. Resultado honesto, com os prêmios históricos reais.`
   );
 }

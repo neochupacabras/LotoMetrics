@@ -256,9 +256,9 @@ export const ANALISES: Analise[] = [
   },
   {
     slug: "como-conferir-jogo-historico-completo",
-    titulo: "Como conferir seu jogo em todo o histórico da Lotofácil — guia passo a passo",
+    titulo: "Você teria ganho na Lotofácil? Veja seu jogo em todo o histórico",
     resumo:
-      "O conferidor do LotoAnalítica mostra a pontuação de qualquer jogo em todos os concursos já sorteados. Veja como usar e o que esperar do resultado.",
+      "Descubra quantas vezes seu jogo teria ganhado em todos os concursos já sorteados da Lotofácil. Veja como conferir e o que esperar do resultado.",
     data: "2026-06-10",
     categoria: "lotofacil",
     tempoLeitura: 4,
@@ -1707,7 +1707,7 @@ export const ANALISES: Analise[] = [
   },
   {
     slug: "lotofacil-independencia-2026-guia-completo",
-    titulo: "Lotofácil da Independência 2026: data do sorteio, concurso 3.780 e tudo sobre as apostas",
+    titulo: "Lotofácil da Independência: R$ 300 milhões, dia 15/09 — tudo sobre o sorteio",
     resumo:
       "O sorteio é dia 15 de setembro, concurso 3.780, com prêmio estimado em R$ 300 milhões. Veja a partir de quando dá para apostar, o horário do sorteio e como funciona a premiação.",
     data: "2026-08-04",
