@@ -1450,7 +1450,7 @@ export const ANALISES: Analise[] = [
     `,
   },
   {
-    slug: "eleicoes-2026-superstição-numeros-candidatos",
+    slug: "eleicoes-2026-supersticao-numeros-candidatos",
     titulo: "Eleições 2026: números de candidatos, superstição e o que a psicologia diz",
     resumo:
       "Com a campanha eleitoral aquecendo, os números dos candidatos viram fetiches e talismãs. A mesma psicologia que cria 'números da sorte' opera aqui — e a ciência explica por quê.",
