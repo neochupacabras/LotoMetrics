@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
+import { after } from "next/server";
 import SimuladorHistoricoClient from "@/components/SimuladorHistoricoClient";
 import BloqueadoPremium from "@/components/BloqueadoPremium";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
@@ -9,6 +10,7 @@ import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import { getPlanoPremium } from "@/lib/plano";
+import { logToolEvent } from "@/lib/telemetry";
 
 export async function generateMetadata({
   params,
@@ -43,6 +45,15 @@ export default async function SimuladorPage({
     getPlanoPremium(),
   ]);
   if (!loteria) notFound();
+
+  after(() =>
+    logToolEvent({
+      eventName: "tool_view",
+      tool: "simulador",
+      lottery: codigoLoteria,
+      plan: logado ? (premium ? "premium" : "free") : null,
+    })
+  );
 
   const totalLabel: Record<string, string> = {
     lotofacil:      "3.700+",

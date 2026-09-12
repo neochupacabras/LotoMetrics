@@ -1,6 +1,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { LOTERIAS } from "@/lib/format";
+import { logJobRun } from "@/lib/telemetry";
 
 // Chamado pelo importador.py (invalidar_cache_site) logo após uma
 // importação que trouxe concurso novo, pra limpar o cache da home.
@@ -18,6 +19,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 
+  const startedAt = new Date();
+
   // Limpa o cache de dados (unstable_cache) usado por getUltimoConcurso e
   // getLoteriaPorCodigo em lib/queries.ts — é isso que realmente evita
   // servir resultado desatualizado, já que a maioria das rotas hoje é
@@ -30,6 +33,8 @@ export async function POST(request: Request) {
   for (const codigo of Object.keys(LOTERIAS)) {
     revalidatePath(`/${codigo}/resultados`);
   }
+
+  await logJobRun({ jobName: "revalidar", status: "success", startedAt });
 
   return NextResponse.json({
     revalidated: true,

@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/server";
+import { logError } from "@/lib/telemetry";
 
 export const runtime = "nodejs";
 
@@ -26,6 +27,7 @@ export async function POST(request: Request) {
     );
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
+    after(() => logError({ source: "stripe_webhook", message: `Assinatura inválida: ${(err as Error).message}` }));
     return NextResponse.json({ error: "Assinatura inválida" }, { status: 400 });
   }
 
@@ -39,6 +41,12 @@ export async function POST(request: Request) {
 
       if (!userId) {
         console.error("supabase_user_id ausente no metadata:", sub.id);
+        after(() =>
+          logError({
+            source: "stripe_webhook",
+            message: `supabase_user_id ausente no metadata da subscription ${sub.id}`,
+          })
+        );
         break;
       }
 

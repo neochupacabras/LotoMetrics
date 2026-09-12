@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { calcularIsPremium } from "@/lib/plano";
+import { logToolEvent, logError } from "@/lib/telemetry";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -76,6 +77,9 @@ export async function POST(request: Request) {
   const isPremium = calcularIsPremium(profile);
 
   if (!isPremium) {
+    after(() =>
+      logToolEvent({ eventName: "paywall_view", tool: "conferidor-ocr", userId: user.id, plan: "free" })
+    );
     return NextResponse.json(
       { erro: "O conferidor por foto é um recurso Premium." },
       { status: 403 }
@@ -150,7 +154,12 @@ export async function POST(request: Request) {
     );
 
     if (!visionRes.ok) {
-      console.error("Vision API error:", await visionRes.text());
+      const detalhe = await visionRes.text();
+      console.error("Vision API error:", detalhe);
+      after(() => {
+        logToolEvent({ eventName: "tool_failed", tool: "conferidor-ocr", userId: user.id, plan: "premium" });
+        logError({ source: "ocr", message: `Vision API error: ${detalhe.slice(0, 300)}`, userId: user.id });
+      });
       return NextResponse.json(
         { erro: "Não foi possível processar a imagem. Tente com melhor iluminação." },
         { status: 502 }
@@ -170,6 +179,18 @@ export async function POST(request: Request) {
     }
 
     const { dezenas, confianca } = extrairDezenas(textoCompleto, loteria);
+
+    after(() =>
+      logToolEvent({
+        eventName: "tool_completed",
+        tool: "conferidor-ocr",
+        lottery: loteria,
+        userId: user.id,
+        plan: "premium",
+        success: true,
+        metadata: { confianca, qtdDezenasLidas: dezenas.length },
+      })
+    );
 
     return NextResponse.json(
       {
@@ -192,6 +213,10 @@ export async function POST(request: Request) {
     );
   } catch (err) {
     console.error("OCR error:", err);
+    after(() => {
+      logToolEvent({ eventName: "tool_failed", tool: "conferidor-ocr", userId: user.id, plan: "premium" });
+      logError({ source: "ocr", message: (err as Error).message, userId: user.id });
+    });
     return NextResponse.json({ erro: "Erro ao processar a imagem. Tente novamente." }, { status: 500 });
   }
 }

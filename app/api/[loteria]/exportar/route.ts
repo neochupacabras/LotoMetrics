@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { getLoteriaPorCodigo, getConcursosParaExportacao } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { getPlanoPremium } from "@/lib/plano";
+import { logToolEvent } from "@/lib/telemetry";
 
 export const runtime = "nodejs";
 
@@ -23,6 +24,7 @@ export async function GET(
     return NextResponse.json({ erro: "Faça login para exportar dados." }, { status: 401 });
   }
   if (!premium) {
+    after(() => logToolEvent({ eventName: "paywall_view", tool: "exportar-csv", lottery: codigoLoteria, plan: "free" }));
     return NextResponse.json({ erro: "Exportação de dados é exclusiva para assinantes Premium." }, { status: 403 });
   }
 
@@ -57,6 +59,17 @@ export async function GET(
   }
 
   const csv = "﻿" + linhas.join("\r\n"); // BOM — abre acentuado corretamente no Excel
+
+  after(() =>
+    logToolEvent({
+      eventName: "tool_completed",
+      tool: "exportar-csv",
+      lottery: codigoLoteria,
+      plan: "premium",
+      success: true,
+      metadata: { qtdConcursos: concursos.length },
+    })
+  );
 
   return new NextResponse(csv, {
     headers: {

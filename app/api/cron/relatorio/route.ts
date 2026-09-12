@@ -4,6 +4,7 @@ import { gerarRelatorioPdf, type DadosRelatorio, type JogoRelatorio, type Resumo
 import { emailRelatorioMensal } from "@/lib/email-templates";
 import pool from "@/lib/db";
 import { calcularIsPremium } from "@/lib/plano";
+import { logJobRun } from "@/lib/telemetry";
 
 export const runtime = "nodejs";
 export const maxDuration = 300; // 5 minutos — pode ser pesado com muitos usuários
@@ -49,6 +50,21 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 
+  const startedAt = new Date();
+  try {
+    return await executarRelatorio(startedAt);
+  } catch (err) {
+    await logJobRun({
+      jobName: "cron_relatorio",
+      status: "failed",
+      startedAt,
+      error: (err as Error).message,
+    });
+    throw err;
+  }
+}
+
+async function executarRelatorio(startedAt: Date) {
   const supabase = createAdminClient();
 
   // Mês de referência = mês anterior
@@ -67,6 +83,7 @@ export async function GET(request: Request) {
     .eq("ativo", true);
 
   if (!jogosAtivos || jogosAtivos.length === 0) {
+    await logJobRun({ jobName: "cron_relatorio", status: "success", startedAt, details: { motivo: "nenhum jogo ativo" } });
     return NextResponse.json({ message: "Nenhum jogo ativo." });
   }
 
@@ -80,6 +97,12 @@ export async function GET(request: Request) {
     porUsuario.set(j.user_id, lista);
   }
 
+  // Busca todos os usuários UMA vez antes do loop — antes disso, cada
+  // iteração chamava supabase.auth.admin.listUsers() de novo (achado da
+  // auditoria: risco de estourar maxDuration=300s conforme a base cresce).
+  const { data: { users: todosUsuarios } } = await supabase.auth.admin.listUsers();
+  const usuarioPorId = new Map(todosUsuarios.map(u => [u.id, u]));
+
   // Pré-carregar concursos do mês por loteria
   const concursosPorLoteria: Record<string, any[]> = {};
   for (const lc of ["lotofacil", "megasena"]) {
@@ -91,9 +114,7 @@ export async function GET(request: Request) {
   const erros: string[] = [];
 
   for (const [userId, jogos] of porUsuario) {
-    // Buscar e-mail do usuário
-    const { data: { users } } = await supabase.auth.admin.listUsers();
-    const userAuth = users.find(u => u.id === userId);
+    const userAuth = usuarioPorId.get(userId);
     if (!userAuth?.email) continue;
 
     const profile = jogos[0].profiles as any;
@@ -231,6 +252,14 @@ export async function GET(request: Request) {
       erros.push(`${userAuth.email}: ${String(err)}`);
     }
   }
+
+  await logJobRun({
+    jobName: "cron_relatorio",
+    status: erros.length > 0 ? "partial" : "success",
+    startedAt,
+    details: { mes, ano, usuariosProcessados: porUsuario.size, emailsEnviados: enviados, qtdErros: erros.length },
+    error: erros.length > 0 ? erros.join("; ") : null,
+  });
 
   return NextResponse.json({
     ok: true,

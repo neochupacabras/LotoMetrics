@@ -1,6 +1,8 @@
 "use server";
 
+import { after } from "next/server";
 import pool from "./db";
+import { logToolEvent } from "./telemetry";
 import {
   conferirJogo,
   conferirJogoSuperSete,
@@ -21,6 +23,23 @@ export interface ConferidorActionResult {
 }
 
 export async function conferirJogoAction(
+  codigoLoteria: string,
+  dezenas: number[],
+  trevos?: number[]
+): Promise<ConferidorActionResult> {
+  const resultado = await conferirJogoInterno(codigoLoteria, dezenas, trevos);
+  after(() =>
+    logToolEvent({
+      eventName: resultado.ok ? "tool_completed" : "tool_failed",
+      tool: "conferidor",
+      lottery: codigoLoteria,
+      success: resultado.ok,
+    })
+  );
+  return resultado;
+}
+
+async function conferirJogoInterno(
   codigoLoteria: string,
   dezenas: number[],
   trevos?: number[]

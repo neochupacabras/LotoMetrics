@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/server";
 import pool from "@/lib/db";
 import { emailResultadoConcurso } from "@/lib/email-templates";
 import { calcularIsPremium } from "@/lib/plano";
+import { logJobRun } from "@/lib/telemetry";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -125,6 +126,21 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
 
+  const startedAt = new Date();
+  try {
+    return await executarConferir(startedAt);
+  } catch (err) {
+    await logJobRun({
+      jobName: "cron_conferir",
+      status: "failed",
+      startedAt,
+      error: (err as Error).message,
+    });
+    throw err;
+  }
+}
+
+async function executarConferir(startedAt: Date) {
   const supabase = createAdminClient();
 
   // 1. Buscar jogos ativos de usuários premium
@@ -138,12 +154,14 @@ export async function GET(request: Request) {
     .eq("ativo", true);
 
   if (!jogosAtivos || jogosAtivos.length === 0) {
+    await logJobRun({ jobName: "cron_conferir", status: "success", startedAt, details: { motivo: "nenhum jogo ativo" } });
     return NextResponse.json({ message: "Nenhum jogo ativo encontrado." });
   }
 
   const jogosPremium = jogosAtivos.filter(j => calcularIsPremium(j.profiles as any));
 
   if (jogosPremium.length === 0) {
+    await logJobRun({ jobName: "cron_conferir", status: "success", startedAt, details: { motivo: "nenhum usuario premium com jogos ativos" } });
     return NextResponse.json({ message: "Nenhum usuário premium com jogos ativos." });
   }
 
@@ -214,6 +232,19 @@ export async function GET(request: Request) {
       }
     }
   }
+
+  await logJobRun({
+    jobName: "cron_conferir",
+    status: erros.length > 0 ? "partial" : "success",
+    startedAt,
+    details: {
+      loteriasProcessadas: loteriasComJogos,
+      usuariosProcessados: porUsuario.size,
+      emailsEnviados: enviados,
+      qtdErros: erros.length,
+    },
+    error: erros.length > 0 ? erros.join("; ") : null,
+  });
 
   return NextResponse.json({
     ok: true,

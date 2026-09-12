@@ -25,6 +25,7 @@ Configuracao do banco via variaveis de ambiente:
 """
 
 import argparse
+import json
 import logging
 import os
 import sys
@@ -306,6 +307,44 @@ def invalidar_cache_site() -> None:
         log.warning("Erro ao chamar endpoint de revalidacao (%s): %s", url, e)
 
 
+def registrar_job_run(status: str, iniciado_em: datetime, detalhes: Optional[dict] = None, erro: Optional[str] = None) -> None:
+    """Fase 2 do Admin Control Center (docs/ADMIN_AUDIT.md): grava a execucao
+    deste job em job_runs, a mesma tabela usada pelos cron jobs do Next.js,
+    pra o /admin conseguir mostrar se o importador rodou e deu certo -- hoje
+    esse e o processo mais critico do produto e o unico sem visibilidade
+    nenhuma de fora do log local/GitHub Actions. Best-effort: uma conexao
+    nova e curta, so pra esse insert; se falhar, so loga um warning e segue
+    o script (nunca deve derrubar a importacao de resultados por causa de
+    telemetria).
+    """
+    try:
+        conn = conectar_banco()
+        try:
+            finalizado_em = datetime.now()
+            duracao_ms = int((finalizado_em - iniciado_em).total_seconds() * 1000)
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO job_runs (job_name, status, started_at, finished_at, duration_ms, details, error)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    """,
+                    (
+                        "importador_resultados",
+                        status,
+                        iniciado_em,
+                        finalizado_em,
+                        duracao_ms,
+                        json.dumps(detalhes) if detalhes else None,
+                        erro,
+                    ),
+                )
+            conn.commit()
+        finally:
+            conn.close()
+    except Exception as e:
+        log.warning("Falha ao registrar job_run (nao critico): %s", e)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Importador de resultados de loterias da Caixa.")
     parser.add_argument("--loteria", choices=["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "duplasena", "supersete", "todas"], default="todas")
@@ -318,6 +357,7 @@ def main():
     loterias = ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "duplasena", "supersete"] if args.loteria == "todas" else [args.loteria]
 
     houve_atualizacao = False
+    iniciado_em = datetime.now()
 
     conn = conectar_banco()
     try:
@@ -341,11 +381,20 @@ def main():
                 loteria_id = obter_loteria_id(conn, loteria_codigo)
                 if importar_concurso(conn, loteria_codigo, loteria_id, args.numero):
                     houve_atualizacao = True
+    except Exception as e:
+        registrar_job_run("failed", iniciado_em, detalhes={"modo": args.modo, "loterias": loterias}, erro=str(e))
+        raise
     finally:
         conn.close()
 
     if houve_atualizacao:
         invalidar_cache_site()
+
+    registrar_job_run(
+        "success",
+        iniciado_em,
+        detalhes={"modo": args.modo, "loterias": loterias, "houve_atualizacao": houve_atualizacao},
+    )
 
 
 if __name__ == "__main__":

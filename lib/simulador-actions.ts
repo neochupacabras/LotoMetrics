@@ -1,9 +1,11 @@
 "use server";
 
+import { after } from "next/server";
 import { getLoteriaPorCodigo, getDrawsParaSimulacao, getMapaFaixasPorAcertos, ConcessaoSimulacao } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { PARAMS_LOTERIA, FAIXAS_MILIONARIA, FAIXAS_DUPLASENA_POR_SORTEIO } from "@/lib/probabilidades";
 import { contarColunasAcertadas } from "@/lib/classificacao";
+import { logToolEvent } from "@/lib/telemetry";
 
 export interface ResultadoSimulacao {
   nomeLoteria: string;
@@ -155,6 +157,29 @@ export async function simularHistorico(
   limiteHistorico?: number, // undefined = histórico completo (premium)
   trevos?: number[] // +Milionária
 ): Promise<ResultadoSimulacao | { erro: string }> {
+  const resultado = await simularHistoricoInterno(codigoLoteria, dezenas, limiteHistorico, trevos);
+  const falhou = "erro" in resultado;
+  after(() =>
+    logToolEvent({
+      eventName: falhou ? "tool_failed" : "tool_completed",
+      tool: "simulador",
+      lottery: codigoLoteria,
+      success: !falhou,
+      // limiteHistorico presente = usuário free (ver docs/ADMIN_AUDIT.md,
+      // matriz Free vs Premium) — evita round-trip extra de auth só pra
+      // registrar o plano.
+      plan: limiteHistorico ? "free" : "premium",
+    })
+  );
+  return resultado;
+}
+
+async function simularHistoricoInterno(
+  codigoLoteria: string,
+  dezenas: number[],
+  limiteHistorico?: number,
+  trevos?: number[]
+): Promise<ResultadoSimulacao | { erro: string }> {
   if (!isCodigoLoteriaValido(codigoLoteria))
     return { erro: "Loteria inválida" };
 
@@ -261,6 +286,27 @@ export interface ResultadoComparacao {
 }
 
 export async function compararJogos(
+  codigoLoteria: string,
+  dezenasA: number[],
+  dezenasB: number[],
+  limiteHistorico?: number,
+  trevosA?: number[],
+  trevosB?: number[]
+): Promise<ResultadoComparacao | { erro: string }> {
+  const resultado = await compararJogosInterno(codigoLoteria, dezenasA, dezenasB, limiteHistorico, trevosA, trevosB);
+  const falhou = "erro" in resultado;
+  after(() =>
+    logToolEvent({
+      eventName: falhou ? "tool_failed" : "tool_completed",
+      tool: "simulador-comparador",
+      lottery: codigoLoteria,
+      success: !falhou,
+    })
+  );
+  return resultado;
+}
+
+async function compararJogosInterno(
   codigoLoteria: string,
   dezenasA: number[],
   dezenasB: number[],

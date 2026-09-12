@@ -82,6 +82,140 @@ function statusFrescor(diasDesde: number, sorteiosPorSemana: number): StatusFres
   return "critical";
 }
 
+// ── Fase 2: jobs e erros ────────────────────────────────────────────────────
+
+export type StatusSaude = "healthy" | "warning" | "critical" | "unknown";
+
+export interface SaudeJob {
+  jobName: string;
+  ultimaExecucao: string | null;
+  ultimoStatus: string | null;
+  horasDesde: number | null;
+  status: StatusSaude;
+}
+
+// Tolerância documentada por job (horas) — folga generosa o suficiente pra
+// cobrir fins de semana/feriados sem disparar alerta por atraso normal.
+// "critical" a partir do dobro da tolerância, ou se a última execução
+// registrada já terminou em falha.
+const TOLERANCIA_HORAS_JOB: Record<string, number> = {
+  cron_conferir: 72, // roda seg/qua/sex/sáb 22h
+  cron_relatorio: 36 * 24, // mensal, dia 1 às 8h
+  revalidar: 72, // disparado pelo importador + reforçado pelo cron da Vercel
+  importador_resultados: 30, // GitHub Actions roda >=1x/dia (inclui rotina de segurança às 3h BRT)
+};
+
+export async function getSaudeJobs(): Promise<SaudeJob[]> {
+  const jobNames = Object.keys(TOLERANCIA_HORAS_JOB);
+  const { rows } = await pool.query<{
+    job_name: string;
+    status: string;
+    finished_at: string | Date | null;
+  }>(
+    `SELECT DISTINCT ON (job_name) job_name, status, finished_at
+     FROM job_runs
+     WHERE job_name = ANY($1)
+     ORDER BY job_name, started_at DESC`,
+    [jobNames]
+  );
+
+  const porJob = new Map(rows.map((r) => [r.job_name, r]));
+  const agora = Date.now();
+
+  return jobNames.map((jobName): SaudeJob => {
+    const r = porJob.get(jobName);
+    if (!r || !r.finished_at) {
+      return { jobName, ultimaExecucao: null, ultimoStatus: null, horasDesde: null, status: "unknown" };
+    }
+    const finishedAt = r.finished_at instanceof Date ? r.finished_at : new Date(r.finished_at);
+    const horasDesde = (agora - finishedAt.getTime()) / 3_600_000;
+    const tolerancia = TOLERANCIA_HORAS_JOB[jobName];
+
+    let status: StatusSaude;
+    if (r.status === "failed") status = "critical";
+    else if (horasDesde > tolerancia * 2) status = "critical";
+    else if (horasDesde > tolerancia || r.status === "partial") status = "warning";
+    else status = "healthy";
+
+    return {
+      jobName,
+      ultimaExecucao: finishedAt.toISOString(),
+      ultimoStatus: r.status,
+      horasDesde: Math.round(horasDesde * 10) / 10,
+      status,
+    };
+  });
+}
+
+export interface JobRunResumo {
+  jobName: string;
+  status: string;
+  startedAt: string;
+  durationMs: number | null;
+  error: string | null;
+}
+
+export async function getUltimosJobRuns(limite = 10): Promise<JobRunResumo[]> {
+  const { rows } = await pool.query<{
+    job_name: string;
+    status: string;
+    started_at: string | Date;
+    duration_ms: number | null;
+    error: string | null;
+  }>(
+    `SELECT job_name, status, started_at, duration_ms, error
+     FROM job_runs ORDER BY started_at DESC LIMIT $1`,
+    [limite]
+  );
+  return rows.map((r) => ({
+    jobName: r.job_name,
+    status: r.status,
+    startedAt: (r.started_at instanceof Date ? r.started_at : new Date(r.started_at)).toISOString(),
+    durationMs: r.duration_ms,
+    error: r.error,
+  }));
+}
+
+export async function getSaudeErros(): Promise<{ ultimas24h: number; status: StatusSaude }> {
+  const { rows } = await pool.query<{ count: string }>(
+    `SELECT count(*) FROM error_events WHERE created_at > now() - interval '24 hours'`
+  );
+  const ultimas24h = Number(rows[0]?.count ?? 0);
+  // Limiar simples e documentado, não calibrado por histórico real ainda
+  // (a tabela acabou de ser criada): até 5/24h = saudável, 6-20 = atenção,
+  // acima = crítico. Revisar quando houver volume real pra comparar.
+  const status: StatusSaude = ultimas24h > 20 ? "critical" : ultimas24h > 5 ? "warning" : "healthy";
+  return { ultimas24h, status };
+}
+
+export interface UsoFerramenta {
+  tool: string;
+  views: number;
+  completions: number;
+  failures: number;
+  paywalls: number;
+}
+
+export async function getUsoFerramentas30d(): Promise<UsoFerramenta[]> {
+  const { rows } = await pool.query<{ tool: string; event_name: string; qtd: string }>(`
+    SELECT tool, event_name, count(*) AS qtd
+    FROM product_events
+    WHERE tool IS NOT NULL AND created_at > now() - interval '30 days'
+    GROUP BY tool, event_name
+  `);
+  const map = new Map<string, UsoFerramenta>();
+  for (const r of rows) {
+    const entry = map.get(r.tool) ?? { tool: r.tool, views: 0, completions: 0, failures: 0, paywalls: 0 };
+    const qtd = Number(r.qtd);
+    if (r.event_name === "tool_view") entry.views += qtd;
+    if (r.event_name === "tool_completed") entry.completions += qtd;
+    if (r.event_name === "tool_failed") entry.failures += qtd;
+    if (r.event_name === "paywall_view") entry.paywalls += qtd;
+    map.set(r.tool, entry);
+  }
+  return Array.from(map.values()).sort((a, b) => b.views + b.completions - (a.views + a.completions));
+}
+
 export async function getFrescorLoterias(): Promise<FrescorLoteria[]> {
   const { rows } = await pool.query<{
     codigo: string;

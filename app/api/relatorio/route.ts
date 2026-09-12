@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { gerarRelatorioPdf, type DadosRelatorio, type JogoRelatorio, type ResumoLoteria } from "@/lib/relatorio-pdf";
 import pool from "@/lib/db";
 import { calcularIsPremium } from "@/lib/plano";
+import { logToolEvent } from "@/lib/telemetry";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -62,6 +63,7 @@ export async function GET(request: Request) {
   }
 
   if (!calcularIsPremium(profile)) {
+    after(() => logToolEvent({ eventName: "paywall_view", tool: "relatorio-pdf", userId: user.id, plan: "free" }));
     return NextResponse.json({ erro: "Recurso exclusivo para assinantes Premium." }, { status: 403 });
   }
 
@@ -196,6 +198,17 @@ export async function GET(request: Request) {
   });
 
   const nomeArquivo = `lotoanalitica-relatorio-${String(mes).padStart(2, "0")}-${ano}.pdf`;
+
+  after(() =>
+    logToolEvent({
+      eventName: "tool_completed",
+      tool: "relatorio-pdf",
+      userId: user.id,
+      plan: "premium",
+      success: true,
+      metadata: { mes, ano, qtdJogos: jogosRelatorio.length },
+    })
+  );
 
   return new NextResponse(Buffer.from(pdfBytes), {
     headers: {
