@@ -1,6 +1,7 @@
 import pool from "@/lib/db";
 import { createAdminClient } from "@/lib/supabase/server";
 import { qtdSorteiosPorSemana } from "@/lib/calendario";
+import { variacaoPct, type Periodo } from "@/lib/admin/periodo";
 
 // Camada de leitura do Admin Control Center. Fase 1: só expõe métricas
 // calculáveis hoje com os dados já existentes (ver docs/ADMIN_AUDIT.md,
@@ -10,50 +11,117 @@ import { qtdSorteiosPorSemana } from "@/lib/calendario";
 // Admin, que precisa ver todos os usuários). Dados de loteria via o pool
 // já usado pelo resto do site (lib/db.ts).
 
-export interface VisaoUsuarios {
-  total: number;
-  novos7d: number;
-  novos30d: number;
-  premiumAtivos: number;
-  free: number;
-  cancelamentos30d: number;
+export interface KpiComparado {
+  atual: number;
+  anterior: number;
+  variacaoPct: number | null;
 }
 
-export async function getVisaoUsuarios(): Promise<VisaoUsuarios> {
-  const supabase = createAdminClient();
-  const agora = new Date();
-  const seteDiasAtras = new Date(agora.getTime() - 7 * 86_400_000).toISOString();
-  const trintaDiasAtras = new Date(agora.getTime() - 30 * 86_400_000).toISOString();
-  const nowIso = agora.toISOString();
+export interface KpisExecutivos {
+  usuariosTotais: number; // snapshot — sem "período anterior" (contagem é cumulativa)
+  novosUsuarios: KpiComparado;
+  premiumAtivos: number; // snapshot
+  free: number; // snapshot
+  cancelamentos: KpiComparado;
+  // Só ferramentas com paywall estão instrumentadas até a Fase 3 (ver
+  // docs/ADMIN_AUDIT.md) — este número NÃO cobre as 16 ferramentas do site.
+  execucoesFerramentas: KpiComparado;
+  taxaErroFerramentas: { atual: number | null; anterior: number | null };
+  erros: KpiComparado;
+}
 
-  const [totalRes, novos7dRes, novos30dRes, premiumRes, cancelamentosRes] = await Promise.all([
-    supabase.from("profiles").select("*", { count: "exact", head: true }),
-    supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", seteDiasAtras),
-    supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", trintaDiasAtras),
-    // Premium "ativo" usa a mesma regra de lib/plano.ts (calcularIsPremium):
-    // plan === 'premium' E (sem data de expiração OU expiração no futuro).
-    supabase
-      .from("profiles")
-      .select("*", { count: "exact", head: true })
-      .eq("plan", "premium")
-      .or(`plan_expires_at.is.null,plan_expires_at.gt.${nowIso}`),
-    supabase
-      .from("subscriptions")
-      .select("*", { count: "exact", head: true })
-      .eq("status", "canceled")
-      .gte("canceled_at", trintaDiasAtras),
+async function contarProfilesNoPeriodo(
+  supabase: ReturnType<typeof createAdminClient>,
+  from: Date,
+  to: Date
+): Promise<number> {
+  const { count } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true })
+    .gte("created_at", from.toISOString())
+    .lt("created_at", to.toISOString());
+  return count ?? 0;
+}
+
+async function contarCancelamentosNoPeriodo(
+  supabase: ReturnType<typeof createAdminClient>,
+  from: Date,
+  to: Date
+): Promise<number> {
+  const { count } = await supabase
+    .from("subscriptions")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "canceled")
+    .gte("canceled_at", from.toISOString())
+    .lt("canceled_at", to.toISOString());
+  return count ?? 0;
+}
+
+async function contarEventosNoPeriodo(eventName: string, from: Date, to: Date): Promise<number> {
+  const { rows } = await pool.query<{ count: string }>(
+    `SELECT count(*) FROM product_events WHERE event_name = $1 AND created_at >= $2 AND created_at < $3`,
+    [eventName, from, to]
+  );
+  return Number(rows[0]?.count ?? 0);
+}
+
+async function contarErrosNoPeriodo(from: Date, to: Date): Promise<number> {
+  const { rows } = await pool.query<{ count: string }>(
+    `SELECT count(*) FROM error_events WHERE created_at >= $1 AND created_at < $2`,
+    [from, to]
+  );
+  return Number(rows[0]?.count ?? 0);
+}
+
+export async function getKpisExecutivos(periodo: Periodo): Promise<KpisExecutivos> {
+  const supabase = createAdminClient();
+  const nowIso = new Date().toISOString();
+
+  const [totalRes, premiumRes, novosAtual, novosAnterior, cancelamentosAtual, cancelamentosAnterior] =
+    await Promise.all([
+      supabase.from("profiles").select("*", { count: "exact", head: true }),
+      // Premium "ativo" usa a mesma regra de lib/plano.ts (calcularIsPremium):
+      // plan === 'premium' E (sem data de expiração OU expiração no futuro).
+      supabase
+        .from("profiles")
+        .select("*", { count: "exact", head: true })
+        .eq("plan", "premium")
+        .or(`plan_expires_at.is.null,plan_expires_at.gt.${nowIso}`),
+      contarProfilesNoPeriodo(supabase, periodo.from, periodo.to),
+      contarProfilesNoPeriodo(supabase, periodo.fromAnterior, periodo.toAnterior),
+      contarCancelamentosNoPeriodo(supabase, periodo.from, periodo.to),
+      contarCancelamentosNoPeriodo(supabase, periodo.fromAnterior, periodo.toAnterior),
+    ]);
+
+  const [execAtual, execAnterior, falhasAtual, falhasAnterior, errosAtual, errosAnterior] = await Promise.all([
+    contarEventosNoPeriodo("tool_completed", periodo.from, periodo.to),
+    contarEventosNoPeriodo("tool_completed", periodo.fromAnterior, periodo.toAnterior),
+    contarEventosNoPeriodo("tool_failed", periodo.from, periodo.to),
+    contarEventosNoPeriodo("tool_failed", periodo.fromAnterior, periodo.toAnterior),
+    contarErrosNoPeriodo(periodo.from, periodo.to),
+    contarErrosNoPeriodo(periodo.fromAnterior, periodo.toAnterior),
   ]);
 
   const total = totalRes.count ?? 0;
   const premiumAtivos = premiumRes.count ?? 0;
 
+  const taxaErroAtual = execAtual + falhasAtual > 0 ? (falhasAtual / (execAtual + falhasAtual)) * 100 : null;
+  const taxaErroAnterior =
+    execAnterior + falhasAnterior > 0 ? (falhasAnterior / (execAnterior + falhasAnterior)) * 100 : null;
+
   return {
-    total,
-    novos7d: novos7dRes.count ?? 0,
-    novos30d: novos30dRes.count ?? 0,
+    usuariosTotais: total,
+    novosUsuarios: { atual: novosAtual, anterior: novosAnterior, variacaoPct: variacaoPct(novosAtual, novosAnterior) },
     premiumAtivos,
     free: total - premiumAtivos,
-    cancelamentos30d: cancelamentosRes.count ?? 0,
+    cancelamentos: {
+      atual: cancelamentosAtual,
+      anterior: cancelamentosAnterior,
+      variacaoPct: variacaoPct(cancelamentosAtual, cancelamentosAnterior),
+    },
+    execucoesFerramentas: { atual: execAtual, anterior: execAnterior, variacaoPct: variacaoPct(execAtual, execAnterior) },
+    taxaErroFerramentas: { atual: taxaErroAtual, anterior: taxaErroAnterior },
+    erros: { atual: errosAtual, anterior: errosAnterior, variacaoPct: variacaoPct(errosAtual, errosAnterior) },
   };
 }
 

@@ -205,3 +205,101 @@
   padding: 8px 14px;
   margin-bottom: 12px;
 }
+
+.alertList {
+  list-style: none;
+  margin: 0 0 32px;
+  padding: 0;
+  border: 1px solid var(--line);
+}
+
+.alertList li {
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-raised);
+}
+
+.alertList li:last-child {
+  border-bottom: none;
+}
+
+.alertCritical {
+  border-left: 3px solid var(--rust);
+}
+
+.alertWarning {
+  border-left: 3px solid var(--ochre);
+}
+
+.periodoBar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.periodoNav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.periodoLink {
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  background: var(--paper-raised);
+  cursor: pointer;
+}
+
+.periodoLinkActive {
+  border-color: var(--pine);
+  color: var(--pine);
+  font-weight: 600;
+}
+
+.periodoCustomForm {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
+
+.periodoCustomForm input[type="date"] {
+  font-size: 0.78rem;
+  padding: 3px 4px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-family: var(--font-body);
+  background: var(--paper-raised);
+  color: var(--ink);
+}
+
+.kpiTrendUp {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  color: #4a7a3a;
+}
+
+.kpiTrendDown {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  color: var(--rust);
+}
+
+.kpiTrendNeutral {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+}

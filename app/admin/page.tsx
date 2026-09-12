@@ -1,12 +1,15 @@
+import Link from "next/link";
 import {
-  getVisaoUsuarios,
+  getKpisExecutivos,
   getFrescorLoterias,
   getSaudeJobs,
   getUltimosJobRuns,
   getSaudeErros,
   getUsoFerramentas30d,
+  type KpiComparado,
   type StatusSaude,
 } from "@/lib/admin/queries";
+import { resolverPeriodo, ehPeriodoId, PERIODOS_PADRAO, type PeriodoId } from "@/lib/admin/periodo";
 import styles from "./admin.module.css";
 
 export const dynamic = "force-dynamic";
@@ -39,9 +42,69 @@ function statusGeral(statuses: StatusSaude[]): StatusSaude {
   return "healthy";
 }
 
-export default async function AdminOverviewPage() {
-  const [usuarios, frescor, jobs, ultimosJobs, erros, usoFerramentas] = await Promise.all([
-    getVisaoUsuarios(),
+interface Alerta {
+  texto: string;
+  nivel: "warning" | "critical";
+}
+
+// Regras simples e documentadas (seção 31 do audit) — só sinaliza o que dá
+// pra justificar com dado real hoje: job travado/falhando, loteria com
+// dados atrasados, ou volume de erro acima do limiar já usado no Platform
+// Health. Nada de limiar arbitrário novo só pra preencher a seção.
+function montarAlertas(
+  jobs: Awaited<ReturnType<typeof getSaudeJobs>>,
+  frescor: Awaited<ReturnType<typeof getFrescorLoterias>>,
+  erros: Awaited<ReturnType<typeof getSaudeErros>>
+): Alerta[] {
+  const alertas: Alerta[] = [];
+
+  for (const j of jobs) {
+    if (j.status === "critical") {
+      alertas.push({
+        texto:
+          j.ultimoStatus === "failed"
+            ? `Job "${NOME_JOB[j.jobName] ?? j.jobName}" falhou na última execução.`
+            : `Job "${NOME_JOB[j.jobName] ?? j.jobName}" está atrasado (${j.horasDesde}h desde a última execução).`,
+        nivel: "critical",
+      });
+    } else if (j.status === "warning") {
+      alertas.push({ texto: `Job "${NOME_JOB[j.jobName] ?? j.jobName}" está próximo do limite de atraso.`, nivel: "warning" });
+    }
+  }
+
+  for (const f of frescor) {
+    if (f.status === "critical") {
+      alertas.push({
+        texto: f.diasDesde == null
+          ? `Nenhum concurso de ${f.nome} encontrado no banco.`
+          : `Dados de ${f.nome} desatualizados há ${f.diasDesde} dias.`,
+        nivel: "critical",
+      });
+    } else if (f.status === "warning") {
+      alertas.push({ texto: `Dados de ${f.nome} começando a atrasar (${f.diasDesde} dias).`, nivel: "warning" });
+    }
+  }
+
+  if (erros.status === "critical") {
+    alertas.push({ texto: `${erros.ultimas24h} erros registrados nas últimas 24h.`, nivel: "critical" });
+  } else if (erros.status === "warning") {
+    alertas.push({ texto: `${erros.ultimas24h} erros registrados nas últimas 24h — acima do normal.`, nivel: "warning" });
+  }
+
+  return alertas;
+}
+
+export default async function AdminOverviewPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ period?: string; from?: string; to?: string }>;
+}) {
+  const sp = await searchParams;
+  const periodoId: PeriodoId = ehPeriodoId(sp.period) ? sp.period : "30d";
+  const periodo = resolverPeriodo(periodoId, sp.from, sp.to);
+
+  const [kpis, frescor, jobs, ultimosJobs, erros, usoFerramentas] = await Promise.all([
+    getKpisExecutivos(periodo),
     getFrescorLoterias(),
     getSaudeJobs(),
     getUltimosJobRuns(8),
@@ -50,14 +113,28 @@ export default async function AdminOverviewPage() {
   ]);
   const dadosLoteriasStatus = statusGeral(frescor.map((f) => f.status));
   const jobsStatus = statusGeral(jobs.map((j) => j.status));
+  const alertas = montarAlertas(jobs, frescor, erros);
 
   return (
     <>
       <h1 className={styles.pageTitle}>Overview</h1>
       <p className={styles.pageSubtitle}>
-        Fase 2 — telemetria. KPIs de usuários/dados calculáveis desde a Fase 1, jobs e erros
-        instrumentados nesta fase. Ver <code>docs/ADMIN_AUDIT.md</code> para o roadmap completo.
+        Fase 3 — KPIs com comparação de período. Ver <code>docs/ADMIN_AUDIT.md</code> e{" "}
+        <code>docs/KPI_DICTIONARY.md</code> para definições formais.
       </p>
+
+      <p className={styles.sectionTitle}>Precisa atenção</p>
+      {alertas.length === 0 ? (
+        <p className={styles.note}>Nenhum problema detectado pelas regras atuais.</p>
+      ) : (
+        <ul className={styles.alertList}>
+          {alertas.map((a, i) => (
+            <li key={i} className={a.nivel === "critical" ? styles.alertCritical : styles.alertWarning}>
+              {a.texto}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <p className={styles.sectionTitle}>Platform Health</p>
       <div className={styles.healthGrid}>
@@ -69,15 +146,49 @@ export default async function AdminOverviewPage() {
         <HealthCell label="API" status="unknown" nota="Aguarda Fase 6" />
       </div>
 
-      <p className={styles.sectionTitle}>KPIs executivos</p>
-      <div className={styles.kpiGrid}>
-        <Kpi label="Usuários totais" value={usuarios.total} />
-        <Kpi label="Novos (7 dias)" value={usuarios.novos7d} />
-        <Kpi label="Novos (30 dias)" value={usuarios.novos30d} />
-        <Kpi label="Assinantes Premium" value={usuarios.premiumAtivos} />
-        <Kpi label="Free" value={usuarios.free} />
-        <Kpi label="Cancelamentos (30 dias)" value={usuarios.cancelamentos30d} />
+      <div className={styles.periodoBar}>
+        <span className={styles.sectionTitle} style={{ margin: 0 }}>
+          KPIs executivos
+        </span>
+        <nav className={styles.periodoNav}>
+          {PERIODOS_PADRAO.map((p) => (
+            <Link
+              key={p.id}
+              href={`/admin?period=${p.id}`}
+              className={p.id === periodo.id ? `${styles.periodoLink} ${styles.periodoLinkActive}` : styles.periodoLink}
+            >
+              {p.label}
+            </Link>
+          ))}
+          <form action="/admin" method="get" className={styles.periodoCustomForm}>
+            <input type="hidden" name="period" value="custom" />
+            <input type="date" name="from" defaultValue={sp.from} aria-label="De" />
+            <span>–</span>
+            <input type="date" name="to" defaultValue={sp.to} aria-label="Até" />
+            <button type="submit" className={periodo.id === "custom" ? `${styles.periodoLink} ${styles.periodoLinkActive}` : styles.periodoLink}>
+              Aplicar
+            </button>
+          </form>
+        </nav>
       </div>
+      <p className={styles.note}>
+        Período: {periodo.label} ({periodo.from.toLocaleDateString("pt-BR")} – {periodo.to.toLocaleDateString("pt-BR")}
+        ), comparado ao período imediatamente anterior de mesma duração.
+      </p>
+      <div className={styles.kpiGrid}>
+        <Kpi label="Usuários totais" value={kpis.usuariosTotais} />
+        <KpiComparadoCell label="Novos usuários" dado={kpis.novosUsuarios} />
+        <Kpi label="Assinantes Premium" value={kpis.premiumAtivos} />
+        <Kpi label="Free" value={kpis.free} />
+        <KpiComparadoCell label="Cancelamentos" dado={kpis.cancelamentos} invertido />
+        <KpiComparadoCell label="Execuções de ferramentas*" dado={kpis.execucoesFerramentas} />
+        <KpiTaxaErro dado={kpis.taxaErroFerramentas} />
+        <KpiComparadoCell label="Erros" dado={kpis.erros} invertido />
+      </div>
+      <p className={styles.note}>
+        *Só as ferramentas com paywall estão instrumentadas até agora (gerador, simulador,
+        conferidor, OCR, exportação CSV, relatório PDF) — não é o total das 16 ferramentas do site.
+      </p>
 
       <p className={styles.sectionTitle}>Frescor de dados por loteria</p>
       <p className={styles.note}>
@@ -211,6 +322,44 @@ function Kpi({ label, value }: { label: string; value: number }) {
     <div className={styles.kpiCell}>
       <span className={styles.kpiValue}>{value.toLocaleString("pt-BR")}</span>
       <span className={styles.kpiLabel}>{label}</span>
+    </div>
+  );
+}
+
+// invertido=true pra métricas onde "subir" é ruim (cancelamentos, erros) —
+// inverte só a cor do indicador, não o sinal do número exibido.
+function KpiComparadoCell({ label, dado, invertido }: { label: string; dado: KpiComparado; invertido?: boolean }) {
+  const subiu = dado.variacaoPct != null && dado.variacaoPct > 0;
+  const desceu = dado.variacaoPct != null && dado.variacaoPct < 0;
+  const positivo = invertido ? desceu : subiu;
+  const negativo = invertido ? subiu : desceu;
+  return (
+    <div className={styles.kpiCell}>
+      <span className={styles.kpiValue}>{dado.atual.toLocaleString("pt-BR")}</span>
+      <span className={styles.kpiLabel}>{label}</span>
+      {dado.variacaoPct == null ? (
+        <span className={styles.kpiTrendNeutral}>sem período anterior p/ comparar</span>
+      ) : (
+        <span className={positivo ? styles.kpiTrendUp : negativo ? styles.kpiTrendDown : styles.kpiTrendNeutral}>
+          {dado.variacaoPct > 0 ? "↑" : dado.variacaoPct < 0 ? "↓" : "→"} {Math.abs(dado.variacaoPct).toFixed(1)}% vs período anterior
+        </span>
+      )}
+    </div>
+  );
+}
+
+function KpiTaxaErro({ dado }: { dado: { atual: number | null; anterior: number | null } }) {
+  return (
+    <div className={styles.kpiCell}>
+      <span className={styles.kpiValue}>{dado.atual != null ? `${dado.atual.toFixed(1)}%` : "—"}</span>
+      <span className={styles.kpiLabel}>Taxa de erro (ferramentas)*</span>
+      <span className={styles.kpiTrendNeutral}>
+        {dado.atual == null
+          ? "sem execuções no período"
+          : dado.anterior != null
+          ? `período anterior: ${dado.anterior.toFixed(1)}%`
+          : "sem período anterior p/ comparar"}
+      </span>
     </div>
   );
 }
