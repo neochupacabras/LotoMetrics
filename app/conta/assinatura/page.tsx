@@ -89,9 +89,7 @@ export default async function AssinaturaPage() {
             </div>
 
             <div className="assinatura-card__acoes">
-              {profile?.stripe_customer_id && (
-                <PortalStripeButton customerId={profile.stripe_customer_id} />
-              )}
+              {profile?.stripe_customer_id && <PortalStripeButton />}
             </div>
 
             <p className="assinatura-card__nota">

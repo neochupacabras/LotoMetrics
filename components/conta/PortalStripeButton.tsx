@@ -2,16 +2,12 @@
 
 import { useState } from "react";
 
-export default function PortalStripeButton({ customerId }: { customerId: string }) {
+export default function PortalStripeButton() {
   const [loading, setLoading] = useState(false);
 
   async function handleClick() {
     setLoading(true);
-    const res = await fetch("/api/stripe/portal", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ customerId }),
-    });
+    const res = await fetch("/api/stripe/portal", { method: "POST" });
     const data = await res.json();
     if (data.url) {
       window.location.href = data.url;
