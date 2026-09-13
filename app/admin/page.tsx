@@ -157,7 +157,7 @@ export default async function AdminOverviewPage({
         />
         <HealthCell label="Jobs" status={jobsStatus} />
         <HealthCell label="Erros" status={erros.status} nota={`${erros.ultimas24h} nas últimas 24h`} />
-        <HealthCell label="API" status="unknown" nota="Aguarda Fase 6" />
+        <HealthCell label="API" status="unknown" nota="Uso em /admin/api — sem métrica de erro/latência" />
       </div>
 
       <div className={styles.periodoBar}>
@@ -197,7 +197,8 @@ export default async function AdminOverviewPage({
       <p className={styles.sectionTitle}>Frescor de dados por loteria</p>
       <p className={styles.note}>
         Status calculado a partir da cadência esperada de sorteios de cada loteria (lib/calendario.ts) — não
-        é uma verificação exata dia a dia, serve para sinalizar atraso visível na importação.
+        é uma verificação exata dia a dia, serve para sinalizar atraso visível na importação. Checagens
+        de integridade (gaps, duplicados) em <Link href="/admin/data-health">/admin/data-health</Link>.
       </p>
       <table className={styles.table}>
         <thead>
@@ -229,9 +230,9 @@ export default async function AdminOverviewPage({
 
       <p className={styles.sectionTitle}>Jobs recentes</p>
       <p className={styles.note}>
-        Cron jobs da Vercel (conferir, relatório, revalidar) e o importador de resultados (GitHub
-        Actions) — o processo mais crítico do produto e, antes desta fase, o único sem nenhuma
-        visibilidade fora do log local. Tolerância de atraso documentada em lib/admin/queries.ts.
+        Últimas 8 execuções — histórico completo, estatísticas e p50/p95 de duração em{" "}
+        <Link href="/admin/jobs">/admin/jobs</Link>. Tolerância de atraso documentada em
+        docs/KPI_DICTIONARY.md.
       </p>
       {ultimosJobs.length === 0 ? (
         <p className={styles.note}>

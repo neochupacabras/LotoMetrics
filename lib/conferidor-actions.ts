@@ -27,6 +27,7 @@ export async function conferirJogoAction(
   dezenas: number[],
   trevos?: number[]
 ): Promise<ConferidorActionResult> {
+  const inicio = Date.now();
   const resultado = await conferirJogoInterno(codigoLoteria, dezenas, trevos);
   after(() =>
     logToolEvent({
@@ -34,6 +35,7 @@ export async function conferirJogoAction(
       tool: "conferidor",
       lottery: codigoLoteria,
       success: resultado.ok,
+      durationMs: Date.now() - inicio,
     })
   );
   return resultado;

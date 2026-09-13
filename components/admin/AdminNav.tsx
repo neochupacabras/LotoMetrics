@@ -15,6 +15,7 @@ const GRUPOS: { titulo: string; itens: { label: string; href?: string }[] }[] = 
       { label: "Ferramentas", href: "/admin/tools" },
       { label: "Loterias", href: "/admin/lotteries" },
       { label: "Funis", href: "/admin/funnels" },
+      { label: "Data Health", href: "/admin/data-health" },
     ],
   },
   {
@@ -23,7 +24,12 @@ const GRUPOS: { titulo: string; itens: { label: string; href?: string }[] }[] = 
   },
   {
     titulo: "Operações",
-    itens: [{ label: "Erros" }, { label: "Performance" }, { label: "Jobs" }, { label: "API" }],
+    itens: [
+      { label: "Erros", href: "/admin/errors" },
+      { label: "Performance", href: "/admin/performance" },
+      { label: "Jobs", href: "/admin/jobs" },
+      { label: "API", href: "/admin/api" },
+    ],
   },
 ];
 

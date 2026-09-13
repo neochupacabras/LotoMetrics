@@ -1,9 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { gerarApiKey, hashApiKey, prefixoApiKey } from "@/lib/api-auth";
 import { calcularIsPremium } from "@/lib/plano";
+import { logError } from "@/lib/telemetry";
 
 // ── Criar nova API key ────────────────────────────────────────────────────────
 export async function criarApiKeyAction(
@@ -48,6 +50,7 @@ export async function criarApiKeyAction(
 
   if (error) {
     console.error("[criarApiKeyAction] Supabase error:", error.message, error.code, error.details);
+    after(() => logError({ source: "criar_api_key", message: error.message, userId: user.id }));
     return { ok: false, erro: "Erro ao criar a chave. Tente novamente." };
   }
 
@@ -72,6 +75,7 @@ export async function revogarApiKeyAction(
 
   if (error) {
     console.error("[revogarApiKeyAction] Supabase error:", error.message, error.code, error.details);
+    after(() => logError({ source: "revogar_api_key", message: error.message, userId: user.id }));
     return { ok: false, erro: "Erro ao revogar a chave." };
   }
 

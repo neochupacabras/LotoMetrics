@@ -58,6 +58,7 @@ async function verificarEIncrementarLimite(
 }
 
 export async function POST(request: Request) {
+  const inicio = Date.now();
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -188,6 +189,7 @@ export async function POST(request: Request) {
         userId: user.id,
         plan: "premium",
         success: true,
+        durationMs: Date.now() - inicio,
         metadata: { confianca, qtdDezenasLidas: dezenas.length },
       })
     );

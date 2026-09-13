@@ -157,6 +157,7 @@ export async function simularHistorico(
   limiteHistorico?: number, // undefined = histórico completo (premium)
   trevos?: number[] // +Milionária
 ): Promise<ResultadoSimulacao | { erro: string }> {
+  const inicio = Date.now();
   const resultado = await simularHistoricoInterno(codigoLoteria, dezenas, limiteHistorico, trevos);
   const falhou = "erro" in resultado;
   after(() =>
@@ -169,6 +170,7 @@ export async function simularHistorico(
       // matriz Free vs Premium) — evita round-trip extra de auth só pra
       // registrar o plano.
       plan: limiteHistorico ? "free" : "premium",
+      durationMs: Date.now() - inicio,
     })
   );
   return resultado;

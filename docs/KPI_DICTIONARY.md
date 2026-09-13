@@ -183,6 +183,61 @@ uma dependência pesada em tempo real por tela.
   assinantes Premium), mas sem integração com a API do AdSense — só visível no painel do Google. Não
   aparece como R$0 nem como estimativa; aparece explicitamente marcada como indisponível.
 
+## Erros agrupados (`/admin/errors`)
+
+- **Significado:** erros de aplicação agrupados por origem, não por ocorrência individual.
+- **Fórmula:** `GROUP BY source` sobre `error_events` no período — contagem, usuários distintos
+  afetados (`count(DISTINCT user_id)`), primeira/última ocorrência, última mensagem.
+- **Fonte:** `error_events`.
+- **Cobertura (Fase 6):** `stripe_webhook` (assinatura inválida, `supabase_user_id` ausente), `ocr`
+  (falha da Vision API), `salvar_jogo`, `criar_api_key`, `revogar_api_key`. A grande maioria dos
+  `console.error` espalhados pelo projeto ainda não escreve nesta tabela — expandir essa cobertura é
+  trabalho incremental, não uma reescrita de uma vez.
+
+## Performance (`/admin/performance`)
+
+- **Significado:** p50/p95/p99 de tempo de execução no servidor, por ferramenta e por job.
+- **Fórmula:** `percentile_cont(0.5|0.95|0.99) WITHIN GROUP (ORDER BY duration_ms)` sobre
+  `product_events` (ferramentas) e `job_runs` (jobs), no período.
+- **Fonte:** `product_events.duration_ms` (populado nas ações que já emitiam `tool_completed`/
+  `tool_failed`: Conferidor, Simulador, Comparador de jogos, OCR) e `job_runs.duration_ms` (todos os
+  jobs, desde a Fase 2).
+- **Limitação importante:** isto é tempo de execução no servidor (Server Action/Route Handler), não
+  Web Vitals (LCP/INP/CLS) — essas métricas de experiência no navegador não são gravadas no banco do
+  produto hoje (o Vercel Speed Insights mede no cliente, mas não persiste aqui). Trazer Web Vitals pra
+  cá exigiria um beacon client-side + tabela própria, não implementado.
+
+## Data Health (`/admin/data-health`)
+
+Estende o "Frescor de dados por loteria" (Fase 1) com checagens estruturais de integridade:
+
+- **Gaps:** `(máximo - mínimo + 1) - count(DISTINCT numero)` por loteria — números de concurso
+  faltando entre o menor e o maior salvos. 0 é o esperado (a Caixa não pula número de concurso).
+- **Duplicados:** `count(*) - count(DISTINCT numero)` — mais de uma linha para o mesmo concurso. 0 é
+  esperado (constraint `UNIQUE(loteria_id, numero)` no banco); se aparecer > 0, é sinal de a
+  constraint ter sido violada ou removida.
+- **Dezenas nulas:** concursos salvos sem nenhuma dezena sorteada (`dezenas IS NULL` ou array vazio) —
+  indica falha de parsing do importador para aquele concurso específico. (Achado da implementação:
+  a query original contava incorretamente 1 "dezena nula" para loterias com **zero** concursos
+  salvos, por causa da linha fantasma que um `LEFT JOIN` sem correspondência produz — corrigido
+  adicionando `c.id IS NOT NULL` ao filtro.)
+- **Fonte:** `concurso` (via `pool`, mesma tabela usada por todo o site).
+- **Limitação:** não valida a matemática combinatória de cada ferramenta (isso é uma auditoria
+  matemática separada, fora do escopo do Admin — ver seção 43 do audit original).
+
+## Uso da API pública (`/admin/api`)
+
+- **Significado:** consumo agregado das chaves de API ativas.
+- **Fórmula:** leitura direta de `api_keys` (`requests_mes`, `limite_mes`, `mes_referencia`,
+  `last_used_at`) — nenhuma agregação adicional, o contador mensal já é mantido pelo próprio
+  `lib/api-auth.ts` a cada requisição.
+- **Fonte:** `api_keys`.
+- **Limitação:** é um contador agregado por chave por mês, não um log por requisição — não dá pra ver
+  aqui quais endpoints específicos foram chamados, de onde, ou o histórico de uso dia a dia. Isso
+  exigiria um evento `api_request` emitido a cada chamada (decisão consciente de não instrumentar:
+  adicionaria uma escrita no banco a cada requisição de uma API pública já sensível a latência, para
+  um volume de uso hoje muito baixo — reavaliar se o uso da API crescer).
+
 ## Aquisição e ativação — não implementado
 
 Ver seção seguinte ("ainda NÃO implementadas") — nenhum evento de sessão/login, cadastro ou pageview anônimo existe hoje, então esses funis não podem ser construídos sem instrumentação adicional.

@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { logError } from "@/lib/telemetry";
 
 // ── Salvar jogo ───────────────────────────────────────────────────────────────
 export async function salvarJogoAction(
@@ -22,6 +24,7 @@ export async function salvarJogoAction(
 
   if (error) {
     console.error("salvarJogoAction:", error.message);
+    after(() => logError({ source: "salvar_jogo", message: error.message, userId: user.id, metadata: { loteria: codigoLoteria } }));
     return { ok: false, erro: "Não foi possível salvar o jogo. Tente novamente." };
   }
 
