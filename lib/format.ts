@@ -16,6 +16,20 @@ export function isCodigoLoteriaValido(valor: string): valor is CodigoLoteria {
   return ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "duplasena", "supersete"].includes(valor);
 }
 
+// Preposição de gênero de cada loteria ("na Lotofácil" vs. "no Super
+// Sete") — só Dia de Sorte e Super Sete são masculinos ("o Dia de
+// Sorte", "o Super Sete"). "de" segue a mesma regra (na→da, no→do).
+// Extraído em 21/09/2026 (tarefa 2.1 do plano de implementação) do
+// simulador, que já precisava disso pro H1/FAQ; outras páginas ainda têm
+// "da {nomeLoteria}" hardcoded (ver spawn_task) e podem migrar pra cá aos
+// poucos.
+const LOTERIAS_MASCULINAS = new Set(["diadesorte", "supersete"]);
+
+export function preposicaoLoteria(codigoLoteria: string): { em: "na" | "no"; de: "da" | "do" } {
+  const em = LOTERIAS_MASCULINAS.has(codigoLoteria) ? "no" : "na";
+  return { em, de: em === "na" ? "da" : "do" };
+}
+
 export function formatarData(isoOuDataSql: string | null): string {
   if (!isoOuDataSql) return "—";
   const data = new Date(isoOuDataSql);

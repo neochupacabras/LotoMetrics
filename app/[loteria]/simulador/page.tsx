@@ -7,8 +7,9 @@ import SimuladorHistoricoClient from "@/components/SimuladorHistoricoClient";
 import BloqueadoPremium from "@/components/BloqueadoPremium";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getLoteriaPorCodigo } from "@/lib/queries";
-import { isCodigoLoteriaValido } from "@/lib/format";
+import { isCodigoLoteriaValido, preposicaoLoteria } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+import FaqItem from "@/components/FaqItem";
 import { getPlanoPremium } from "@/lib/plano";
 import { logToolEvent } from "@/lib/telemetry";
 
@@ -20,11 +21,19 @@ export async function generateMetadata({
   const { loteria: codigoLoteria } = await params;
   if (!isCodigoLoteriaValido(codigoLoteria)) return {};
   const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
+  const { em } = preposicaoLoteria(codigoLoteria);
+  // Título alinhado à busca real (Search Console, 13/09/2026: "eu teria
+  // ganho na lotofácil" tinha 581 impressões, posição 8, só 2 cliques —
+  // achado #2.1 do plano de implementação). O antigo "simulador histórico
+  // — e se eu tivesse jogado todo concurso?" ranqueava pra essa busca sem
+  // responder a ela no próprio título.
   return metadataPagina(
     codigoLoteria,
     "/simulador",
-    `${nome}: simulador histórico — e se eu tivesse jogado todo concurso?`,
-    `Escolha qualquer combinação e veja quanto teria gasto e ganho se tivesse jogado esse jogo em cada concurso da história da ${nome}. Resultado honesto, com os prêmios históricos reais.`
+    `Eu teria ganho ${em} ${nome}? Teste seus números em todos os concursos`,
+    `Descubra se sua combinação já teria sido premiada em algum concurso ${
+      em === "na" ? "da" : "do"
+    } ${nome} — de graça, sem cadastro. Veja o gasto, o ganho e o saldo real com os prêmios históricos de cada concurso.`
   );
 }
 
@@ -67,9 +76,39 @@ export default async function SimuladorPage({
     supersete:      "860+",
   };
   const totalConcursosLabel = totalLabel[codigoLoteria] ?? "histórico completo";
+  const { em, de } = preposicaoLoteria(codigoLoteria);
+
+  const perguntasFrequentes = [
+    {
+      pergunta: `Como sei se eu já teria ganhado ${em} ${loteria.nome}?`,
+      resposta: `Digite as dezenas que você costuma jogar no simulador abaixo. Ele confere essa combinação contra todos os ${totalConcursosLabel} concursos já realizados ${de} ${loteria.nome} e mostra em quais delas você teria batido alguma faixa premiada, com o valor real pago naquele concurso.`,
+    },
+    {
+      pergunta: "O simulador aumenta minha chance de ganhar?",
+      resposta: `Não. O simulador só mostra o que já aconteceu no passado — cada sorteio ${em} ${loteria.nome} é um evento independente, e nenhum padrão histórico muda a probabilidade do próximo concurso.`,
+    },
+    {
+      pergunta: `Quantos concursos ${de} ${loteria.nome} o simulador testa?`,
+      resposta: `O plano gratuito testa os últimos 100 concursos. O plano Premium testa o histórico completo — ${totalConcursosLabel} concursos ${de} ${loteria.nome}.`,
+    },
+  ];
+
+  const jsonLdFaq = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: perguntasFrequentes.map((p) => ({
+      "@type": "Question",
+      name: p.pergunta,
+      acceptedAnswer: { "@type": "Answer", text: p.resposta },
+    })),
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}
+      />
       <BreadcrumbJsonLd
         itens={[
           { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
@@ -78,10 +117,10 @@ export default async function SimuladorPage({
       />
     <div className="container secao">
       <p className="eyebrow">Estatísticas de {loteria.nome}</p>
-      <h1 className="titulo-edicao">E se eu tivesse jogado todo concurso?</h1>
+      <h1 className="titulo-edicao">Eu teria ganho {em} {loteria.nome}?</h1>
       <p className="subtitulo-edicao" style={{ maxWidth: 600 }}>
         Escolha uma combinação e veja quanto teria gasto e ganho se tivesse apostado
-        esse mesmo jogo {premium ? `em cada um dos ${totalConcursosLabel} concursos` : "nos últimos 100 concursos"} da história da {loteria.nome} — com os prêmios históricos reais.
+        esse mesmo jogo {premium ? `em cada um dos ${totalConcursosLabel} concursos` : "nos últimos 100 concursos"} da história {de} {loteria.nome} — com os prêmios históricos reais.
       </p>
 
       {!premium && (
@@ -119,7 +158,7 @@ export default async function SimuladorPage({
         <p>
           O simulador responde à pergunta: "e se eu tivesse jogado esse jogo todo
           concurso desde o início?" Você escolhe qualquer combinação de dezenas e o
-          simulador calcula, para cada concurso do histórico da {loteria.nome}, quanto
+          simulador calcula, para cada concurso do histórico {de} {loteria.nome}, quanto
           teria gasto (o preço do bilhete em cada concurso), quais prêmios teria ganho
           (usando os valores históricos reais de cada faixa em cada concurso) e o saldo
           acumulado ao longo do tempo.
@@ -149,6 +188,16 @@ export default async function SimuladorPage({
           o que permite ver o desempenho de qualquer jogo ao longo de toda a história
           da loteria.
         </p>
+      </div>
+
+      <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 32 }}>
+        <h2 className="bloco__titulo">Perguntas frequentes</h2>
+        {perguntasFrequentes.map((p) => (
+          <FaqItem key={p.pergunta}>
+            {p.pergunta}
+            <p>{p.resposta}</p>
+          </FaqItem>
+        ))}
       </div>
     </div>
     </>

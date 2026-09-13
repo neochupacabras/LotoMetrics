@@ -8,7 +8,7 @@ import {
 import { simularHistorico, compararJogos, type ResultadoSimulacao, type ResultadoComparacao } from "@/lib/simulador-actions";
 import { salvarJogoAction } from "@/lib/jogo-actions";
 import InsightCallout from "./InsightCallout";
-import { formatarDezena } from "@/lib/format";
+import { formatarDezena, preposicaoLoteria } from "@/lib/format";
 import SeletorColunasSuperSete from "./SeletorColunasSuperSete";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -236,6 +236,7 @@ export default function SimuladorHistoricoClient({
   const [modo, setModo] = useState<Modo>("simples");
   const usaTrevos = codigoLoteria === "maismilionaria";
   const ehSuperSete = codigoLoteria === "supersete";
+  const { de: prepDe } = preposicaoLoteria(codigoLoteria);
 
   // Estado — modo simples
   const [selA, setSelA] = useState<Set<number>>(new Set());
@@ -383,7 +384,7 @@ export default function SimuladorHistoricoClient({
           <p className="analisador-instrucao">
             Escolha as {qtdDezenasSorteadas} dezenas que você jogaria em todo
             concurso — a simulação verifica esse jogo em cada sorteio da história
-            da {nomeLoteria}.
+            {" "}{prepDe} {nomeLoteria}.
           </p>
           {ehSuperSete ? (
             <SeletorColunasSuperSete valores={colA} onChange={setColA} />
