@@ -42,6 +42,7 @@ HEADERS = {
     "Accept": "application/json",
 }
 TIMEOUT_SEGUNDOS = 10
+TIMEOUT_NOTIFICACOES = 65  # maxDuration=60 no lado do Next.js
 INTERVALO_ENTRE_CHAMADAS = 1.0
 MAX_TENTATIVAS = 3
 SITE_URL = os.environ.get("SITE_URL", "https://lotoanalitica.com.br").rstrip("/")
@@ -307,6 +308,29 @@ def invalidar_cache_site() -> None:
         log.warning("Erro ao chamar endpoint de revalidacao (%s): %s", url, e)
 
 
+def disparar_notificacoes() -> None:
+    """Fase 1 do plano de implementacao (13/09/2026, tarefa 1.4): avisa o
+    site que ha concurso novo pra disparar e-mail de resultado dos jogos e
+    alertas de acumulo na hora, em vez de esperar o cron diario de
+    seguranca (app/api/cron/conferir). Reaproveita REVALIDAR_SECRET.
+    Best-effort: uma falha aqui nunca derruba a importacao -- o cron
+    diario cobre o mesmo concurso no dia seguinte (idempotente via
+    notificacoes_enviadas)."""
+    token = os.environ.get("REVALIDAR_SECRET")
+    if not token:
+        return  # ja logou warning em invalidar_cache_site()
+
+    url = f"{SITE_URL}/api/eventos/concursos-novos"
+    try:
+        resposta = requests.post(url, headers={"Authorization": f"Bearer {token}"}, timeout=TIMEOUT_NOTIFICACOES)
+        if resposta.ok:
+            log.info("Notificacoes de concurso novo disparadas com sucesso (%s).", url)
+        else:
+            log.warning("Falha ao disparar notificacoes: HTTP %d - %s", resposta.status_code, resposta.text[:200])
+    except requests.RequestException as e:
+        log.warning("Erro ao chamar endpoint de notificacoes (%s): %s", url, e)
+
+
 def registrar_job_run(status: str, iniciado_em: datetime, detalhes: Optional[dict] = None, erro: Optional[str] = None) -> None:
     """Fase 2 do Admin Control Center (docs/ADMIN_AUDIT.md): grava a execucao
     deste job em job_runs, a mesma tabela usada pelos cron jobs do Next.js,
@@ -389,6 +413,7 @@ def main():
 
     if houve_atualizacao:
         invalidar_cache_site()
+        disparar_notificacoes()
 
     registrar_job_run(
         "success",
