@@ -2,6 +2,7 @@ import { NextResponse, after } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { calcularIsPremium } from "@/lib/plano";
 import { logToolEvent, logError } from "@/lib/telemetry";
+import { LOTERIAS_COM_OCR } from "@/lib/ocr-suporte";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -17,7 +18,14 @@ function extrairDezenas(
   texto: string,
   loteria: string
 ): { dezenas: number[]; confianca: "alta" | "media" | "baixa" } {
-  const { min, max, qtd } = LIMITES_LOTERIA[loteria] ?? LIMITES_LOTERIA.lotofacil;
+  // A UI (ConferidorClient) já esconde a aba de foto pra loterias fora de
+  // LOTERIAS_COM_OCR — este limite é defesa em profundidade, não o
+  // caminho normal.
+  const limites = LIMITES_LOTERIA[loteria];
+  if (!limites) {
+    throw new Error(`OCR sem faixa conhecida para a loteria "${loteria}"`);
+  }
+  const { min, max, qtd } = limites;
   const numeros = (texto.match(/\b\d{1,2}\b/g) ?? [])
     .map(Number)
     .filter(n => n >= min && n <= max);
@@ -120,6 +128,13 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     const arquivo = formData.get("imagem") as File | null;
     loteria = (formData.get("loteria") as string) ?? "lotofacil";
+
+    if (!LOTERIAS_COM_OCR.has(loteria)) {
+      return NextResponse.json(
+        { erro: "O conferidor por foto ainda só está disponível para Lotofácil e Mega-Sena." },
+        { status: 400 }
+      );
+    }
 
     if (!arquivo) {
       return NextResponse.json({ erro: "Nenhuma imagem enviada." }, { status: 400 });

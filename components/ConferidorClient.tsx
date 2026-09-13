@@ -8,6 +8,7 @@ import { conferirJogoAction, calcularRetornoFinanceiroAction, ConferidorActionRe
 import { formatarData, formatarDezena } from "@/lib/format";
 import GraficoBarras from "./GraficoBarras";
 import InsightCallout from "./InsightCallout";
+import { LOTERIAS_COM_OCR } from "@/lib/ocr-suporte";
 
 // Importação dinâmica para não incluir no bundle inicial
 const ConferidorFoto = dynamic(() => import("./ConferidorFoto"), { ssr: false });
@@ -30,6 +31,11 @@ export default function ConferidorClient({
   isPremium?: boolean;
 }) {
   const ehSuperSete = codigoLoteria === "supersete";
+  // OCR só conhece a faixa de dezenas de Lotofácil/Mega-Sena — nas demais
+  // (fora Super Sete, que já não tem essa aba por outro motivo: o acerto é
+  // por coluna, não por dezena) esconder a aba em vez de deixar o usuário
+  // fotografar um bilhete que seria lido com a faixa errada.
+  const temOcr = LOTERIAS_COM_OCR.has(codigoLoteria);
   const [aba, setAba] = useState<"manual" | "foto">("manual");
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
   const [colunas, setColunas] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
@@ -127,9 +133,11 @@ export default function ConferidorClient({
 
   return (
     <div>
-      {/* Toggle Manual / Foto — Super Sete não tem aba de foto: o OCR foi
-          treinado pra reconhecer dezenas de um volante comum, não colunas. */}
-      {!ehSuperSete && (
+      {/* Toggle Manual / Foto — Super Sete não tem aba de foto (o OCR foi
+          treinado pra reconhecer dezenas de um volante comum, não colunas)
+          e as demais loterias fora de Lotofácil/Mega-Sena também não, até
+          o OCR aprender a faixa de dezenas de cada uma. */}
+      {!ehSuperSete && temOcr && (
         <div className="modo-toggle" style={{ alignSelf: "flex-start", marginBottom: 20 }}>
           <button
             type="button"
@@ -152,7 +160,7 @@ export default function ConferidorClient({
       )}
 
       {/* Aba Foto */}
-      {!ehSuperSete && aba === "foto" && (
+      {!ehSuperSete && temOcr && aba === "foto" && (
         <ConferidorFoto
           codigoLoteria={codigoLoteria}
           qtdDezenasSorteadas={qtdDezenasSorteadas}

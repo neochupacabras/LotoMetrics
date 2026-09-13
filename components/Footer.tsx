@@ -17,6 +17,7 @@ export default function Footer() {
           <a href="/calendario">Calendário de sorteios</a>
           <a href="/dicas#jogo-responsavel">Jogo responsável</a>
           <a href="/privacidade">Política de Privacidade</a>
+          <a href="/termos">Termos de uso</a>
           <a href="/api-dados">API de dados</a>
         </nav>
       </div>
