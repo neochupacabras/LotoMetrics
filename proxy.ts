@@ -84,10 +84,24 @@ export async function proxy(request: NextRequest) {
   return supabaseResponse;
 }
 
-export const proxyConfig = {
-  matcher: [
-    "/conta/:path*",
-    "/premium/:path*",
-    "/((?!_next/static|_next/image|favicon.ico|auth/callback|api/).*)",
-  ],
+// Achado #2.4 do plano de implementação (13/09/2026): o Next.js só lê o
+// matcher de um export literalmente chamado `config` — nunca existiu
+// suporte a `proxyConfig` (confirmado em node_modules/next/dist/build/
+// analysis/get-page-static-info.js, que sempre acessa `exportedConfig.
+// config`, mesmo em arquivos proxy.ts). Isso significa que o matcher
+// abaixo nunca funcionou: sem um `config` válido, o Next roda o proxy em
+// TODA requisição, então `supabase.auth.getUser()` (uma chamada de rede
+// pro Supabase Auth) disparava em toda página do site, incluindo
+// conteúdo 100% público (resultados, dicas, matemática, home) — o
+// oposto do que ROTAS_PUBLICAS tentava evitar.
+//
+// A lista abaixo cobre só as rotas onde a lógica deste arquivo realmente
+// decide algo (redirecionar por falta de login em /conta; /admin fica
+// aqui por precaução, ainda que a autorização de verdade seja feita por
+// requireAdmin() em lib/admin-auth.ts). Rotas como /assinar e /premium
+// já estão em ROTAS_PUBLICAS e nunca precisaram passar por getUser() —
+// incluí-las no matcher só gastava uma chamada de rede à toa numa página
+// de conversão de alto tráfego.
+export const config = {
+  matcher: ["/conta/:path*", "/admin/:path*"],
 };
