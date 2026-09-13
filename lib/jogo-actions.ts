@@ -109,7 +109,10 @@ export async function salvarAlertaAction(formData: FormData): Promise<{ ok: bool
   const threshold = thresholdStr ? parseFloat(thresholdStr.replace(/\./g, "").replace(",", ".")) : null;
   const sorteios = sorteiosStr ? parseInt(sorteiosStr) : null;
 
-  // Upsert — uma preferência por loteria por usuário
+  // Upsert — uma preferência por loteria por usuário. Constraint UNIQUE
+  // (user_id, loteria) garantida pela migration 20260915000000_notificacoes.sql
+  // (achado P2 da auditoria de 12/09/2026: antes disso o onConflict abaixo
+  // podia falhar silenciosamente e cair num INSERT duplicado).
   const { error } = await supabase.from("alert_preferences").upsert(
     {
       user_id: user.id,
@@ -121,17 +124,7 @@ export async function salvarAlertaAction(formData: FormData): Promise<{ ok: bool
     { onConflict: "user_id,loteria" }
   );
 
-  if (error) {
-    // Se a constraint não existe, insere normalmente
-    const { error: insertError } = await supabase.from("alert_preferences").insert({
-      user_id: user.id,
-      loteria,
-      threshold_brl: threshold,
-      sorteios_sem_ganhador: sorteios,
-      ativo: true,
-    });
-    if (insertError) return { ok: false, erro: "Não foi possível salvar o alerta." };
-  }
+  if (error) return { ok: false, erro: "Não foi possível salvar o alerta." };
 
   revalidatePath("/conta");
   return { ok: true };
@@ -158,16 +151,7 @@ export async function salvarAlertaDiretoAction(
     { onConflict: "user_id,loteria" }
   );
 
-  if (error) {
-    const { error: insertError } = await supabase.from("alert_preferences").insert({
-      user_id: user.id,
-      loteria,
-      threshold_brl: thresholdBrl,
-      sorteios_sem_ganhador: sorteiosSemGanhador,
-      ativo: true,
-    });
-    if (insertError) return { ok: false, erro: "Não foi possível salvar o alerta." };
-  }
+  if (error) return { ok: false, erro: "Não foi possível salvar o alerta." };
 
   revalidatePath("/conta");
   return { ok: true };
