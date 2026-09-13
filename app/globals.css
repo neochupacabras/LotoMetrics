@@ -3526,6 +3526,113 @@ footer.rodape {
   color: var(--paper);
 }
 
+.assinar-checkout-btn--pix {
+  margin-top: 8px;
+}
+
+.pix-erro {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #b91c1c;
+}
+
+.pix-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+}
+
+.pix-modal {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  padding: 32px;
+  max-width: 380px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.pix-modal-fechar {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.pix-modal-titulo {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.4rem;
+  color: var(--ink);
+  margin: 0;
+}
+
+.pix-modal-subtitulo {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.pix-modal-qrcode {
+  width: 220px;
+  height: 220px;
+  border: 1px solid var(--ink);
+  padding: 8px;
+  background: #fff;
+}
+
+.pix-modal-label {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.pix-modal-copia-cola {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.pix-modal-copia-cola input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  font-size: 0.78rem;
+  color: var(--ink);
+  background: #fff;
+}
+
+.pix-modal-copia-cola .botao-gerar {
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+.pix-modal-aguardando {
+  font-size: 0.8rem;
+  color: var(--pine);
+  margin: 4px 0 0;
+}
+
 .assinar-beneficios {
   max-width: 540px;
   margin: 0 auto 32px;

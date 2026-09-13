@@ -5,6 +5,8 @@ import Link from "next/link";
 import Masthead from "@/components/Masthead";
 import { createClient } from "@/lib/supabase/server";
 import CheckoutButton from "@/components/auth/CheckoutButton";
+import PixCheckoutButton from "@/components/auth/PixCheckoutButton";
+import type { PlanoPix } from "@/lib/mercadopago/planos";
 
 export const metadata: Metadata = {
   title: "Assinar Premium — LotoAnalítica",
@@ -118,6 +120,7 @@ export default async function AssinarPage() {
                   destaque={plano.destaque}
                   trial={elegivelParaTrial}
                 />
+                <PixCheckoutButton plano={plano.id as PlanoPix} userId={user?.id} />
               </div>
             ))}
           </div>
@@ -138,6 +141,7 @@ export default async function AssinarPage() {
           <p className="assinar-nota">
             Pagamento seguro via Stripe. Aceitamos cartão de crédito e débito.
             {elegivelParaTrial && " O cartão só é cobrado após os 7 dias de teste — cancele antes disso e não paga nada."}
+            {" "}Também aceitamos Pix via Mercado Pago — o acesso Premium é liberado assim que o pagamento é confirmado.
             {" "}Ao assinar, você concorda com nossos{" "}
             <Link href="/termos" className="assinar-link">Termos de uso</Link> e{" "}
             <Link href="/privacidade" className="assinar-link">Política de Privacidade</Link>.

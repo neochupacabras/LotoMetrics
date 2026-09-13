@@ -18,7 +18,10 @@ export type ToolEventName =
   // Cruzando os dois por user_id dá "última ferramenta antes da assinatura"
   // sem precisar de um sistema de atribuição mais sofisticado.
   | "checkout_started"
-  | "subscription_started";
+  | "subscription_started"
+  // Pagamento avulso via Pix (Mercado Pago) aprovado — não recorrente, ver
+  // app/api/mercadopago/webhook/route.ts e supabase/migrations/…_add_pix_payments.sql.
+  | "pix_payment_approved";
 
 export interface LogToolEventInput {
   eventName: ToolEventName;
