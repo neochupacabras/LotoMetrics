@@ -136,6 +136,21 @@
 .dotWarning { background: var(--ochre); }
 .dotCritical { background: var(--rust); }
 .dotUnknown { background: var(--line-strong); }
+.dotUnsupported { background: transparent; border: 1px solid var(--line-strong); }
+
+.matrixScroll {
+  overflow-x: auto;
+  margin-bottom: 12px;
+}
+
+.matrixHeaderCell {
+  white-space: nowrap;
+  text-align: center !important;
+}
+
+.matrixCell {
+  text-align: center;
+}
 
 .healthLabel {
   font-size: 0.85rem;

@@ -11,11 +11,18 @@ export type ToolEventName =
   | "tool_started"
   | "tool_completed"
   | "tool_failed"
-  | "paywall_view";
+  | "paywall_view"
+  // Atribuição de conversão (seção 17 do audit): checkout_started grava, via
+  // header Referer, de qual ferramenta o usuário veio; subscription_started
+  // é gravado pelo webhook do Stripe só na criação (não em renovação/update).
+  // Cruzando os dois por user_id dá "última ferramenta antes da assinatura"
+  // sem precisar de um sistema de atribuição mais sofisticado.
+  | "checkout_started"
+  | "subscription_started";
 
 export interface LogToolEventInput {
   eventName: ToolEventName;
-  tool: string;
+  tool: string | null;
   lottery?: string | null;
   userId?: string | null;
   plan?: "free" | "premium" | null;
@@ -76,6 +83,41 @@ export async function logJobRun(input: LogJobRunInput): Promise<void> {
   } catch (err) {
     console.error("logJobRun falhou:", (err as Error).message);
   }
+}
+
+// Lista de slugs conhecidos — usada só pra atribuição a partir do Referer e
+// pelo Admin (matriz ferramenta × loteria). Não é gate de acesso nem
+// navegação — a fonte de verdade de ferramentas disponíveis continua sendo
+// components/Subnav.tsx; um erro aqui só degrada analytics, nunca quebra
+// uma ferramenta.
+export const FERRAMENTAS_CONHECIDAS = [
+  "resultados", "destaques", "tabelas", "gerador", "simulador", "fechamentos",
+  "bolao", "conferidor", "analisador", "heatmap", "acumulos", "probabilidades",
+  "equilibrio", "ineditas", "data-da-sorte", "ao-vivo",
+] as const;
+
+const LOTERIAS_CONHECIDAS = new Set([
+  "lotofacil", "megasena", "quina", "lotomania", "diadesorte",
+  "maismilionaria", "timemania", "duplasena", "supersete",
+]);
+const FERRAMENTAS_SET = new Set<string>(FERRAMENTAS_CONHECIDAS);
+
+// Extrai {tool, lottery} de uma URL do tipo /{loteria}/{ferramenta}/... a
+// partir do header Referer — usado pra atribuir de qual ferramenta um
+// checkout começou, sem precisar propagar esse dado manualmente por toda
+// a jornada do usuário.
+export function parseFerramentaDaUrl(url: string | null): { tool: string | null; lottery: string | null } {
+  if (!url) return { tool: null, lottery: null };
+  try {
+    const { pathname } = new URL(url);
+    const partes = pathname.split("/").filter(Boolean);
+    if (partes.length >= 2 && LOTERIAS_CONHECIDAS.has(partes[0]) && FERRAMENTAS_SET.has(partes[1])) {
+      return { tool: partes[1], lottery: partes[0] };
+    }
+  } catch {
+    // Referer ausente/malformado — atribuição fica nula, não é erro fatal.
+  }
+  return { tool: null, lottery: null };
 }
 
 export interface LogErrorInput {

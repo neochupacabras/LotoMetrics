@@ -2,6 +2,9 @@ import pool from "@/lib/db";
 import { createAdminClient } from "@/lib/supabase/server";
 import { qtdSorteiosPorSemana } from "@/lib/calendario";
 import { variacaoPct, type Periodo } from "@/lib/admin/periodo";
+import { FERRAMENTAS_CONHECIDAS } from "@/lib/telemetry";
+import { LOTERIAS } from "@/lib/format";
+import { abaAplicavel } from "@/lib/abas-loteria";
 
 // Camada de leitura do Admin Control Center. Fase 1: só expõe métricas
 // calculáveis hoje com os dados já existentes (ver docs/ADMIN_AUDIT.md,
@@ -264,13 +267,14 @@ export interface UsoFerramenta {
   paywalls: number;
 }
 
-export async function getUsoFerramentas30d(): Promise<UsoFerramenta[]> {
-  const { rows } = await pool.query<{ tool: string; event_name: string; qtd: string }>(`
-    SELECT tool, event_name, count(*) AS qtd
-    FROM product_events
-    WHERE tool IS NOT NULL AND created_at > now() - interval '30 days'
-    GROUP BY tool, event_name
-  `);
+export async function getUsoFerramentas(periodo: Periodo): Promise<UsoFerramenta[]> {
+  const { rows } = await pool.query<{ tool: string; event_name: string; qtd: string }>(
+    `SELECT tool, event_name, count(*) AS qtd
+     FROM product_events
+     WHERE tool IS NOT NULL AND created_at >= $1 AND created_at < $2
+     GROUP BY tool, event_name`,
+    [periodo.from, periodo.to]
+  );
   const map = new Map<string, UsoFerramenta>();
   for (const r of rows) {
     const entry = map.get(r.tool) ?? { tool: r.tool, views: 0, completions: 0, failures: 0, paywalls: 0 };
@@ -282,6 +286,121 @@ export async function getUsoFerramentas30d(): Promise<UsoFerramenta[]> {
     map.set(r.tool, entry);
   }
   return Array.from(map.values()).sort((a, b) => b.views + b.completions - (a.views + a.completions));
+}
+
+// ── Fase 4: matriz ferramenta × loteria e funil de monetização ─────────────
+
+export type StatusMatriz = "healthy" | "warning" | "critical" | "unsupported" | "sem_dados";
+
+export interface CelulaMatriz {
+  tool: string;
+  lottery: string;
+  status: StatusMatriz;
+  views: number;
+  failures: number;
+}
+
+// Critério documentado: "unsupported" vem da configuração estática real do
+// produto (lib/abas-loteria.ts — a mesma fonte que a Subnav e o sitemap
+// usam, não uma lista separada). Entre as combinações aplicáveis: sem
+// nenhum evento ainda = "sem_dados" (não é erro, é ausência de instrumentação
+// ou de tráfego); com eventos, taxa de falha (failures / (views+failures))
+// acima de 10% = "critical", acima de 2% = "warning", caso contrário
+// "healthy". Limiares não calibrados por histórico real ainda.
+export async function getMatrizFerramentaLoteria(periodo: Periodo): Promise<CelulaMatriz[]> {
+  const { rows } = await pool.query<{ tool: string; lottery: string; event_name: string; qtd: string }>(
+    `SELECT tool, lottery, event_name, count(*) AS qtd
+     FROM product_events
+     WHERE tool IS NOT NULL AND lottery IS NOT NULL
+       AND event_name IN ('tool_view', 'tool_completed', 'tool_failed')
+       AND created_at >= $1 AND created_at < $2
+     GROUP BY tool, lottery, event_name`,
+    [periodo.from, periodo.to]
+  );
+  const contagem = new Map<string, { views: number; failures: number }>();
+  for (const r of rows) {
+    const chave = `${r.tool}::${r.lottery}`;
+    const entry = contagem.get(chave) ?? { views: 0, failures: 0 };
+    const qtd = Number(r.qtd);
+    if (r.event_name === "tool_view" || r.event_name === "tool_completed") entry.views += qtd;
+    if (r.event_name === "tool_failed") entry.failures += qtd;
+    contagem.set(chave, entry);
+  }
+
+  const celulas: CelulaMatriz[] = [];
+  for (const tool of FERRAMENTAS_CONHECIDAS) {
+    for (const lottery of Object.keys(LOTERIAS)) {
+      if (!abaAplicavel(lottery, tool)) {
+        celulas.push({ tool, lottery, status: "unsupported", views: 0, failures: 0 });
+        continue;
+      }
+      const c = contagem.get(`${tool}::${lottery}`);
+      if (!c || c.views + c.failures === 0) {
+        celulas.push({ tool, lottery, status: "sem_dados", views: 0, failures: 0 });
+        continue;
+      }
+      const taxaFalha = c.failures / (c.views + c.failures);
+      const status: StatusMatriz = taxaFalha > 0.1 ? "critical" : taxaFalha > 0.02 ? "warning" : "healthy";
+      celulas.push({ tool, lottery, status, views: c.views, failures: c.failures });
+    }
+  }
+  return celulas;
+}
+
+export interface FunilFerramenta {
+  tool: string;
+  paywallViews: number;
+  checkoutsIniciados: number;
+  assinaturas: number;
+}
+
+// Funil de monetização por ferramenta (seção 17 do audit): paywall_view →
+// checkout_started (atribuído por last-touch em app/api/stripe/checkout) →
+// subscription_started (atribuído ao checkout_started mais recente do mesmo
+// usuário, via JOIN LATERAL). Não é uma atribuição sofisticada de verdade —
+// é o mínimo defensável com os eventos que já existem.
+export async function getFunilMonetizacao(periodo: Periodo): Promise<FunilFerramenta[]> {
+  const [paywallRes, checkoutRes, subRes] = await Promise.all([
+    pool.query<{ tool: string; qtd: string }>(
+      `SELECT tool, count(*) AS qtd FROM product_events
+       WHERE event_name = 'paywall_view' AND tool IS NOT NULL AND created_at >= $1 AND created_at < $2
+       GROUP BY tool`,
+      [periodo.from, periodo.to]
+    ),
+    pool.query<{ tool: string; qtd: string }>(
+      `SELECT tool, count(*) AS qtd FROM product_events
+       WHERE event_name = 'checkout_started' AND created_at >= $1 AND created_at < $2
+       GROUP BY tool`,
+      [periodo.from, periodo.to]
+    ),
+    pool.query<{ tool: string | null; qtd: string }>(
+      `SELECT co.tool, count(*) AS qtd
+       FROM product_events ss
+       JOIN LATERAL (
+         SELECT tool FROM product_events co
+         WHERE co.event_name = 'checkout_started' AND co.user_id = ss.user_id AND co.created_at <= ss.created_at
+         ORDER BY co.created_at DESC LIMIT 1
+       ) co ON true
+       WHERE ss.event_name = 'subscription_started' AND ss.created_at >= $1 AND ss.created_at < $2
+       GROUP BY co.tool`,
+      [periodo.from, periodo.to]
+    ),
+  ]);
+
+  const map = new Map<string, FunilFerramenta>();
+  const entry = (tool: string) => {
+    let e = map.get(tool);
+    if (!e) {
+      e = { tool, paywallViews: 0, checkoutsIniciados: 0, assinaturas: 0 };
+      map.set(tool, e);
+    }
+    return e;
+  };
+  for (const r of paywallRes.rows) entry(r.tool).paywallViews = Number(r.qtd);
+  for (const r of checkoutRes.rows) entry(r.tool).checkoutsIniciados = Number(r.qtd);
+  for (const r of subRes.rows) entry(r.tool ?? "desconhecido").assinaturas = Number(r.qtd);
+
+  return Array.from(map.values()).sort((a, b) => b.paywallViews - a.paywallViews);
 }
 
 export async function getFrescorLoterias(): Promise<FrescorLoteria[]> {

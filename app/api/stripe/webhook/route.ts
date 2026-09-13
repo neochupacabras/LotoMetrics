@@ -1,7 +1,7 @@
 import { NextResponse, after } from "next/server";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/server";
-import { logError } from "@/lib/telemetry";
+import { logError, logToolEvent } from "@/lib/telemetry";
 
 export const runtime = "nodejs";
 
@@ -81,6 +81,14 @@ export async function POST(request: Request) {
         },
         { onConflict: "stripe_subscription_id" }
       );
+
+      // Só em "created" (não em "updated", que também dispara em renovação
+      // e mudança de status) — marca o instante real de uma nova assinatura,
+      // pra poder cruzar com checkout_started (mesmo user_id) e calcular
+      // conversão real por ferramenta.
+      if (event.type === "customer.subscription.created" && isAtivo) {
+        after(() => logToolEvent({ eventName: "subscription_started", tool: null, userId, plan: "premium" }));
+      }
       break;
     }
 

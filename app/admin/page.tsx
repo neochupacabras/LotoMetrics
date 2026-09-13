@@ -5,11 +5,12 @@ import {
   getSaudeJobs,
   getUltimosJobRuns,
   getSaudeErros,
-  getUsoFerramentas30d,
+  getUsoFerramentas,
   type KpiComparado,
   type StatusSaude,
 } from "@/lib/admin/queries";
-import { resolverPeriodo, ehPeriodoId, PERIODOS_PADRAO, type PeriodoId } from "@/lib/admin/periodo";
+import { resolverPeriodo, ehPeriodoId, type PeriodoId } from "@/lib/admin/periodo";
+import PeriodoNav from "@/components/admin/PeriodoNav";
 import styles from "./admin.module.css";
 
 export const dynamic = "force-dynamic";
@@ -109,7 +110,7 @@ export default async function AdminOverviewPage({
     getSaudeJobs(),
     getUltimosJobRuns(8),
     getSaudeErros(),
-    getUsoFerramentas30d(),
+    getUsoFerramentas(periodo),
   ]);
   const dadosLoteriasStatus = statusGeral(frescor.map((f) => f.status));
   const jobsStatus = statusGeral(jobs.map((j) => j.status));
@@ -150,26 +151,7 @@ export default async function AdminOverviewPage({
         <span className={styles.sectionTitle} style={{ margin: 0 }}>
           KPIs executivos
         </span>
-        <nav className={styles.periodoNav}>
-          {PERIODOS_PADRAO.map((p) => (
-            <Link
-              key={p.id}
-              href={`/admin?period=${p.id}`}
-              className={p.id === periodo.id ? `${styles.periodoLink} ${styles.periodoLinkActive}` : styles.periodoLink}
-            >
-              {p.label}
-            </Link>
-          ))}
-          <form action="/admin" method="get" className={styles.periodoCustomForm}>
-            <input type="hidden" name="period" value="custom" />
-            <input type="date" name="from" defaultValue={sp.from} aria-label="De" />
-            <span>–</span>
-            <input type="date" name="to" defaultValue={sp.to} aria-label="Até" />
-            <button type="submit" className={periodo.id === "custom" ? `${styles.periodoLink} ${styles.periodoLinkActive}` : styles.periodoLink}>
-              Aplicar
-            </button>
-          </form>
-        </nav>
+        <PeriodoNav periodo={periodo} basePath="/admin" customFrom={sp.from} customTo={sp.to} />
       </div>
       <p className={styles.note}>
         Período: {periodo.label} ({periodo.from.toLocaleDateString("pt-BR")} – {periodo.to.toLocaleDateString("pt-BR")}
@@ -259,11 +241,11 @@ export default async function AdminOverviewPage({
         </table>
       )}
 
-      <p className={styles.sectionTitle}>Uso de ferramentas (30 dias)</p>
+      <p className={styles.sectionTitle}>Uso de ferramentas</p>
       <p className={styles.note}>
-        Instrumentado nesta fase só para as ferramentas com paywall (maior valor marginal — já
-        tinham o ponto de checagem de plano centralizado). As demais 12 ferramentas entram nas
-        próximas fases.
+        As 16 ferramentas já emitem <code>tool_view</code>; conclusão/falha e paywall só nas que
+        têm gate de Premium (ver <code>docs/KPI_DICTIONARY.md</code>). Tabela completa e matriz por
+        loteria em <Link href="/admin/tools">/admin/tools</Link> e <Link href="/admin/lotteries">/admin/lotteries</Link>.
       </p>
       {usoFerramentas.length === 0 ? (
         <p className={styles.note}>Nenhum evento registrado ainda — normal logo após ligar a instrumentação.</p>

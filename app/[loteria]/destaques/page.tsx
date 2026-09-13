@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { after } from "next/server";
 import Anuncio from "@/components/Anuncio";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import type { Metadata } from "next";
@@ -7,6 +8,7 @@ import { getLoteriaPorCodigo } from "@/lib/queries";
 import { gerarDestaques } from "@/lib/destaques";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+import { logToolEvent } from "@/lib/telemetry";
 
 export async function generateMetadata({
   params,
@@ -39,6 +41,8 @@ export default async function DestaquesPage({
   if (!loteria) {
     notFound();
   }
+
+  after(() => logToolEvent({ eventName: "tool_view", tool: "destaques", lottery: codigoLoteria }));
 
   const destaques = await gerarDestaques(loteria.id, codigoLoteria, {
     dezenaMax: loteria.dezenaMax,

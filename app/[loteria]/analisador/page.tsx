@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { after } from "next/server";
 import type { Metadata } from "next";
 import AnalisadorClient from "@/components/AnalisadorClient";
 import Subnav from "@/components/Subnav";
@@ -6,6 +7,7 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+import { logToolEvent } from "@/lib/telemetry";
 
 export async function generateMetadata({
   params,
@@ -38,6 +40,8 @@ export default async function AnalisadorPage({
   if (!loteria) {
     notFound();
   }
+
+  after(() => logToolEvent({ eventName: "tool_view", tool: "analisador", lottery: codigoLoteria }));
 
   return (
     <>

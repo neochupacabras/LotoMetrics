@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
+import { after } from "next/server";
 import type { Metadata } from "next";
 import FechamentoClient from "@/components/FechamentoClient";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+import { logToolEvent } from "@/lib/telemetry";
 
 export async function generateMetadata({
   params,
@@ -45,6 +47,8 @@ export default async function FechamentosPage({
 
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) notFound();
+
+  after(() => logToolEvent({ eventName: "tool_view", tool: "fechamentos", lottery: codigoLoteria }));
 
   const ex = EXEMPLOS[codigoLoteria];
 

@@ -96,15 +96,46 @@ Cada célula do Platform Health é `healthy` / `warning` / `critical` / `unknown
 
 ---
 
+## Uso de ferramentas (todas as 16, `/admin/tools`)
+
+- **Significado:** views, conclusões, falhas e paywalls por ferramenta, no período selecionado.
+- **Fórmula:** contagem de `product_events` por `tool` e `event_name`, sem filtro de loteria.
+- **Fonte:** `product_events`.
+- **Cobertura:** desde a Fase 4, as 16 ferramentas emitem `tool_view`. Conclusão (`tool_completed`)/falha (`tool_failed`)/paywall (`paywall_view`) só existem nas ferramentas com gate de Premium (Gerador, Simulador, Comparador de jogos, Conferidor, OCR, Exportação CSV, Relatório PDF) — as demais 9 não têm ação "concluir" distinguível de "ver".
+- **Limitação conhecida:** `tool_view` é gravado no servidor a cada render da página (via `after()`), não é um pageview de analytics de terceiros — conta requisições reais à rota, não inclui cache de CDN (o site não usa cache de rota completo hoje, então isso não deveria subcontar, mas também não deduplica múltiplas abas/recarregamentos da mesma visita).
+
+## Matriz ferramenta × loteria (`/admin/lotteries`)
+
+- **Significado:** saúde de cada combinação ferramenta×loteria aplicável.
+- **Fórmula:** ver critério documentado em `lib/admin/queries.ts:getMatrizFerramentaLoteria` — `unsupported` vem da configuração estática real (`lib/abas-loteria.ts`, a mesma fonte usada pela navegação e pelo sitemap); `sem_dados` quando não há nenhum evento no período; caso contrário, taxa de falha `> 10%` = `critical`, `> 2%` = `warning`, senão `healthy`.
+- **Fonte:** `product_events` + `lib/abas-loteria.ts`.
+- **Limitação:** limiares de taxa de falha não calibrados por histórico real ainda.
+
+## Funil de monetização por ferramenta (`/admin/funnels`)
+
+- **Significado:** de quantas visualizações de paywall uma ferramenta gera checkouts, e desses checkouts, quantas assinaturas.
+- **Fórmula/atribuição (last touch, não multi-touch):**
+  - `checkout_started` é gravado em `app/api/stripe/checkout/route.ts` com o `tool`/`lottery` do evento `tool_view` ou `paywall_view` mais recente do mesmo usuário nos 7 dias anteriores (o Referer HTTP do próprio POST de checkout não serve pra isso — sempre seria `/assinar`, a única página que chama essa rota).
+  - `subscription_started` é gravado no webhook do Stripe só no evento `customer.subscription.created` (não em `.updated`, que também dispara em renovação) — marca uma ativação nova de verdade.
+  - Na leitura (`getFunilMonetizacao`), cada `subscription_started` é atribuído ao `checkout_started` mais recente do mesmo `user_id` antes dele (`JOIN LATERAL`).
+- **Fonte:** `product_events` (event_name IN `paywall_view`, `checkout_started`, `subscription_started`).
+- **Limitações:** (1) só cobre usuários que passaram por uma tela com `tool_view`/`paywall_view` registrado nos 7 dias antes do checkout — um checkout "frio" (ex.: linkado direto de um e-mail) cai em `tool: "desconhecido"`; (2) é atribuição de última ferramenta, não considera todo o caminho percorrido; (3) trial (7 dias) significa que `subscription_started` acontece no início do trial, não na primeira cobrança — é "início de assinatura", não "primeira cobrança confirmada".
+
+## Aquisição e ativação — não implementado
+
+Ver seção seguinte ("ainda NÃO implementadas") — nenhum evento de sessão/login, cadastro ou pageview anônimo existe hoje, então esses funis não podem ser construídos sem instrumentação adicional.
+
+---
+
 ## Métricas mencionadas no pedido original ainda NÃO implementadas
 
 Para rastreabilidade — evita a falsa impressão de que "se não está aqui, foi esquecido":
 
 | Métrica | Por que ainda não | Fase prevista |
 |---|---|---|
-| DAU / WAU / MAU | Exige evento de sessão/login — não instrumentado (Fase 2/3 focou em ferramentas com paywall, não em auth) | A definir — candidato a Fase 4 |
-| Retenção (D1/D7/D30, cohort) | Exige histórico de eventos de sessão por usuário ao longo do tempo | Fase 4 |
-| Funis (aquisição/ativação/monetização) | Exige eventos de todas as etapas, incluindo páginas sem paywall | Fase 4 |
+| DAU / WAU / MAU | Exige evento de sessão/login — Fases 2-4 focaram em ferramentas, não em auth | A definir |
+| Retenção (D1/D7/D30, cohort) | Exige histórico de eventos de sessão por usuário ao longo do tempo | A definir |
+| Funil de aquisição/ativação | Exige evento de sessão/login e cadastro, que não existem | A definir |
 | MRR / ARR / Churn de receita | Exige tabela de preço↔`stripe_price_id` (valor não é persistido em `subscriptions` hoje) | Fase 5 |
 | Uso de API pública | `api_keys` já tem contagem agregada mensal, mas não por requisição | Fase 6 |
 | SEO orgânico (cliques, impressões, CTR) | Depende de integração com a API do Google Search Console | Fase 7 |
