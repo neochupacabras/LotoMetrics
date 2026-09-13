@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { calcularIsPremium } from "@/lib/plano-premium";
 
 interface PlanoUsuario {
   carregando: boolean;
@@ -42,12 +43,16 @@ export function PlanoUsuarioProvider({ children }: { children: React.ReactNode }
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("plan")
+        .select("plan, plan_expires_at")
         .eq("id", user.id)
         .single();
 
       if (!ativo) return;
-      setEstado({ carregando: false, logado: true, isPremium: profile?.plan === "premium" });
+      // calcularIsPremium respeita plan_expires_at — achado #1.6 da
+      // auditoria de 13/09/2026: antes, um Pix vencido continuava
+      // liberando a experiência sem anúncio no client mesmo depois de o
+      // servidor já considerar a conta free.
+      setEstado({ carregando: false, logado: true, isPremium: calcularIsPremium(profile) });
     })();
 
     return () => {

@@ -1,6 +1,7 @@
 import { NextResponse, after } from "next/server";
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/server";
+import { atualizarPlanoRespeitandoCredito } from "@/lib/plano";
 import { logError, logToolEvent } from "@/lib/telemetry";
 
 export const runtime = "nodejs";
@@ -59,13 +60,10 @@ export async function POST(request: Request) {
         ? new Date(item.current_period_start * 1000).toISOString()
         : null;
 
-      await supabase
-        .from("profiles")
-        .update({
-          plan: isAtivo ? "premium" : "free",
-          plan_expires_at: isAtivo ? periodoFim : null,
-        })
-        .eq("id", userId);
+      // Nunca sobrescreve incondicionalmente — se o usuário também tiver
+      // um crédito Pix ainda válido (mais no futuro que o que o Stripe diz
+      // agora), essa validade é preservada nos dois sentidos.
+      await atualizarPlanoRespeitandoCredito(userId, { premium: isAtivo, expiraEm: periodoFim });
 
       await supabase.from("subscriptions").upsert(
         {
@@ -98,10 +96,8 @@ export async function POST(request: Request) {
 
       if (!userId) break;
 
-      await supabase
-        .from("profiles")
-        .update({ plan: "free", plan_expires_at: null })
-        .eq("id", userId);
+      // Idem: só rebaixa pra free se não sobrar crédito Pix válido.
+      await atualizarPlanoRespeitandoCredito(userId, { premium: false, expiraEm: null });
 
       await supabase
         .from("subscriptions")
@@ -126,6 +122,23 @@ export async function POST(request: Request) {
           .update({ status: "past_due" })
           .eq("stripe_subscription_id", subId);
       }
+      break;
+    }
+
+    // Reembolso de cartão — sem tentar rebaixar automaticamente (um
+    // reembolso parcial ou contestado não deveria derrubar o plano
+    // sozinho), mas registrado como erro pra aparecer no /admin, porque
+    // hoje isso é um ponto cego total (achado de consistência #1.6 da
+    // auditoria de 13/09/2026: "se o Stripe processar um refund sem
+    // cancelar a assinatura, o sistema local nunca fica sabendo").
+    case "charge.refunded": {
+      const charge = event.data.object as Stripe.Charge;
+      after(() =>
+        logError({
+          source: "stripe_webhook",
+          message: `Reembolso ${charge.refunded ? "total" : "parcial"} na charge ${charge.id} (customer ${charge.customer ?? "?"}): R$ ${(charge.amount_refunded / 100).toFixed(2)}. Revisar manualmente se o plano precisa ser ajustado.`,
+        })
+      );
       break;
     }
 
