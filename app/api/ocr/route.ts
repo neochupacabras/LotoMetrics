@@ -1,5 +1,5 @@
 import { NextResponse, after } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { calcularIsPremium } from "@/lib/plano";
 import { logToolEvent, logError } from "@/lib/telemetry";
 
@@ -29,13 +29,17 @@ function extrairDezenas(
 }
 
 // ── Rate limiting via coluna ocr_usage no profile ─────────────────────────────
+// Usa o service role: ocr_usage não é mais gravável pelo client autenticado
+// (ver migration 20260914000000_restrict_profiles_update.sql) — só o
+// próprio servidor pode incrementar o contador. userId sempre vem de
+// supabase.auth.getUser() da sessão, nunca do corpo da requisição.
 async function verificarEIncrementarLimite(
-  supabase: Awaited<ReturnType<typeof createClient>>,
   userId: string
 ): Promise<{ permitido: boolean; restantes: number }> {
+  const admin = createAdminClient();
   const hoje = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
 
-  const { data: profile } = await supabase
+  const { data: profile } = await admin
     .from("profiles")
     .select("ocr_usage")
     .eq("id", userId)
@@ -49,7 +53,7 @@ async function verificarEIncrementarLimite(
   }
 
   // Incrementar
-  await supabase
+  await admin
     .from("profiles")
     .update({ ocr_usage: { data: hoje, count: usageHoje + 1 } })
     .eq("id", userId);
@@ -88,7 +92,7 @@ export async function POST(request: Request) {
   }
 
   // ── Rate limiting ────────────────────────────────────────────────────────────
-  const { permitido, restantes } = await verificarEIncrementarLimite(supabase, user.id);
+  const { permitido, restantes } = await verificarEIncrementarLimite(user.id);
 
   if (!permitido) {
     return NextResponse.json(

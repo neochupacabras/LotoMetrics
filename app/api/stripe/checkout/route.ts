@@ -1,6 +1,6 @@
 import { NextResponse, after } from "next/server";
 import Stripe from "stripe";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import pool from "@/lib/db";
 import { logToolEvent } from "@/lib/telemetry";
 
@@ -22,6 +22,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "priceId ausente" }, { status: 400 });
   }
 
+  // Só os 3 preços oficiais de /assinar — sem isso, qualquer priceId da
+  // conta Stripe (inclusive de outro produto) seria aceito aqui, vindo
+  // direto do corpo da requisição.
+  const PRECOS_PERMITIDOS = new Set(
+    [
+      process.env.NEXT_PUBLIC_STRIPE_PRICE_MENSAL,
+      process.env.NEXT_PUBLIC_STRIPE_PRICE_SEMESTRAL,
+      process.env.NEXT_PUBLIC_STRIPE_PRICE_ANUAL,
+    ].filter((p): p is string => !!p)
+  );
+  if (!PRECOS_PERMITIDOS.has(priceId)) {
+    return NextResponse.json({ error: "priceId inválido" }, { status: 400 });
+  }
+
+  const admin = createAdminClient();
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("stripe_customer_id, display_name")
@@ -38,7 +54,10 @@ export async function POST(request: Request) {
     });
     customerId = customer.id;
 
-    await supabase
+    // stripe_customer_id não é mais gravável pelo client autenticado (ver
+    // migration 20260914000000_restrict_profiles_update.sql) — só o
+    // service role grava essa coluna.
+    await admin
       .from("profiles")
       .update({ stripe_customer_id: customerId })
       .eq("id", user.id);
