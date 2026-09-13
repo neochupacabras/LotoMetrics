@@ -23,6 +23,10 @@ const GRUPOS: { titulo: string; itens: { label: string; href?: string }[] }[] = 
     itens: [{ label: "Revenue", href: "/admin/revenue" }],
   },
   {
+    titulo: "Aquisição",
+    itens: [{ label: "Acquisition", href: "/admin/acquisition" }],
+  },
+  {
     titulo: "Operações",
     itens: [
       { label: "Erros", href: "/admin/errors" },

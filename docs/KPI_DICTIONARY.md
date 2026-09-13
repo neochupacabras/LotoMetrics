@@ -238,6 +238,28 @@ Estende o "Frescor de dados por loteria" (Fase 1) com checagens estruturais de i
   adicionaria uma escrita no banco a cada requisição de uma API pública já sensível a latência, para
   um volume de uso hoje muito baixo — reavaliar se o uso da API crescer).
 
+## Acquisition — busca orgânica (`/admin/acquisition`)
+
+- **Significado:** cliques, impressões, CTR e posição média de busca orgânica no Google, mais as
+  queries e páginas que mais convertem em clique.
+- **Fórmula:** chamada direta à API do Search Console (`searchanalytics.query`) — cliques/impressões
+  somados e CTR/posição já vêm agregados pela própria API, não recalculados aqui.
+- **Autenticação:** conta de serviço do Google (JWT assinado com `crypto` nativo do Node — sem
+  instalar `googleapis`/`google-auth-library`, seção 41 do audit), trocado por access token via OAuth2
+  server-to-server. Precisa que o `client_email` da conta de serviço tenha sido adicionado como
+  usuário na propriedade do Search Console (Configurações → Usuários e permissões).
+- **Fonte:** API do Google Search Console, propriedade `sc-domain:lotoanalitica.com.br`.
+- **Atraso de dados:** a API do Search Console normalmente não tem dados dos últimos 2-3 dias. Toda
+  consulta desloca automaticamente o fim do período em 3 dias (`periodoEfetivoGsc` em
+  `lib/admin/search-console.ts`) — por isso "Hoje" mostra dados de ~3 dias atrás, não do dia atual.
+  Isso é esperado, não é bug.
+- **Status UNAVAILABLE vs zero:** se as variáveis de ambiente não estiverem configuradas, ou a conta de
+  serviço não tiver acesso à propriedade, ou a API falhar, a página mostra explicitamente
+  "UNAVAILABLE" — nunca 0 cliques como se fosse um dado real.
+- **Limitação:** só cobre busca orgânica do Google. Não inclui tráfego direto, social, referral, nem
+  landing pages de outras origens — isso viria do Vercel Analytics, que não escreve no banco do
+  produto hoje (ver linha na tabela de métricas não implementadas).
+
 ## Aquisição e ativação — não implementado
 
 Ver seção seguinte ("ainda NÃO implementadas") — nenhum evento de sessão/login, cadastro ou pageview anônimo existe hoje, então esses funis não podem ser construídos sem instrumentação adicional.
@@ -255,4 +277,4 @@ Para rastreabilidade — evita a falsa impressão de que "se não está aqui, fo
 | Funil de aquisição/ativação | Exige evento de sessão/login e cadastro, que não existem | A definir |
 | Taxa de churn de receita (%, não só valor absoluto) | MRR/ARR e movimentação (novo/cancelado) em valor já existem (Fase 5) — falta uma série histórica de "MRR no início do período" pra calcular uma taxa percentual confiável sem aproximação | A definir |
 | Uso de API pública | `api_keys` já tem contagem agregada mensal, mas não por requisição | Fase 6 |
-| SEO orgânico (cliques, impressões, CTR) | Depende de integração com a API do Google Search Console | Fase 7 |
+| Tráfego por origem (direto/social/referral) e landing pages | Existe no Vercel Analytics, mas não é escrito no banco do produto — exigiria uma integração com a API do Vercel Analytics ou trocar de provedor de analytics | A definir |
