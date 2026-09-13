@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import HeatmapVolante from "@/components/HeatmapVolante";
 import GraficoBarras from "@/components/GraficoBarras";
 import InsightCallout from "@/components/InsightCallout";
@@ -89,6 +90,7 @@ export default async function CategoriaPage({
 
   return (
     <>
+      <TelemetriaBeacon tool="tabelas" lottery={codigoLoteria} metadata={{ categoria: slugCategoria }} />
       <BreadcrumbJsonLd
         itens={[
           { nome: nomeLoteria, caminho: `/${codigoLoteria}/resultados` },

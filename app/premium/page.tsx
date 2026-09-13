@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Masthead from "@/components/Masthead";
 import FaqItem from "@/components/FaqItem";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -167,6 +168,7 @@ const COMPARATIVO = [
 export default function PremiumPage() {
   return (
     <>
+      <TelemetriaBeacon eventName="pricing_view" tool="premium" />
       <Masthead premiumAtivo />
       <main>
 
