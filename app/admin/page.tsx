@@ -5,13 +5,14 @@ import {
   getSaudeJobs,
   getUltimosJobRuns,
   getSaudeErros,
-  getUsoFerramentas,
+  getUsoFerramentasComparado,
   type KpiComparado,
   type StatusSaude,
 } from "@/lib/admin/queries";
 import { resolverPeriodo, ehPeriodoId, type PeriodoId } from "@/lib/admin/periodo";
-import { getMrrAtual, getSaudePagamentos } from "@/lib/admin/revenue";
+import { getMrrAtual, getSaudePagamentos, getReceitaPeriodo } from "@/lib/admin/revenue";
 import { formatarCentavos } from "@/lib/admin/precos";
+import { insightsFerramentas, insightsDados, insightsReceita, type Insight } from "@/lib/admin/insights";
 import PeriodoNav from "@/components/admin/PeriodoNav";
 import styles from "./admin.module.css";
 
@@ -102,6 +103,21 @@ function montarAlertaPagamentos(pagamentos: Awaited<ReturnType<typeof getSaudePa
   return [{ texto: `${pagamentos.pastDue} assinatura(s) com pagamento em atraso (past_due).`, nivel: "warning" }];
 }
 
+// Só alerta com base mínima de assinantes — com poucos assinantes, 1
+// cancelamento já derruba o MRR líquido a zero ou negativo sem ser sinal de
+// problema real (ver AMOSTRA_MINIMA em lib/admin/insights.ts, mesmo raciocínio).
+function montarAlertaReceita(
+  receitaPeriodo: Awaited<ReturnType<typeof getReceitaPeriodo>>,
+  mrr: Awaited<ReturnType<typeof getMrrAtual>>
+): Alerta[] {
+  if (mrr.assinantesAtivos < 10) return [];
+  const liquido = receitaPeriodo.novaMrrCentavos - receitaPeriodo.mrrCanceladaCentavos;
+  if (liquido < 0) {
+    return [{ texto: `MRR líquido negativo no período (${formatarCentavos(liquido)}) — mais cancelamento que assinatura nova em valor.`, nivel: "warning" }];
+  }
+  return [];
+}
+
 export default async function AdminOverviewPage({
   searchParams,
 }: {
@@ -111,19 +127,29 @@ export default async function AdminOverviewPage({
   const periodoId: PeriodoId = ehPeriodoId(sp.period) ? sp.period : "30d";
   const periodo = resolverPeriodo(periodoId, sp.from, sp.to);
 
-  const [kpis, frescor, jobs, ultimosJobs, erros, usoFerramentas, mrr, pagamentos] = await Promise.all([
+  const [kpis, frescor, jobs, ultimosJobs, erros, usoFerramentas, mrr, pagamentos, receitaPeriodo] = await Promise.all([
     getKpisExecutivos(periodo),
     getFrescorLoterias(),
     getSaudeJobs(),
     getUltimosJobRuns(8),
     getSaudeErros(),
-    getUsoFerramentas(periodo),
+    getUsoFerramentasComparado(periodo),
     getMrrAtual(),
     getSaudePagamentos(),
+    getReceitaPeriodo(periodo),
   ]);
   const dadosLoteriasStatus = statusGeral(frescor.map((f) => f.status));
   const jobsStatus = statusGeral(jobs.map((j) => j.status));
-  const alertas = [...montarAlertas(jobs, frescor, erros), ...montarAlertaPagamentos(pagamentos)];
+  const alertas = [
+    ...montarAlertas(jobs, frescor, erros),
+    ...montarAlertaPagamentos(pagamentos),
+    ...montarAlertaReceita(receitaPeriodo, mrr),
+  ];
+  const insights: Insight[] = [
+    ...insightsFerramentas(usoFerramentas),
+    ...insightsDados(frescor),
+    ...insightsReceita(receitaPeriodo, mrr),
+  ];
 
   return (
     <>
@@ -141,6 +167,28 @@ export default async function AdminOverviewPage({
           {alertas.map((a, i) => (
             <li key={i} className={a.nivel === "critical" ? styles.alertCritical : styles.alertWarning}>
               {a.texto}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <p className={styles.sectionTitle}>Insights</p>
+      <p className={styles.note}>
+        Gerados por regra sobre dados já calculados nas outras seções — nunca texto de IA. Cada regra
+        exige um volume mínimo de eventos antes de falar em variação percentual, pra não confundir
+        ruído estatístico com sinal real (a base de usuários do produto ainda é pequena). Sem
+        previsão/forecasting — ver docs/KPI_DICTIONARY.md sobre por quê.
+      </p>
+      {insights.length === 0 ? (
+        <p className={styles.note}>Nenhum insight com dado suficiente neste período.</p>
+      ) : (
+        <ul className={styles.alertList}>
+          {insights.map((ins, i) => (
+            <li
+              key={i}
+              className={ins.tipo === "negativo" ? styles.alertWarning : ins.tipo === "positivo" ? styles.insightPositivo : undefined}
+            >
+              {ins.texto}
             </li>
           ))}
         </ul>

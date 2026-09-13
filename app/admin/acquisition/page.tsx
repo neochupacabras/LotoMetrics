@@ -1,5 +1,6 @@
 import { getResumoBusca, getTopQueries, getTopPages, periodoEfetivoGsc } from "@/lib/admin/search-console";
 import { resolverPeriodo, ehPeriodoId, type PeriodoId } from "@/lib/admin/periodo";
+import { insightsAquisicao } from "@/lib/admin/insights";
 import PeriodoNav from "@/components/admin/PeriodoNav";
 import styles from "@/app/admin/admin.module.css";
 
@@ -15,13 +16,15 @@ export default async function AdminAcquisitionPage({
   const periodo = resolverPeriodo(periodoId, sp.from, sp.to);
   const efetivo = periodoEfetivoGsc(periodo.from, periodo.to);
 
-  const [resumo, topQueries, topPages] = await Promise.all([
+  const [resumo, resumoAnterior, topQueries, topPages] = await Promise.all([
     getResumoBusca(periodo.from, periodo.to),
+    getResumoBusca(periodo.fromAnterior, periodo.toAnterior),
     getTopQueries(periodo.from, periodo.to, 20),
     getTopPages(periodo.from, periodo.to, 20),
   ]);
 
   const indisponivel = resumo === null;
+  const insights = insightsAquisicao(resumo, resumoAnterior);
 
   return (
     <>
@@ -63,6 +66,16 @@ export default async function AdminAcquisitionPage({
           <Kpi label="CTR" valorTexto={`${(resumo.ctr * 100).toFixed(2)}%`} />
           <Kpi label="Posição média" valorTexto={resumo.position.toFixed(1)} />
         </div>
+      )}
+
+      {insights.length > 0 && (
+        <ul className={styles.alertList} style={{ marginBottom: 32 }}>
+          {insights.map((ins, i) => (
+            <li key={i} className={ins.tipo === "negativo" ? styles.alertWarning : styles.insightPositivo}>
+              {ins.texto}
+            </li>
+          ))}
+        </ul>
       )}
 
       <p className={styles.sectionTitle}>Principais buscas (queries)</p>

@@ -288,6 +288,35 @@ export async function getUsoFerramentas(periodo: Periodo): Promise<UsoFerramenta
   return Array.from(map.values()).sort((a, b) => b.views + b.completions - (a.views + a.completions));
 }
 
+// Usado pela Fase 8 (insights) — mesma consulta de getUsoFerramentas, mas
+// também busca o período anterior, pra dar pra falar em "cresceu/caiu X%"
+// por ferramenta em vez de só o total absoluto do período atual.
+export interface UsoFerramentaComparado extends UsoFerramenta {
+  viewsAnterior: number;
+  completionsAnterior: number;
+  failuresAnterior: number;
+}
+
+export async function getUsoFerramentasComparado(periodo: Periodo): Promise<UsoFerramentaComparado[]> {
+  const periodoAnterior: Periodo = {
+    ...periodo,
+    from: periodo.fromAnterior,
+    to: periodo.toAnterior,
+  };
+  const [atual, anterior] = await Promise.all([getUsoFerramentas(periodo), getUsoFerramentas(periodoAnterior)]);
+  const anteriorMap = new Map(anterior.map((u) => [u.tool, u]));
+
+  return atual.map((u) => {
+    const a = anteriorMap.get(u.tool);
+    return {
+      ...u,
+      viewsAnterior: a?.views ?? 0,
+      completionsAnterior: a?.completions ?? 0,
+      failuresAnterior: a?.failures ?? 0,
+    };
+  });
+}
+
 // ── Fase 4: matriz ferramenta × loteria e funil de monetização ─────────────
 
 export type StatusMatriz = "healthy" | "warning" | "critical" | "unsupported" | "sem_dados";

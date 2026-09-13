@@ -247,6 +247,10 @@
   border-left: 3px solid var(--ochre);
 }
 
+.insightPositivo {
+  border-left: 3px solid #4a7a3a;
+}
+
 .periodoBar {
   display: flex;
   align-items: baseline;

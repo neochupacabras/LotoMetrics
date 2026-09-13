@@ -260,6 +260,35 @@ Estende o "Frescor de dados por loteria" (Fase 1) com checagens estruturais de i
   landing pages de outras origens — isso viria do Vercel Analytics, que não escreve no banco do
   produto hoje (ver linha na tabela de métricas não implementadas).
 
+## Insights automáticos (`/admin`, `/admin/acquisition`)
+
+- **Significado:** observações geradas por regra a partir de métricas já calculadas em outras partes
+  do Admin (ferramentas, dados, receita, busca orgânica) — nunca texto gerado por um modelo de
+  linguagem. `lib/admin/insights.ts` é puramente funções determinísticas sobre números que já existem.
+- **Amostra mínima (`AMOSTRA_MINIMA = 10`):** nenhuma regra fala em variação percentual sem que o lado
+  usado como base (período anterior, ou execuções de uma ferramenta) tenha pelo menos 10 eventos. Com
+  1 assinante, "cancelamentos cresceram 100%" (de 0 para 1) é matematicamente verdadeiro e
+  completamente inútil — a regra evita gerar esse tipo de frase.
+- **Variação mínima relevante (`VARIACAO_RELEVANTE_PCT = 20%`):** mesmo com amostra suficiente, só vira
+  insight se a variação for de pelo menos 20% — abaixo disso é tratado como flutuação normal, não um
+  padrão a comentar.
+- **Insights implementados:** ferramenta mais vista; ferramenta com maior taxa de falha (com amostra);
+  maior variação de views entre ferramentas (com amostra); loterias desatualizadas (só quando é uma
+  minoria — se todas estão críticas, isso já é óbvio no Platform Health); MRR líquido do período;
+  variação de cliques orgânicos (Search Console) vs período anterior.
+- **Limitação:** não há nada aqui parecido com "Conferidor: usuários que o utilizam têm retenção 2,1×
+  maior" (exemplo do pedido original) — esse tipo de insight cruza uso de ferramenta com retenção de
+  usuário ao longo do tempo, o que exige eventos de sessão/login que não existem (mesma limitação de
+  DAU/MAU, ver tabela abaixo).
+
+### Por que NÃO existe forecasting
+
+Deliberadamente não implementado. Prever MRR, churn ou uso futuro exige uma série histórica longa o
+suficiente pra separar tendência real de ruído — a base atual do produto (dezenas de usuários, poucos
+assinantes) é pequena demais pra isso ser mais que um exercício de encaixar uma reta em 3 pontos.
+Reavaliar quando houver pelo menos alguns meses de histórico consistente pós-Fase 2 (`product_events`)
+e um volume de assinantes que já apareça na casa das centenas.
+
 ## Aquisição e ativação — não implementado
 
 Ver seção seguinte ("ainda NÃO implementadas") — nenhum evento de sessão/login, cadastro ou pageview anônimo existe hoje, então esses funis não podem ser construídos sem instrumentação adicional.
