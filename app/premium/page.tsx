@@ -97,7 +97,7 @@ const GRUPOS = [
       {
         nome: "Detecção de texto de documento",
         detalhe:
-          "Usa o modo de leitura mais preciso do Google Cloud Vision para papéis impressos, o que ajuda com iluminação fraca ou bilhete levemente amassado — mas confira sempre o resultado antes de conferir. Até 50 leituras por dia.",
+          "Usa o modo de leitura mais preciso do Google Cloud Vision para papéis impressos, o que ajuda com iluminação fraca ou bilhete levemente amassado — mas confira sempre o resultado antes de conferir. Até 100 leituras por mês.",
         link: null,
       },
     ],

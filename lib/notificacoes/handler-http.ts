@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { logJobRun } from "@/lib/telemetry";
 import { processarConcursosNovos, type OpcoesProcessamento } from "@/lib/notificacoes/processar-concursos";
+import { verificarPixVencendo } from "@/lib/notificacoes/pix-vencendo";
 
 // Compartilhado por app/api/cron/conferir (rede de segurança, roda 1x/dia)
 // e app/api/eventos/concursos-novos (disparado pelo importador.py logo
@@ -40,7 +41,11 @@ function resolverOpcoes(request: Request): OpcoesProcessamento {
 export async function handleProcessarConcursos(
   request: Request,
   jobName: string,
-  secret: string | undefined
+  secret: string | undefined,
+  // Lembrete de vencimento do Pix (tarefa 2.5) não é ligado a concurso —
+  // roda só no cron diário de segurança, nunca no disparo por evento do
+  // importador (evita checar isso várias vezes no mesmo dia).
+  opts: { incluirPixVencendo?: boolean } = {}
 ): Promise<NextResponse> {
   if (!autorizado(request, secret)) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
@@ -51,25 +56,38 @@ export async function handleProcessarConcursos(
 
   try {
     const resumo = await processarConcursosNovos(opcoes);
+    const detalhesPix = opts.incluirPixVencendo ? await verificarPixVencendo(opcoes) : [];
+    const detalhes = [...resumo.detalhes, ...detalhesPix];
+    const emailsEnviados = resumo.emailsEnviados + detalhesPix.filter((d) => d.status === "enviado").length;
+    const emailsFalhos = resumo.emailsFalhos + detalhesPix.filter((d) => d.status === "falhou").length;
+    const emailsSimulados = resumo.emailsSimulados + detalhesPix.filter((d) => d.status === "simulado").length;
+
     await logJobRun({
       jobName,
-      status: resumo.emailsFalhos > 0 ? "partial" : "success",
+      status: emailsFalhos > 0 ? "partial" : "success",
       startedAt,
       details: {
         dryRun: opcoes.dryRun,
         somenteEmails: opcoes.somenteEmails ? Array.from(opcoes.somenteEmails) : undefined,
         concursosProcessados: resumo.concursosProcessados,
-        emailsEnviados: resumo.emailsEnviados,
-        emailsFalhos: resumo.emailsFalhos,
-        emailsSimulados: resumo.emailsSimulados,
-        detalhes: resumo.detalhes,
+        emailsEnviados,
+        emailsFalhos,
+        emailsSimulados,
+        detalhes,
       },
       error:
-        resumo.emailsFalhos > 0
-          ? resumo.detalhes.filter((d) => d.status === "falhou").map((d) => `${d.email}: ${d.erro}`).join("; ")
+        emailsFalhos > 0
+          ? detalhes.filter((d) => d.status === "falhou").map((d) => `${d.email}: ${d.erro}`).join("; ")
           : null,
     });
-    return NextResponse.json({ ok: true, ...resumo });
+    return NextResponse.json({
+      ok: true,
+      concursosProcessados: resumo.concursosProcessados,
+      emailsEnviados,
+      emailsFalhos,
+      emailsSimulados,
+      detalhes,
+    });
   } catch (err) {
     await logJobRun({ jobName, status: "failed", startedAt, error: (err as Error).message });
     return NextResponse.json({ error: "Erro ao processar concursos" }, { status: 500 });

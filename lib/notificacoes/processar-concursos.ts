@@ -37,9 +37,11 @@ export interface OpcoesProcessamento {
 
 export interface DetalheEnvio {
   email: string;
-  tipo: "resultado_jogos" | "alerta_acumulo";
-  loteria: string;
-  concurso: number;
+  tipo: "resultado_jogos" | "alerta_acumulo" | "pix_vencendo";
+  // null pras notificações sem loteria/concurso associados (pix_vencendo
+  // — ver lib/notificacoes/pix-vencendo.ts).
+  loteria: string | null;
+  concurso: number | null;
   status: "enviado" | "falhou" | "simulado" | "pulado_dedup" | "pulado_filtro";
   erro?: string;
 }

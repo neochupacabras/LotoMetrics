@@ -15,5 +15,7 @@ export const maxDuration = 60;
 // silenciosamente e nenhum e-mail de resultado ou alerta jamais foi
 // enviado (achado crítico #2 da auditoria). Ver lib/notificacoes/*.
 export async function GET(request: Request) {
-  return handleProcessarConcursos(request, "cron_conferir", process.env.CRON_SECRET);
+  return handleProcessarConcursos(request, "cron_conferir", process.env.CRON_SECRET, {
+    incluirPixVencendo: true,
+  });
 }
