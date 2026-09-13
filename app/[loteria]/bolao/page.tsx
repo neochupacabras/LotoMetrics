@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { after } from "next/server";
 import type { Metadata } from "next";
 import BolaoClient from "@/components/BolaoClient";
@@ -64,6 +65,16 @@ export default async function BolaoPage({
             No final, gera um PDF completo para compartilhar com o grupo, com todos
             os bilhetes e o valor por participante.
           </p>
+          {codigoLoteria === "megasena" && (
+            <p className="subtitulo-edicao">
+              Organizando o bolão da Mega da Virada?{" "}
+              <Link href="/analises/bolao-mega-da-virada-2026-como-organizar">
+                Veja o guia completo
+              </Link>{" "}
+              — custo por número de dezenas, como dividir o prêmio e as regras do
+              concurso especial.
+            </p>
+          )}
         </div>
       )}
 

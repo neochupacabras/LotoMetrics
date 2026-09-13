@@ -689,7 +689,11 @@ export const ANALISES: Analise[] = [
         "custo de entretenimento" matemático do ano, graças ao prêmio acumulado —
         não uma estratégia de investimento. Acompanhe o histórico completo de
         acúmulos da Mega-Sena, incluindo edições anteriores da Mega da Virada, na
-        <a href="/megasena/acumulos">linha do tempo de acúmulos</a>.
+        <a href="/megasena/acumulos">linha do tempo de acúmulos</a>. Se for jogar em
+        grupo, veja o
+        <a href="/analises/bolao-mega-da-virada-2026-como-organizar">guia completo
+        de como organizar o bolão</a> — custo por número de dezenas, divisão do
+        prêmio e o otimizador de bolão já pronto para a Mega-Sena.
       </p>
     `,
   },
@@ -3226,6 +3230,134 @@ export const ANALISES: Analise[] = [
         Caixa. Entenda
         <a href="/dicas/super-sete">por que dígitos repetidos entre colunas são
         tão comuns</a> nessa loteria.
+      </p>
+    `,
+  },
+
+  {
+    slug: "bolao-mega-da-virada-2026-como-organizar",
+    titulo: "Bolão da Mega da Virada 2026: como organizar o do seu grupo",
+    resumo:
+      "Quanto custa cada nível de aposta, como funciona a divisão do prêmio e o passo a passo pra montar o bolão do escritório, da família ou do grupo de amigos — com o otimizador de bolão já configurado pra Mega-Sena.",
+    data: "2026-09-21",
+    categoria: "megasena" as const,
+    tempoLeitura: 7,
+    perguntasFrequentes: [
+      { pergunta: "Até quando dá pra entrar no bolão da Mega da Virada?", resposta: "As apostas costumam fechar no fim da tarde do dia 31 de dezembro (historicamente por volta das 19h de Brasília), mas o ideal é fechar o bolão com bem mais antecedência — reunir dinheiro e conferir a lista de participantes de última hora é o maior motivo de bolão sair errado." },
+      { pergunta: "O prêmio da Mega da Virada acumula se ninguém acertar as 6 dezenas?", resposta: "Não. É o único tipo de concurso da Mega-Sena que nunca acumula: se ninguém fizer a sena, o prêmio principal desce pra quem fez a quina (5 acertos) e, se necessário, pra quadra (4 acertos). Não há prêmio pra terno." },
+      { pergunta: "Quanto custa um bolão de 10 dezenas na Mega da Virada?", resposta: "Uma aposta múltipla de 10 dezenas custa R$ 1.260 (são 210 combinações de 6 dezenas dentro das 10 escolhidas, a R$ 6 cada). Dividido por 10 cotas de R$ 126, por exemplo." },
+      { pergunta: "Como o prêmio é dividido entre os participantes do bolão?", resposta: "Proporcionalmente ao número de cotas de cada pessoa — quem entrou com 2 cotas de um bolão de 20 recebe 2/20 do prêmio total, descontado o imposto de renda retido na fonte." },
+    ],
+    corpo: `
+      <p>
+        A Mega da Virada é o concurso mais assistido do ano — e também o que mais
+        gente organiza em grupo, porque o prêmio mínimo já nasce alto e a aposta
+        completa (20 dezenas) custa dezenas de milhares de reais sozinha. Este guia
+        é sobre a parte prática: quanto custa, como dividir e como organizar sem
+        brigar com ninguém depois. Para entender como o prêmio bilionário é formado
+        e a matemática por trás dele, veja
+        <a href="/analises/mega-da-virada-2026-matematica-premio">este outro artigo</a>.
+      </p>
+
+      <h2>Quando é e até quando dá pra apostar</h2>
+      <p>
+        A Mega da Virada acontece sempre em <strong>31 de dezembro</strong>, com o
+        sorteio à noite. A data e o horário exatos do concurso de 2026, junto com a
+        estimativa oficial do prêmio, só são confirmados pela Caixa entre novembro e
+        dezembro — historicamente, as apostas fecham no fim da tarde do dia 31
+        (por volta das 19h-20h de Brasília) e o sorteio acontece por volta das 22h.
+        Assim que a Caixa confirmar as datas de 2026, atualizamos este guia.
+      </p>
+      <p>
+        Na prática, isso significa que o bolão precisa estar <strong>fechado bem
+        antes</strong> do fim da tarde do dia 31 — deixar pra última hora é o jeito
+        mais comum de um bolão dar errado (gente que não pagou a tempo, aposta feita
+        com menos cotas do que o combinado).
+      </p>
+
+      <h2>Como funciona a premiação (e por que não acumula)</h2>
+      <p>
+        A Mega da Virada segue a estrutura normal da Mega-Sena — de 6 a 20 dezenas
+        entre 60 disponíveis — mas com uma regra especial: <strong>nunca
+        acumula</strong>. Se ninguém acertar as 6 dezenas, o prêmio principal desce
+        pra quem acertou 5 (quina); se ainda assim ninguém acertar, desce pra quem
+        acertou 4 (quadra). Não existe prêmio pra 3 acertos (terno) nesse concurso.
+        Isso é diferente do dia a dia da Mega-Sena, onde o prêmio principal
+        realmente acumula quando ninguém cravar a sena.
+      </p>
+
+      <h2>Quanto custa cada nível de aposta</h2>
+      <p>
+        A aposta simples (6 dezenas) custa <strong>R$ 6,00</strong>. Marcar mais
+        dezenas aumenta o preço porque você está comprando todas as combinações
+        possíveis de 6 dentro do que marcou:
+      </p>
+      <div class="tabela-scroll">
+        <table class="tabela-dados">
+          <thead><tr><th>Dezenas marcadas</th><th class="num">Combinações de 6</th><th class="num">Custo da aposta</th></tr></thead>
+          <tbody>
+            <tr><td>6 (simples)</td><td class="num">1</td><td class="num">R$ 6,00</td></tr>
+            <tr><td>7</td><td class="num">7</td><td class="num">R$ 42,00</td></tr>
+            <tr><td>8</td><td class="num">28</td><td class="num">R$ 168,00</td></tr>
+            <tr><td>9</td><td class="num">84</td><td class="num">R$ 504,00</td></tr>
+            <tr><td>10</td><td class="num">210</td><td class="num">R$ 1.260,00</td></tr>
+            <tr><td>12</td><td class="num">924</td><td class="num">R$ 5.544,00</td></tr>
+            <tr><td>15</td><td class="num">5.005</td><td class="num">R$ 30.030,00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        É por isso que apostas de 10+ dezenas quase sempre são feitas em bolão — o
+        custo cresce muito mais rápido que o número de dezenas marcadas. Veja o
+        custo exato de qualquer combinação na
+        <a href="/calculadoras/custo-aposta-multipla">calculadora de custo de aposta múltipla</a>.
+      </p>
+
+      <h2>Como dividir entre os participantes</h2>
+      <p>
+        O jeito mais simples e mais justo: definir um valor fixo por cota (ex.: R$
+        20, R$ 50) e dividir o custo total da aposta por esse valor pra saber
+        quantas cotas o bolão comporta. Quem quiser mais de uma cota, compra mais de
+        uma. Se o bolão ganhar, o prêmio é dividido <strong>proporcionalmente ao
+        número de cotas de cada pessoa</strong> — nunca em partes iguais se alguém
+        entrou com mais cotas que os outros. Lembre que <strong>30% do prêmio bruto
+        fica retido na fonte como imposto de renda</strong> antes do pagamento —
+        use a <a href="/calculadoras/imposto-premio-loteria">calculadora de imposto
+        sobre prêmio de loteria</a> pra saber o valor líquido de cada faixa.
+      </p>
+      <p>
+        Registre por escrito (mesmo que só numa lista simples) quem entrou com
+        quantas cotas antes do fechamento da aposta — evita qualquer discussão
+        depois, principalmente em bolões grandes com gente que se conhece pouco.
+      </p>
+
+<!--BOLAO_WIDGET-->
+
+      <h2>Histórico das Viradas anteriores</h2>
+      <p>
+        A Mega da Virada existe desde 2009, quando pagou <strong>R$ 144
+        milhões</strong> na primeira edição. Em 2024, o prêmio chegou a
+        <strong> R$ 635 milhões</strong>. A edição mais recente, sorteada na manhã
+        de 1º de janeiro de 2026 (o sorteio de 31/12 atrasou por causa de um volume
+        recorde de apostas de última hora), pagou <strong>R$ 1,09 bilhão</strong> —
+        o maior prêmio já distribuído por uma loteria no Brasil, dividido entre 6
+        apostas vencedoras, cada uma levando cerca de R$ 182 milhões. Veja a
+        <a href="/megasena/acumulos">linha do tempo completa de acúmulos</a> da
+        Mega-Sena, incluindo todas as edições da Virada.
+      </p>
+
+      <h2>Antes de apostar mais forte "porque é a Virada"</h2>
+      <p>
+        Nenhuma dezena tem mais chance de sair por ser um concurso especial — as
+        probabilidades são <a href="/megasena/probabilidades">exatamente as
+        mesmas</a> de qualquer outro sorteio da Mega-Sena. O prêmio maior atrai
+        muito mais apostadores, o que aumenta a chance de dividir o prêmio principal
+        com outras pessoas caso ele saia. Participe com o orçamento que faz sentido
+        pro seu grupo — o bolão existe pra dividir custo e ampliar cobertura de
+        dezenas, não pra "aumentar a chance" além do que a matemática permite. Veja
+        também por que, no longo prazo, o <a href="/dicas/retorno-ao-apostador">
+        retorno esperado ao apostador</a> continua sendo o mesmo, prêmio grande ou
+        pequeno.
       </p>
     `,
   },

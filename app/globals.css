@@ -8770,3 +8770,62 @@ footer.rodape {
     overflow-x: auto;
   }
 }
+
+/* ── Lista de espera do bolão (tarefa 2.2, guia da Mega da Virada) ────────── */
+
+.lista-espera-bolao {
+  background: var(--paper-raised);
+  border: 2px solid var(--pine);
+  padding: 24px 28px;
+  margin: 32px 0;
+  max-width: 480px;
+}
+
+.lista-espera-bolao__titulo {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--pine-deep);
+  margin: 0 0 6px;
+}
+
+.lista-espera-bolao__desc {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  margin: 0 0 16px;
+}
+
+.lista-espera-bolao__form {
+  margin-bottom: 0;
+}
+
+.premio-estimado-callout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  background: var(--paper-raised);
+  border: 1px solid var(--ochre);
+  border-left: 4px solid var(--ochre);
+  padding: 16px 20px;
+  margin: 20px 0 28px;
+}
+
+.premio-estimado-callout__label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.premio-estimado-callout__valor {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--ochre);
+  line-height: 1.15;
+}
+
+.premio-estimado-callout__nota {
+  font-size: 0.8rem;
+  color: var(--ink-faint);
+}
