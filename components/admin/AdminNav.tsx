@@ -19,7 +19,7 @@ const GRUPOS: { titulo: string; itens: { label: string; href?: string }[] }[] = 
   },
   {
     titulo: "Receita",
-    itens: [{ label: "Assinaturas" }, { label: "Pagamentos" }],
+    itens: [{ label: "Revenue", href: "/admin/revenue" }],
   },
   {
     titulo: "Operações",

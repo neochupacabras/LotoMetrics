@@ -28,7 +28,7 @@ Convenção de período: todo KPI "comparado" usa o período selecionado no Over
 - **Significado:** quantas contas têm plano Premium ativo agora, e quantas são Free.
 - **Fórmula:** Premium = `count(profiles WHERE plan = 'premium' AND (plan_expires_at IS NULL OR plan_expires_at > now()))` — mesma regra de `lib/plano.ts:calcularIsPremium`, a única fonte de verdade do produto para "isso é premium?". Free = `usuariosTotais - premiumAtivos`.
 - **Fonte:** Supabase, `profiles.plan` / `profiles.plan_expires_at`.
-- **Período:** snapshot (agora). Não tem comparação de período nesta fase — calcular "crescimento de assinantes" corretamente exigiria uma série histórica diária (rollup), que ainda não existe (ver Fase 5 do roadmap). Mostrar aqui uma variação derivada de `novos - cancelados` seria impreciso (não capta upgrades/downgrades de trial, expiração natural, etc.) — por isso não é exibido até haver dado real para isso.
+- **Período:** snapshot (agora). Não tem comparação de período em contagem de assinantes (exigiria uma série histórica diária/rollup que ainda não existe) — mas a movimentação em **valor** (novo MRR, MRR cancelado) já é real desde a Fase 5, ver seção "Revenue" abaixo.
 
 ### Cancelamentos (período)
 
@@ -71,7 +71,7 @@ Cada célula do Platform Health é `healthy` / `warning` / `critical` / `unknown
 |---|---|---|
 | Usuários | Sempre `healthy` nesta fase — não há regra de degradação definida ainda para usuários (não confundir com "não importa"; simplesmente não foi definida uma condição objetiva de "usuários não saudável" ainda). | — |
 | Dados das loterias | Pior status entre as 9 loterias — ver "Frescor de dados por loteria" abaixo. | `concurso`, `lib/calendario.ts` |
-| Receita | `unknown` — aguarda Fase 5 (tabela de preço↔plano, cálculo de MRR). | — |
+| Receita | `healthy` se nenhuma assinatura `past_due`, `warning` se houver ≥1. Ver "Pagamentos em atraso" na seção Revenue. | `subscriptions.status` |
 | Jobs | Pior status entre os 4 jobs monitorados — ver "Saúde de jobs" abaixo. | `job_runs` |
 | Erros | `healthy` até 5 erros/24h, `warning` até 20, `critical` acima. Limiar não calibrado por histórico real ainda (tabela nova) — revisar quando houver volume real de comparação. | `error_events` |
 | API | `unknown` — aguarda Fase 6. | — |
@@ -121,6 +121,68 @@ Cada célula do Platform Health é `healthy` / `warning` / `critical` / `unknown
 - **Fonte:** `product_events` (event_name IN `paywall_view`, `checkout_started`, `subscription_started`).
 - **Limitações:** (1) só cobre usuários que passaram por uma tela com `tool_view`/`paywall_view` registrado nos 7 dias antes do checkout — um checkout "frio" (ex.: linkado direto de um e-mail) cai em `tool: "desconhecido"`; (2) é atribuição de última ferramenta, não considera todo o caminho percorrido; (3) trial (7 dias) significa que `subscription_started` acontece no início do trial, não na primeira cobrança — é "início de assinatura", não "primeira cobrança confirmada".
 
+## Revenue (`/admin/revenue`)
+
+Antes da Fase 5, `subscriptions` guardava `stripe_price_id` mas nenhum valor monetário — MRR não era
+calculável localmente sem consultar a API do Stripe (achado da auditoria). Em vez de manter uma
+tabela de preços sincronizada manualmente (os `NEXT_PUBLIC_STRIPE_PRICE_*` só existem como segredo
+no ambiente da Vercel, nem sequer nos `.env` locais deste repositório), cada `stripe_price_id`
+encontrado é resolvido sob demanda na API do Stripe e cacheado em memória do processo
+(`lib/admin/precos.ts`). Só existem 3 preços hoje (mensal/semestral/anual), então isso é leve — não
+uma dependência pesada em tempo real por tela.
+
+### MRR / ARR
+
+- **Significado:** receita recorrente mensal/anual de assinaturas que **já estão sendo cobradas**.
+- **Fórmula:** para cada assinatura com `status = 'active'`, resolve o preço via Stripe e normaliza pro
+  equivalente mensal (`valor ÷ meses_do_intervalo` — ex.: plano anual de R$129,90 vira R$10,83/mês).
+  `MRR = Σ desses valores mensalizados`. `ARR = MRR × 12`.
+- **Por que `trialing` não entra:** trial ainda não gerou nenhuma cobrança real — é prática padrão de
+  SaaS não contar em MRR até a primeira cobrança. Assinantes em trial aparecem à parte ("Em trial").
+- **Fonte:** Supabase `subscriptions.status`/`stripe_price_id` + API do Stripe (preço).
+- **Atualização:** tempo real a cada carregamento (sem cache de banco — só cache de preço em memória).
+- **Limitações:** (1) se a API do Stripe falhar ao resolver um preço, essa assinatura fica de fora do
+  MRR e aparece como "não identificada" — nunca é contada como R$0 (isso inflaria uma queda falsa);
+  (2) não tem histórico diário, então não dá pra plotar "MRR ao longo do tempo", só o valor de agora.
+
+### MRR por plano
+
+- **Significado:** quebra do MRR total por periodicidade (mensal/semestral/anual).
+- **Fórmula:** agrupamento do cálculo acima por `stripe_price_id`.
+- **Limitação:** identifica plano pelo `price_id` resolvido, não por um nome cadastrado — se o Stripe
+  tiver múltiplos price_ids para a "mesma" periodicidade (ex.: um preço antigo e um novo depois de um
+  reajuste), eles aparecem como linhas separadas, o que é correto (são preços diferentes de fato).
+
+### Novo MRR / MRR cancelado (período)
+
+- **Significado:** quanto de MRR começou e quanto terminou no período selecionado.
+- **Fórmula:** Novo MRR = soma do valor mensalizado de assinaturas com `subscriptions.created_at` no
+  período **e que já estão `active` agora** (um trial iniciado no período que ainda não converteu não
+  entra — só passa a contar quando a página for recarregada após a conversão). MRR cancelado = soma do
+  valor mensalizado de assinaturas com `status = 'canceled'` e `canceled_at` no período.
+- **Fonte:** `subscriptions.created_at`/`canceled_at` (não os eventos `checkout_started`/
+  `subscription_started` de `product_events` — esses servem pra atribuição por ferramenta em
+  `/admin/funnels`, não para contabilidade de receita; `subscriptions.created_at` existe desde a Fase
+  1 e cobre todo o histórico, os eventos só desde a Fase 4).
+- **Limitação:** se uma assinatura mudar de preço (upgrade/downgrade) depois de criada, o cálculo usa o
+  `stripe_price_id` **atual**, não o de quando foi criada — hoje o produto não tem fluxo de troca de
+  plano pelo site, então isso só afetaria uma troca feita manualmente no Dashboard do Stripe.
+
+### Pagamentos em atraso
+
+- **Significado:** quantas assinaturas estão com `status = 'past_due'` agora — `invoice.payment_failed`
+  marca esse status sem derrubar o plano (carência intencional, ver Monetization Findings do audit).
+- **Fórmula:** `count(subscriptions WHERE status = 'past_due')`. `healthy` se 0, `warning` se > 0
+  (nunca `critical` — é esperado que aconteça ocasionalmente e o Stripe já tenta cobrar de novo
+  sozinho via Smart Retries).
+- **Fonte:** `subscriptions.status`.
+
+### Google AdSense
+
+- **Status: UNAVAILABLE.** Receita real e ativa (achado da auditoria — AdSense é removido para
+  assinantes Premium), mas sem integração com a API do AdSense — só visível no painel do Google. Não
+  aparece como R$0 nem como estimativa; aparece explicitamente marcada como indisponível.
+
 ## Aquisição e ativação — não implementado
 
 Ver seção seguinte ("ainda NÃO implementadas") — nenhum evento de sessão/login, cadastro ou pageview anônimo existe hoje, então esses funis não podem ser construídos sem instrumentação adicional.
@@ -136,6 +198,6 @@ Para rastreabilidade — evita a falsa impressão de que "se não está aqui, fo
 | DAU / WAU / MAU | Exige evento de sessão/login — Fases 2-4 focaram em ferramentas, não em auth | A definir |
 | Retenção (D1/D7/D30, cohort) | Exige histórico de eventos de sessão por usuário ao longo do tempo | A definir |
 | Funil de aquisição/ativação | Exige evento de sessão/login e cadastro, que não existem | A definir |
-| MRR / ARR / Churn de receita | Exige tabela de preço↔`stripe_price_id` (valor não é persistido em `subscriptions` hoje) | Fase 5 |
+| Taxa de churn de receita (%, não só valor absoluto) | MRR/ARR e movimentação (novo/cancelado) em valor já existem (Fase 5) — falta uma série histórica de "MRR no início do período" pra calcular uma taxa percentual confiável sem aproximação | A definir |
 | Uso de API pública | `api_keys` já tem contagem agregada mensal, mas não por requisição | Fase 6 |
 | SEO orgânico (cliques, impressões, CTR) | Depende de integração com a API do Google Search Console | Fase 7 |

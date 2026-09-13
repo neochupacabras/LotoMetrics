@@ -10,6 +10,8 @@ import {
   type StatusSaude,
 } from "@/lib/admin/queries";
 import { resolverPeriodo, ehPeriodoId, type PeriodoId } from "@/lib/admin/periodo";
+import { getMrrAtual, getSaudePagamentos } from "@/lib/admin/revenue";
+import { formatarCentavos } from "@/lib/admin/precos";
 import PeriodoNav from "@/components/admin/PeriodoNav";
 import styles from "./admin.module.css";
 
@@ -95,6 +97,11 @@ function montarAlertas(
   return alertas;
 }
 
+function montarAlertaPagamentos(pagamentos: Awaited<ReturnType<typeof getSaudePagamentos>>): Alerta[] {
+  if (pagamentos.pastDue === 0) return [];
+  return [{ texto: `${pagamentos.pastDue} assinatura(s) com pagamento em atraso (past_due).`, nivel: "warning" }];
+}
+
 export default async function AdminOverviewPage({
   searchParams,
 }: {
@@ -104,17 +111,19 @@ export default async function AdminOverviewPage({
   const periodoId: PeriodoId = ehPeriodoId(sp.period) ? sp.period : "30d";
   const periodo = resolverPeriodo(periodoId, sp.from, sp.to);
 
-  const [kpis, frescor, jobs, ultimosJobs, erros, usoFerramentas] = await Promise.all([
+  const [kpis, frescor, jobs, ultimosJobs, erros, usoFerramentas, mrr, pagamentos] = await Promise.all([
     getKpisExecutivos(periodo),
     getFrescorLoterias(),
     getSaudeJobs(),
     getUltimosJobRuns(8),
     getSaudeErros(),
     getUsoFerramentas(periodo),
+    getMrrAtual(),
+    getSaudePagamentos(),
   ]);
   const dadosLoteriasStatus = statusGeral(frescor.map((f) => f.status));
   const jobsStatus = statusGeral(jobs.map((j) => j.status));
-  const alertas = montarAlertas(jobs, frescor, erros);
+  const alertas = [...montarAlertas(jobs, frescor, erros), ...montarAlertaPagamentos(pagamentos)];
 
   return (
     <>
@@ -141,7 +150,11 @@ export default async function AdminOverviewPage({
       <div className={styles.healthGrid}>
         <HealthCell label="Usuários" status="healthy" />
         <HealthCell label="Dados das loterias" status={dadosLoteriasStatus} />
-        <HealthCell label="Receita" status="unknown" nota="Aguarda Fase 5" />
+        <HealthCell
+          label="Receita"
+          status={pagamentos.status}
+          nota={pagamentos.pastDue === 0 ? "Pagamentos em dia" : `${pagamentos.pastDue} em atraso`}
+        />
         <HealthCell label="Jobs" status={jobsStatus} />
         <HealthCell label="Erros" status={erros.status} nota={`${erros.ultimas24h} nas últimas 24h`} />
         <HealthCell label="API" status="unknown" nota="Aguarda Fase 6" />
@@ -162,11 +175,20 @@ export default async function AdminOverviewPage({
         <KpiComparadoCell label="Novos usuários" dado={kpis.novosUsuarios} />
         <Kpi label="Assinantes Premium" value={kpis.premiumAtivos} />
         <Kpi label="Free" value={kpis.free} />
+        <KpiTexto label="MRR" valor={formatarCentavos(mrr.mrrCentavos)} />
+        <KpiTexto label="ARR" valor={formatarCentavos(mrr.arrCentavos)} />
         <KpiComparadoCell label="Cancelamentos" dado={kpis.cancelamentos} invertido />
         <KpiComparadoCell label="Execuções de ferramentas*" dado={kpis.execucoesFerramentas} />
         <KpiTaxaErro dado={kpis.taxaErroFerramentas} />
         <KpiComparadoCell label="Erros" dado={kpis.erros} invertido />
       </div>
+      <p className={styles.note}>
+        MRR/ARR são snapshot de agora (não do período selecionado) — detalhamento por plano e
+        movimentação (novo/cancelado) em <Link href="/admin/revenue">/admin/revenue</Link>.
+        {mrr.assinantesNaoIdentificados > 0 && (
+          <> ⚠ {mrr.assinantesNaoIdentificados} assinante(s) com preço não resolvido pela API do Stripe — não somado(s) acima.</>
+        )}
+      </p>
       <p className={styles.note}>
         *Só as ferramentas com paywall estão instrumentadas até agora (gerador, simulador,
         conferidor, OCR, exportação CSV, relatório PDF) — não é o total das 16 ferramentas do site.
@@ -303,6 +325,15 @@ function Kpi({ label, value }: { label: string; value: number }) {
   return (
     <div className={styles.kpiCell}>
       <span className={styles.kpiValue}>{value.toLocaleString("pt-BR")}</span>
+      <span className={styles.kpiLabel}>{label}</span>
+    </div>
+  );
+}
+
+function KpiTexto({ label, valor }: { label: string; valor: string }) {
+  return (
+    <div className={styles.kpiCell}>
+      <span className={styles.kpiValue}>{valor}</span>
       <span className={styles.kpiLabel}>{label}</span>
     </div>
   );
