@@ -5,10 +5,18 @@ import { emailRelatorioMensal } from "@/lib/email-templates";
 import pool from "@/lib/db";
 import { calcularIsPremium } from "@/lib/plano";
 import { logJobRun } from "@/lib/telemetry";
+import { enviarEmail } from "@/lib/notificacoes/enviar";
+import { urlDescadastro } from "@/lib/notificacoes/unsubscribe";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lotoanalitica.com.br";
 
 export const runtime = "nodejs";
 export const maxDuration = 300; // 5 minutos — pode ser pesado com muitos usuários
 
+// PRECO/FAIXAS/MAPA_FAIXA_BANCO cobrem só lotofacil/megasena — limitação
+// pré-existente do relatório mensal (não introduzida nem expandida aqui).
+// Fora do escopo da tarefa 1.5 do plano de implementação, que corrige só
+// o listUsers() e a falta de idempotência.
 const PRECO: Record<string, number> = { lotofacil: 3.0, megasena: 5.0 };
 const FAIXAS: Record<string, Record<number, string>> = {
   lotofacil: { 15: "15 pontos", 14: "14 pontos", 13: "13 pontos", 12: "12 pontos", 11: "11 pontos" },
@@ -22,6 +30,14 @@ const MAPA_FAIXA_BANCO: Record<string, Record<number, number>> = {
 function autorizado(request: Request): boolean {
   const auth = request.headers.get("authorization");
   return !!process.env.CRON_SECRET && auth === `Bearer ${process.env.CRON_SECRET}`;
+}
+
+// Mesmo padrão de segurança de lib/notificacoes/handler-http.ts — permite
+// testar sem enviar de verdade antes de liberar geral (aceite da tarefa 1.5).
+function ehDryRun(request: Request): boolean {
+  const url = new URL(request.url);
+  const query = url.searchParams.get("dryRun");
+  return query !== null ? query === "1" : process.env.NOTIFICACOES_DRY_RUN === "1";
 }
 
 async function getConcursosDoMes(loteriaId: number, mes: number, ano: number) {
@@ -51,8 +67,9 @@ export async function GET(request: Request) {
   }
 
   const startedAt = new Date();
+  const dryRun = ehDryRun(request);
   try {
-    return await executarRelatorio(startedAt);
+    return await executarRelatorio(startedAt, dryRun);
   } catch (err) {
     await logJobRun({
       jobName: "cron_relatorio",
@@ -64,7 +81,7 @@ export async function GET(request: Request) {
   }
 }
 
-async function executarRelatorio(startedAt: Date) {
+async function executarRelatorio(startedAt: Date, dryRun: boolean) {
   const supabase = createAdminClient();
 
   // Mês de referência = mês anterior
@@ -78,7 +95,7 @@ async function executarRelatorio(startedAt: Date) {
     .from("user_games")
     .select(`
       id, user_id, loteria, dezenas, label,
-      profiles!inner(plan, plan_expires_at, display_name)
+      profiles!inner(plan, plan_expires_at, display_name, email, receber_emails)
     `)
     .eq("ativo", true);
 
@@ -87,7 +104,10 @@ async function executarRelatorio(startedAt: Date) {
     return NextResponse.json({ message: "Nenhum jogo ativo." });
   }
 
-  const jogosPremium = jogosAtivos.filter(j => calcularIsPremium(j.profiles as any));
+  const jogosPremium = jogosAtivos.filter(j => {
+    const perfil = j.profiles as any;
+    return calcularIsPremium(perfil) && perfil.email && perfil.receber_emails !== false;
+  });
 
   // Agrupar por usuário
   const porUsuario = new Map<string, typeof jogosPremium>();
@@ -97,11 +117,10 @@ async function executarRelatorio(startedAt: Date) {
     porUsuario.set(j.user_id, lista);
   }
 
-  // Busca todos os usuários UMA vez antes do loop — antes disso, cada
-  // iteração chamava supabase.auth.admin.listUsers() de novo (achado da
-  // auditoria: risco de estourar maxDuration=300s conforme a base cresce).
-  const { data: { users: todosUsuarios } } = await supabase.auth.admin.listUsers();
-  const usuarioPorId = new Map(todosUsuarios.map(u => [u.id, u]));
+  // Chave de deduplicação deste mês — impede reenvio se o cron rodar duas
+  // vezes (achado crítico #2 da auditoria de 13/09/2026, mesma correção de
+  // notificacoes_enviadas usada em lib/notificacoes/processar-concursos.ts).
+  const chaveRelatorio = `relatorio:${ano}-${String(mes).padStart(2, "0")}`;
 
   // Pré-carregar concursos do mês por loteria
   const concursosPorLoteria: Record<string, any[]> = {};
@@ -114,10 +133,23 @@ async function executarRelatorio(startedAt: Date) {
   const erros: string[] = [];
 
   for (const [userId, jogos] of porUsuario) {
-    const userAuth = usuarioPorId.get(userId);
-    if (!userAuth?.email) continue;
-
     const profile = jogos[0].profiles as any;
+    const email: string = profile.email;
+
+    // Reivindica a chave ANTES de gastar tempo gerando o PDF — se já foi
+    // enviado esse mês pra esse usuário, nem gera de novo.
+    let notificacaoId: number | null = null;
+    if (!dryRun) {
+      const { rows } = await pool.query<{ id: number }>(
+        `INSERT INTO notificacoes_enviadas (user_id, tipo, chave)
+         VALUES ($1, 'relatorio_mensal', $2)
+         ON CONFLICT (user_id, tipo, chave) DO NOTHING
+         RETURNING id`,
+        [userId, chaveRelatorio]
+      );
+      notificacaoId = rows[0]?.id ?? null;
+      if (!notificacaoId) continue; // já enviado esse mês
+    }
     const loteriasCom = [...new Set(jogos.map(j => j.loteria))];
 
     // Calcular resultados
@@ -195,10 +227,19 @@ async function executarRelatorio(startedAt: Date) {
       };
     });
 
+    const nomeMes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+      "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][mes - 1];
+    const nomeUsuario = profile.display_name ?? email.split("@")[0];
+
+    if (dryRun) {
+      enviados++; // conta como "seria enviado" pro relato do dry-run
+      continue;
+    }
+
     // Gerar PDF
     const pdfBytes = await gerarRelatorioPdf({
-      nomeUsuario: profile.display_name ?? userAuth.email.split("@")[0],
-      email: userAuth.email,
+      nomeUsuario,
+      email,
       mes,
       ano,
       geradoEm: new Date(),
@@ -206,50 +247,30 @@ async function executarRelatorio(startedAt: Date) {
       jogos: jogosRelatorio,
     });
 
-    // Enviar via Resend com anexo
     const nomeArquivo = `lotoanalitica-relatorio-${String(mes).padStart(2, "0")}-${ano}.pdf`;
     const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
-
-    const nomeMes = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho",
-      "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"][mes - 1];
-
     const loterias = loteriasCom.map(lc => lc === "lotofacil" ? "Lotofácil" : "Mega-Sena");
     const totalJogos = jogosRelatorio.length;
 
     const htmlCorpo = emailRelatorioMensal(
-      profile.display_name ?? userAuth.email.split("@")[0],
-      nomeMes,
-      ano,
-      totalJogos,
-      loterias,
-      "https://lotoanalitica.com.br/conta/jogos"
+      nomeUsuario, nomeMes, ano, totalJogos, loterias,
+      `${BASE_URL}/conta/jogos`, urlDescadastro(userId, BASE_URL)
     );
 
-    try {
-      const resp = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "LotoAnalítica <noreply@lotoanalitica.com.br>",
-          to: [userAuth.email],
-          subject: `Seu relatório de ${nomeMes} de ${ano} está pronto — LotoAnalítica`,
-          html: htmlCorpo,
-          attachments: [
-            {
-              filename: nomeArquivo,
-              content: pdfBase64,
-            },
-          ],
-        }),
-      });
+    const resultado = await enviarEmail({
+      to: email,
+      subject: `Seu relatório de ${nomeMes} de ${ano} está pronto — LotoAnalítica`,
+      html: htmlCorpo,
+      attachments: [{ filename: nomeArquivo, content: pdfBase64 }],
+    });
 
-      if (resp.ok) enviados++;
-      else erros.push(`${userAuth.email}: ${await resp.text()}`);
-    } catch (err) {
-      erros.push(`${userAuth.email}: ${String(err)}`);
+    if (resultado.ok) {
+      enviados++;
+    } else {
+      erros.push(`${email}: ${resultado.erro}`);
+      if (notificacaoId) {
+        await pool.query(`UPDATE notificacoes_enviadas SET status = 'falhou', erro = $2 WHERE id = $1`, [notificacaoId, resultado.erro ?? "erro desconhecido"]);
+      }
     }
   }
 
