@@ -123,7 +123,8 @@ export function emailResultadoConcurso(
   dataSorteio: string,
   dezenasOficiais: string,
   jogos: { label: string | null; dezenas: number[]; acertos: number; faixa: string | null; premio: number | null }[],
-  temPremio: boolean
+  temPremio: boolean,
+  urlDescadastro: string
 ): string {
   const data = new Date(dataSorteio).toLocaleDateString("pt-BR", {
     weekday: "long", day: "numeric", month: "long",
@@ -167,7 +168,8 @@ export function emailResultadoConcurso(
   `;
 
   const rodape = `Este e-mail foi enviado porque você tem jogos rastreados no LotoAnalítica.
-    Para parar de receber, <a href="${SITE_URL}/conta/jogos" style="color:${COR.inkFaint};">desative o rastreamento</a> em Minha conta.`;
+    Para parar de receber, <a href="${SITE_URL}/conta/jogos" style="color:${COR.inkFaint};">desative o rastreamento</a> em Minha conta
+    ou <a href="${urlDescadastro}" style="color:${COR.inkFaint};">cancele todos os e-mails</a>.`;
 
   return layout(conteudo, rodape);
 }
@@ -180,7 +182,8 @@ export function emailRelatorioMensal(
   ano: number,
   totalJogos: number,
   loterias: string[],
-  urlConta: string
+  urlConta: string,
+  urlDescadastro: string
 ): string {
   const loteriasTexto = loterias.join(" e ");
 
@@ -215,7 +218,8 @@ export function emailRelatorioMensal(
   `;
 
   const rodape = `Este e-mail foi enviado automaticamente no primeiro dia do mês para assinantes Premium com jogos cadastrados.
-    Dúvidas? Responda este e-mail ou acesse <a href="${SITE_URL}/conta" style="color:${COR.inkFaint};">${SITE_URL}/conta</a>.`;
+    Dúvidas? Responda este e-mail ou acesse <a href="${SITE_URL}/conta" style="color:${COR.inkFaint};">${SITE_URL}/conta</a>
+    &nbsp;·&nbsp;<a href="${urlDescadastro}" style="color:${COR.inkFaint};">Cancelar e-mails</a>.`;
 
   return layout(conteudo, rodape);
 }
@@ -227,7 +231,8 @@ export function emailAlertaAcumulo(
   nomeLoteria: string,
   valorPremio: number,
   proximoConcurso: number | null,
-  dataProximo: string | null
+  dataProximo: string | null,
+  urlDescadastro: string
 ): string {
   const valorFormatado = valorPremio >= 1_000_000
     ? `R$ ${(valorPremio / 1_000_000).toFixed(1).replace(".", ",")} milhões`
@@ -260,7 +265,41 @@ export function emailAlertaAcumulo(
   `;
 
   const rodape = `Você recebeu este alerta porque configurou uma notificação de acúmulo para a ${nomeLoteria}.
-    Para gerenciar seus alertas, acesse <a href="${SITE_URL}/conta" style="color:${COR.inkFaint};">sua conta</a>.`;
+    Para gerenciar seus alertas, acesse <a href="${SITE_URL}/conta" style="color:${COR.inkFaint};">sua conta</a>
+    ou <a href="${urlDescadastro}" style="color:${COR.inkFaint};">cancele todos os e-mails</a>.`;
+
+  return layout(conteudo, rodape);
+}
+
+// ── Template: Pix prestes a vencer ────────────────────────────────────────────
+
+export function emailPixVencendo(
+  nomeUsuario: string,
+  diasRestantes: number,
+  dataExpiracao: string,
+  urlAssinar: string,
+  urlDescadastro: string
+): string {
+  const dataTexto = new Date(dataExpiracao).toLocaleDateString("pt-BR", {
+    day: "numeric", month: "long",
+  });
+  const quando = diasRestantes <= 1 ? "amanhã" : `em ${diasRestantes} dias`;
+
+  const conteudo = `
+    ${titulo(`Seu acesso Premium vence ${quando}`)}
+    ${subtitulo(`Olá, ${nomeUsuario}. Seu acesso pago via Pix termina em ${dataTexto} — o Pix não renova sozinho como o cartão.`)}
+
+    <p style="font-size:14px;color:${COR.inkSoft};line-height:1.6;margin:0 0 24px;">
+      Depois dessa data, o rastreamento automático de jogos, os relatórios e a remoção
+      de anúncios são desativados até uma nova renovação.
+    </p>
+
+    ${divisor()}
+    ${botao("Renovar agora →", urlAssinar)}
+  `;
+
+  const rodape = `Você recebeu este lembrete porque seu Premium foi pago via Pix, que não tem renovação automática.
+    <a href="${urlDescadastro}" style="color:${COR.inkFaint};">Cancelar e-mails</a>.`;
 
   return layout(conteudo, rodape);
 }

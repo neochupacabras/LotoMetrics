@@ -85,18 +85,18 @@ const GRUPOS = [
   {
     titulo: "Conferidor por foto",
     descricao:
-      "A funcionalidade que mais viraliza — fotografe o bilhete e as dezenas são preenchidas automaticamente.",
+      "Fotografe o bilhete e as dezenas são preenchidas automaticamente — hoje disponível para Lotofácil e Mega-Sena.",
     itens: [
       {
         nome: "OCR de bilhetes via câmera",
         detalhe:
-          "Abra o conferidor, toque em \"Foto do bilhete\" e aponte a câmera. O sistema lê as dezenas via Google Cloud Vision e preenche o conferidor automaticamente — sem digitar nada.",
+          "Abra o conferidor da Lotofácil ou da Mega-Sena, toque em \"Foto do bilhete\" e aponte a câmera. O sistema lê as dezenas via Google Cloud Vision e preenche o conferidor automaticamente — sem digitar nada. As demais loterias ainda não têm essa opção.",
         link: null,
       },
       {
-        nome: "Funciona com fotos imperfeitas",
+        nome: "Detecção de texto de documento",
         detalhe:
-          "Iluminação fraca, bilhete amassado ou foto levemente torta? O sistema usa detecção de texto de documento, mais preciso para papéis impressos. Até 50 leituras por dia.",
+          "Usa o modo de leitura mais preciso do Google Cloud Vision para papéis impressos, o que ajuda com iluminação fraca ou bilhete levemente amassado — mas confira sempre o resultado antes de conferir. Até 50 leituras por dia.",
         link: null,
       },
     ],
@@ -326,7 +326,7 @@ export default function PremiumPage() {
               Escolher plano e assinar →
             </Link>
             <p className="premium-cta-final__nota">
-              Pagamento seguro via Stripe · Cartão de crédito e débito
+              Pagamento seguro via Stripe (cartão) ou Pix via Mercado Pago
             </p>
           </div>
         </section>
