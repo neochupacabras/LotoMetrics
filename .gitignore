@@ -33,6 +33,13 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# arquivos de credenciais soltos na raiz (chaves Stripe, JSON de conta de
+# serviço do Google, etc.) -- nunca devem ir pro histórico do git
+Stripe.txt
+stripe.txt
+*.serviceaccount.json
+lotoanalitica-*.json
+
 # vercel
 .vercel
 
