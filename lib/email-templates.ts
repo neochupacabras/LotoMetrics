@@ -279,6 +279,13 @@ export interface ResultadoSemanaEmail {
   numero: number;
   dezenas: number[];
   acumulado: boolean;
+  // Elementos extras que só existem em algumas loterias — mesma
+  // convenção de campos de app/page.tsx (CartaoResultado). mesSorte é
+  // reaproveitado por duas loterias com rótulos diferentes: "Mês da
+  // Sorte" na Dia de Sorte e "Time do Coração" na Timemania.
+  dezenasSegundoSorteio?: number[] | null; // Dupla Sena: 2º sorteio
+  trevos?: number[] | null; // +Milionária
+  mesSorte?: string | null; // Dia de Sorte / Timemania
 }
 
 export interface DestaqueSemanaEmail {
@@ -289,6 +296,28 @@ export interface DestaqueSemanaEmail {
 
 function linhaResultadoSemana(r: ResultadoSemanaEmail): string {
   const dezenas = r.dezenas.map((d) => String(d).padStart(2, "0")).join(" ");
+
+  const segundoSorteioHtml =
+    r.dezenasSegundoSorteio && r.dezenasSegundoSorteio.length > 0
+      ? `<div style="font-size:11px;color:${COR.inkFaint};margin-top:6px;text-transform:uppercase;letter-spacing:0.5px;">2º sorteio</div>
+         <div style="font-family:'Courier New',monospace;font-size:14px;font-weight:bold;color:${COR.ink};margin-top:2px;letter-spacing:1px;">
+           ${r.dezenasSegundoSorteio.map((d) => String(d).padStart(2, "0")).join(" ")}
+         </div>`
+      : "";
+
+  const trevosHtml =
+    r.trevos && r.trevos.length > 0
+      ? `<div style="margin-top:6px;font-size:12px;color:${COR.inkSoft};">
+           Trevos: <strong style="color:${COR.ink};">${r.trevos.join(" · ")}</strong>
+         </div>`
+      : "";
+
+  const mesSorteHtml = r.mesSorte
+    ? `<div style="margin-top:6px;font-size:12px;color:${COR.inkSoft};">
+         ${r.codigoLoteria === "timemania" ? "Time do Coração" : "Mês da Sorte"}: <strong style="color:${COR.ink};">${r.mesSorte}</strong>
+       </div>`
+    : "";
+
   return `
     <tr>
       <td style="padding:10px 0;border-bottom:1px solid ${COR.line};">
@@ -299,6 +328,9 @@ function linhaResultadoSemana(r: ResultadoSemanaEmail): string {
         <div style="font-family:'Courier New',monospace;font-size:14px;font-weight:bold;color:${COR.ink};margin-top:4px;letter-spacing:1px;">
           ${dezenas}
         </div>
+        ${segundoSorteioHtml}
+        ${trevosHtml}
+        ${mesSorteHtml}
       </td>
     </tr>`;
 }
