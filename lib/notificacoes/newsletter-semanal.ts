@@ -52,6 +52,12 @@ async function montarConteudo(): Promise<{
       numero: ultimo.numero,
       dezenas: ultimo.dezenas,
       acumulado: ultimo.acumulado,
+      // Elementos extras que só existem em algumas loterias (Dupla Sena,
+      // +Milionária, Dia de Sorte/Timemania) — sem isso o e-mail mostrava
+      // um resultado incompleto pra essas quatro loterias.
+      dezenasSegundoSorteio: ultimo.dezenasSegundoSorteio,
+      trevos: ultimo.trevos,
+      mesSorte: ultimo.mesSorte,
     });
     candidatosAcumulado.push({
       codigo: loteria.codigo,
