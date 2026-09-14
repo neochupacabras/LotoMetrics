@@ -7,7 +7,7 @@ import AoVivoClient from "@/components/AoVivoClient";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 import { isCodigoLoteriaValido, formatarData } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
-import { agoraBrasilia, dataHoraProximoSorteio, AGENDA, descricaoAgenda } from "@/lib/calendario";
+import { agoraBrasilia, dataHoraProximoSorteio, descricaoProximoSorteioEspecial, AGENDA, descricaoAgenda } from "@/lib/calendario";
 import type { CodigoLoteria } from "@/lib/types";
 import { logToolEvent } from "@/lib/telemetry";
 
@@ -48,6 +48,7 @@ export default async function AoVivoPage({
   const nomeLoteria = NOME_LOTERIA[codigoLoteria] ?? loteria.nome;
   const agenda = AGENDA.find((a) => a.codigo === codigoLoteria);
   const alvo = dataHoraProximoSorteio(codigoLoteria as CodigoLoteria, agoraBrasilia());
+  const observacaoEspecial = descricaoProximoSorteioEspecial(codigoLoteria as CodigoLoteria, agoraBrasilia());
 
   return (
     <>
@@ -71,6 +72,7 @@ export default async function AoVivoPage({
           nomeLoteria={loteria.nome}
           dataHoraSorteioIso={alvo.toISOString()}
           numeroUltimoConhecido={ultimoConcurso?.numero ?? 0}
+          observacaoEspecial={observacaoEspecial}
         />
 
         {ultimoConcurso && (

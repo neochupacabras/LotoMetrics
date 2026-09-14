@@ -60,6 +60,38 @@ export const AGENDA: AgendaLoteria[] = [
   { codigo: "supersete", sorteios: [{ dias: [1, 3, 5], horario: "21h" }] },
 ];
 
+// Pausas temporárias na agenda regular — concursos especiais (ex.: a
+// Lotofácil da Independência) suspendem a venda e o sorteio dos concursos
+// regulares por um período, substituindo-os por uma data/hora própria.
+// Sem isso, `dataHoraProximoSorteio` calculava o próximo horário só pela
+// grade semanal fixa e mostrava uma contagem regressiva pra um sorteio
+// regular que não vai acontecer (achado do usuário em 14/09/2026: a
+// Lotofácil não sorteia desde 03/09, mas a página de "ao vivo" mostrava
+// contagem pra "hoje").
+export interface PausaAgenda {
+  codigo: CodigoLoteria;
+  inicio: string; // "AAAA-MM-DD" em Brasília — primeiro dia sem sorteio regular
+  fim: string; // "AAAA-MM-DD" em Brasília — último dia sem sorteio regular (inclusive)
+  sorteioEspecial?: { instanteIso: string; descricao: string };
+}
+
+export const PAUSAS_AGENDA: PausaAgenda[] = [
+  {
+    codigo: "lotofacil",
+    // Vendas exclusivas do concurso especial a partir de 03/09 (ver
+    // lib/analises.ts, "lotofacil-independencia-2026-guia-completo") —
+    // nenhum concurso regular é sorteado entre 04/09 e a véspera do
+    // sorteio especial, em 15/09.
+    inicio: "2026-09-04",
+    fim: "2026-09-15",
+    sorteioEspecial: {
+      // 11h em Brasília (UTC-3, sem horário de verão) = 14h UTC.
+      instanteIso: "2026-09-15T14:00:00.000Z",
+      descricao: "Lotofácil da Independência — concurso especial nº 3.780",
+    },
+  },
+];
+
 export const DIAS_SEMANA = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 export const DIAS_SEMANA_ABREV = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
@@ -110,12 +142,30 @@ export function proximoSorteio(codigo: CodigoLoteria, referencia: Date): Date {
 // Date deslocado (época real − 3h) só pra extrair corretamente o dia/mês/ano
 // de Brasília — comparar `.getTime()` dele com um instante absoluto de
 // `Date.UTC(...)` daria uma defasagem de 3h.
+function dataIsoBrasilia(dia: Date): string {
+  return `${dia.getFullYear()}-${String(dia.getMonth() + 1).padStart(2, "0")}-${String(dia.getDate()).padStart(2, "0")}`;
+}
+
 export function dataHoraProximoSorteio(codigo: CodigoLoteria, referencia: Date): Date {
   const agenda = AGENDA.find((a) => a.codigo === codigo)!;
+  const pausa = PAUSAS_AGENDA.find((p) => p.codigo === codigo);
   const agoraReal = Date.now();
   for (let i = 0; i <= 8; i++) {
     const dia = new Date(referencia);
     dia.setDate(dia.getDate() + i);
+    const diaIso = dataIsoBrasilia(dia);
+
+    if (pausa && diaIso >= pausa.inicio && diaIso <= pausa.fim) {
+      // Sorteio regular pausado neste dia — o sorteio especial (se ainda
+      // não passou) é o "próximo sorteio"; sem ele, simplesmente pula o
+      // dia, sem cair pra grade semanal normal.
+      if (pausa.sorteioEspecial) {
+        const instanteEspecial = new Date(pausa.sorteioEspecial.instanteIso);
+        if (instanteEspecial.getTime() > agoraReal) return instanteEspecial;
+      }
+      continue;
+    }
+
     const janela = agenda.sorteios.find((j) => j.dias.includes(dia.getDay()));
     if (!janela) continue;
     const hora = Number(janela.horario.match(/\d+/)?.[0] ?? 21);
@@ -126,6 +176,17 @@ export function dataHoraProximoSorteio(codigo: CodigoLoteria, referencia: Date):
     if (instante.getTime() > agoraReal) return instante;
   }
   return referencia;
+}
+
+/** Descrição do concurso especial, se `dataHoraProximoSorteio` estiver
+ *  apontando pra um (em vez do próximo sorteio regular da grade semanal).
+ *  Null nos outros casos. Usado só pra dar contexto na página de "sorteio
+ *  ao vivo" — por que a contagem não é pra um horário regular. */
+export function descricaoProximoSorteioEspecial(codigo: CodigoLoteria, referencia: Date): string | null {
+  const pausa = PAUSAS_AGENDA.find((p) => p.codigo === codigo);
+  if (!pausa?.sorteioEspecial) return null;
+  const alvo = dataHoraProximoSorteio(codigo, referencia);
+  return alvo.toISOString() === pausa.sorteioEspecial.instanteIso ? pausa.sorteioEspecial.descricao : null;
 }
 
 export function getAgendaOrdenadaPorProximoSorteio(referencia: Date) {

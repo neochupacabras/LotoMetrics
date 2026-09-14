@@ -155,54 +155,56 @@ export default function NavLoterias({
         <span className="nav-dropdown__separador" aria-hidden />
       </div>
 
-      <button
-        type="button"
-        className="nav-loterias-seta nav-loterias-seta--esq"
-        aria-hidden={!canLeft}
-        aria-label="Rolar para a esquerda"
-        onClick={() => scroll("esq")}
-        tabIndex={canLeft ? 0 : -1}
-      >
-        ‹
-      </button>
+      <div className="nav-loterias-scroll">
+        <button
+          type="button"
+          className="nav-loterias-seta nav-loterias-seta--esq"
+          aria-hidden={!canLeft}
+          aria-label="Rolar para a esquerda"
+          onClick={() => scroll("esq")}
+          tabIndex={canLeft ? 0 : -1}
+        >
+          ‹
+        </button>
 
-      {canLeft && <div className="nav-loterias-fade-esq" aria-hidden />}
+        {canLeft && <div className="nav-loterias-fade-esq" aria-hidden />}
 
-      <div
-        ref={navRef}
-        className="nav-loterias"
-        onScroll={checkScroll}
-        onMouseLeave={voltarAoAtivo}
-      >
-        {items.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            data-ativo={item.ativo}
-            className={item.className}
-            ref={(el) => {
-              if (el) itemRefs.current.set(item.href, el);
-            }}
-            onMouseEnter={() => moverSublinhadoPara(item.href)}
-          >
-            {item.label}
-          </Link>
-        ))}
-        <span ref={underlineRef} className="nav-loterias__sublinhado" aria-hidden />
+        <div
+          ref={navRef}
+          className="nav-loterias"
+          onScroll={checkScroll}
+          onMouseLeave={voltarAoAtivo}
+        >
+          {items.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              data-ativo={item.ativo}
+              className={item.className}
+              ref={(el) => {
+                if (el) itemRefs.current.set(item.href, el);
+              }}
+              onMouseEnter={() => moverSublinhadoPara(item.href)}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <span ref={underlineRef} className="nav-loterias__sublinhado" aria-hidden />
+        </div>
+
+        <button
+          type="button"
+          className="nav-loterias-seta nav-loterias-seta--dir"
+          aria-hidden={!canRight}
+          aria-label="Rolar para a direita"
+          onClick={() => scroll("dir")}
+          tabIndex={canRight ? 0 : -1}
+        >
+          ›
+        </button>
+
+        {canRight && <div className="nav-loterias-fade" aria-hidden />}
       </div>
-
-      <button
-        type="button"
-        className="nav-loterias-seta nav-loterias-seta--dir"
-        aria-hidden={!canRight}
-        aria-label="Rolar para a direita"
-        onClick={() => scroll("dir")}
-        tabIndex={canRight ? 0 : -1}
-      >
-        ›
-      </button>
-
-      {canRight && <div className="nav-loterias-fade" aria-hidden />}
     </div>
   );
 }
