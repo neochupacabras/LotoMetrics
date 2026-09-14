@@ -2,6 +2,50 @@
 
 import { useState, useRef, useCallback } from "react";
 
+// Tarefa 2.5 do plano de implementação (21/09/2026): fotos de celular
+// modernas costumam vir com 3000-4000px no lado maior — muito mais do que
+// o OCR precisa pra ler texto de um bilhete impresso, e mais lento pra
+// enviar em conexão de dados. Reduz pro lado maior caber em 1600px antes
+// de mandar pro servidor; imagens já menores passam direto (nunca
+// aumenta uma imagem pequena, só evita reprocessar à toa).
+function reduzirImagem(file: File, maxDimensao = 1600, qualidade = 0.85): Promise<File> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const escala = Math.min(1, maxDimensao / Math.max(img.width, img.height));
+      if (escala >= 1) {
+        resolve(file);
+        return;
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(img.width * escala);
+      canvas.height = Math.round(img.height * escala);
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        resolve(file);
+        return;
+      }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(
+        (blob) => resolve(blob ? new File([blob], file.name, { type: "image/jpeg" }) : file),
+        "image/jpeg",
+        qualidade
+      );
+    };
+    // Se a imagem não carregar por algum motivo, manda o arquivo original
+    // — o servidor ainda valida tamanho/tipo, então isso nunca quebra o
+    // envio, só perde a otimização.
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve(file);
+    };
+    img.src = url;
+  });
+}
+
 interface ResultadoOCR {
   dezenas: number[];
   confianca: "alta" | "media" | "baixa";
@@ -61,8 +105,9 @@ export default function ConferidorFoto({
     setResultado(null);
 
     try {
+      const arquivoReduzido = await reduzirImagem(arquivo);
       const fd = new FormData();
-      fd.append("imagem", arquivo);
+      fd.append("imagem", arquivoReduzido);
       fd.append("loteria", codigoLoteria);
 
       const res = await fetch("/api/ocr", { method: "POST", body: fd });
@@ -189,8 +234,8 @@ export default function ConferidorFoto({
                   {resultado.restantes !== undefined && resultado.restantes <= 10 && (
                     <p className="ocr-resultado__aviso" style={{ marginTop: 4 }}>
                       ⚠ {resultado.restantes === 0
-                        ? "Limite diário atingido. Renova amanhã."
-                        : `${resultado.restantes} leitura${resultado.restantes !== 1 ? "s" : ""} restante${resultado.restantes !== 1 ? "s" : ""} hoje.`}
+                        ? "Limite mensal atingido. Renova no início do próximo mês."
+                        : `${resultado.restantes} leitura${resultado.restantes !== 1 ? "s" : ""} restante${resultado.restantes !== 1 ? "s" : ""} neste mês.`}
                     </p>
                   )}
                 </>

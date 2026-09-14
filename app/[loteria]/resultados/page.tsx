@@ -1,15 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { after } from "next/server";
 import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
 import Anuncio from "@/components/Anuncio";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import BotaoExportarCsv from "@/components/BotaoExportarCsv";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { getConcursosPaginado, getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 import { formatarData, formatarMoeda, isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
-import { getPlanoPremium } from "@/lib/plano";
-import { logToolEvent } from "@/lib/telemetry";
 
 const POR_PAGINA = 20;
 
@@ -75,25 +74,16 @@ export default async function ResultadosPage({
 
   const pagina = Math.max(1, Number(paginaParam) || 1);
 
-  const [ultimo, { concursos, total }, { logado, premium }] = await Promise.all([
+  const [ultimo, { concursos, total }] = await Promise.all([
     getUltimoConcurso(loteria.id),
     getConcursosPaginado(loteria.id, pagina, POR_PAGINA),
-    getPlanoPremium(),
   ]);
-
-  after(() =>
-    logToolEvent({
-      eventName: "tool_view",
-      tool: "resultados",
-      lottery: codigoLoteria,
-      plan: logado ? (premium ? "premium" : "free") : null,
-    })
-  );
 
   const totalPaginas = Math.max(1, Math.ceil(total / POR_PAGINA));
 
   return (
     <>
+      <TelemetriaBeacon tool="resultados" lottery={codigoLoteria} />
       <BreadcrumbJsonLd
         itens={[
           { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },
@@ -206,15 +196,7 @@ export default async function ResultadosPage({
         <p className="eyebrow" style={{ margin: 0 }}>
           Histórico de concursos
         </p>
-        {premium ? (
-          <a href={`/api/${codigoLoteria}/exportar`} className="botao-copiar" style={{ fontSize: "0.85rem" }}>
-            ↓ Baixar histórico completo (CSV)
-          </a>
-        ) : (
-          <Link href="/assinar" className="botao-copiar" style={{ fontSize: "0.85rem" }}>
-            ↓ Baixar histórico (CSV) <span className="modo-toggle__lock">✦ Premium</span>
-          </Link>
-        )}
+        <BotaoExportarCsv codigoLoteria={codigoLoteria} />
       </div>
 
       <div className="ledger">

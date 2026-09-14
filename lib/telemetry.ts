@@ -21,7 +21,17 @@ export type ToolEventName =
   | "subscription_started"
   // Pagamento avulso via Pix (Mercado Pago) aprovado — não recorrente, ver
   // app/api/mercadopago/webhook/route.ts e supabase/migrations/…_add_pix_payments.sql.
-  | "pix_payment_approved";
+  | "pix_payment_approved"
+  // Emitidos pelo client (components/TelemetriaBeacon.tsx), via
+  // navigator.sendBeacon — tarefa 2.3 do plano de implementação (13/09/
+  // 2026). visit_landing dispara uma vez por visitante (cookie la_landed),
+  // com referrer/UTM em metadata; pricing_view em /premium e /assinar;
+  // waitlist_joined e limit_reached ainda não têm chamador (reservados
+  // pro bolão da Virada, fase 3, e pros gatilhos de limite do free).
+  | "visit_landing"
+  | "pricing_view"
+  | "waitlist_joined"
+  | "limit_reached";
 
 export interface LogToolEventInput {
   eventName: ToolEventName;
@@ -32,13 +42,17 @@ export interface LogToolEventInput {
   success?: boolean | null;
   durationMs?: number | null;
   metadata?: Record<string, unknown> | null;
+  // Cookie de primeira parte gerado no cliente (components/
+  // TelemetriaBeacon.tsx) — permite ligar visita anônima, cadastro e
+  // compra sem depender de user_id (que só existe depois do login).
+  anonymousId?: string | null;
 }
 
 export async function logToolEvent(input: LogToolEventInput): Promise<void> {
   try {
     await pool.query(
-      `INSERT INTO product_events (event_name, tool, lottery, user_id, plan, success, duration_ms, metadata)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+      `INSERT INTO product_events (event_name, tool, lottery, user_id, plan, success, duration_ms, metadata, anonymous_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
       [
         input.eventName,
         input.tool,
@@ -48,11 +62,25 @@ export async function logToolEvent(input: LogToolEventInput): Promise<void> {
         input.success ?? null,
         input.durationMs ?? null,
         input.metadata ? JSON.stringify(input.metadata) : null,
+        input.anonymousId ?? null,
       ]
     );
   } catch (err) {
     console.error("logToolEvent falhou:", (err as Error).message);
   }
+}
+
+// Filtra crawlers/bots conhecidos e clientes HTTP não-navegador — usado
+// pela rota que recebe os beacons do cliente (app/api/eventos/route.ts).
+// Não precisa ser exaustivo: o objetivo é parar de contar os robôs mais
+// comuns (Google, Bing, redes sociais, ferramentas de SEO, scripts), não
+// blindar contra um bot sofisticado que finge ser navegador — esse já não
+// executaria o navigator.sendBeacon de qualquer forma.
+const PADRAO_BOT =
+  /bot|crawl|spider|slurp|facebookexternalhit|whatsapp|telegrambot|curl|wget|python-requests|go-http-client|headlesschrome|phantomjs|selenium|scrapy|ahrefs|semrush|petalbot/i;
+
+export function pareceBot(userAgent: string | null): boolean {
+  return !userAgent || PADRAO_BOT.test(userAgent);
 }
 
 export type JobStatus = "success" | "failed" | "partial";

@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Footer from "@/components/Footer";
 import AdsenseGate from "@/components/AdsenseGate";
+import VisitaLandingBeacon from "@/components/VisitaLandingBeacon";
 import { PlanoUsuarioProvider } from "@/components/auth/PlanoUsuarioProvider";
 import { SITE_URL, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import "./globals.css";
@@ -61,6 +62,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd()) }}
         />
         <PlanoUsuarioProvider>
+          <VisitaLandingBeacon />
           {children}
           <Footer />
           <Analytics />

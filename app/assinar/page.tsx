@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import Masthead from "@/components/Masthead";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { createClient } from "@/lib/supabase/server";
 import CheckoutButton from "@/components/auth/CheckoutButton";
 import PixCheckoutButton from "@/components/auth/PixCheckoutButton";
@@ -76,6 +77,7 @@ export default async function AssinarPage() {
 
   return (
     <>
+      <TelemetriaBeacon eventName="pricing_view" tool="assinar" />
       <Masthead />
       <main className="assinar-page">
         <div className="container">

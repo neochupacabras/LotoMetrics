@@ -7,7 +7,10 @@ import { LOTERIAS_COM_OCR } from "@/lib/ocr-suporte";
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
-const LIMITE_DIARIO = 50;
+// Tarefa 2.5 do plano de implementação (21/09/2026): trocado de 50/dia
+// para 100/mês -- o limite diário resetava rápido demais para quem tenta
+// conferir vários bilhetes de uma vez (ex.: bolão com vários jogos).
+const LIMITE_MENSAL = 100;
 
 const LIMITES_LOTERIA: Record<string, { min: number; max: number; qtd: number }> = {
   lotofacil: { min: 1, max: 25, qtd: 15 },
@@ -45,7 +48,10 @@ async function verificarEIncrementarLimite(
   userId: string
 ): Promise<{ permitido: boolean; restantes: number }> {
   const admin = createAdminClient();
-  const hoje = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+  const mesAtual = new Date().toISOString().slice(0, 7); // "YYYY-MM" -- o
+  // nome do campo (`data`) e o formato mudaram de dia pra mês; contadores
+  // antigos no formato "YYYY-MM-DD" simplesmente não batem mais e resetam
+  // pra 0 no primeiro uso depois do deploy -- sem migration necessária.
 
   const { data: profile } = await admin
     .from("profiles")
@@ -54,19 +60,27 @@ async function verificarEIncrementarLimite(
     .single();
 
   const uso = profile?.ocr_usage as { data: string; count: number } | null;
-  const usageHoje = uso?.data === hoje ? uso.count : 0;
+  const usageMes = uso?.data === mesAtual ? uso.count : 0;
 
-  if (usageHoje >= LIMITE_DIARIO) {
+  if (usageMes >= LIMITE_MENSAL) {
     return { permitido: false, restantes: 0 };
   }
 
   // Incrementar
   await admin
     .from("profiles")
-    .update({ ocr_usage: { data: hoje, count: usageHoje + 1 } })
+    .update({ ocr_usage: { data: mesAtual, count: usageMes + 1 } })
     .eq("id", userId);
 
-  return { permitido: true, restantes: LIMITE_DIARIO - usageHoje - 1 };
+  return { permitido: true, restantes: LIMITE_MENSAL - usageMes - 1 };
+}
+
+// Segundos até 00h do dia 1º do mês seguinte -- usado no header
+// Retry-After quando o limite mensal é atingido.
+function segundosAteProximoMes(): number {
+  const agora = new Date();
+  const proximoMes = new Date(Date.UTC(agora.getUTCFullYear(), agora.getUTCMonth() + 1, 1));
+  return Math.max(0, Math.round((proximoMes.getTime() - agora.getTime()) / 1000));
 }
 
 export async function POST(request: Request) {
@@ -105,16 +119,16 @@ export async function POST(request: Request) {
   if (!permitido) {
     return NextResponse.json(
       {
-        erro: `Limite diário de ${LIMITE_DIARIO} leituras atingido. Renova amanhã.`,
-        limiteDiario: LIMITE_DIARIO,
+        erro: `Limite mensal de ${LIMITE_MENSAL} leituras atingido. Renova no início do próximo mês.`,
+        limiteMensal: LIMITE_MENSAL,
         restantes: 0,
       },
       {
         status: 429,
         headers: {
-          "X-RateLimit-Limit": String(LIMITE_DIARIO),
+          "X-RateLimit-Limit": String(LIMITE_MENSAL),
           "X-RateLimit-Remaining": "0",
-          "Retry-After": "86400",
+          "Retry-After": String(segundosAteProximoMes()),
         },
       }
     );
@@ -227,7 +241,7 @@ export async function POST(request: Request) {
       },
       {
         headers: {
-          "X-RateLimit-Limit": String(LIMITE_DIARIO),
+          "X-RateLimit-Limit": String(LIMITE_MENSAL),
           "X-RateLimit-Remaining": String(restantes),
         },
       }

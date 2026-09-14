@@ -3,8 +3,21 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import BolaoClient from "@/components/BolaoClient";
+import ListaEsperaBolao from "@/components/ListaEsperaBolao";
 import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { getAnalise, getAnalisesRecentes } from "@/lib/analises";
+import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
+import { formatarMoeda } from "@/lib/format";
+
+// Único slug com conteúdo interativo embutido — o otimizador de bolão e a
+// lista de espera (tarefa 2.2 do plano de implementação, 21/09/2026). O
+// resto do template continua genérico pras outras ~50 análises.
+const SLUG_BOLAO_VIRADA = "bolao-mega-da-virada-2026-como-organizar";
+
+// Revalida a cada 5 minutos só por causa do prêmio estimado ao vivo desta
+// página — as demais análises não têm dependência nenhuma de banco.
+export const revalidate = 300;
 
 const BADGE: Record<string, string> = {
   lotofacil:      "Lotofácil",
@@ -65,6 +78,23 @@ export default async function AnalisePage({
 
   const recentes = getAnalisesRecentes(4).filter((a) => a.slug !== slug);
 
+  // Só pro guia do bolão da Virada: prêmio estimado ao vivo (não um número
+  // fixo escrito no texto, que ficaria desatualizado) e o otimizador de
+  // bolão já configurado pra Mega-Sena.
+  const ehGuiaBolaoVirada = slug === SLUG_BOLAO_VIRADA;
+  const megaSena = ehGuiaBolaoVirada ? await getLoteriaPorCodigo("megasena") : null;
+  const ultimoConcursoMega = megaSena ? await getUltimoConcurso(megaSena.id) : null;
+
+  // Só pro guia do bolão: divide o corpo no marcador BOLAO_WIDGET pra
+  // colocar o otimizador entre "como dividir as cotas" e o histórico das
+  // Viradas, em vez de só no fim do artigo inteiro — é a ação que a
+  // página inteira existe pra provocar, não deveria vir depois de todo o
+  // texto de contexto.
+  const MARCADOR_WIDGET = "<!--BOLAO_WIDGET-->";
+  const [corpoAntesWidget, corpoDepoisWidget] = ehGuiaBolaoVirada && analise.corpo.includes(MARCADOR_WIDGET)
+    ? analise.corpo.split(MARCADOR_WIDGET)
+    : [analise.corpo, null];
+
   const jsonLdFaq = analise.perguntasFrequentes
     ? {
         "@context": "https://schema.org",
@@ -123,10 +153,51 @@ export default async function AnalisePage({
         <h1 className="titulo-edicao" style={{ marginTop: 12 }}>{analise.titulo}</h1>
         <p className="subtitulo-edicao">{analise.resumo}</p>
 
+        {ehGuiaBolaoVirada && ultimoConcursoMega?.valorEstimadoProximo && (
+          <div className="premio-estimado-callout">
+            <span className="premio-estimado-callout__label">Prêmio estimado hoje</span>
+            <span className="premio-estimado-callout__valor">
+              {formatarMoeda(ultimoConcursoMega.valorEstimadoProximo)}
+            </span>
+            <span className="premio-estimado-callout__nota">
+              Atualizado a cada novo concurso — a estimativa oficial da Virada só
+              fecha entre novembro e dezembro.
+            </span>
+          </div>
+        )}
+
         <div
           className="analise-post__corpo"
-          dangerouslySetInnerHTML={{ __html: analise.corpo }}
+          dangerouslySetInnerHTML={{ __html: corpoAntesWidget }}
         />
+
+        {ehGuiaBolaoVirada && megaSena && (
+          <div style={{ marginBottom: 32 }}>
+            <h2 className="bloco__titulo" style={{ marginBottom: 8 }}>
+              Monte o bolão da sua Mega da Virada
+            </h2>
+            <p style={{ marginTop: 0, marginBottom: 20 }}>
+              Diga o orçamento total do grupo e o preço da cota abaixo — o
+              otimizador mostra qual fechamento de dezenas cabe no orçamento e
+              gera os jogos prontos para apostar, com a garantia matemática de
+              cada opção.
+            </p>
+            <BolaoClient
+              codigoLoteria="megasena"
+              nomeLoteria="Mega-Sena"
+              dezenaMin={megaSena.dezenaMin}
+              dezenaMax={megaSena.dezenaMax}
+            />
+            <ListaEsperaBolao origem="bolao-mega-virada-2026" loteria="megasena" />
+          </div>
+        )}
+
+        {corpoDepoisWidget && (
+          <div
+            className="analise-post__corpo"
+            dangerouslySetInnerHTML={{ __html: corpoDepoisWidget }}
+          />
+        )}
 
         {analise.perguntasFrequentes && (
           <section style={{ marginTop: 40 }}>

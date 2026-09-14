@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Masthead from "@/components/Masthead";
 import FaqItem from "@/components/FaqItem";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -96,7 +97,7 @@ const GRUPOS = [
       {
         nome: "Detecção de texto de documento",
         detalhe:
-          "Usa o modo de leitura mais preciso do Google Cloud Vision para papéis impressos, o que ajuda com iluminação fraca ou bilhete levemente amassado — mas confira sempre o resultado antes de conferir. Até 50 leituras por dia.",
+          "Usa o modo de leitura mais preciso do Google Cloud Vision para papéis impressos, o que ajuda com iluminação fraca ou bilhete levemente amassado — mas confira sempre o resultado antes de conferir. Até 100 leituras por mês.",
         link: null,
       },
     ],
@@ -167,6 +168,7 @@ const COMPARATIVO = [
 export default function PremiumPage() {
   return (
     <>
+      <TelemetriaBeacon eventName="pricing_view" tool="premium" />
       <Masthead premiumAtivo />
       <main>
 

@@ -61,10 +61,43 @@ async function getLoteriaId(codigo: string): Promise<number | null> {
   return rows[0]?.id ?? null;
 }
 
+// Retenção de product_events (tarefa 2.3 do plano de implementação) —
+// junto deste cron mensal em vez de um cron novo dedicado: o Hobby da
+// Vercel (plano atual, decisão do usuário na Fase 0) tem limite de cron
+// jobs, e uma faxina mensal é granularidade de sobra pra uma retenção de
+// 90 dias. Best-effort e isolado num try/catch próprio — nunca deve
+// impedir o relatório de rodar.
+const RETENCAO_DIAS = 90;
+
+async function limparEventosAntigos(): Promise<void> {
+  const startedAt = new Date();
+  try {
+    const { rowCount } = await pool.query(
+      `DELETE FROM product_events WHERE created_at < now() - make_interval(days => $1::int)`,
+      [RETENCAO_DIAS]
+    );
+    await logJobRun({
+      jobName: "limpar_eventos_antigos",
+      status: "success",
+      startedAt,
+      details: { linhasApagadas: rowCount, retencaoDias: RETENCAO_DIAS },
+    });
+  } catch (err) {
+    await logJobRun({
+      jobName: "limpar_eventos_antigos",
+      status: "failed",
+      startedAt,
+      error: (err as Error).message,
+    });
+  }
+}
+
 export async function GET(request: Request) {
   if (!autorizado(request)) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
   }
+
+  await limparEventosAntigos();
 
   const startedAt = new Date();
   const dryRun = ehDryRun(request);
