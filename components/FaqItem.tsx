@@ -20,7 +20,10 @@ export default function FaqItem({ children }: { children: [React.ReactNode, Reac
       <div
         className="faq-item__corpo"
         style={{
-          maxHeight: aberto ? `${bodyRef.current?.scrollHeight ?? 400}px` : "0px",
+          // +4px de folga: diferenças de arredondamento de subpixel entre
+          // navegadores no cálculo de line-height já cortaram a última
+          // linha por 1-2px mesmo com a altura "certa" medida.
+          maxHeight: aberto ? `${(bodyRef.current?.scrollHeight ?? 400) + 4}px` : "0px",
         }}
       >
         <div ref={bodyRef} className="faq-item__resposta">

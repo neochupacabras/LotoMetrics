@@ -8156,7 +8156,12 @@ footer.rodape {
 }
 
 .faq-item__resposta {
-  margin-top: 10px;
+  /* padding-top, não margin-top: .faq-item__corpo mede a altura via
+     bodyRef.scrollHeight (components/FaqItem.tsx), que inclui o padding
+     do próprio elemento medido mas não a margem — com margin-top a
+     resposta ficava sempre uns 10px mais alta do que o max-height
+     calculado, cortando a última linha do texto quando aberta. */
+  padding-top: 10px;
   padding-left: 28px;
   padding-bottom: 2px;
   color: var(--ink-soft);
