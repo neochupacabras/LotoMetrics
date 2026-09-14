@@ -271,6 +271,100 @@ export function emailAlertaAcumulo(
   return layout(conteudo, rodape);
 }
 
+// ── Template: newsletter semanal ─────────────────────────────────────────────
+
+export interface ResultadoSemanaEmail {
+  nomeLoteria: string;
+  codigoLoteria: string;
+  numero: number;
+  dezenas: number[];
+  acumulado: boolean;
+}
+
+export interface DestaqueSemanaEmail {
+  titulo: string;
+  descricao: string;
+  link: string;
+}
+
+function linhaResultadoSemana(r: ResultadoSemanaEmail): string {
+  const dezenas = r.dezenas.map((d) => String(d).padStart(2, "0")).join(" ");
+  return `
+    <tr>
+      <td style="padding:10px 0;border-bottom:1px solid ${COR.line};">
+        <div style="font-size:12px;color:${COR.inkSoft};text-transform:uppercase;letter-spacing:0.5px;">
+          ${r.nomeLoteria} <span style="color:${COR.inkFaint};">· concurso ${r.numero}</span>
+          ${r.acumulado ? `&nbsp;${chipPremio("acumulou")}` : ""}
+        </div>
+        <div style="font-family:'Courier New',monospace;font-size:14px;font-weight:bold;color:${COR.ink};margin-top:4px;letter-spacing:1px;">
+          ${dezenas}
+        </div>
+      </td>
+    </tr>`;
+}
+
+export function emailNewsletterSemanal(
+  nomeUsuario: string,
+  resultados: ResultadoSemanaEmail[],
+  maiorAcumulado: { nomeLoteria: string; codigoLoteria: string; valor: number } | null,
+  destaque: DestaqueSemanaEmail | null,
+  urlDescadastro: string
+): string {
+  const valorFormatado = maiorAcumulado
+    ? maiorAcumulado.valor >= 1_000_000
+      ? `R$ ${(maiorAcumulado.valor / 1_000_000).toFixed(1).replace(".", ",")} milhões`
+      : `R$ ${maiorAcumulado.valor.toLocaleString("pt-BR")}`
+    : null;
+
+  const blocoAcumulado = maiorAcumulado
+    ? `
+    <div style="background:${COR.paper};border:2px solid ${COR.ochre};border-radius:8px;padding:20px 24px;text-align:center;margin-bottom:24px;">
+      <div style="font-size:12px;color:${COR.inkSoft};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">
+        Maior prêmio acumulado agora
+      </div>
+      <div style="font-family:Georgia,serif;font-size:30px;color:${COR.ochre};font-weight:bold;line-height:1;">${valorFormatado}</div>
+      <div style="font-size:13px;color:${COR.inkSoft};margin-top:8px;">${maiorAcumulado.nomeLoteria}</div>
+    </div>`
+    : "";
+
+  const blocoDestaque = destaque
+    ? `
+    <h2 style="font-size:14px;color:${COR.inkSoft};text-transform:uppercase;letter-spacing:1px;margin:0 0 12px;font-weight:bold;">
+      Curiosidade da semana
+    </h2>
+    <div style="border:1px solid ${COR.line};border-radius:6px;padding:14px 16px;margin-bottom:24px;background:#fafaf8;">
+      <div style="font-size:14px;color:${COR.ink};font-weight:bold;margin-bottom:4px;">${destaque.titulo}</div>
+      <div style="font-size:13px;color:${COR.inkSoft};line-height:1.5;">${destaque.descricao}</div>
+    </div>`
+    : "";
+
+  const resultadosHtml = resultados.map(linhaResultadoSemana).join("");
+
+  const conteudo = `
+    ${titulo(`Olá, ${nomeUsuario}!`)}
+    ${subtitulo("O resumo da semana na loteria: resultados mais recentes, o maior prêmio acumulado e uma curiosidade estatística.")}
+
+    ${blocoAcumulado}
+
+    <h2 style="font-size:14px;color:${COR.inkSoft};text-transform:uppercase;letter-spacing:1px;margin:0 0 4px;font-weight:bold;">
+      Últimos resultados
+    </h2>
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+      ${resultadosHtml}
+    </table>
+
+    ${blocoDestaque}
+
+    ${divisor()}
+    ${botao("Ver todos os resultados →", SITE_URL)}
+  `;
+
+  const rodape = `Você recebe este resumo semanal por ter uma conta no LotoAnalítica.
+    <a href="${urlDescadastro}" style="color:${COR.inkFaint};">Cancelar e-mails</a>.`;
+
+  return layout(conteudo, rodape);
+}
+
 // ── Template: Pix prestes a vencer ────────────────────────────────────────────
 
 export function emailPixVencendo(
