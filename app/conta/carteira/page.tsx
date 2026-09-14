@@ -7,6 +7,7 @@ import Dezenas from "@/components/Dezenas";
 import { createClient } from "@/lib/supabase/server";
 import { calcularIsPremium } from "@/lib/plano";
 import { calcularCarteira } from "@/lib/carteira";
+import TetoGastoForm from "@/components/conta/TetoGastoForm";
 
 export const metadata: Metadata = {
   title: "Carteira do apostador — LotoAnalítica",
@@ -24,7 +25,7 @@ export default async function CarteiraPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("plan, plan_expires_at")
+    .select("plan, plan_expires_at, teto_gasto_mensal")
     .eq("id", user.id)
     .single();
   const isPremium = calcularIsPremium(profile);
@@ -79,6 +80,7 @@ export default async function CarteiraPage() {
               ativo: j.ativo,
               createdAt: j.created_at as string,
             }))}
+            tetoAtual={profile?.teto_gasto_mensal ?? null}
           />
         )}
       </main>
@@ -88,13 +90,17 @@ export default async function CarteiraPage() {
 
 async function CarteiraConteudo({
   jogosSalvos,
+  tetoAtual,
 }: {
   jogosSalvos: Parameters<typeof calcularCarteira>[0];
+  tetoAtual: number | null;
 }) {
   const carteira = await calcularCarteira(jogosSalvos);
 
   return (
     <>
+      <TetoGastoForm tetoAtual={tetoAtual} gastoMesAtual={carteira.gastoMesAtual} />
+
       <div className="transicao-resumo" style={{ marginTop: 20 }}>
         <div className="transicao-resumo__item">
           <p className="analise-cartao__rotulo">Total gasto</p>

@@ -25,6 +25,10 @@ export interface ResumoCarteira {
   totalGanho: number;
   saldoGeral: number;
   temJogoNaoCalculavel: boolean;
+  // Gasto simulado só dos concursos do mês corrente (calendário) — usado
+  // pra comparar contra o teto de gasto mensal que o usuário configurar.
+  // Recurso de jogo responsável adiantado da Fase 3 (28/09/2026).
+  gastoMesAtual: number;
 }
 
 function precoAposta(codigoLoteria: string): number {
@@ -52,6 +56,10 @@ export async function calcularCarteira(jogosSalvos: JogoSalvoBasico[]): Promise<
 
   const jogos: JogoCarteira[] = [];
   let temJogoNaoCalculavel = false;
+  let gastoMesAtual = 0;
+
+  const agora = new Date();
+  const inicioMesAtual = new Date(Date.UTC(agora.getUTCFullYear(), agora.getUTCMonth(), 1)).toISOString();
 
   for (const [codigoLoteria, jogosDaLoteria] of porLoteria) {
     const loteria = await getLoteriaPorCodigo(codigoLoteria);
@@ -112,6 +120,9 @@ export async function calcularCarteira(jogosSalvos: JogoSalvoBasico[]): Promise<
         ganho: naoCalculavel ? null : Math.round(ganho * 100) / 100,
       });
       if (naoCalculavel) temJogoNaoCalculavel = true;
+
+      const drawsNoMesAtual = draws.filter((d) => d.dataSorteio >= inicioMesAtual).length;
+      gastoMesAtual += drawsNoMesAtual * preco;
     }
   }
 
@@ -124,5 +135,6 @@ export async function calcularCarteira(jogosSalvos: JogoSalvoBasico[]): Promise<
     totalGanho: Math.round(totalGanho * 100) / 100,
     saldoGeral: Math.round((totalGanho - totalGasto) * 100) / 100,
     temJogoNaoCalculavel,
+    gastoMesAtual: Math.round(gastoMesAtual * 100) / 100,
   };
 }
