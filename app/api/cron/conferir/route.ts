@@ -18,5 +18,6 @@ export async function GET(request: Request) {
   return handleProcessarConcursos(request, "cron_conferir", process.env.CRON_SECRET, {
     incluirPixVencendo: true,
     incluirNewsletterSemanal: true,
+    incluirRetrospectivaAnual: true,
   });
 }

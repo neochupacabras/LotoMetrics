@@ -37,10 +37,10 @@ export interface OpcoesProcessamento {
 
 export interface DetalheEnvio {
   email: string;
-  tipo: "resultado_jogos" | "alerta_acumulo" | "pix_vencendo" | "newsletter_semanal";
+  tipo: "resultado_jogos" | "alerta_acumulo" | "pix_vencendo" | "newsletter_semanal" | "retrospectiva_anual";
   // null pras notificações sem loteria/concurso associados (pix_vencendo,
-  // newsletter_semanal — ver lib/notificacoes/pix-vencendo.ts e
-  // lib/notificacoes/newsletter-semanal.ts).
+  // newsletter_semanal, retrospectiva_anual — ver lib/notificacoes/pix-vencendo.ts,
+  // lib/notificacoes/newsletter-semanal.ts e lib/notificacoes/retrospectiva-anual.ts).
   loteria: string | null;
   concurso: number | null;
   status: "enviado" | "falhou" | "simulado" | "pulado_dedup" | "pulado_filtro";

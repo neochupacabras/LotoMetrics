@@ -170,6 +170,23 @@ export default async function ContaPage({
           </section>
         )}
 
+        {/* ── Meu ano na loteria ───────────────────────────────────── */}
+        {jogos.length > 0 && (
+          <section className="conta-secao">
+            <div className="conta-secao-header">
+              <h2 className="conta-secao-titulo">
+                Meu ano na loteria{!isPremium && <span className="usermenu-badge-inline" aria-label="Premium">✦</span>}
+              </h2>
+              <Link href="/conta/meu-ano" className="conta-link-acao">
+                {isPremium ? "Ver retrospectiva →" : "Assinar para ver →"}
+              </Link>
+            </div>
+            <p className="conta-alertas-desc">
+              O resumo do seu ano: total gasto e ganho, sua loteria favorita e o maior prêmio simulado.
+            </p>
+          </section>
+        )}
+
         {/* ── Alertas de acúmulo ────────────────────────────────────── */}
         <section className="conta-secao">
           <h2 className="conta-secao-titulo">Alertas de acúmulo</h2>

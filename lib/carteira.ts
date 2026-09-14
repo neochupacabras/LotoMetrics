@@ -43,10 +43,21 @@ function precoAposta(codigoLoteria: string): number {
 // deixar em branco do que mostrar um número inventado.
 const LOTERIAS_SEM_CALCULO_FINANCEIRO = new Set(["maismilionaria"]);
 
+export interface OpcoesCarteira {
+  // Restringe os concursos considerados a um intervalo (datas ISO,
+  // inclusive nas duas pontas) — usado pela retrospectiva anual "Meu ano
+  // na loteria" (lib/retrospectiva.ts) pra recortar só um ano específico
+  // da mesma simulação, sem duplicar a lógica de cálculo por loteria.
+  intervaloDatas?: { inicio: string; fim: string };
+}
+
 // "E se eu tivesse jogado essa combinação em todo concurso desde que
 // salvei ela?" — mesma pergunta do Simulador, mas aplicada aos jogos
 // realmente salvos pelo usuário, agregados numa carteira só.
-export async function calcularCarteira(jogosSalvos: JogoSalvoBasico[]): Promise<ResumoCarteira> {
+export async function calcularCarteira(
+  jogosSalvos: JogoSalvoBasico[],
+  opcoes: OpcoesCarteira = {}
+): Promise<ResumoCarteira> {
   const porLoteria = new Map<string, JogoSalvoBasico[]>();
   for (const j of jogosSalvos) {
     const lista = porLoteria.get(j.loteria) ?? [];
@@ -82,7 +93,14 @@ export async function calcularCarteira(jogosSalvos: JogoSalvoBasico[]): Promise<
     const mapaFaixas = naoCalculavel ? {} : await getMapaFaixasPorAcertos(loteria.id);
 
     for (const jogo of jogosDaLoteria) {
-      const draws = todosDraws.filter((d) => d.dataSorteio >= jogo.createdAt);
+      const draws = todosDraws.filter((d) => {
+        if (d.dataSorteio < jogo.createdAt) return false;
+        if (opcoes.intervaloDatas) {
+          if (d.dataSorteio < opcoes.intervaloDatas.inicio) return false;
+          if (d.dataSorteio > opcoes.intervaloDatas.fim) return false;
+        }
+        return true;
+      });
       const dezenasSet = new Set(jogo.dezenas);
 
       let ganho = 0;
