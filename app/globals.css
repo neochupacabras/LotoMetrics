@@ -176,11 +176,25 @@ summary:focus-visible,
 
 /* Wrapper externo com setas — sempre visível */
 .nav-loterias-outer {
-  position: relative;
   display: flex;
   align-items: center;
   gap: 2px;
   min-width: 0; /* permite encolher dentro do flex do masthead */
+}
+
+/* Área rolável (setas + gradientes + nav) num position:relative próprio,
+   separado do dropdown "Loterias" — os gradientes abaixo são posicionados
+   a partir daqui. Sem esse wrapper isolado, "left: 24px" era calculado a
+   partir da borda esquerda de .nav-loterias-outer (que inclui o botão
+   "Loterias" antes das setas), e o gradiente esquerdo acabava caindo em
+   cima do próprio botão em vez do início da lista rolável. */
+.nav-loterias-scroll {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
 }
 
 /* Setas de navegação */

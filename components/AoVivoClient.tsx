@@ -31,11 +31,13 @@ export default function AoVivoClient({
   nomeLoteria,
   dataHoraSorteioIso,
   numeroUltimoConhecido,
+  observacaoEspecial,
 }: {
   codigoLoteria: string;
   nomeLoteria: string;
   dataHoraSorteioIso: string;
   numeroUltimoConhecido: number;
+  observacaoEspecial?: string | null;
 }) {
   const alvo = useRef(new Date(dataHoraSorteioIso).getTime());
   const [agora, setAgora] = useState<number | null>(null);
@@ -148,6 +150,12 @@ export default function AoVivoClient({
         para o próximo sorteio da {nomeLoteria}. Deixe esta página aberta — assim que o
         resultado sair, ele aparece aqui automaticamente.
       </p>
+      {observacaoEspecial && (
+        <p className="bloco__nota" style={{ marginTop: 4 }}>
+          Este é um concurso especial ({observacaoEspecial}) — os sorteios regulares estão
+          pausados até essa data.
+        </p>
+      )}
     </div>
   );
 }
