@@ -397,3 +397,74 @@ export function emailPixVencendo(
 
   return layout(conteudo, rodape);
 }
+
+// ── Template: retrospectiva anual "Meu ano na loteria" ───────────────────────
+
+function statBox(rotulo: string, valor: string, cor: string): string {
+  return `
+    <td style="text-align:center;padding:0 10px;">
+      <div style="font-family:Georgia,serif;font-size:22px;color:${cor};font-weight:bold;">${valor}</div>
+      <div style="font-size:10px;color:${COR.inkSoft};text-transform:uppercase;letter-spacing:0.5px;margin-top:4px;">${rotulo}</div>
+    </td>`;
+}
+
+export function emailMeuAnoNaLoteria(
+  nomeUsuario: string,
+  ano: number,
+  totalGasto: number,
+  totalGanho: number,
+  saldoGeral: number,
+  loteriaDoAno: { nome: string; quantidadeJogos: number } | null,
+  maiorPremio: { valor: number; dezenas: string } | null,
+  urlMeuAno: string,
+  urlDescadastro: string
+): string {
+  const fmt = (v: number) => `R$ ${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
+
+  const blocoLoteria = loteriaDoAno
+    ? `
+    <div style="border:1px solid ${COR.line};border-radius:6px;padding:14px 16px;margin-bottom:12px;background:#fafaf8;">
+      <div style="font-size:11px;color:${COR.inkSoft};text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Sua loteria do ano</div>
+      <div style="font-size:16px;font-weight:bold;color:${COR.ink};">${loteriaDoAno.nome}</div>
+      <div style="font-size:13px;color:${COR.inkSoft};margin-top:2px;">${loteriaDoAno.quantidadeJogos} jogo${loteriaDoAno.quantidadeJogos !== 1 ? "s" : ""} salvo${loteriaDoAno.quantidadeJogos !== 1 ? "s" : ""} nela</div>
+    </div>`
+    : "";
+
+  const blocoPremio = maiorPremio
+    ? `
+    <div style="background:${COR.paper};border:2px solid ${COR.ochre};border-radius:8px;padding:18px 20px;text-align:center;margin-bottom:24px;">
+      <div style="font-size:11px;color:${COR.inkSoft};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Maior prêmio do ano</div>
+      <div style="font-family:Georgia,serif;font-size:26px;color:${COR.ochre};font-weight:bold;">${fmt(maiorPremio.valor)}</div>
+      <div style="font-family:'Courier New',monospace;font-size:13px;color:${COR.inkSoft};margin-top:6px;letter-spacing:1px;">${maiorPremio.dezenas}</div>
+    </div>`
+    : "";
+
+  const conteudo = `
+    ${titulo(`Seu ano de ${ano} na loteria, ${nomeUsuario}`)}
+    ${subtitulo(`Um resumo do que você teria gasto e ganho em ${ano}, com os jogos que salvou no LotoAnalítica.`)}
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:${COR.paper};border-radius:6px;padding:18px 8px;margin-bottom:24px;">
+      <tr>
+        ${statBox("Gasto no ano", fmt(totalGasto), COR.rust)}
+        ${statBox("Ganho no ano", fmt(totalGanho), COR.green)}
+        ${statBox("Saldo", fmt(saldoGeral), saldoGeral >= 0 ? COR.green : COR.rust)}
+      </tr>
+    </table>
+
+    ${blocoLoteria}
+    ${blocoPremio}
+
+    <p style="font-size:13px;color:${COR.inkFaint};line-height:1.6;margin:0 0 24px;">
+      Esses valores são uma simulação — o que teria acontecido se você tivesse jogado cada combinação
+      salva em todo concurso do ano, usando os prêmios históricos reais.
+    </p>
+
+    ${divisor()}
+    ${botao("Ver minha retrospectiva completa →", urlMeuAno)}
+  `;
+
+  const rodape = `Você recebeu esta retrospectiva por ter jogos salvos como assinante Premium do LotoAnalítica.
+    <a href="${urlDescadastro}" style="color:${COR.inkFaint};">Cancelar e-mails</a>.`;
+
+  return layout(conteudo, rodape);
+}
