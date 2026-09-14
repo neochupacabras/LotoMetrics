@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { chavePixVencendo, contarSequenciaAcumulada, deveAlertarAcumulo, diasAteExpirar } from "./regras";
+import {
+  chaveNewsletterSemanal,
+  chavePixVencendo,
+  contarSequenciaAcumulada,
+  deveAlertarAcumulo,
+  diasAteExpirar,
+  escolherLoteriaDestaqueSemana,
+} from "./regras";
 
 describe("contarSequenciaAcumulada", () => {
   it("conta a sequência a partir do concurso mais recente", () => {
@@ -73,5 +80,50 @@ describe("diasAteExpirar", () => {
     const agora = new Date("2026-10-20T00:00:00Z");
     const expira = new Date("2026-10-13T00:00:00Z");
     expect(diasAteExpirar(agora, expira)).toBeLessThan(0);
+  });
+});
+
+describe("chaveNewsletterSemanal", () => {
+  it("usa a data (AAAA-MM-DD) como chave", () => {
+    expect(chaveNewsletterSemanal(new Date("2026-09-14T10:00:00Z"))).toBe("newsletter:2026-09-14");
+  });
+
+  it("datas diferentes geram chaves diferentes", () => {
+    const a = chaveNewsletterSemanal(new Date("2026-09-14T00:00:00Z"));
+    const b = chaveNewsletterSemanal(new Date("2026-09-21T00:00:00Z"));
+    expect(a).not.toBe(b);
+  });
+});
+
+describe("escolherLoteriaDestaqueSemana", () => {
+  it("escolhe a loteria acumulada com o maior prêmio estimado", () => {
+    const escolhida = escolherLoteriaDestaqueSemana(
+      [
+        { codigo: "quina", acumulado: true, valorEstimadoProximo: 5_000_000 },
+        { codigo: "megasena", acumulado: true, valorEstimadoProximo: 45_000_000 },
+        { codigo: "lotofacil", acumulado: false, valorEstimadoProximo: 8_000_000 },
+      ],
+      "lotofacil"
+    );
+    expect(escolhida).toBe("megasena");
+  });
+
+  it("cai pro padrão quando nenhuma loteria está acumulada", () => {
+    const escolhida = escolherLoteriaDestaqueSemana(
+      [
+        { codigo: "quina", acumulado: false, valorEstimadoProximo: null },
+        { codigo: "megasena", acumulado: false, valorEstimadoProximo: null },
+      ],
+      "lotofacil"
+    );
+    expect(escolhida).toBe("lotofacil");
+  });
+
+  it("ignora acumulada sem valor estimado", () => {
+    const escolhida = escolherLoteriaDestaqueSemana(
+      [{ codigo: "duplasena", acumulado: true, valorEstimadoProximo: null }],
+      "lotofacil"
+    );
+    expect(escolhida).toBe("lotofacil");
   });
 });

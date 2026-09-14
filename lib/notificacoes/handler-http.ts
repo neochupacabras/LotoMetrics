@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { logJobRun } from "@/lib/telemetry";
 import { processarConcursosNovos, type OpcoesProcessamento } from "@/lib/notificacoes/processar-concursos";
 import { verificarPixVencendo } from "@/lib/notificacoes/pix-vencendo";
+import { enviarNewsletterSemanal } from "@/lib/notificacoes/newsletter-semanal";
 
 // Compartilhado por app/api/cron/conferir (rede de segurança, roda 1x/dia)
 // e app/api/eventos/concursos-novos (disparado pelo importador.py logo
@@ -20,7 +21,7 @@ function autorizado(request: Request, secret: string | undefined): boolean {
 //   NOTIFICACOES_SOMENTE_PARA=a@b,c@d → só envia de verdade pra esses e-mails.
 // Query string (?dryRun=1, ?somenteEmails=a@b) sobrescreve a env var, útil
 // pra testar manualmente sem mudar a configuração do ambiente.
-function resolverOpcoes(request: Request): OpcoesProcessamento {
+function resolverOpcoes(request: Request): OpcoesProcessamento & { forcarNewsletter: boolean } {
   const url = new URL(request.url);
   const dryRunQuery = url.searchParams.get("dryRun");
   const dryRun = dryRunQuery !== null ? dryRunQuery === "1" : process.env.NOTIFICACOES_DRY_RUN === "1";
@@ -35,17 +36,22 @@ function resolverOpcoes(request: Request): OpcoesProcessamento {
   const janelaHorasQuery = url.searchParams.get("janelaHoras");
   const janelaHoras = janelaHorasQuery ? Number(janelaHorasQuery) : undefined;
 
-  return { dryRun, somenteEmails, janelaHoras };
+  // Idem: força o envio da newsletter semanal fora da segunda-feira, só
+  // pra testar manualmente (ver lib/notificacoes/newsletter-semanal.ts).
+  const forcarNewsletter = url.searchParams.get("forcarNewsletter") === "1";
+
+  return { dryRun, somenteEmails, janelaHoras, forcarNewsletter };
 }
 
 export async function handleProcessarConcursos(
   request: Request,
   jobName: string,
   secret: string | undefined,
-  // Lembrete de vencimento do Pix (tarefa 2.5) não é ligado a concurso —
-  // roda só no cron diário de segurança, nunca no disparo por evento do
-  // importador (evita checar isso várias vezes no mesmo dia).
-  opts: { incluirPixVencendo?: boolean } = {}
+  // Lembrete de vencimento do Pix (tarefa 2.5) e newsletter semanal (Fase 3
+  // adiantada) não são ligados a concurso — rodam só no cron diário de
+  // segurança, nunca no disparo por evento do importador (evita checar
+  // isso várias vezes no mesmo dia).
+  opts: { incluirPixVencendo?: boolean; incluirNewsletterSemanal?: boolean } = {}
 ): Promise<NextResponse> {
   if (!autorizado(request, secret)) {
     return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
@@ -57,10 +63,12 @@ export async function handleProcessarConcursos(
   try {
     const resumo = await processarConcursosNovos(opcoes);
     const detalhesPix = opts.incluirPixVencendo ? await verificarPixVencendo(opcoes) : [];
-    const detalhes = [...resumo.detalhes, ...detalhesPix];
-    const emailsEnviados = resumo.emailsEnviados + detalhesPix.filter((d) => d.status === "enviado").length;
-    const emailsFalhos = resumo.emailsFalhos + detalhesPix.filter((d) => d.status === "falhou").length;
-    const emailsSimulados = resumo.emailsSimulados + detalhesPix.filter((d) => d.status === "simulado").length;
+    const detalhesNewsletter = opts.incluirNewsletterSemanal ? await enviarNewsletterSemanal(opcoes) : [];
+    const detalhes = [...resumo.detalhes, ...detalhesPix, ...detalhesNewsletter];
+    const outrosDetalhes = [...detalhesPix, ...detalhesNewsletter];
+    const emailsEnviados = resumo.emailsEnviados + outrosDetalhes.filter((d) => d.status === "enviado").length;
+    const emailsFalhos = resumo.emailsFalhos + outrosDetalhes.filter((d) => d.status === "falhou").length;
+    const emailsSimulados = resumo.emailsSimulados + outrosDetalhes.filter((d) => d.status === "simulado").length;
 
     await logJobRun({
       jobName,
