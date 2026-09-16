@@ -25,7 +25,7 @@ export function CalcMediaPonderada() {
   return (
     <div className="calc-painel">
       <div className="calc-painel__corpo">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 120px 40px", gap: "6px 8px", marginBottom: 12, alignItems: "end" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "minmax(90px, 1fr) minmax(70px, 120px) 40px", gap: "6px 8px", marginBottom: 12, alignItems: "end" }}>
           <span style={{ fontSize: "0.72rem", fontFamily: "var(--font-mono)", textTransform: "uppercase", color: "var(--ink-faint)" }}>Valor / Nota</span>
           <span style={{ fontSize: "0.72rem", fontFamily: "var(--font-mono)", textTransform: "uppercase", color: "var(--ink-faint)" }}>Peso / Crédito</span>
           <span />

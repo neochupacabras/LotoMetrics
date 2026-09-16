@@ -7703,6 +7703,54 @@ footer.rodape {
   font-weight: 700;
 }
 
+/* Regra de três: duas linhas de "campo → campo" (A→B em cima, C→D
+   embaixo) em vez das 4 caixas espremidas numa linha só — sem
+   minmax/largura mínima, "1.000,00" não cabia no campo (achado do
+   usuário em 16/09/2026). */
+.regra3-grade {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.regra3-linha {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 12px;
+}
+
+.regra3-linha .calc-campo {
+  min-width: 0; /* permite o input encolher dentro do grid em telas estreitas, sem forçar overflow */
+}
+
+.regra3-seta {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  color: var(--ink-faint);
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.regra3-proporcao {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  color: var(--ink-faint);
+  text-align: center;
+  padding: 4px 0;
+}
+
+@media (max-width: 480px) {
+  .regra3-linha {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+  }
+  .regra3-seta {
+    transform: rotate(90deg);
+    padding: 2px 0;
+  }
+}
+
 .calc-select {
   padding: 10px 14px;
   border: 1.5px solid var(--line-strong);
