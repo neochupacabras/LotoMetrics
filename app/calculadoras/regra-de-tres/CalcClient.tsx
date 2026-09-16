@@ -24,14 +24,18 @@ export function CalcRegraDeTres() {
         <p style={{ fontSize: "0.82rem", color: "var(--ink-soft)", marginBottom: 16 }}>
           {tipo === "direta" ? "Quando A aumenta, D aumenta proporcionalmente. Ex: mais horas trabalhadas → mais produto fabricado." : "Quando A aumenta, D diminui. Ex: mais operários → menos dias para terminar a obra."}
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr auto 1fr auto 1fr", alignItems: "center", gap: 8 }}>
-          <div className="calc-campo"><label>A</label><input className="calc-input calc-input--destaque" type="number" placeholder="—" value={a} onChange={e => setA(e.target.value)} /></div>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: "1.3rem", color: "var(--ink-faint)", paddingTop: 20, textAlign: "center" }}>→</div>
-          <div className="calc-campo"><label>B</label><input className="calc-input calc-input--destaque" type="number" placeholder="—" value={b} onChange={e => setB(e.target.value)} /></div>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: "1.1rem", color: "var(--ink-faint)", paddingTop: 20, textAlign: "center" }}>{tipo === "direta" ? "∝" : "1/∝"}</div>
-          <div className="calc-campo"><label>C</label><input className="calc-input calc-input--destaque" type="number" placeholder="—" value={c} onChange={e => setC(e.target.value)} /></div>
-          <div style={{ fontFamily: "var(--font-mono)", fontSize: "1.3rem", color: "var(--ink-faint)", paddingTop: 20, textAlign: "center" }}>→</div>
-          <div className="calc-campo"><label>D (resultado)</label><input className="calc-input calc-input--destaque" type="text" readOnly value={d !== null ? fmt(d) : ""} placeholder="?" style={{ background: "color-mix(in srgb, var(--pine) 5%, transparent)", fontWeight: 700, color: "var(--pine)" }} /></div>
+        <div className="regra3-grade">
+          <div className="regra3-linha">
+            <div className="calc-campo"><label>A</label><input className="calc-input calc-input--destaque" type="number" placeholder="—" value={a} onChange={e => setA(e.target.value)} /></div>
+            <div className="regra3-seta">→</div>
+            <div className="calc-campo"><label>B</label><input className="calc-input calc-input--destaque" type="number" placeholder="—" value={b} onChange={e => setB(e.target.value)} /></div>
+          </div>
+          <div className="regra3-proporcao">{tipo === "direta" ? "∝" : "1/∝"}</div>
+          <div className="regra3-linha">
+            <div className="calc-campo"><label>C</label><input className="calc-input calc-input--destaque" type="number" placeholder="—" value={c} onChange={e => setC(e.target.value)} /></div>
+            <div className="regra3-seta">→</div>
+            <div className="calc-campo"><label>D (resultado)</label><input className="calc-input calc-input--destaque" type="text" readOnly value={d !== null ? fmt(d) : ""} placeholder="?" style={{ background: "color-mix(in srgb, var(--pine) 5%, transparent)", fontWeight: 700, color: "var(--pine)" }} /></div>
+          </div>
         </div>
       </div>
       <div className="calc-painel__resultado calc-painel__resultado--rust">
