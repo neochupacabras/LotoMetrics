@@ -269,33 +269,40 @@ async function executarRelatorio(startedAt: Date, dryRun: boolean) {
       continue;
     }
 
-    // Gerar PDF
-    const pdfBytes = await gerarRelatorioPdf({
-      nomeUsuario,
-      email,
-      mes,
-      ano,
-      geradoEm: new Date(),
-      resumos,
-      jogos: jogosRelatorio,
-    });
+    // Falha ao gerar o PDF (ex.: fonte corrompida) fica isolada neste
+    // usuário: a chave reivindicada acima vira 'falhou' em vez de ficar
+    // como 'enviado', e os demais usuários continuam sendo processados.
+    let resultado: { ok: boolean; erro?: string };
+    try {
+      const pdfBytes = await gerarRelatorioPdf({
+        nomeUsuario,
+        email,
+        mes,
+        ano,
+        geradoEm: new Date(),
+        resumos,
+        jogos: jogosRelatorio,
+      });
 
-    const nomeArquivo = `lotoanalitica-relatorio-${String(mes).padStart(2, "0")}-${ano}.pdf`;
-    const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
-    const loterias = loteriasCom.map(lc => lc === "lotofacil" ? "Lotofácil" : "Mega-Sena");
-    const totalJogos = jogosRelatorio.length;
+      const nomeArquivo = `lotoanalitica-relatorio-${String(mes).padStart(2, "0")}-${ano}.pdf`;
+      const pdfBase64 = Buffer.from(pdfBytes).toString("base64");
+      const loterias = loteriasCom.map(lc => lc === "lotofacil" ? "Lotofácil" : "Mega-Sena");
+      const totalJogos = jogosRelatorio.length;
 
-    const htmlCorpo = emailRelatorioMensal(
-      nomeUsuario, nomeMes, ano, totalJogos, loterias,
-      `${BASE_URL}/conta/jogos`, urlDescadastro(userId, BASE_URL)
-    );
+      const htmlCorpo = emailRelatorioMensal(
+        nomeUsuario, nomeMes, ano, totalJogos, loterias,
+        `${BASE_URL}/conta/jogos`, urlDescadastro(userId, BASE_URL)
+      );
 
-    const resultado = await enviarEmail({
-      to: email,
-      subject: `Seu relatório de ${nomeMes} de ${ano} está pronto — LotoAnalítica`,
-      html: htmlCorpo,
-      attachments: [{ filename: nomeArquivo, content: pdfBase64 }],
-    });
+      resultado = await enviarEmail({
+        to: email,
+        subject: `Seu relatório de ${nomeMes} de ${ano} está pronto — LotoAnalítica`,
+        html: htmlCorpo,
+        attachments: [{ filename: nomeArquivo, content: pdfBase64 }],
+      });
+    } catch (err) {
+      resultado = { ok: false, erro: (err as Error).message };
+    }
 
     if (resultado.ok) {
       enviados++;
