@@ -31,7 +31,9 @@ export type ToolEventName =
   | "visit_landing"
   | "pricing_view"
   | "waitlist_joined"
-  | "limit_reached";
+  | "limit_reached"
+  // Funil do bolão (Fase 3).
+  | "bolao_created";
 
 export interface LogToolEventInput {
   eventName: ToolEventName;
