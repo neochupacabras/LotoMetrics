@@ -10,6 +10,7 @@ import {
   revogarProAte,
   proximoConcursoAlvo,
 } from "./bolao-limites";
+import { descontarDias } from "./plano-premium";
 
 const agora = new Date("2026-11-01T12:00:00Z");
 
@@ -105,5 +106,15 @@ describe("proximoConcursoAlvo", () => {
   it("usa o dia de Brasília, não o UTC (23h BRT já é o dia seguinte em UTC)", () => {
     // 20/11 23:00 BRT = 21/11 02:00 UTC — ainda é 20/11 em Brasília
     expect(proximoConcursoAlvo(3074, "2026-11-20", new Date("2026-11-21T02:00:00Z"))).toBe(3076);
+  });
+});
+
+describe("descontarDias (crédito Premium)", () => {
+  const dia = 24 * 60 * 60 * 1000;
+  it("tira os dias e mantém se ainda é futuro; null se já passou", () => {
+    const exp = new Date(agora.getTime() + 60 * dia).toISOString();
+    expect(descontarDias(exp, 30, agora)?.getTime()).toBe(agora.getTime() + 30 * dia);
+    expect(descontarDias(exp, 60, agora)).toBeNull();
+    expect(descontarDias(null, 30, agora)).toBeNull();
   });
 });

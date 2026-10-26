@@ -1,5 +1,5 @@
 import { createAdminClient, createClient } from "@/lib/supabase/server";
-import { calcularIsPremium } from "@/lib/plano-premium";
+import { calcularIsPremium, descontarDias } from "@/lib/plano-premium";
 
 export interface PlanoUsuario {
   logado: boolean;
@@ -75,5 +75,45 @@ export async function atualizarPlanoRespeitandoCredito(
   if (expiraAtual && expiraAtual > new Date()) {
     return; // mantém premium: ainda há crédito válido (ex.: Pix)
   }
+  await admin.from("profiles").update({ plan: "free", plan_expires_at: null }).eq("id", userId);
+}
+
+// Reembolso de um Pix de plano Premium já aprovado: desfaz o crédito que o
+// pagamento somou em plan_expires_at (tira period_days). Se o que sobra já
+// passou, o Premium só continua se houver assinatura Stripe ativa (vale até
+// o fim do período dela); senão volta a free. Sempre server-only.
+export async function revogarCreditoPix(userId: string, dias: number): Promise<void> {
+  const admin = createAdminClient();
+  const agora = new Date();
+
+  const { data: perfil } = await admin
+    .from("profiles")
+    .select("plan_expires_at")
+    .eq("id", userId)
+    .single();
+
+  const restante = descontarDias(perfil?.plan_expires_at, dias, agora);
+  if (restante) {
+    await admin.from("profiles").update({ plan_expires_at: restante.toISOString() }).eq("id", userId);
+    return;
+  }
+
+  const { data: assinatura } = await admin
+    .from("subscriptions")
+    .select("current_period_end")
+    .eq("user_id", userId)
+    .in("status", ["active", "trialing"])
+    .order("current_period_end", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (assinatura?.current_period_end && new Date(assinatura.current_period_end) > agora) {
+    await admin
+      .from("profiles")
+      .update({ plan: "premium", plan_expires_at: assinatura.current_period_end })
+      .eq("id", userId);
+    return;
+  }
+
   await admin.from("profiles").update({ plan: "free", plan_expires_at: null }).eq("id", userId);
 }
