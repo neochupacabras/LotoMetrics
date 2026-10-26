@@ -3361,6 +3361,98 @@ export const ANALISES: Analise[] = [
       </p>
     `,
   },
+  {
+    slug: "mega-semana-mega-sena-cinco-sorteios-em-cinco-dias",
+    titulo: "Mega Semana: Mega-Sena terá cinco sorteios em cinco dias, de 26 a 30 de outubro",
+    resumo:
+      "Os concursos 3.076 a 3.080 acontecem de segunda a sexta, sempre às 21h. Veja o que muda no calendário, o que não muda nas regras e o que a matemática diz sobre apostar em todos os dias.",
+    data: "2026-10-26",
+    categoria: "megasena" as const,
+    tempoLeitura: 5,
+    perguntasFrequentes: [
+      { pergunta: "Quando acontece a Mega Semana da Mega-Sena?", resposta: "De segunda-feira (26) a sexta-feira (30) de outubro de 2026, com um sorteio por dia, sempre às 21h (horário de Brasília). Serão os concursos 3.076, 3.077, 3.078, 3.079 e 3.080." },
+      { pergunta: "A Mega Semana muda as regras ou as chances de ganhar?", resposta: "Não. Os valores das apostas, as probabilidades e as faixas de premiação são os mesmos da Mega-Sena tradicional. Muda apenas o calendário: em vez de terça, quinta e domingo, há sorteio todos os dias úteis da semana." },
+      { pergunta: "Qual a chance de acertar a sena em um jogo simples?", resposta: "Em uma aposta simples de 6 dezenas, que custa R$ 6, a chance de acertar a sena é de 1 em 50.063.860, segundo a Caixa." },
+      { pergunta: "Até que horas dá pra apostar?", resposta: "As apostas em lotéricas e no site e aplicativo Loterias Caixa vão até as 20h (horário de Brasília). Os bolões digitais podem ser comprados até as 20h30, exclusivamente pelo portal Loterias Online e pelo aplicativo." },
+    ],
+    corpo: `
+      <p>
+        Começa nesta segunda-feira (26) a <strong>Mega Semana</strong> da Mega-Sena:
+        cinco sorteios consecutivos na última semana de outubro de 2026, um por dia,
+        de segunda a sexta-feira. O primeiro concurso da série deve pagar
+        <strong>R$ 300 milhões</strong> de prêmio estimado, segundo a divulgação
+        noticiada pelo g1.
+      </p>
+
+      <h2>Calendário dos cinco concursos</h2>
+      <p>
+        Segundo a Caixa, serão realizados os concursos <strong>3.076, 3.077, 3.078,
+        3.079 e 3.080</strong>, todos às <strong>21h (horário de Brasília)</strong>.
+        Normalmente a Mega-Sena sorteia às terças, quintas e domingos; nesta semana, a
+        programação especial altera temporariamente esse calendário.
+      </p>
+      <div class="tabela-scroll">
+        <table class="tabela-dados">
+          <thead><tr><th>Dia</th><th class="num">Concurso</th></tr></thead>
+          <tbody>
+            <tr><td>Segunda-feira, 26/10</td><td class="num">3.076</td></tr>
+            <tr><td>Terça-feira, 27/10</td><td class="num">3.077</td></tr>
+            <tr><td>Quarta-feira, 28/10</td><td class="num">3.078</td></tr>
+            <tr><td>Quinta-feira, 29/10</td><td class="num">3.079</td></tr>
+            <tr><td>Sexta-feira, 30/10</td><td class="num">3.080</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>O que não muda</h2>
+      <p>
+        Apesar do nome, a Mega Semana não mexe nas regras: o valor das apostas, as
+        probabilidades de acerto e as faixas de premiação continuam as mesmas da
+        Mega-Sena tradicional. A aposta mínima, de 6 dezenas, custa
+        <strong>R$ 6</strong>. Os jogos podem ser feitos até as <strong>20h</strong>
+        em qualquer lotérica ou pelo site e aplicativo Loterias Caixa, e os bolões
+        digitais até as <strong>20h30</strong>, exclusivamente pelo portal Loterias
+        Online e pelo aplicativo. O pagamento online pode ser feito via Pix, cartão de
+        crédito ou internet banking (para correntistas da Caixa), e é preciso ter 18
+        anos ou mais.
+      </p>
+
+      <h2>Quais são as chances</h2>
+      <p>
+        Em um jogo simples de 6 dezenas, a probabilidade de acertar a sena é de
+        <strong>1 em 50.063.860</strong>. Na aposta máxima, de 20 dezenas, que custa
+        R$ 232.560,00, a chance sobe para 1 em 1.292 — porque você passa a cobrir
+        38.760 combinações de 6 dezenas ao mesmo tempo. Você pode simular qualquer
+        quantidade de dezenas na
+        <a href="/calculadoras/probabilidade-loteria">calculadora de probabilidade</a>
+        ou ver a tabela completa em
+        <a href="/megasena/probabilidades">probabilidades da Mega-Sena</a>.
+      </p>
+
+      <h2>Apostar nos cinco dias melhora muito a chance?</h2>
+      <p>
+        Cada sorteio é independente: a bola não "lembra" do concurso anterior. Se você
+        fizer um jogo simples em cada um dos cinco dias, gasta R$ 30 e tem cinco
+        chances separadas de 1 em 50.063.860 — algo em torno de 1 em 10 milhões no
+        total. É uma melhoria real em relação a apostar uma vez só, mas continua sendo
+        uma chance minúscula, e o custo cresce na mesma proporção. Por isso, o mais
+        sensato é decidir de antemão quanto cabe no orçamento e manter esse limite
+        durante a semana inteira, sem "correr atrás" de concursos anteriores.
+      </p>
+      <p>
+        Quem prefere dividir o custo pode organizar um
+        <a href="/megasena/bolao">bolão</a> e acompanhar os resultados de cada dia
+        em <a href="/megasena/resultados">resultados da Mega-Sena</a>. Para entender
+        por que o retorno esperado de qualquer aposta é o mesmo, com prêmio grande ou
+        pequeno, veja também o artigo sobre
+        <a href="/dicas/retorno-ao-apostador">retorno ao apostador</a>.
+      </p>
+      <p>
+        <em>Fonte das informações de calendário, valores e regras: g1 / CAIXA
+        Loterias, 26/10/2026. Prêmios estimados podem mudar a cada concurso.</em>
+      </p>
+    `,
+  },
 
 ];
 
