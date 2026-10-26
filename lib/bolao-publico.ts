@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/server";
+import { lerDetalheJson } from "@/lib/bolao-conferencia";
 
 // Leitura da página pública do bolão (/b/[slug]). Sempre via service role,
 // porque as tabelas não têm nenhuma política pro client anônimo — e é aqui
@@ -20,11 +21,13 @@ export interface BolaoPublico {
   status: string;
   jogos: number[][];
   participantes: { id: string; nome: string; cotas: number; pago: boolean; semEmail: boolean }[];
-  // acertos_por_jogo é um array de inteiros na ordem dos jogos
-  // (preenchido pela conferência automática).
+  // Preenchido pela conferência automática (lib/bolao-conferencia.ts).
   resultados: {
     concurso: number;
     acertosPorJogo: number[];
+    premiados: number;
+    indeterminado: boolean;
+    acumulado: boolean;
     premioTotalCents: number;
     porCotaCents: number;
   }[];
@@ -79,7 +82,15 @@ export async function getBolaoPublico(slug: string): Promise<BolaoPublico | null
     })),
     resultados: (resultados ?? []).map((r) => ({
       concurso: r.concurso,
-      acertosPorJogo: r.acertos_por_jogo as number[],
+      ...(() => {
+        const d = lerDetalheJson(r.acertos_por_jogo);
+        return {
+          acertosPorJogo: d.acertos,
+          premiados: d.premiados,
+          indeterminado: d.indeterminado,
+          acumulado: d.acumulado,
+        };
+      })(),
       premioTotalCents: Number(r.premio_total_cents),
       porCotaCents: Number(r.por_cota_cents),
     })),

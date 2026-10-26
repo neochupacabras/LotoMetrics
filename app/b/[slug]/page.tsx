@@ -79,8 +79,10 @@ export default async function BolaoPublicoPage({
               return (
                 <div key={r.concurso} className="transicao-resumo">
                   <div className="transicao-resumo__item">
-                    <p className="analise-cartao__rotulo">Concurso {r.concurso} · melhor jogo</p>
-                    <p className="transicao-resumo__valor">{melhor} acertos</p>
+                    <p className="analise-cartao__rotulo">
+                      Concurso {r.concurso} · {r.premiados} de {bolao.jogos.length} jogos premiados
+                    </p>
+                    <p className="transicao-resumo__valor">melhor: {melhor} acertos</p>
                   </div>
                   <div className="transicao-resumo__item">
                     <p className="analise-cartao__rotulo">Prêmio total do bolão</p>
@@ -93,6 +95,18 @@ export default async function BolaoPublicoPage({
                 </div>
               );
             })}
+            {bolao.resultados.some((r) => r.indeterminado) && (
+              <p className="bloco__nota">
+                Há jogos com acertos cuja faixa depende dos trevos — confira o valor no resultado
+                oficial da Caixa.
+              </p>
+            )}
+            {bolao.resultados.some((r) => r.acumulado) && (
+              <p className="bloco__nota">
+                Alguma faixa em que o bolão acertou acumulou (sem ganhadores) e não entra no valor
+                acima.
+              </p>
+            )}
             <p className="bloco__nota">
               Valores brutos, antes do imposto de renda retido na fonte. Confira sempre o resultado
               oficial da Caixa.

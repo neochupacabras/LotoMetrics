@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { logJobRun } from "@/lib/telemetry";
 import { processarConcursosNovos, type OpcoesProcessamento } from "@/lib/notificacoes/processar-concursos";
+import { conferirBoloes } from "@/lib/notificacoes/processar-boloes";
 import { verificarPixVencendo } from "@/lib/notificacoes/pix-vencendo";
 import { enviarNewsletterSemanal } from "@/lib/notificacoes/newsletter-semanal";
 import { enviarRetrospectivasAnuais } from "@/lib/notificacoes/retrospectiva-anual";
@@ -72,38 +73,56 @@ export async function handleProcessarConcursos(
 
   try {
     const resumo = await processarConcursosNovos(opcoes);
+    // Bolões (Fase 3): conferem e ratam quando o concurso-alvo já existe —
+    // tanto no disparo do importador quanto no cron diário.
+    // Isolado: uma falha aqui vira "partial" no job_runs, mas nunca derruba
+    // o e-mail de resultado dos jogos nem os demais envios.
+    let boloes: Awaited<ReturnType<typeof conferirBoloes>> = { detalhes: [], conferidos: [] };
+    let erroBoloes: string | null = null;
+    try {
+      boloes = await conferirBoloes(opcoes);
+    } catch (err) {
+      erroBoloes = (err as Error).message;
+      console.error("conferirBoloes falhou:", erroBoloes);
+    }
     const detalhesPix = opts.incluirPixVencendo ? await verificarPixVencendo(opcoes) : [];
     const detalhesNewsletter = opts.incluirNewsletterSemanal ? await enviarNewsletterSemanal(opcoes) : [];
     const detalhesRetrospectiva = opts.incluirRetrospectivaAnual
       ? await enviarRetrospectivasAnuais(opcoes)
       : [];
-    const detalhes = [...resumo.detalhes, ...detalhesPix, ...detalhesNewsletter, ...detalhesRetrospectiva];
-    const outrosDetalhes = [...detalhesPix, ...detalhesNewsletter, ...detalhesRetrospectiva];
+    const detalhes = [...resumo.detalhes, ...boloes.detalhes, ...detalhesPix, ...detalhesNewsletter, ...detalhesRetrospectiva];
+    const outrosDetalhes = [...boloes.detalhes, ...detalhesPix, ...detalhesNewsletter, ...detalhesRetrospectiva];
     const emailsEnviados = resumo.emailsEnviados + outrosDetalhes.filter((d) => d.status === "enviado").length;
     const emailsFalhos = resumo.emailsFalhos + outrosDetalhes.filter((d) => d.status === "falhou").length;
     const emailsSimulados = resumo.emailsSimulados + outrosDetalhes.filter((d) => d.status === "simulado").length;
 
     await logJobRun({
       jobName,
-      status: emailsFalhos > 0 ? "partial" : "success",
+      status: emailsFalhos > 0 || erroBoloes ? "partial" : "success",
       startedAt,
       details: {
         dryRun: opcoes.dryRun,
         somenteEmails: opcoes.somenteEmails ? Array.from(opcoes.somenteEmails) : undefined,
         concursosProcessados: resumo.concursosProcessados,
+        boloesConferidos: boloes.conferidos,
         emailsEnviados,
         emailsFalhos,
         emailsSimulados,
         detalhes,
       },
       error:
-        emailsFalhos > 0
-          ? detalhes.filter((d) => d.status === "falhou").map((d) => `${d.email}: ${d.erro}`).join("; ")
-          : null,
+        [
+          ...(emailsFalhos > 0
+            ? [detalhes.filter((d) => d.status === "falhou").map((d) => `${d.email}: ${d.erro}`).join("; ")]
+            : []),
+          ...(erroBoloes ? [erroBoloes] : []),
+        ].join(" | ") || null,
     });
     return NextResponse.json({
       ok: true,
       concursosProcessados: resumo.concursosProcessados,
+      boloesConferidos: boloes.conferidos,
+      erroBoloes,
       emailsEnviados,
       emailsFalhos,
       emailsSimulados,
