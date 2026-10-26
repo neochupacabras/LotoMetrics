@@ -12,6 +12,7 @@ import {
   removerParticipanteAction,
 } from "@/lib/bolao-actions";
 import { LIMITE_COTAS_GRATIS, LIMITE_COTAS_PRO } from "@/lib/bolao-limites";
+import { enviarBeacon, obterOuCriarAnonymousId } from "@/lib/telemetria-cliente";
 
 interface BolaoView {
   id: string;
@@ -90,9 +91,20 @@ export default function BolaoEditorClient({
     );
   }
 
+  function registrarCompartilhamento(canal: "copiar" | "whatsapp") {
+    enviarBeacon({
+      eventName: "bolao_shared",
+      tool: "bolao",
+      lottery: bolao.loteria,
+      anonymousId: obterOuCriarAnonymousId(),
+      metadata: { canal },
+    });
+  }
+
   async function copiarLink() {
     try {
       await navigator.clipboard.writeText(linkPublico);
+      registrarCompartilhamento("copiar");
       setCopiado(true);
       setTimeout(() => setCopiado(false), 2000);
     } catch {
@@ -135,6 +147,7 @@ export default function BolaoEditorClient({
             href={`https://wa.me/?text=${encodeURIComponent(`Bolão "${bolao.titulo}": ${linkPublico}`)}`}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => registrarCompartilhamento("whatsapp")}
           >
             WhatsApp
           </a>
