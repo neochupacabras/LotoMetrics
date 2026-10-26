@@ -152,7 +152,7 @@ export default function BolaoSalvar({
           {erro && (
             <p className="gerador-erro">
               {erro}{" "}
-              {erro.includes("Premium") && <Link href="/assinar">Ver planos</Link>}
+              {erro.includes("Premium") && <Link href="/assinar?perfil=organizador">Ver planos</Link>}
             </p>
           )}
           <p className="bloco__nota">

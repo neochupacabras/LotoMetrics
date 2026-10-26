@@ -7,7 +7,8 @@ import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { createClient } from "@/lib/supabase/server";
 import CheckoutButton from "@/components/auth/CheckoutButton";
 import PixCheckoutButton from "@/components/auth/PixCheckoutButton";
-import type { PlanoPix } from "@/lib/mercadopago/planos";
+import { BOLAO_PRO_PIX, type PlanoPix } from "@/lib/mercadopago/planos";
+import "./assinar-perfil.css";
 
 export const metadata: Metadata = {
   title: "Assinar Premium — LotoAnalítica",
@@ -58,7 +59,32 @@ const BENEFICIOS = [
   "Acesso antecipado a novas ferramentas",
 ];
 
-export default async function AssinarPage() {
+// O /assinar tem dois perfis (?perfil=): quem aposta sozinho e quem organiza
+// bolão de grupo. Os PLANOS e o checkout são os mesmos; muda a promessa, a
+// ordem dos benefícios e, pro organizador, o aviso do Bolão Pro avulso.
+// Tudo listado aqui existe de verdade (ver lib/bolao-limites.ts).
+type Perfil = "apostador" | "organizador";
+
+const BENEFICIOS_ORGANIZADOR = [
+  "Bolão Pro em todos os seus bolões: até 100 cotas cada",
+  "Vários bolões ativos ao mesmo tempo (no grátis é 1 por vez)",
+  "Aviso do resultado por e-mail para os participantes que pedirem",
+  "Foto do bilhete como comprovante, com conferência dos jogos",
+  "Página pública do bolão sem anúncios",
+  "Conferência e rateio por cota automáticos depois do sorteio",
+  "Tudo do Premium: rastreamento dos seus jogos, alertas de acúmulo e sem anúncios no site",
+];
+
+function perfilDaUrl(valor: string | undefined): Perfil {
+  return valor === "organizador" ? "organizador" : "apostador";
+}
+
+export default async function AssinarPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ perfil?: string }>;
+}) {
+  const perfil = perfilDaUrl((await searchParams).perfil);
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -77,14 +103,39 @@ export default async function AssinarPage() {
 
   return (
     <>
-      <TelemetriaBeacon eventName="pricing_view" tool="assinar" />
+      <TelemetriaBeacon eventName="pricing_view" tool="assinar" metadata={{ perfil }} />
       <Masthead />
       <main className="assinar-page">
         <div className="container">
+          <nav className="assinar-perfis" aria-label="Perfil">
+            <Link
+              href="/assinar?perfil=apostador"
+              className={`assinar-perfil-tab ${perfil === "apostador" ? "assinar-perfil-tab--ativo" : ""}`}
+              aria-current={perfil === "apostador" ? "page" : undefined}
+            >
+              Sou apostador
+            </Link>
+            <Link
+              href="/assinar?perfil=organizador"
+              className={`assinar-perfil-tab ${perfil === "organizador" ? "assinar-perfil-tab--ativo" : ""}`}
+              aria-current={perfil === "organizador" ? "page" : undefined}
+            >
+              Organizo bolão
+            </Link>
+          </nav>
+
           <div className="assinar-hero">
             <p className="eyebrow">LotoAnalítica Premium</p>
             <h1 className="assinar-titulo">
-              Todas as ferramentas,<br />sem anúncios.
+              {perfil === "organizador" ? (
+                <>
+                  Bolão do grupo,<br />sem dor de cabeça.
+                </>
+              ) : (
+                <>
+                  Todas as ferramentas,<br />sem anúncios.
+                </>
+              )}
             </h1>
             <p className="assinar-subtitulo">
               {elegivelParaTrial
@@ -92,6 +143,24 @@ export default async function AssinarPage() {
                 : "Cancele quando quiser. Sem taxa de adesão."}
             </p>
           </div>
+
+          {perfil === "organizador" && (
+            <section className="assinar-avulso">
+              <h2 className="assinar-avulso__titulo">Só precisa de um bolão? Bolão Pro avulso</h2>
+              <p className="assinar-avulso__texto">
+                R$&nbsp;{BOLAO_PRO_PIX.amount.toFixed(2).replace(".", ",")} por bolão, por {BOLAO_PRO_PIX.periodDays} dias,
+                pago por Pix dentro do próprio bolão — sem assinatura. Monte o bolão grátis e libere o Pro quando
+                precisar de mais de 10 cotas, dos avisos por e-mail ou da foto do bilhete.
+              </p>
+              <div className="assinar-avulso__acoes">
+                <Link href="/megasena/bolao" className="botao-gerar">Montar um bolão →</Link>
+                <Link href="/conta/boloes" className="botao-copiar">Meus bolões</Link>
+              </div>
+              <p className="assinar-avulso__texto">
+                Organiza bolões com frequência? O Premium abaixo inclui o Bolão Pro em todos eles.
+              </p>
+            </section>
+          )}
 
           {/* ── Planos ────────────────────────────────────────────────── */}
           <div className="assinar-planos">
@@ -131,7 +200,7 @@ export default async function AssinarPage() {
           <section className="assinar-beneficios">
             <h2 className="assinar-beneficios-titulo">O que está incluído</h2>
             <ul className="assinar-beneficios-lista">
-              {BENEFICIOS.map((b) => (
+              {(perfil === "organizador" ? BENEFICIOS_ORGANIZADOR : BENEFICIOS).map((b) => (
                 <li key={b} className="assinar-beneficio-item">
                   <span className="assinar-check">✓</span>
                   {b}
