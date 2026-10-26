@@ -6,13 +6,15 @@ import { after } from "next/server";
 import { logToolEvent } from "@/lib/telemetry";
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { calcularIsPremium } from "@/lib/plano-premium";
-import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
+import { getLoteriaPorCodigo } from "@/lib/queries";
+import db from "@/lib/db";
 import { OPCOES_BOLAO } from "@/lib/bolao-opcoes";
 import {
   bolaoEhPro,
   podeAdicionarParticipante,
   podeCriarBolao,
   podeDefinirCotas,
+  proximoConcursoAlvo,
 } from "@/lib/bolao-limites";
 
 // Todas as escritas do bolão passam por aqui: autenticam com a sessão do
@@ -105,8 +107,15 @@ export async function criarBolaoAction(
 
   let concursoAlvo: number | null = null;
   if (input.alvo === "proximo") {
-    const ultimo = await getUltimoConcurso(loteria.id);
-    concursoAlvo = ultimo ? ultimo.numero + 1 : null;
+    // Consulta direta (sem o cache de 5 min de getUltimoConcurso): salvar logo
+    // depois de um sorteio não pode apontar pro concurso que acabou de sair.
+    const { rows } = await db.query<{ numero: number; data_proximo: string | null }>(
+      `SELECT numero, to_char(data_proximo_concurso, 'YYYY-MM-DD') AS data_proximo
+       FROM concurso WHERE loteria_id = $1 ORDER BY numero DESC LIMIT 1`,
+      [loteria.id]
+    );
+    const ultimo = rows[0];
+    concursoAlvo = ultimo ? proximoConcursoAlvo(ultimo.numero, ultimo.data_proximo, new Date()) : null;
   } else if (input.alvo === "numero") {
     if (!input.concursoAlvo || !Number.isInteger(input.concursoAlvo) || input.concursoAlvo < 1) {
       return { ok: false, erro: "Número de concurso inválido." };

@@ -122,3 +122,46 @@ export function calcularProAte(
   const base = atual > agora ? atual : agora;
   return new Date(base.getTime() + dias * 24 * 60 * 60 * 1000);
 }
+
+// Desfaz o crédito de um pagamento (reembolso): tira os dias do pro_ate. Se
+// o que sobra já passou, o bolão volta a free (null). Com dois pagamentos
+// empilhados, reembolsar um deixa o outro valendo.
+export function revogarProAte(
+  proAteAtual: string | null | undefined,
+  dias: number,
+  agora: Date
+): Date | null {
+  if (!proAteAtual) return null;
+  const novo = new Date(new Date(proAteAtual).getTime() - dias * 24 * 60 * 60 * 1000);
+  return novo > agora ? novo : null;
+}
+
+// Concurso-alvo de "próximo sorteio". As apostas da Caixa fecham às 19h
+// (Brasília) do dia do sorteio: depois disso, o "próximo" de verdade é o
+// seguinte ao que está agendado. `dataProximo` é data_proximo_concurso do
+// último concurso importado (AAAA-MM-DD). Se ela já passou (importador
+// atrasado), não dá pra saber quantos sorteios ficaram pra trás: devolve
+// ultimo + 1.
+export const HORA_FECHAMENTO_APOSTAS = 19;
+
+export function proximoConcursoAlvo(
+  ultimoNumero: number,
+  dataProximo: string | null | undefined,
+  agora: Date
+): number {
+  if (!dataProximo) return ultimoNumero + 1;
+  const partes = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(agora);
+  const get = (t: string) => partes.find((p) => p.type === t)?.value ?? "";
+  const hoje = `${get("year")}-${get("month")}-${get("day")}`;
+  const hora = Number(get("hour"));
+  const dia = dataProximo.slice(0, 10);
+  if (dia === hoje && hora >= HORA_FECHAMENTO_APOSTAS) return ultimoNumero + 2;
+  return ultimoNumero + 1;
+}

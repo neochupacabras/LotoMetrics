@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import AdsenseGate from "@/components/AdsenseGate";
 import VisitaLandingBeacon from "@/components/VisitaLandingBeacon";
 import { PlanoUsuarioProvider } from "@/components/auth/PlanoUsuarioProvider";
+import { SemAnunciosProvider } from "@/components/SemAnunciosProvider";
 import { SITE_URL, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import "./globals.css";
 
@@ -62,12 +63,14 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd()) }}
         />
         <PlanoUsuarioProvider>
-          <VisitaLandingBeacon />
-          {children}
-          <Footer />
-          <Analytics />
-          <SpeedInsights />
-          <AdsenseGate />
+          <SemAnunciosProvider>
+            <VisitaLandingBeacon />
+            {children}
+            <Footer />
+            <Analytics />
+            <SpeedInsights />
+            <AdsenseGate />
+          </SemAnunciosProvider>
         </PlanoUsuarioProvider>
       </body>
     </html>

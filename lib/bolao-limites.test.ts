@@ -7,6 +7,8 @@ import {
   podeAdicionarParticipante,
   valorCotaSugeridoCents,
   calcularProAte,
+  revogarProAte,
+  proximoConcursoAlvo,
 } from "./bolao-limites";
 
 const agora = new Date("2026-11-01T12:00:00Z");
@@ -71,5 +73,37 @@ describe("calcularProAte", () => {
   it("validade vencida recomeça de agora", () => {
     const vencida = new Date(agora.getTime() - 5 * dia).toISOString();
     expect(calcularProAte(vencida, agora, 30).getTime()).toBe(agora.getTime() + 30 * dia);
+  });
+});
+
+describe("revogarProAte", () => {
+  const dia = 24 * 60 * 60 * 1000;
+  it("tira os dias; se sobra tempo futuro, mantém", () => {
+    const proAte = new Date(agora.getTime() + 40 * dia).toISOString();
+    expect(revogarProAte(proAte, 30, agora)?.getTime()).toBe(agora.getTime() + 10 * dia);
+  });
+  it("se o que sobra já passou, volta a free (null)", () => {
+    const proAte = new Date(agora.getTime() + 30 * dia).toISOString();
+    expect(revogarProAte(proAte, 30, agora)).toBeNull();
+    expect(revogarProAte(null, 30, agora)).toBeNull();
+  });
+});
+
+describe("proximoConcursoAlvo", () => {
+  // 20/11/2026 18:30 BRT = 21:30 UTC; 19:30 BRT = 22:30 UTC
+  it("antes das 19h do dia do sorteio: o próximo é ultimo + 1", () => {
+    expect(proximoConcursoAlvo(3074, "2026-11-20", new Date("2026-11-20T21:30:00Z"))).toBe(3075);
+  });
+  it("depois das 19h do dia do sorteio: já é o seguinte (ultimo + 2)", () => {
+    expect(proximoConcursoAlvo(3074, "2026-11-20", new Date("2026-11-20T22:30:00Z"))).toBe(3076);
+  });
+  it("em outro dia, ou sem data: ultimo + 1", () => {
+    expect(proximoConcursoAlvo(3074, "2026-11-22", new Date("2026-11-20T23:30:00Z"))).toBe(3075);
+    expect(proximoConcursoAlvo(3074, "2026-11-18", new Date("2026-11-20T23:30:00Z"))).toBe(3075);
+    expect(proximoConcursoAlvo(3074, null, new Date("2026-11-20T23:30:00Z"))).toBe(3075);
+  });
+  it("usa o dia de Brasília, não o UTC (23h BRT já é o dia seguinte em UTC)", () => {
+    // 20/11 23:00 BRT = 21/11 02:00 UTC — ainda é 20/11 em Brasília
+    expect(proximoConcursoAlvo(3074, "2026-11-20", new Date("2026-11-21T02:00:00Z"))).toBe(3076);
   });
 });
