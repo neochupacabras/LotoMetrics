@@ -5,10 +5,13 @@ import { notFound } from "next/navigation";
 import Masthead from "@/components/Masthead";
 import Dezenas from "@/components/Dezenas";
 import AvisoBolaoForm from "@/components/AvisoBolaoForm";
+import "@/components/bolao-comprovante.css";
 import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import SemAnuncios from "@/components/SemAnunciosProvider";
-import { getBolaoPublico } from "@/lib/bolao-publico";
-import { NOME_LOTERIA } from "@/lib/seo";
+import CompartilharBolao from "@/components/CompartilharBolao";
+import { getBolaoPublico, ultimoResumo } from "@/lib/bolao-publico";
+import { descreverResultado, montarMensagemWhatsapp } from "@/lib/bolao-compartilhar";
+import { NOME_LOTERIA, SITE_URL } from "@/lib/seo";
 
 // Página pública do bolão: abre sem login, é compartilhada por link no
 // WhatsApp e nunca deve ser indexada (o slug aleatório é a única
@@ -22,9 +25,12 @@ export async function generateMetadata({
   const bolao = await getBolaoPublico(slug);
   const robots = { index: false, follow: false };
   if (!bolao) return { title: "Bolão — LotoAnalítica", robots };
+  const resumo = ultimoResumo(bolao);
   return {
     title: `${bolao.titulo} — bolão ${NOME_LOTERIA[bolao.loteria] ?? bolao.loteria}`,
-    description: `Acompanhe os jogos, as cotas e os pagamentos do bolão "${bolao.titulo}".`,
+    description: resumo
+      ? `Resultado do bolão "${bolao.titulo}" no concurso ${resumo.concurso}: ${descreverResultado(resumo)}.`
+      : `Acompanhe os jogos, as cotas e os pagamentos do bolão "${bolao.titulo}".`,
     robots,
   };
 }
@@ -49,6 +55,8 @@ export default async function BolaoPublicoPage({
   if (!bolao) notFound();
 
   const nomeLoteria = NOME_LOTERIA[bolao.loteria] ?? bolao.loteria;
+  const resumo = ultimoResumo(bolao);
+  const urlPublica = `${SITE_URL}/b/${bolao.slug}`;
   const atribuidas = bolao.participantes.reduce((s, p) => s + p.cotas, 0);
   const pagas = bolao.participantes.filter((p) => p.pago).reduce((s, p) => s + p.cotas, 0);
   const concursoTxt =
@@ -157,6 +165,26 @@ export default async function BolaoPublicoPage({
           )}
         </section>
 
+        {bolao.comprovante.fotos.length > 0 && (
+          <section className="bloco">
+            <h2 className="bloco__titulo">Comprovante da aposta</h2>
+            <p className="bloco__nota">
+              {bolao.comprovante.jogosVerificados} de {bolao.jogos.length} jogos deste bolão aparecem nas
+              fotos dos bilhetes enviadas pelo organizador (leitura automática da foto).
+            </p>
+            <div className="bolao-comprovante">
+              {bolao.comprovante.fotos.map((f) =>
+                f.url ? (
+                  <a key={f.id} href={f.url} target="_blank" rel="noopener noreferrer">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={f.url} alt="Foto do bilhete do bolão" className="bolao-comprovante__foto" />
+                  </a>
+                ) : null
+              )}
+            </div>
+          </section>
+        )}
+
         <section className="bloco">
           <h2 className="bloco__titulo">Jogos ({bolao.jogos.length})</h2>
           <p className="bloco__nota">
@@ -170,6 +198,21 @@ export default async function BolaoPublicoPage({
               <Dezenas dezenas={j} tamanho="pequena" wrapperClassName="ledger__dezenas" />
             </div>
           ))}
+        </section>
+
+        <section className="bloco">
+          <h2 className="bloco__titulo">{resumo ? "Compartilhe o resultado" : "Chame o grupo"}</h2>
+          <CompartilharBolao
+            loteria={bolao.loteria}
+            url={urlPublica}
+            mensagem={montarMensagemWhatsapp({
+              titulo: bolao.titulo,
+              nomeLoteria,
+              url: urlPublica,
+              resultado: resumo,
+            })}
+            rotulo={resumo ? "Enviar resultado ao grupo" : "Enviar para o grupo"}
+          />
         </section>
 
         <div className="aviso-legal">
