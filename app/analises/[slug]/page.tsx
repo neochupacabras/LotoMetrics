@@ -7,13 +7,19 @@ import BolaoClient from "@/components/BolaoClient";
 import ListaEsperaBolao from "@/components/ListaEsperaBolao";
 import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { getAnalise, getAnalisesRecentes } from "@/lib/analises";
-import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
-import { formatarMoeda } from "@/lib/format";
+import Dezenas from "@/components/Dezenas";
+import { getLoteriaPorCodigo, getUltimoConcurso, getConcursoPorNumero } from "@/lib/queries";
+import { formatarMoeda, formatarData as formatarDataSorteio } from "@/lib/format";
 
 // Único slug com conteúdo interativo embutido — o otimizador de bolão e a
 // lista de espera (tarefa 2.2 do plano de implementação, 21/09/2026). O
 // resto do template continua genérico pras outras ~50 análises.
 const SLUG_BOLAO_VIRADA = "bolao-mega-da-virada-2026-como-organizar";
+
+// Artigo da Mega Semana (26 a 30/10/2026): mostra os resultados dos cinco
+// concursos direto do banco, conforme forem sendo sorteados.
+const SLUG_MEGA_SEMANA = "mega-semana-mega-sena-cinco-sorteios-em-cinco-dias";
+const CONCURSOS_MEGA_SEMANA = [3076, 3077, 3078, 3079, 3080];
 
 // Revalida a cada 5 minutos só por causa do prêmio estimado ao vivo desta
 // página — as demais análises não têm dependência nenhuma de banco.
@@ -95,6 +101,17 @@ export default async function AnalisePage({
     ? analise.corpo.split(MARCADOR_WIDGET)
     : [analise.corpo, null];
 
+  const ehMegaSemana = slug === SLUG_MEGA_SEMANA;
+  let concursosMegaSemana: (Awaited<ReturnType<typeof getConcursoPorNumero>>)[] = [];
+  if (ehMegaSemana) {
+    const mega = await getLoteriaPorCodigo("megasena");
+    if (mega) {
+      concursosMegaSemana = await Promise.all(
+        CONCURSOS_MEGA_SEMANA.map((n) => getConcursoPorNumero(mega.id, n))
+      );
+    }
+  }
+
   const jsonLdFaq = analise.perguntasFrequentes
     ? {
         "@context": "https://schema.org",
@@ -164,6 +181,50 @@ export default async function AnalisePage({
               fecha entre novembro e dezembro.
             </span>
           </div>
+        )}
+
+        {ehMegaSemana && concursosMegaSemana.length > 0 && (
+          <section style={{ margin: "24px 0" }}>
+            <h2 className="bloco__titulo" style={{ marginBottom: 12 }}>
+              Resultados da Mega Semana
+            </h2>
+            <div className="ledger">
+              {CONCURSOS_MEGA_SEMANA.map((numero, i) => {
+                const c = concursosMegaSemana[i];
+                if (!c) {
+                  return (
+                    <div key={numero} className="ledger__linha">
+                      <span className="ledger__numero">#{numero}</span>
+                      <span className="ledger__data">Aguardando sorteio</span>
+                    </div>
+                  );
+                }
+                const sena = c.premiacoes.find((p) => p.faixa === 1);
+                return (
+                  <Link
+                    key={numero}
+                    href={`/megasena/resultados/${numero}`}
+                    className="ledger__linha"
+                  >
+                    <span className="ledger__numero">#{numero}</span>
+                    <span className="ledger__data">{formatarDataSorteio(c.dataSorteio)}</span>
+                    <Dezenas dezenas={c.dezenas} tamanho="pequena" wrapperClassName="ledger__dezenas" />
+                    <span className="ledger__status">
+                      {c.acumulado ? (
+                        <span className="badge badge--acumulou">Acumulou</span>
+                      ) : (
+                        <span className="badge badge--teve-ganhador">
+                          {sena && sena.qtdGanhadores > 1
+                            ? `${sena.qtdGanhadores} ganhadores`
+                            : "Ganhador"}
+                        </span>
+                      )}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
         )}
 
         <div
