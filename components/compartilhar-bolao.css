@@ -1,0 +1,2 @@
+.bolao-compartilhar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.bolao-compartilhar .botao-copiar { margin-left: 0; }
