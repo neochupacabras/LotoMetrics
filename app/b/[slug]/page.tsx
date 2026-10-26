@@ -6,6 +6,7 @@ import Masthead from "@/components/Masthead";
 import Dezenas from "@/components/Dezenas";
 import AvisoBolaoForm from "@/components/AvisoBolaoForm";
 import TelemetriaBeacon from "@/components/TelemetriaBeacon";
+import SemAnuncios from "@/components/SemAnunciosProvider";
 import { getBolaoPublico } from "@/lib/bolao-publico";
 import { NOME_LOTERIA } from "@/lib/seo";
 
@@ -60,6 +61,7 @@ export default async function BolaoPublicoPage({
   return (
     <>
       <Masthead />
+      <SemAnuncios ativo={bolao.pro} />
       <TelemetriaBeacon eventName="bolao_public_view" tool="bolao" lottery={bolao.loteria} />
       <main className="container secao bolao-publico">
         <p className="eyebrow">

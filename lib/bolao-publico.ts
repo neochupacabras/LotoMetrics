@@ -1,5 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/server";
 import { lerDetalheJson } from "@/lib/bolao-conferencia";
+import { bolaoEhPro } from "@/lib/bolao-limites";
+import { calcularIsPremium } from "@/lib/plano-premium";
 
 // Leitura da página pública do bolão (/b/[slug]). Sempre via service role,
 // porque as tabelas não têm nenhuma política pro client anônimo — e é aqui
@@ -19,6 +21,8 @@ export interface BolaoPublico {
   valorCotaCents: number;
   qtdCotas: number;
   status: string;
+  // Bolão Pro (Pix válido ou dono Premium): a página fica sem anúncios.
+  pro: boolean;
   jogos: number[][];
   participantes: { id: string; nome: string; cotas: number; pago: boolean; semEmail: boolean }[];
   // Preenchido pela conferência automática (lib/bolao-conferencia.ts).
@@ -40,13 +44,13 @@ export async function getBolaoPublico(slug: string): Promise<BolaoPublico | null
   const { data: b } = await admin
     .from("boloes")
     .select(
-      "id, slug, titulo, loteria, alvo, concurso_alvo, pool_dezenas, garantia, valor_cota_cents, qtd_cotas, status"
+      "id, owner_id, slug, titulo, loteria, alvo, concurso_alvo, pool_dezenas, garantia, valor_cota_cents, qtd_cotas, status, pro_ate"
     )
     .eq("slug", slug)
     .maybeSingle();
   if (!b) return null;
 
-  const [{ data: jogos }, { data: participantes }, { data: resultados }] = await Promise.all([
+  const [{ data: jogos }, { data: participantes }, { data: resultados }, { data: dono }] = await Promise.all([
     admin.from("bolao_jogos").select("dezenas").eq("bolao_id", b.id).order("ordem"),
     admin
       .from("bolao_participantes")
@@ -58,6 +62,7 @@ export async function getBolaoPublico(slug: string): Promise<BolaoPublico | null
       .select("concurso, acertos_por_jogo, premio_total_cents, por_cota_cents")
       .eq("bolao_id", b.id)
       .order("concurso"),
+    admin.from("profiles").select("plan, plan_expires_at").eq("id", b.owner_id).maybeSingle(),
   ]);
 
   return {
@@ -72,6 +77,7 @@ export async function getBolaoPublico(slug: string): Promise<BolaoPublico | null
     valorCotaCents: b.valor_cota_cents,
     qtdCotas: b.qtd_cotas,
     status: b.status,
+    pro: bolaoEhPro(b, calcularIsPremium(dono)),
     jogos: (jogos ?? []).map((j) => j.dezenas as number[]),
     participantes: (participantes ?? []).map((p) => ({
       id: p.id,

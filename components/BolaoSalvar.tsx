@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { usePlanoUsuario } from "@/components/auth/PlanoUsuarioProvider";
 import { criarBolaoAction } from "@/lib/bolao-actions";
 import { LIMITE_COTAS_GRATIS } from "@/lib/bolao-limites";
+import { enviarBeacon, obterOuCriarAnonymousId } from "@/lib/telemetria-cliente";
 
 interface Props {
   codigoLoteria: string;
@@ -60,8 +61,22 @@ export default function BolaoSalvar({
         qtdCotas,
         tickets,
       });
-      if (r.ok) router.push(`/conta/boloes/${r.id}`);
-      else setErro(r.erro);
+      if (r.ok) {
+        router.push(`/conta/boloes/${r.id}`);
+      } else {
+        setErro(r.erro);
+        // Bateu um limite do plano grátis (cotas ou bolão ativo): é o sinal
+        // de conversão que o funil do bolão mede.
+        if (r.motivo === "cotas" || r.motivo === "boloes_ativos") {
+          enviarBeacon({
+            eventName: "limit_reached",
+            tool: "bolao",
+            lottery: codigoLoteria,
+            anonymousId: obterOuCriarAnonymousId(),
+            metadata: { limite: r.motivo },
+          });
+        }
+      }
     });
   }
 

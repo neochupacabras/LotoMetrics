@@ -3,7 +3,7 @@ import crypto from "node:crypto";
 import { MercadoPagoConfig, Payment } from "mercadopago";
 import { createAdminClient } from "@/lib/supabase/server";
 import { logError, logToolEvent } from "@/lib/telemetry";
-import { calcularProAte } from "@/lib/bolao-limites";
+import { calcularProAte, revogarProAte } from "@/lib/bolao-limites";
 
 export const runtime = "nodejs";
 
@@ -175,10 +175,46 @@ export async function POST(request: Request) {
       );
     }
   } else if (STATUS_FINAIS_NAO_APROVADOS.has(mpPayment.status ?? "")) {
+    // Reembolso de um Bolão Pro já aprovado: devolve o crédito (tira os dias
+    // do pro_ate). A reivindicação é atômica (só quem muda approved ->
+    // refunded revoga) pra um reenvio da notificação nunca tirar 2x.
+    if (mpPayment.status === "refunded") {
+      const { data: revogado } = await supabase
+        .from("pix_payments")
+        .update({ status: "refunded" })
+        .eq("mp_payment_id", mpPaymentId)
+        .eq("status", "approved")
+        .eq("produto", "bolao_pro")
+        .select("id, user_id, ref_id, period_days");
+
+      const pagamento = revogado?.[0];
+      if (pagamento?.ref_id) {
+        const { data: bolao } = await supabase
+          .from("boloes")
+          .select("pro_ate")
+          .eq("id", pagamento.ref_id)
+          .maybeSingle();
+        if (bolao) {
+          const novo = revogarProAte(bolao.pro_ate, pagamento.period_days, new Date());
+          await supabase
+            .from("boloes")
+            .update({ pro_ate: novo ? novo.toISOString() : null })
+            .eq("id", pagamento.ref_id);
+        }
+        after(() =>
+          logError({
+            source: "mercadopago_webhook",
+            message: `Bolão Pro revogado por reembolso (payment ${mpPaymentId}, bolão ${pagamento.ref_id})`,
+          })
+        );
+      }
+    }
+
     await supabase
       .from("pix_payments")
       .update({ status: mpPayment.status as string })
-      .eq("mp_payment_id", mpPaymentId);
+      .eq("mp_payment_id", mpPaymentId)
+      .neq("status", mpPayment.status as string);
   }
 
   return NextResponse.json({ received: true });
