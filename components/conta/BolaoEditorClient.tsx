@@ -320,7 +320,7 @@ export default function BolaoEditorClient({
               {" "}
               {!premium && (
                 <>
-                  Ou assine o <Link href="/assinar">Premium</Link> e use em todos os bolões.
+                  Ou assine o <Link href="/assinar?perfil=organizador">Premium</Link> e use em todos os bolões.
                 </>
               )}
             </p>
