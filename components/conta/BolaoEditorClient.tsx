@@ -294,17 +294,19 @@ export default function BolaoEditorClient({
           >
             <div className="campo-filtro">
               <label htmlFor="total-cotas">Total de cotas do bolão</label>
-              <input
-                id="total-cotas"
-                type="number"
-                min={1}
-                value={novoTotal}
-                onChange={(e) => setNovoTotal(e.target.value)}
-              />
+              <div className="bolao-editor__linha">
+                <input
+                  id="total-cotas"
+                  type="number"
+                  min={1}
+                  value={novoTotal}
+                  onChange={(e) => setNovoTotal(e.target.value)}
+                />
+                <button type="submit" className="botao-copiar" disabled={pending}>
+                  Atualizar total
+                </button>
+              </div>
             </div>
-            <button type="submit" className="botao-copiar" disabled={pending}>
-              Atualizar total
-            </button>
           </form>
         )}
 
