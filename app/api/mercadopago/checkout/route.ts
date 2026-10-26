@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import { MercadoPagoConfig, Payment } from "mercadopago";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { after } from "next/server";
-import { PLANOS_PIX, BOLAO_PRO_PIX, isPlanoPix } from "@/lib/mercadopago/planos";
+import { PLANOS_PIX, BOLAO_PRO_PIX, isPlanoPix, valorBolaoProPix } from "@/lib/mercadopago/planos";
 import { calcularIsPremium } from "@/lib/plano-premium";
 import { logToolEvent } from "@/lib/telemetry";
 
@@ -23,6 +23,7 @@ export async function POST(request: Request) {
 
   const { plano, produto, bolaoId } = await request.json();
   const ehBolaoPro = produto === "bolao_pro";
+  let valorBolaoPro: number = BOLAO_PRO_PIX.amount;
 
   if (ehBolaoPro) {
     // Bolão Pro: o servidor confere que o bolão é DESTE usuário e ainda não
@@ -43,9 +44,10 @@ export async function POST(request: Request) {
     }
     const { data: profile } = await supabase
       .from("profiles")
-      .select("plan, plan_expires_at")
+      .select("plan, plan_expires_at, role")
       .eq("id", user.id)
       .single();
+    valorBolaoPro = valorBolaoProPix(profile?.role, process.env.BOLAO_PRO_PIX_VALOR_TESTE);
     if (calcularIsPremium(profile)) {
       return NextResponse.json({ error: "Sua conta Premium já inclui o Bolão Pro" }, { status: 400 });
     }
@@ -64,7 +66,7 @@ export async function POST(request: Request) {
   try {
     result = await payment.create({
       body: {
-        transaction_amount: configPlano.amount,
+        transaction_amount: ehBolaoPro ? valorBolaoPro : configPlano.amount,
         description: ehBolaoPro ? "LotoAnalítica — Bolão Pro" : `LotoAnalítica Premium — plano ${configPlano.label}`,
         payment_method_id: "pix",
         payer: { email: user.email },
@@ -95,7 +97,7 @@ export async function POST(request: Request) {
     user_id: user.id,
     mp_payment_id: String(result.id),
     ...(ehBolaoPro ? { produto: "bolao_pro", ref_id: bolaoId, plano: null } : { plano }),
-    amount_cents: Math.round(configPlano.amount * 100),
+    amount_cents: Math.round((ehBolaoPro ? valorBolaoPro : configPlano.amount) * 100),
     status: "pending",
     period_days: configPlano.periodDays,
   });
