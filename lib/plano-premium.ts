@@ -16,3 +16,17 @@ export function calcularIsPremium(perfil: PerfilComPlano | null | undefined): bo
   if (perfil?.plan !== "premium") return false;
   return !perfil.plan_expires_at || new Date(perfil.plan_expires_at) > new Date();
 }
+
+// Tira `dias` de uma data de validade (reembolso: desfaz o crédito que o
+// pagamento somou). Devolve null quando o que sobra já passou - quem chama
+// decide o que isso significa (volta a free, ou mantém por outra fonte de
+// crédito). Pura, sem imports de servidor.
+export function descontarDias(
+  dataAtual: string | null | undefined,
+  dias: number,
+  agora: Date
+): Date | null {
+  if (!dataAtual) return null;
+  const nova = new Date(new Date(dataAtual).getTime() - dias * 24 * 60 * 60 * 1000);
+  return nova > agora ? nova : null;
+}
