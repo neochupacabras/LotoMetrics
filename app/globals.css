@@ -9032,3 +9032,59 @@ footer.rodape {
 .bolao-lista__titulo { font-weight: 600; }
 .bolao-lista__meta { flex: 1 1 200px; font-size: 0.9rem; opacity: 0.75; }
 .bolao-pro-upsell { margin-top: 20px; padding: 16px 18px; border: 1px dashed var(--line-strong); }
+
+/* ── Ajustes de layout (editor do bolão e login) ───────────────────
+   .campo-filtro foi pensado pra linha horizontal do gerador (rótulo de
+   150px + campo). Nos formulários do bolão o rótulo fica EM CIMA do
+   campo, e o .botao-copiar (margin-left:auto) não pode se afastar. */
+.bolao-salvar__form .campo-filtro,
+.bolao-editor__form .campo-filtro {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.bolao-salvar__form .campo-filtro label,
+.bolao-editor__form .campo-filtro label { min-width: 0; }
+.bolao-salvar__form .campo-filtro input[type="text"],
+.bolao-salvar__form .campo-filtro select,
+.bolao-editor__form .campo-filtro input[type="text"] {
+  padding: 6px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  background: var(--paper);
+  color: var(--ink);
+}
+.bolao-editor__form .campo-filtro input[type="text"] { width: 220px; max-width: 100%; }
+.bolao-editor__form .botao-copiar,
+.bolao-editor__link .botao-copiar { margin-left: 0; }
+
+/* Botão de entrar/criar conta: texto centralizado. */
+.auth-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Mostrar/ocultar senha. */
+.auth-senha { position: relative; }
+.auth-input--senha { padding-right: 84px; }
+.auth-senha__toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.auth-senha__toggle:hover,
+.auth-senha__toggle:focus-visible { border-color: var(--pine); color: var(--pine); }
+.bolao-editor__linha { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }

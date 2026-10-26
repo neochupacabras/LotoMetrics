@@ -14,6 +14,7 @@ export default function AuthForm({
 }) {
   const [mensagem, setMensagem] = useState<{ tipo: "erro" | "ok"; texto: string } | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [mostrarSenha, setMostrarSenha] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -72,16 +73,27 @@ export default function AuthForm({
       {modo !== "esqueci-senha" && (
         <div className="auth-campo">
           <label htmlFor="password" className="auth-label">Senha</label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete={modo === "entrar" ? "current-password" : "new-password"}
-            required
-            minLength={6}
-            placeholder={modo === "cadastrar" ? "Mínimo 6 caracteres" : "••••••••"}
-            className="auth-input"
-          />
+          <div className="auth-senha">
+            <input
+              id="password"
+              name="password"
+              type={mostrarSenha ? "text" : "password"}
+              autoComplete={modo === "entrar" ? "current-password" : "new-password"}
+              required
+              minLength={6}
+              placeholder={modo === "cadastrar" ? "Mínimo 6 caracteres" : "••••••••"}
+              className="auth-input auth-input--senha"
+            />
+            <button
+              type="button"
+              className="auth-senha__toggle"
+              onClick={() => setMostrarSenha((v) => !v)}
+              aria-pressed={mostrarSenha}
+              aria-label={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+            >
+              {mostrarSenha ? "Ocultar" : "Mostrar"}
+            </button>
+          </div>
         </div>
       )}
 
