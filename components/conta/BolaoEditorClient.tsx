@@ -2,6 +2,9 @@
 
 import { useState, useTransition } from "react";
 import PixCheckoutButton from "@/components/auth/PixCheckoutButton";
+import BilheteUpload from "@/components/conta/BilheteUpload";
+import type { ComprovanteBolao } from "@/lib/bolao-bilhete-dados";
+import { LIMITE_FOTOS_POR_BOLAO } from "@/lib/bolao-bilhete";
 import { BOLAO_PRO_PIX } from "@/lib/mercadopago/planos";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -53,6 +56,7 @@ export default function BolaoEditorClient({
   premium,
   proAte,
   userId,
+  comprovante,
 }: {
   bolao: BolaoView;
   jogos: number[][];
@@ -61,6 +65,7 @@ export default function BolaoEditorClient({
   premium: boolean;
   proAte: string | null;
   userId: string;
+  comprovante: ComprovanteBolao;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -334,6 +339,22 @@ export default function BolaoEditorClient({
             : até {LIMITE_COTAS_PRO} cotas, aviso por e-mail aos participantes que pediram e página pública sem anúncios.
           </p>
         )}
+      </section>
+
+      <section className="conta-secao">
+        <h2 className="conta-secao-titulo">Comprovante: foto do bilhete</h2>
+        <BilheteUpload
+          bolaoId={bolao.id}
+          totalJogos={jogos.length}
+          jogosVerificados={comprovante.jogosVerificados}
+          fotos={comprovante.fotos.map((f) => ({
+            id: f.id,
+            url: f.url,
+            jogosEncontrados: f.jogosEncontrados.length,
+          }))}
+          ehPro={ehPro}
+          limiteFotos={LIMITE_FOTOS_POR_BOLAO}
+        />
       </section>
 
       <section className="conta-secao">

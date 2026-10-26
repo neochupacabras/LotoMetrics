@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/server";
 import { lerDetalheJson } from "@/lib/bolao-conferencia";
 import { bolaoEhPro } from "@/lib/bolao-limites";
+import { carregarComprovante, type ComprovanteBolao } from "@/lib/bolao-bilhete-dados";
 import { calcularIsPremium } from "@/lib/plano-premium";
 
 // Leitura da página pública do bolão (/b/[slug]). Sempre via service role,
@@ -23,6 +24,8 @@ export interface BolaoPublico {
   status: string;
   // Bolão Pro (Pix válido ou dono Premium): a página fica sem anúncios.
   pro: boolean;
+  // Fotos dos bilhetes (URLs assinadas de 1h) e quantos jogos elas comprovam.
+  comprovante: ComprovanteBolao;
   jogos: number[][];
   participantes: { id: string; nome: string; cotas: number; pago: boolean; semEmail: boolean }[];
   // Preenchido pela conferência automática (lib/bolao-conferencia.ts).
@@ -50,7 +53,7 @@ export async function getBolaoPublico(slug: string): Promise<BolaoPublico | null
     .maybeSingle();
   if (!b) return null;
 
-  const [{ data: jogos }, { data: participantes }, { data: resultados }, { data: dono }] = await Promise.all([
+  const [{ data: jogos }, { data: participantes }, { data: resultados }, { data: dono }, comprovante] = await Promise.all([
     admin.from("bolao_jogos").select("dezenas").eq("bolao_id", b.id).order("ordem"),
     admin
       .from("bolao_participantes")
@@ -63,6 +66,7 @@ export async function getBolaoPublico(slug: string): Promise<BolaoPublico | null
       .eq("bolao_id", b.id)
       .order("concurso"),
     admin.from("profiles").select("plan, plan_expires_at").eq("id", b.owner_id).maybeSingle(),
+    carregarComprovante(b.id),
   ]);
 
   return {
@@ -78,6 +82,7 @@ export async function getBolaoPublico(slug: string): Promise<BolaoPublico | null
     qtdCotas: b.qtd_cotas,
     status: b.status,
     pro: bolaoEhPro(b, calcularIsPremium(dono)),
+    comprovante,
     jogos: (jogos ?? []).map((j) => j.dezenas as number[]),
     participantes: (participantes ?? []).map((p) => ({
       id: p.id,

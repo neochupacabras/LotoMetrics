@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import Masthead from "@/components/Masthead";
 import Dezenas from "@/components/Dezenas";
 import AvisoBolaoForm from "@/components/AvisoBolaoForm";
+import "@/components/bolao-comprovante.css";
 import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import SemAnuncios from "@/components/SemAnunciosProvider";
 import { getBolaoPublico } from "@/lib/bolao-publico";
@@ -156,6 +157,26 @@ export default async function BolaoPublicoPage({
             />
           )}
         </section>
+
+        {bolao.comprovante.fotos.length > 0 && (
+          <section className="bloco">
+            <h2 className="bloco__titulo">Comprovante da aposta</h2>
+            <p className="bloco__nota">
+              {bolao.comprovante.jogosVerificados} de {bolao.jogos.length} jogos deste bolão aparecem nas
+              fotos dos bilhetes enviadas pelo organizador (leitura automática da foto).
+            </p>
+            <div className="bolao-comprovante">
+              {bolao.comprovante.fotos.map((f) =>
+                f.url ? (
+                  <a key={f.id} href={f.url} target="_blank" rel="noopener noreferrer">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={f.url} alt="Foto do bilhete do bolão" className="bolao-comprovante__foto" />
+                  </a>
+                ) : null
+              )}
+            </div>
+          </section>
+        )}
 
         <section className="bloco">
           <h2 className="bloco__titulo">Jogos ({bolao.jogos.length})</h2>

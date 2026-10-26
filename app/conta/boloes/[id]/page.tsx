@@ -7,6 +7,7 @@ import BolaoEditorClient from "@/components/conta/BolaoEditorClient";
 import { createClient } from "@/lib/supabase/server";
 import { calcularIsPremium } from "@/lib/plano-premium";
 import { bolaoEhPro } from "@/lib/bolao-limites";
+import { carregarComprovante } from "@/lib/bolao-bilhete-dados";
 import { NOME_LOTERIA } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -40,6 +41,7 @@ export default async function ContaBolaoPage({ params }: { params: Promise<{ id:
   ]);
 
   const premium = calcularIsPremium(profile);
+  const comprovante = await carregarComprovante(id);
   const ehPro = bolaoEhPro(bolao, premium);
 
   return (
@@ -74,6 +76,7 @@ export default async function ContaBolaoPage({ params }: { params: Promise<{ id:
           premium={premium}
           proAte={bolao.pro_ate}
           userId={user.id}
+          comprovante={comprovante}
         />
       </main>
     </>
