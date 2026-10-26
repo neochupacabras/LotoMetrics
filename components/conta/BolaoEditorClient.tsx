@@ -89,6 +89,9 @@ export default function BolaoEditorClient({
         router.refresh();
       } else {
         setErro(r.erro ?? "Não foi possível concluir.");
+        // O aviso fica no topo da página; sem rolar até lá, quem clicou num
+        // botão lá embaixo (ex.: Fechar bolão) achava que nada tinha acontecido.
+        window.scrollTo({ top: 0, behavior: "smooth" });
         if (r.motivo === "cotas") {
           enviarBeacon({
             eventName: "limit_reached",
@@ -152,7 +155,7 @@ export default function BolaoEditorClient({
         </div>
       </div>
 
-      {erro && <p className="gerador-erro">{erro}</p>}
+      {erro && <p className="gerador-erro" role="alert">{erro}</p>}
 
       <section className="conta-secao">
         <h2 className="conta-secao-titulo">Link para o grupo</h2>
