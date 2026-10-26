@@ -32,3 +32,20 @@ export const BOLAO_PRO_PIX = {
   amount: 14.9,
   periodDays: DIAS_BOLAO_PRO,
 };
+
+// Valor de TESTE do Bolão Pro: permite validar o pagamento real com um valor
+// baixo sem mexer no preço público. Só vale quando as DUAS condições batem:
+// a env (só de servidor, nunca NEXT_PUBLIC) BOLAO_PRO_PIX_VALOR_TESTE está
+// definida E quem paga é admin (profiles.role). Com a env ausente, inválida
+// ou fora de 0,01 a 14,90, o preço é sempre o oficial.
+export function valorBolaoProPix(
+  role: string | null | undefined,
+  valorTesteEnv: string | undefined
+): number {
+  if (role !== "admin" || !valorTesteEnv) return BOLAO_PRO_PIX.amount;
+  const valor = Number(valorTesteEnv.replace(",", "."));
+  if (!Number.isFinite(valor) || valor < 0.01 || valor > BOLAO_PRO_PIX.amount) {
+    return BOLAO_PRO_PIX.amount;
+  }
+  return Math.round(valor * 100) / 100;
+}
