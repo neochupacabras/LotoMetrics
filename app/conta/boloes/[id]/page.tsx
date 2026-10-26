@@ -71,6 +71,9 @@ export default async function ContaBolaoPage({ params }: { params: Promise<{ id:
             pago: !!p.pago_em,
           }))}
           ehPro={ehPro}
+          premium={premium}
+          proAte={bolao.pro_ate}
+          userId={user.id}
         />
       </main>
     </>

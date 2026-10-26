@@ -6,6 +6,7 @@ import {
   podeDefinirCotas,
   podeAdicionarParticipante,
   valorCotaSugeridoCents,
+  calcularProAte,
 } from "./bolao-limites";
 
 const agora = new Date("2026-11-01T12:00:00Z");
@@ -55,5 +56,20 @@ describe("valorCotaSugeridoCents", () => {
   it("arredonda pra cima ao centavo", () => {
     expect(valorCotaSugeridoCents(10000, 3)).toBe(3334);
     expect(valorCotaSugeridoCents(9000, 3)).toBe(3000);
+  });
+});
+
+describe("calcularProAte", () => {
+  const dia = 24 * 60 * 60 * 1000;
+  it("sem validade anterior soma a partir de agora", () => {
+    expect(calcularProAte(null, agora, 30).getTime()).toBe(agora.getTime() + 30 * dia);
+  });
+  it("validade futura é estendida", () => {
+    const futura = new Date(agora.getTime() + 10 * dia).toISOString();
+    expect(calcularProAte(futura, agora, 30).getTime()).toBe(agora.getTime() + 40 * dia);
+  });
+  it("validade vencida recomeça de agora", () => {
+    const vencida = new Date(agora.getTime() - 5 * dia).toISOString();
+    expect(calcularProAte(vencida, agora, 30).getTime()).toBe(agora.getTime() + 30 * dia);
   });
 });

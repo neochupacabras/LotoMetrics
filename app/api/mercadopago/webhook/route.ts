@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import { MercadoPagoConfig, Payment } from "mercadopago";
 import { createAdminClient } from "@/lib/supabase/server";
 import { logError, logToolEvent } from "@/lib/telemetry";
+import { calcularProAte } from "@/lib/bolao-limites";
 
 export const runtime = "nodejs";
 
@@ -90,7 +91,7 @@ export async function POST(request: Request) {
   if (mpPayment.status === "approved") {
     const { data: pixPayment } = await supabase
       .from("pix_payments")
-      .select("id, user_id, status, period_days")
+      .select("id, user_id, status, period_days, produto, ref_id")
       .eq("mp_payment_id", mpPaymentId)
       .maybeSingle();
 
@@ -102,6 +103,45 @@ export async function POST(request: Request) {
           message: `pix_payments ausente para payment ${mpPaymentId}`,
         })
       );
+    } else if (pixPayment.produto === "bolao_pro") {
+      // Bolão Pro: estende boloes.pro_ate do bolão em ref_id. A idempotência
+      // é por "reivindicação" atômica — só quem muda status pra approved
+      // (WHERE status <> 'approved') aplica o crédito, então duas
+      // notificações simultâneas do mesmo pagamento nunca somam 2x.
+      const agoraPro = new Date();
+      const { data: reivindicado } = await supabase
+        .from("pix_payments")
+        .update({ status: "approved", applied_at: agoraPro.toISOString() })
+        .eq("id", pixPayment.id)
+        .neq("status", "approved")
+        .select("id");
+
+      if (reivindicado && reivindicado.length > 0 && pixPayment.ref_id) {
+        const { data: bolao } = await supabase
+          .from("boloes")
+          .select("pro_ate")
+          .eq("id", pixPayment.ref_id)
+          .maybeSingle();
+        if (!bolao) {
+          after(() =>
+            logError({
+              source: "mercadopago_webhook",
+              message: `Bolão ${pixPayment.ref_id} não existe mais (payment ${mpPaymentId})`,
+            })
+          );
+        } else {
+          const proAte = calcularProAte(bolao.pro_ate, agoraPro, pixPayment.period_days);
+          await supabase.from("boloes").update({ pro_ate: proAte.toISOString() }).eq("id", pixPayment.ref_id);
+        }
+        after(() =>
+          logToolEvent({
+            eventName: "pix_payment_approved",
+            tool: "bolao_pro",
+            userId: pixPayment.user_id,
+            metadata: { produto: "bolao_pro" },
+          })
+        );
+      }
     } else if (pixPayment.status !== "approved") {
       // Idempotência: se já estava approved, não reaplica o crédito.
       const { data: profile } = await supabase

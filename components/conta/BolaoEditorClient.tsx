@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import PixCheckoutButton from "@/components/auth/PixCheckoutButton";
+import { BOLAO_PRO_PIX } from "@/lib/mercadopago/planos";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Dezenas from "@/components/Dezenas";
@@ -48,11 +50,17 @@ export default function BolaoEditorClient({
   jogos,
   participantes,
   ehPro,
+  premium,
+  proAte,
+  userId,
 }: {
   bolao: BolaoView;
   jogos: number[][];
   participantes: ParticipanteView[];
   ehPro: boolean;
+  premium: boolean;
+  proAte: string | null;
+  userId: string;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -69,14 +77,28 @@ export default function BolaoEditorClient({
   const limiteCotas = ehPro ? LIMITE_COTAS_PRO : LIMITE_COTAS_GRATIS;
   const linkPublico = `https://www.lotoanalitica.com.br/b/${bolao.slug}`;
 
-  function executar(fn: () => Promise<{ ok: boolean; erro?: string }>, aoSucesso?: () => void) {
+  function executar(
+    fn: () => Promise<{ ok: boolean; erro?: string; motivo?: string }>,
+    aoSucesso?: () => void
+  ) {
     setErro(null);
     startTransition(async () => {
       const r = await fn();
       if (r.ok) {
         aoSucesso?.();
         router.refresh();
-      } else setErro(r.erro ?? "Não foi possível concluir.");
+      } else {
+        setErro(r.erro ?? "Não foi possível concluir.");
+        if (r.motivo === "cotas") {
+          enviarBeacon({
+            eventName: "limit_reached",
+            tool: "bolao",
+            lottery: bolao.loteria,
+            anonymousId: obterOuCriarAnonymousId(),
+            metadata: { limite: "cotas" },
+          });
+        }
+      }
     });
   }
 
@@ -283,10 +305,28 @@ export default function BolaoEditorClient({
           </form>
         )}
 
-        {!ehPro && (
+        {!ehPro ? (
+          <div className="bolao-pro-upsell">
+            <h3 className="bolao-salvar__titulo">Mais de {limiteCotas} cotas? Libere o Bolão Pro</h3>
+            <p className="bloco__nota">
+              Até {LIMITE_COTAS_PRO} cotas, aviso do resultado por e-mail para os participantes e
+              página sem anúncios por {BOLAO_PRO_PIX.periodDays} dias — R${" "}
+              {BOLAO_PRO_PIX.amount.toFixed(2).replace(".", ",")} por Pix, só para este bolão.
+              {" "}
+              {!premium && (
+                <>
+                  Ou assine o <Link href="/assinar">Premium</Link> e use em todos os bolões.
+                </>
+              )}
+            </p>
+            {!encerrado && (
+              <PixCheckoutButton userId={userId} bolaoId={bolao.id} rotulo="Liberar Bolão Pro com Pix" />
+            )}
+          </div>
+        ) : (
           <p className="bloco__nota">
-            Plano grátis: até {limiteCotas} cotas. Libere até {LIMITE_COTAS_PRO} cotas com o{" "}
-            <Link href="/assinar">Premium</Link> (o Bolão Pro avulso, por Pix, vem em seguida).
+            Bolão Pro ativo{premium ? " (incluso no seu Premium)" : proAte ? ` até ${new Date(proAte).toLocaleDateString("pt-BR")}` : ""}
+            : até {LIMITE_COTAS_PRO} cotas e aviso por e-mail aos participantes que pediram.
           </p>
         )}
       </section>

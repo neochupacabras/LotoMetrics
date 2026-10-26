@@ -9031,3 +9031,4 @@ footer.rodape {
 .bolao-lista__link { display: flex; gap: 12px; flex-wrap: wrap; align-items: baseline; justify-content: space-between; padding: 14px 4px; text-decoration: none; color: inherit; }
 .bolao-lista__titulo { font-weight: 600; }
 .bolao-lista__meta { flex: 1 1 200px; font-size: 0.9rem; opacity: 0.75; }
+.bolao-pro-upsell { margin-top: 20px; padding: 16px 18px; border: 1px dashed var(--line-strong); }

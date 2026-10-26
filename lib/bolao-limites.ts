@@ -56,7 +56,7 @@ export function podeCriarBolao(
     return {
       ok: false,
       motivo: "cotas",
-      erro: `O plano grátis permite até ${LIMITE_COTAS_GRATIS} cotas. Libere até ${LIMITE_COTAS_PRO} com o Bolão Pro.`,
+      erro: `O plano grátis começa com até ${LIMITE_COTAS_GRATIS} cotas. Salve com ${LIMITE_COTAS_GRATIS} ou menos e libere até ${LIMITE_COTAS_PRO} depois, no bolão, com o Bolão Pro (Pix).`,
     };
   }
   return { ok: true };
@@ -108,4 +108,17 @@ export function podeAdicionarParticipante(
 export function valorCotaSugeridoCents(custoTotalCents: number, qtdCotas: number): number {
   if (qtdCotas <= 0) return custoTotalCents;
   return Math.ceil(custoTotalCents / qtdCotas);
+}
+
+// Nova validade do Bolão Pro depois de um pagamento: soma os dias à maior
+// entre a validade atual e agora — pagar de novo antes de vencer estende,
+// pagar depois de vencido recomeça de agora (mesma regra do crédito Pix).
+export function calcularProAte(
+  proAteAtual: string | null | undefined,
+  agora: Date,
+  dias: number
+): Date {
+  const atual = proAteAtual ? new Date(proAteAtual) : agora;
+  const base = atual > agora ? atual : agora;
+  return new Date(base.getTime() + dias * 24 * 60 * 60 * 1000);
 }
