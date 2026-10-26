@@ -41,6 +41,11 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; ProjetoLoterias/1.0)",
     "Accept": "application/json",
 }
+# Fonte alternativa (espelho nao oficial), usada so quando a API da Caixa falha.
+# Em 10/2026 a Caixa passou a devolver 500 para o Super Sete (erro interno de
+# SharePoint no servidor deles); o espelho continuou servindo os resultados.
+URL_FALLBACK = "https://loteriascaixa-api.herokuapp.com/api"
+LOTERIAS_COM_FALLBACK = {"supersete"}
 TIMEOUT_SEGUNDOS = 10
 TIMEOUT_NOTIFICACOES = 65  # maxDuration=60 no lado do Next.js
 INTERVALO_ENTRE_CHAMADAS = 1.0
@@ -84,11 +89,47 @@ def conectar_banco():
     return psycopg2.connect(**DB_CONFIG)
 
 
-def buscar_resultado_api(loteria_codigo: str, numero: Optional[int] = None) -> Optional[dict]:
-    url = f"{BASE_URL}/{loteria_codigo}"
-    if numero is not None:
-        url = f"{url}/{numero}"
+def _normalizar_fallback(d: dict) -> dict:
+    """Converte a resposta do espelho para o formato da API da Caixa."""
+    local = d.get("local") or ""
+    local_sorteio, _, municipio = local.partition(" em ")
+    return {
+        "numero": d.get("concurso"),
+        "dataApuracao": d.get("data"),
+        "listaDezenas": d.get("dezenas"),
+        "dezenasSorteadasOrdemSorteio": d.get("dezenasOrdemSorteio"),
+        "acumulado": d.get("acumulou", False),
+        "localSorteio": local_sorteio,
+        "nomeMunicipioUFSorteio": municipio,
+        "valorArrecadado": d.get("valorArrecadado"),
+        "valorAcumuladoProximoConcurso": d.get("valorAcumuladoProximoConcurso"),
+        "valorEstimadoProximoConcurso": d.get("valorEstimadoProximoConcurso"),
+        "dataProximoConcurso": d.get("dataProximoConcurso"),
+        "nomeTimeCoracaoMesSorte": d.get("mesSorte") or d.get("timeCoracao"),
+        "trevosSorteados": d.get("trevos"),
+        "listaRateioPremio": [
+            {
+                "faixa": f.get("faixa"),
+                "descricaoFaixa": f.get("descricao"),
+                "numeroDeGanhadores": f.get("ganhadores", 0),
+                "valorPremio": f.get("valorPremio", 0),
+            }
+            for f in d.get("premiacoes") or []
+        ],
+    }
 
+
+def buscar_resultado_api(loteria_codigo: str, numero: Optional[int] = None) -> Optional[dict]:
+    dados = _buscar_url(f"{BASE_URL}/{loteria_codigo}" + (f"/{numero}" if numero is not None else ""))
+    if dados is None and loteria_codigo in LOTERIAS_COM_FALLBACK:
+        log.warning("API da Caixa falhou para %s; tentando fonte alternativa.", loteria_codigo)
+        alt = _buscar_url(f"{URL_FALLBACK}/{loteria_codigo}/{numero if numero is not None else 'latest'}")
+        if alt and alt.get("concurso") is not None:
+            dados = _normalizar_fallback(alt)
+    return dados
+
+
+def _buscar_url(url: str) -> Optional[dict]:
     for tentativa in range(1, MAX_TENTATIVAS + 1):
         try:
             resposta = requests.get(url, headers=HEADERS, timeout=TIMEOUT_SEGUNDOS)
