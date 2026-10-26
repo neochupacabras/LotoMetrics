@@ -1,3 +1,5 @@
+import { descontarDias } from "./plano-premium";
+
 // Regras puras de limite do bolão (grátis × Pro) — sem imports de servidor,
 // pra poder ser testada e usada tanto nas Server Actions quanto na UI.
 //
@@ -131,9 +133,7 @@ export function revogarProAte(
   dias: number,
   agora: Date
 ): Date | null {
-  if (!proAteAtual) return null;
-  const novo = new Date(new Date(proAteAtual).getTime() - dias * 24 * 60 * 60 * 1000);
-  return novo > agora ? novo : null;
+  return descontarDias(proAteAtual, dias, agora);
 }
 
 // Concurso-alvo de "próximo sorteio". As apostas da Caixa fecham às 19h

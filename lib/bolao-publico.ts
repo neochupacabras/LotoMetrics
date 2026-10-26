@@ -2,6 +2,7 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { lerDetalheJson } from "@/lib/bolao-conferencia";
 import { bolaoEhPro } from "@/lib/bolao-limites";
 import { carregarComprovante, type ComprovanteBolao } from "@/lib/bolao-bilhete-dados";
+import type { ResumoResultadoBolao } from "@/lib/bolao-compartilhar";
 import { calcularIsPremium } from "@/lib/plano-premium";
 
 // Leitura da página pública do bolão (/b/[slug]). Sempre via service role,
@@ -105,5 +106,21 @@ export async function getBolaoPublico(slug: string): Promise<BolaoPublico | null
       premioTotalCents: Number(r.premio_total_cents),
       porCotaCents: Number(r.por_cota_cents),
     })),
+  };
+}
+
+// Resumo do resultado mais recente do bolão (null antes da conferência).
+export function ultimoResumo(b: BolaoPublico): ResumoResultadoBolao | null {
+  const r = b.resultados[b.resultados.length - 1];
+  if (!r) return null;
+  return {
+    concurso: r.concurso,
+    melhorAcerto: r.acertosPorJogo.length ? Math.max(...r.acertosPorJogo) : 0,
+    premiados: r.premiados,
+    totalJogos: b.jogos.length,
+    premioTotalCents: r.premioTotalCents,
+    porCotaCents: r.porCotaCents,
+    indeterminado: r.indeterminado,
+    acumulado: r.acumulado,
   };
 }

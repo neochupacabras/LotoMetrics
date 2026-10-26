@@ -4,6 +4,7 @@ import { MercadoPagoConfig, Payment } from "mercadopago";
 import { createAdminClient } from "@/lib/supabase/server";
 import { logError, logToolEvent } from "@/lib/telemetry";
 import { calcularProAte, revogarProAte } from "@/lib/bolao-limites";
+import { revogarCreditoPix } from "@/lib/plano";
 
 export const runtime = "nodejs";
 
@@ -175,20 +176,20 @@ export async function POST(request: Request) {
       );
     }
   } else if (STATUS_FINAIS_NAO_APROVADOS.has(mpPayment.status ?? "")) {
-    // Reembolso de um Bolão Pro já aprovado: devolve o crédito (tira os dias
-    // do pro_ate). A reivindicação é atômica (só quem muda approved ->
-    // refunded revoga) pra um reenvio da notificação nunca tirar 2x.
+    // Reembolso de um pagamento já aprovado: devolve o crédito (Bolão Pro:
+    // tira os dias do pro_ate; plano Premium: tira de plan_expires_at). A
+    // reivindicação é atômica (só quem muda approved -> refunded revoga)
+    // pra um reenvio da notificação nunca tirar 2x.
     if (mpPayment.status === "refunded") {
       const { data: revogado } = await supabase
         .from("pix_payments")
         .update({ status: "refunded" })
         .eq("mp_payment_id", mpPaymentId)
         .eq("status", "approved")
-        .eq("produto", "bolao_pro")
-        .select("id, user_id, ref_id, period_days");
+        .select("id, user_id, produto, ref_id, period_days");
 
       const pagamento = revogado?.[0];
-      if (pagamento?.ref_id) {
+      if (pagamento?.produto === "bolao_pro" && pagamento.ref_id) {
         const { data: bolao } = await supabase
           .from("boloes")
           .select("pro_ate")
@@ -205,6 +206,14 @@ export async function POST(request: Request) {
           logError({
             source: "mercadopago_webhook",
             message: `Bolão Pro revogado por reembolso (payment ${mpPaymentId}, bolão ${pagamento.ref_id})`,
+          })
+        );
+      } else if (pagamento?.produto === "plano") {
+        await revogarCreditoPix(pagamento.user_id, pagamento.period_days);
+        after(() =>
+          logError({
+            source: "mercadopago_webhook",
+            message: `Crédito Premium revogado por reembolso (payment ${mpPaymentId}, usuário ${pagamento.user_id})`,
           })
         );
       }
