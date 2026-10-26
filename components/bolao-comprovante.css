@@ -1,0 +1,2 @@
+.bolao-comprovante { display: flex; gap: 12px; flex-wrap: wrap; }
+.bolao-comprovante__foto { width: 180px; height: 230px; object-fit: cover; border: 1px solid var(--line-strong); display: block; }

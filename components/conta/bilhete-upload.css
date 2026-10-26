@@ -1,0 +1,6 @@
+.bilhete-upload__input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.bilhete-upload__lista { list-style: none; margin: 16px 0 0; padding: 0; display: flex; gap: 14px; flex-wrap: wrap; }
+.bilhete-upload__item { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; width: 150px; }
+.bilhete-upload__foto { width: 150px; height: 190px; object-fit: cover; border: 1px solid var(--line-strong); background: var(--paper-raised); }
+.bilhete-upload__foto--vazia { display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--ink-faint); }
+.bilhete-upload__item .botao-copiar { margin-left: 0; }
