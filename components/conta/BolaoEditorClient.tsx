@@ -309,8 +309,8 @@ export default function BolaoEditorClient({
           <div className="bolao-pro-upsell">
             <h3 className="bolao-salvar__titulo">Mais de {limiteCotas} cotas? Libere o Bolão Pro</h3>
             <p className="bloco__nota">
-              Até {LIMITE_COTAS_PRO} cotas, aviso do resultado por e-mail para os participantes e
-              página sem anúncios por {BOLAO_PRO_PIX.periodDays} dias — R${" "}
+              Até {LIMITE_COTAS_PRO} cotas e aviso do resultado por e-mail para os participantes,
+              por {BOLAO_PRO_PIX.periodDays} dias — R${" "}
               {BOLAO_PRO_PIX.amount.toFixed(2).replace(".", ",")} por Pix, só para este bolão.
               {" "}
               {!premium && (
