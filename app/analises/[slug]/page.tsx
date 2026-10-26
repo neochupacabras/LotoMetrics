@@ -4,7 +4,6 @@ import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import BolaoClient from "@/components/BolaoClient";
-import ListaEsperaBolao from "@/components/ListaEsperaBolao";
 import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import { getAnalise, getAnalisesRecentes } from "@/lib/analises";
 import Dezenas from "@/components/Dezenas";
@@ -249,7 +248,17 @@ export default async function AnalisePage({
               dezenaMin={megaSena.dezenaMin}
               dezenaMax={megaSena.dezenaMax}
             />
-            <ListaEsperaBolao origem="bolao-mega-virada-2026" loteria="megasena" />
+            <div className="lista-espera-bolao">
+              <p className="lista-espera-bolao__titulo">Salve o bolão e compartilhe o link com o grupo</p>
+              <p className="lista-espera-bolao__desc">
+                Depois de gerar os jogos, use <strong>Salvar e gerar link</strong>: o grupo acompanha
+                jogos e pagamentos numa página pública e o resultado é conferido e dividido por cota
+                automaticamente. Grátis até 10 cotas; o Bolão Pro libera até 100.
+              </p>
+              <Link href="/conta/boloes" className="botao-gerar">
+                Ver meus bolões →
+              </Link>
+            </div>
           </div>
         )}
 
