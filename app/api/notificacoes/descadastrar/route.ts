@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
-import { validarTokenDescadastro } from "@/lib/notificacoes/unsubscribe";
+import { validarTokenDescadastro, validarTokenParticipante } from "@/lib/notificacoes/unsubscribe";
 
 export const runtime = "nodejs";
 
@@ -12,8 +12,23 @@ export const runtime = "nodejs";
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const userId = url.searchParams.get("u");
+  const participanteId = url.searchParams.get("p");
   const token = url.searchParams.get("t");
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://lotoanalitica.com.br";
+
+  // Participante de bolão (sem conta): desliga só o aviso daquele participante.
+  if (participanteId && token) {
+    if (!validarTokenParticipante(participanteId, token)) {
+      return NextResponse.redirect(`${baseUrl}/notificacoes/descadastrar?status=invalido`);
+    }
+    const { error } = await createAdminClient()
+      .from("bolao_participantes")
+      .update({ recebe_resultado: false })
+      .eq("id", participanteId);
+    return NextResponse.redirect(
+      `${baseUrl}/notificacoes/descadastrar?status=${error ? "erro" : "ok"}`
+    );
+  }
 
   if (!userId || !token || !validarTokenDescadastro(userId, token)) {
     return NextResponse.redirect(`${baseUrl}/notificacoes/descadastrar?status=invalido`);

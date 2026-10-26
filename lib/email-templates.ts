@@ -500,3 +500,78 @@ export function emailMeuAnoNaLoteria(
 
   return layout(conteudo, rodape);
 }
+
+// ── Template: resultado do bolão ─────────────────────────────────────────────
+
+export interface ResumoEmailBolao {
+  totalJogos: number;
+  melhorAcerto: number;
+  premiados: number;
+  premioTotal: number; // em reais, bruto
+  porCota: number; // em reais, bruto
+  indeterminado: boolean;
+  acumulado: boolean;
+}
+
+export function emailResultadoBolao(
+  nome: string,
+  tituloBolao: string,
+  nomeLoteria: string,
+  concurso: number,
+  dezenasOficiais: string,
+  resumo: ResumoEmailBolao,
+  urlBolao: string,
+  urlDescadastro: string,
+  paraOrganizador: boolean
+): string {
+  const moeda = (v: number) => `R$&nbsp;${v.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
+  const temPremio = resumo.premiados > 0;
+
+  const avisos: string[] = [];
+  if (resumo.indeterminado) {
+    avisos.push("Há jogos com acertos que dependem dos trevos para saber a faixa — confira o valor no resultado oficial da Caixa.");
+  }
+  if (resumo.acumulado) {
+    avisos.push("Alguma faixa em que o bolão acertou acumulou (sem ganhadores), então ela não entra no valor abaixo.");
+  }
+
+  const conteudo = `
+    ${titulo(temPremio ? `🎉 ${tituloBolao} teve resultado!` : `Resultado do bolão ${tituloBolao}`)}
+    ${subtitulo(`Olá, ${nome}! Saiu o concurso ${concurso} da ${nomeLoteria}.`)}
+
+    <div style="background:${COR.paper};border-radius:6px;padding:14px 16px;margin-bottom:20px;">
+      <div style="font-size:11px;color:${COR.inkSoft};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
+        Dezenas sorteadas — Concurso ${concurso}
+      </div>
+      <div style="font-family:'Courier New',monospace;font-size:16px;font-weight:bold;color:${COR.pine};letter-spacing:2px;">
+        ${dezenasOficiais}
+      </div>
+    </div>
+
+    <div style="border:1px solid ${temPremio ? COR.ochre : COR.line};border-radius:6px;padding:14px 16px;background:${temPremio ? "#f5ecd8" : "#fafaf8"};">
+      <p style="margin:0 0 6px;font-size:14px;color:${COR.ink};">
+        Melhor jogo: <strong>${resumo.melhorAcerto} acerto${resumo.melhorAcerto !== 1 ? "s" : ""}</strong>
+        · ${resumo.premiados} de ${resumo.totalJogos} jogos premiados
+      </p>
+      ${
+        temPremio && resumo.premioTotal > 0
+          ? `<p style="margin:0;font-size:14px;color:${COR.ink};">Prêmio do bolão (bruto): <strong style="color:${COR.green};">${moeda(resumo.premioTotal)}</strong><br/>
+             Por cota (bruto): <strong style="color:${COR.green};">${moeda(resumo.porCota)}</strong></p>`
+          : ""
+      }
+    </div>
+    ${avisos.map((a) => `<p style="font-size:12px;color:${COR.inkSoft};margin:12px 0 0;">${a}</p>`).join("")}
+    <p style="font-size:12px;color:${COR.inkSoft};margin:12px 0 0;">Valores brutos, antes do imposto de renda retido na fonte. Confira sempre o resultado oficial da Caixa.</p>
+
+    ${divisor()}
+    ${botao("Ver o bolão →", urlBolao)}
+  `;
+
+  const rodape = paraOrganizador
+    ? `Você recebeu este e-mail porque organizou o bolão "${tituloBolao}" no LotoAnalítica.
+       Para parar de receber e-mails, <a href="${urlDescadastro}" style="color:${COR.inkFaint};">cancele todos os e-mails</a>.`
+    : `Você recebeu este e-mail porque pediu para ser avisado sobre o bolão "${tituloBolao}".
+       <a href="${urlDescadastro}" style="color:${COR.inkFaint};">Parar de receber avisos deste bolão</a>.`;
+
+  return layout(conteudo, rodape);
+}

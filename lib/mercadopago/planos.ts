@@ -1,3 +1,5 @@
+import { DIAS_BOLAO_PRO } from "@/lib/bolao-limites";
+
 // Planos do pagamento avulso via Pix (Mercado Pago) — mesmos preços dos
 // planos de assinatura recorrente do Stripe (ver app/assinar/page.tsx), mas
 // aqui cada pagamento aprovado só estende profiles.plan_expires_at em
@@ -20,3 +22,13 @@ export const PLANOS_PIX: Record<PlanoPix, ConfigPlanoPix> = {
 export function isPlanoPix(value: unknown): value is PlanoPix {
   return value === "mensal" || value === "semestral" || value === "anual";
 }
+
+// Bolão Pro: pagamento avulso por bolão (não é crédito Premium) — libera até
+// 100 cotas e os avisos aos participantes daquele bolão por 30 dias. O
+// período vem de bolao-limites (DIAS_BOLAO_PRO) pra UI, checkout e webhook
+// nunca divergirem.
+export const BOLAO_PRO_PIX = {
+  label: "Bolão Pro",
+  amount: 14.9,
+  periodDays: DIAS_BOLAO_PRO,
+};

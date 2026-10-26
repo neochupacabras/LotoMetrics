@@ -5,7 +5,7 @@ import { usePlanoUsuario } from "@/components/auth/PlanoUsuarioProvider";
 import { enviarBeacon, obterOuCriarAnonymousId } from "@/lib/telemetria-cliente";
 
 interface Props {
-  eventName?: "tool_view" | "pricing_view";
+  eventName?: "tool_view" | "pricing_view" | "bolao_public_view";
   tool?: string | null;
   lottery?: string | null;
   metadata?: Record<string, unknown>;

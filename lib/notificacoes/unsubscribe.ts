@@ -39,3 +39,18 @@ export function urlDescadastro(userId: string, baseUrl: string): string {
   const token = gerarTokenDescadastro(userId);
   return `${baseUrl}/api/notificacoes/descadastrar?u=${encodeURIComponent(userId)}&t=${token}`;
 }
+
+// Participante de bolão não tem conta (só nome + e-mail informados pelo
+// próprio participante), então o descadastro dele é por token sobre o ID da
+// linha em bolao_participantes — com prefixo próprio, pra um token de
+// usuário nunca valer como token de participante e vice-versa.
+const prefixoParticipante = (id: string) => `bolao-participante:${id}`;
+
+export function urlDescadastroParticipante(participanteId: string, baseUrl: string): string {
+  const token = gerarTokenDescadastro(prefixoParticipante(participanteId));
+  return `${baseUrl}/api/notificacoes/descadastrar?p=${encodeURIComponent(participanteId)}&t=${token}`;
+}
+
+export function validarTokenParticipante(participanteId: string, token: string): boolean {
+  return validarTokenDescadastro(prefixoParticipante(participanteId), token);
+}

@@ -37,7 +37,7 @@ export interface OpcoesProcessamento {
 
 export interface DetalheEnvio {
   email: string;
-  tipo: "resultado_jogos" | "alerta_acumulo" | "pix_vencendo" | "newsletter_semanal" | "retrospectiva_anual";
+  tipo: "resultado_jogos" | "alerta_acumulo" | "pix_vencendo" | "newsletter_semanal" | "retrospectiva_anual" | "bolao_resultado";
   // null pras notificações sem loteria/concurso associados (pix_vencendo,
   // newsletter_semanal, retrospectiva_anual — ver lib/notificacoes/pix-vencendo.ts,
   // lib/notificacoes/newsletter-semanal.ts e lib/notificacoes/retrospectiva-anual.ts).
@@ -120,9 +120,9 @@ async function buscarSequenciaAcumulada(loteriaCodigo: string, numeroAtual: numb
 
 // Reivindica a chave em notificacoes_enviadas antes de enviar (evita
 // reenvio se o processo rodar duas vezes) e grava o resultado do envio.
-async function reivindicarEEnviar(
+export async function reivindicarEEnviar(
   opcoes: OpcoesProcessamento,
-  params: { userId: string; email: string; tipo: "resultado_jogos" | "alerta_acumulo"; loteria: string; concurso: number; chave: string },
+  params: { userId: string; email: string; tipo: "resultado_jogos" | "alerta_acumulo" | "bolao_resultado"; loteria: string; concurso: number; chave: string },
   montarEmail: () => { subject: string; html: string }
 ): Promise<DetalheEnvio> {
   const base: Omit<DetalheEnvio, "status" | "erro"> = {

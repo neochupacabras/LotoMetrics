@@ -110,6 +110,19 @@ export default async function ContaPage({
           </section>
         )}
 
+        {/* ── Bolões ────────────────────────────────────────────────── */}
+        <section className="conta-secao">
+          <div className="conta-secao-header">
+            <h2 className="conta-secao-titulo">Meus bolões</h2>
+            <Link href="/conta/boloes" className="conta-link-acao">
+              Ver todos →
+            </Link>
+          </div>
+          <p className="conta-alertas-desc">
+            Organize o bolão do grupo: link para compartilhar, controle de quem pagou e conferência automática.
+          </p>
+        </section>
+
         {/* ── Jogos salvos ──────────────────────────────────────────── */}
         <section className="conta-secao">
           <div className="conta-secao-header">

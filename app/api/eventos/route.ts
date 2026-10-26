@@ -20,6 +20,8 @@ const EVENTOS_PERMITIDOS = new Set<ToolEventName>([
   "visit_landing",
   "waitlist_joined",
   "limit_reached",
+  "bolao_public_view",
+  "bolao_shared",
 ]);
 
 export async function POST(request: Request) {

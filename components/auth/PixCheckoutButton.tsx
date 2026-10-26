@@ -13,9 +13,15 @@ interface PixData {
 export default function PixCheckoutButton({
   plano,
   userId,
+  bolaoId,
+  rotulo,
 }: {
-  plano: PlanoPix;
+  plano?: PlanoPix;
   userId?: string;
+  // Bolão Pro: quando informado, o pagamento é do bolão (e não crédito
+  // Premium) e, ao aprovar, a página só recarrega em vez de ir pra /conta.
+  bolaoId?: string;
+  rotulo?: string;
 }) {
   const [loading, setLoading] = useState(false);
   const [pixData, setPixData] = useState<PixData | null>(null);
@@ -45,7 +51,12 @@ export default function PixCheckoutButton({
         const data = await res.json();
         if (data.status === "approved") {
           pararPolling();
-          router.push("/conta?checkout=sucesso");
+          if (bolaoId) {
+            setPixData(null);
+            router.refresh();
+          } else {
+            router.push("/conta?checkout=sucesso");
+          }
         }
       } catch {
         // Falha de rede momentânea — tenta de novo no próximo intervalo.
@@ -65,7 +76,7 @@ export default function PixCheckoutButton({
       const res = await fetch("/api/mercadopago/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plano }),
+        body: JSON.stringify(bolaoId ? { produto: "bolao_pro", bolaoId } : { plano }),
       });
 
       const data = await res.json();
@@ -106,9 +117,13 @@ export default function PixCheckoutButton({
         type="button"
         onClick={handleClick}
         disabled={loading}
-        className="botao-gerar assinar-checkout-btn assinar-checkout-btn--sec assinar-checkout-btn--pix"
+        className={
+          bolaoId
+            ? "botao-gerar"
+            : "botao-gerar assinar-checkout-btn assinar-checkout-btn--sec assinar-checkout-btn--pix"
+        }
       >
-        {loading ? "Gerando Pix..." : "Pagar com Pix"}
+        {loading ? "Gerando Pix..." : (rotulo ?? "Pagar com Pix")}
       </button>
 
       {pixData && (

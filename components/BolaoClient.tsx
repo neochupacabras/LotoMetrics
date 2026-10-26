@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Dezenas from "./Dezenas";
+import BolaoSalvar from "./BolaoSalvar";
 import InsightCallout from "./InsightCallout";
 import { planosViaveis, PlanoBolao } from "@/lib/bolao-opcoes";
 import { calcularFechamentoAction, FechamentoActionResult } from "@/lib/fechamento-actions";
@@ -9,6 +10,19 @@ import { gerarPdfBolao, baixarPdfBolao } from "@/lib/bolao-pdf";
 import { formatarDezena } from "@/lib/format";
 
 const PREVIEW_MAX = 20;
+
+interface RascunhoBolao {
+  orcamento: string;
+  preco: string;
+  participantes: string;
+  tamanhoPool: number;
+  garantia: number;
+  selecionadas: number[];
+}
+
+function chaveRascunho(codigoLoteria: string) {
+  return `la_bolao_rascunho_${codigoLoteria}`;
+}
 
 function formatarMoeda(valor: number): string {
   return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -45,6 +59,52 @@ export default function BolaoClient({
   const participantes = participantesTexto ? Number(participantesTexto) : null;
 
   const todasDezenas = Array.from({ length: dezenaMax - dezenaMin + 1 }, (_, i) => dezenaMin + i);
+
+  // Volta do login (?retomar=1): restaura o plano e as dezenas escolhidas
+  // pra que o usuário só precise gerar os jogos de novo.
+  /* eslint-disable react-hooks/set-state-in-effect -- sincroniza com sessionStorage (sistema externo), só no cliente */
+  useEffect(() => {
+    try {
+      if (new URLSearchParams(window.location.search).get("retomar") !== "1") return;
+      const bruto = sessionStorage.getItem(chaveRascunho(codigoLoteria));
+      if (!bruto) return;
+      sessionStorage.removeItem(chaveRascunho(codigoLoteria));
+      const r: RascunhoBolao = JSON.parse(bruto);
+      const orc = Number(r.orcamento.replace(",", "."));
+      const prc = Number(r.preco.replace(",", "."));
+      const plano = planosViaveis(codigoLoteria, orc, prc).find(
+        (p) => p.tamanhoPool === r.tamanhoPool && p.garantia === r.garantia
+      );
+      if (!plano) return;
+      setOrcamentoTexto(r.orcamento);
+      setPrecoTexto(r.preco);
+      setParticipantesTexto(r.participantes);
+      setPlanos(planosViaveis(codigoLoteria, orc, prc));
+      setPlanoEscolhido(plano);
+      setSelecionadas(new Set(r.selecionadas));
+      setEtapa("dezenas");
+    } catch {
+      // sessionStorage indisponível ou rascunho corrompido: começa do zero.
+    }
+  }, [codigoLoteria]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  function salvarRascunho() {
+    if (!planoEscolhido) return;
+    try {
+      const r: RascunhoBolao = {
+        orcamento: orcamentoTexto,
+        preco: precoTexto,
+        participantes: participantesTexto,
+        tamanhoPool: planoEscolhido.tamanhoPool,
+        garantia: planoEscolhido.garantia,
+        selecionadas: Array.from(selecionadas),
+      };
+      sessionStorage.setItem(chaveRascunho(codigoLoteria), JSON.stringify(r));
+    } catch {
+      // sem sessionStorage o usuário só refaz a escolha depois do login.
+    }
+  }
 
   function handleVerPlanos() {
     setErroOrcamento(null);
@@ -345,6 +405,16 @@ export default function BolaoClient({
               Recomeçar
             </button>
           </div>
+
+          <BolaoSalvar
+            codigoLoteria={codigoLoteria}
+            poolDezenas={Array.from(selecionadas)}
+            garantia={planoEscolhido.garantia}
+            tickets={resultado.tickets}
+            precoApostaCents={Math.round(preco * 100)}
+            cotasSugeridas={participantes && participantes > 0 ? participantes : null}
+            salvarRascunho={salvarRascunho}
+          />
 
           <div className="aviso-legal" style={{ marginTop: "16px" }}>
             A garantia vale apenas se a quantidade necessária das dezenas do pool estiver
