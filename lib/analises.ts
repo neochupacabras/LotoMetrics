@@ -3363,9 +3363,9 @@ export const ANALISES: Analise[] = [
   },
   {
     slug: "mega-semana-mega-sena-cinco-sorteios-em-cinco-dias",
-    titulo: "Mega Semana: Mega-Sena terá cinco sorteios em cinco dias, de 26 a 30 de outubro",
+    titulo: "Mega Semana da Mega-Sena: 5 sorteios de 26 a 30/10 (3076 a 3080)",
     resumo:
-      "Os concursos 3.076 a 3.080 acontecem de segunda a sexta, sempre às 21h. Veja o que muda no calendário, o que não muda nas regras e o que a matemática diz sobre apostar em todos os dias.",
+      "Mega-Sena sorteia de segunda a sexta (26 a 30/10), às 21h: concursos 3.076 a 3.080. Veja o calendário, as regras e a chance de apostar nos cinco dias.",
     data: "2026-10-26",
     categoria: "megasena" as const,
     tempoLeitura: 5,

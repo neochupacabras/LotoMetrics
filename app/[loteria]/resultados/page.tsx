@@ -186,6 +186,16 @@ export default async function ResultadosPage({
         <p>Nenhum concurso encontrado ainda. Rode o importador para popular o banco.</p>
       )}
 
+      {codigoLoteria === "megasena" && new Date() < new Date("2026-10-31T03:00:00Z") && (
+        <p className="subtitulo-edicao">
+          Mega Semana: cinco sorteios de 26 a 30/10 (concursos 3.076 a 3.080).{" "}
+          <Link href="/analises/mega-semana-mega-sena-cinco-sorteios-em-cinco-dias">
+            Veja o calendário e as regras
+          </Link>
+          .
+        </p>
+      )}
+
       <div className="aviso-legal">
         <strong>Lembrete:</strong> os resultados acima são oficiais e públicos.
         Estatísticas e tendências históricas não alteram a probabilidade de um
