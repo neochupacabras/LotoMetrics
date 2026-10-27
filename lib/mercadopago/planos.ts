@@ -5,7 +5,7 @@ import { DIAS_BOLAO_PRO } from "@/lib/bolao-limites";
 // aqui cada pagamento aprovado só estende profiles.plan_expires_at em
 // `periodDays` dias, sem criar nenhuma recorrência.
 
-export type PlanoPix = "mensal" | "semestral" | "anual";
+export type PlanoPix = "mensal" | "anual";
 
 interface ConfigPlanoPix {
   label: string;
@@ -15,12 +15,11 @@ interface ConfigPlanoPix {
 
 export const PLANOS_PIX: Record<PlanoPix, ConfigPlanoPix> = {
   mensal: { label: "Mensal", amount: 14.9, periodDays: 30 },
-  semestral: { label: "Semestral", amount: 79.9, periodDays: 180 },
-  anual: { label: "Anual", amount: 129.9, periodDays: 365 },
+  anual: { label: "Anual", amount: 99, periodDays: 365 },
 };
 
 export function isPlanoPix(value: unknown): value is PlanoPix {
-  return value === "mensal" || value === "semestral" || value === "anual";
+  return value === "mensal" || value === "anual";
 }
 
 // Bolão Pro: pagamento avulso por bolão (não é crédito Premium) — libera até
