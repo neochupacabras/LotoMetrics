@@ -15,6 +15,8 @@ export const metadata: Metadata = {
   description: "Acesse todas as ferramentas avançadas do LotoAnalítica sem anúncios.",
 };
 
+// O semestral deixou de ser vendido a novos clientes (quem já assina continua
+// renovando normalmente pelo Stripe). Anual a R$99 é o plano em destaque.
 const PLANOS = [
   {
     id: "mensal",
@@ -26,22 +28,13 @@ const PLANOS = [
     economia: null,
   },
   {
-    id: "semestral",
-    label: "Semestral",
-    preco: "R$\u00a079,90",
-    periodo: "/semestre",
-    stripePrice: process.env.NEXT_PUBLIC_STRIPE_PRICE_SEMESTRAL ?? "",
-    destaque: true,
-    economia: "Equivale a R$13,32/mês — economize 11%",
-  },
-  {
     id: "anual",
     label: "Anual",
-    preco: "R$\u00a0129,90",
+    preco: "R$\u00a099,00",
     periodo: "/ano",
     stripePrice: process.env.NEXT_PUBLIC_STRIPE_PRICE_ANUAL ?? "",
-    destaque: false,
-    economia: "Equivale a R$10,83/mês — economize 27%",
+    destaque: true,
+    economia: "Equivale a R$8,25/mês — economize 45%",
   },
 ];
 

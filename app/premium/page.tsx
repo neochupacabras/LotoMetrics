@@ -280,8 +280,8 @@ export default function PremiumPage() {
                 r: "Seus jogos continuam salvos na conta mesmo depois do cancelamento. O rastreamento automático por e-mail é pausado, mas você pode retomar assinando novamente.",
               },
               {
-                p: "O plano semestral é melhor que o mensal?",
-                r: "Financeiramente sim — o semestral sai a R$13,32/mês (11% mais barato) e o anual a R$10,83/mês (27% mais barato). Se você pretende usar por mais de 2 meses, o semestral já compensa.",
+                p: "O plano anual compensa em relação ao mensal?",
+                r: "Financeiramente sim — o anual sai a R$8,25/mês (45% mais barato que o mensal). Se você pretende usar por mais de 7 meses, o anual já compensa.",
               },
               {
                 p: "A API tem custo adicional por requisição?",
@@ -310,8 +310,7 @@ export default function PremiumPage() {
             <div className="premium-cta-final__planos">
               {[
                 { label: "Mensal",    preco: "R$ 14,90", periodo: "/mês",      economia: null,              destaque: false },
-                { label: "Semestral", preco: "R$ 79,90", periodo: "/semestre", economia: "= R$13,32/mês",   destaque: true  },
-                { label: "Anual",     preco: "R$129,90", periodo: "/ano",      economia: "= R$10,83/mês",   destaque: false },
+                { label: "Anual",     preco: "R$ 99,00", periodo: "/ano",      economia: "= R$8,25/mês",    destaque: true  },
               ].map((p) => (
                 <div key={p.label} className={`premium-cta-plano ${p.destaque ? "premium-cta-plano--destaque" : ""}`}>
                   {p.destaque && <span className="premium-cta-plano__badge">Mais popular</span>}

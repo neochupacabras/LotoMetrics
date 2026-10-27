@@ -226,7 +226,7 @@ dados = r.json()["dados"]`}</pre>
               </p>
               <p className="api-preco-card__nota">
                 O acesso à API está incluído em todos os planos Premium —
-                mensal, semestral e anual. Não há cobrança adicional por uso
+                mensal e anual. Não há cobrança adicional por uso
                 dentro do limite mensal.
               </p>
             </div>

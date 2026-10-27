@@ -22,13 +22,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "priceId ausente" }, { status: 400 });
   }
 
-  // Só os 3 preços oficiais de /assinar — sem isso, qualquer priceId da
+  // Só os 2 preços à venda em /assinar (o semestral saiu de venda) — sem isso, qualquer priceId da
   // conta Stripe (inclusive de outro produto) seria aceito aqui, vindo
   // direto do corpo da requisição.
   const PRECOS_PERMITIDOS = new Set(
     [
       process.env.NEXT_PUBLIC_STRIPE_PRICE_MENSAL,
-      process.env.NEXT_PUBLIC_STRIPE_PRICE_SEMESTRAL,
       process.env.NEXT_PUBLIC_STRIPE_PRICE_ANUAL,
     ].filter((p): p is string => !!p)
   );
