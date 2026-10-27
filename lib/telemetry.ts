@@ -1,5 +1,23 @@
 import pool from "@/lib/db";
 
+// SEC-3.3 (LGPD, auditoria 27/10/2026): mascara endereços de e-mail antes de
+// persistir qualquer log de telemetria. Os jobs de notificação registravam o
+// e-mail de cada destinatário em job_runs.details/error em claro, retido
+// indefinidamente. Mascarar no SINK (aqui) cobre todos os chamadores de uma
+// vez — atuais e futuros — sem depender de cada call site lembrar de fazê-lo.
+// Mantém a 1ª letra do local-part e o domínio (ex.: "joao@gmail.com" ->
+// "j***@gmail.com"): o admin ainda consegue depurar um envio falho, mas o
+// e-mail completo deixa de ficar guardado.
+const EMAIL_REGEX_GLOBAL = /([A-Za-z0-9._%+-])[A-Za-z0-9._%+-]*@([A-Za-z0-9.-]+\.[A-Za-z]{2,})/g;
+
+export function mascararEmails(texto: string): string {
+  return texto.replace(EMAIL_REGEX_GLOBAL, "$1***@$2");
+}
+
+function mascararJson(obj: Record<string, unknown> | null | undefined): string | null {
+  return obj ? mascararEmails(JSON.stringify(obj)) : null;
+}
+
 // Camada mínima de telemetria (Fase 2 do Admin Control Center — ver
 // docs/ADMIN_AUDIT.md). Três tabelas, três funções, sem fila/serviço
 // externo. Toda gravação é best-effort: um erro aqui nunca deve derrubar a
@@ -66,7 +84,7 @@ export async function logToolEvent(input: LogToolEventInput): Promise<void> {
         input.plan ?? null,
         input.success ?? null,
         input.durationMs ?? null,
-        input.metadata ? JSON.stringify(input.metadata) : null,
+        mascararJson(input.metadata),
         input.anonymousId ?? null,
       ]
     );
@@ -112,8 +130,8 @@ export async function logJobRun(input: LogJobRunInput): Promise<void> {
         input.startedAt,
         finishedAt,
         durationMs,
-        input.details ? JSON.stringify(input.details) : null,
-        input.error ?? null,
+        mascararJson(input.details),
+        input.error ? mascararEmails(input.error) : null,
       ]
     );
   } catch (err) {
@@ -167,7 +185,7 @@ export async function logError(input: LogErrorInput): Promise<void> {
   try {
     await pool.query(
       `INSERT INTO error_events (source, message, user_id, metadata) VALUES ($1, $2, $3, $4)`,
-      [input.source, input.message, input.userId ?? null, input.metadata ? JSON.stringify(input.metadata) : null]
+      [input.source, mascararEmails(input.message), input.userId ?? null, mascararJson(input.metadata)]
     );
   } catch (err) {
     console.error("logError falhou:", (err as Error).message);
