@@ -72,15 +72,35 @@ const RETENCAO_DIAS = 90;
 async function limparEventosAntigos(): Promise<void> {
   const startedAt = new Date();
   try {
-    const { rowCount } = await pool.query(
-      `DELETE FROM product_events WHERE created_at < now() - make_interval(days => $1::int)`,
-      [RETENCAO_DIAS]
-    );
+    // SEC-3.3 (LGPD): além de product_events, também expira error_events e
+    // job_runs — antes cresciam sem limite e job_runs.details guardava
+    // e-mails de destinatários (agora mascarados no sink; ver lib/telemetry).
+    // notificacoes_enviadas fica de fora de propósito: é o ledger de
+    // idempotência dos envios, apagá-lo poderia causar reenvio.
+    const [pe, ee, jr] = await Promise.all([
+      pool.query(
+        `DELETE FROM product_events WHERE created_at < now() - make_interval(days => $1::int)`,
+        [RETENCAO_DIAS]
+      ),
+      pool.query(
+        `DELETE FROM error_events WHERE created_at < now() - make_interval(days => $1::int)`,
+        [RETENCAO_DIAS]
+      ),
+      pool.query(
+        `DELETE FROM job_runs WHERE created_at < now() - make_interval(days => $1::int)`,
+        [RETENCAO_DIAS]
+      ),
+    ]);
     await logJobRun({
       jobName: "limpar_eventos_antigos",
       status: "success",
       startedAt,
-      details: { linhasApagadas: rowCount, retencaoDias: RETENCAO_DIAS },
+      details: {
+        retencaoDias: RETENCAO_DIAS,
+        productEvents: pe.rowCount,
+        errorEvents: ee.rowCount,
+        jobRuns: jr.rowCount,
+      },
     });
   } catch (err) {
     await logJobRun({
