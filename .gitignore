@@ -30,6 +30,18 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# logs e artefatos locais (SEC-007 da auditoria de 27/10/2026) -- o
+# importador Python gera *.log na raiz e __pycache__; nunca versionar.
+*.log
+__pycache__/
+*.pyc
+
+# arquivos vazios criados por engano na raiz (redirecionamentos de shell mal
+# formados). Ficam ignorados pra não voltarem ao repo.
+/Instrument
+/Work
+/coral)
+
 # env files (can opt-in for committing if needed)
 .env*
 
