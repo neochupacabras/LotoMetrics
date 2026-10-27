@@ -4,6 +4,17 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
+// SEC-004 (auditoria 27/10/2026): o `next` vem da query string e ia direto
+// pro redirect() — `/entrar?next=https://site-malicioso` levava o usuário
+// pra fora do domínio após o login (open redirect / phishing). Só aceitamos
+// caminhos internos: precisa começar com "/" e não pode ser "//"/"/\" (que o
+// navegador interpreta como URL protocol-relative pra outro host).
+function caminhoInternoSeguro(next: unknown, fallback = "/conta"): string {
+  if (typeof next !== "string" || !next.startsWith("/")) return fallback;
+  if (next.startsWith("//") || next.startsWith("/\\")) return fallback;
+  return next;
+}
+
 // ── Cadastro ──────────────────────────────────────────────────────────────────
 export async function signUp(formData: FormData) {
   const supabase = await createClient();
@@ -36,7 +47,7 @@ export async function signIn(formData: FormData) {
 
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  const next = (formData.get("next") as string) || "/conta";
+  const next = caminhoInternoSeguro(formData.get("next"));
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
