@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs/config";
 
 // SEC-003 (auditoria 27/10/2026): security headers. Os headers "duros"
 // (sem risco de quebrar funcionalidade) vão ENFORCED. A CSP vai em
@@ -21,8 +22,13 @@ const CSP_REPORT_ONLY = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   // Supabase (auth/REST/storage do browser) + beacon do Vercel Speed Insights.
-  "connect-src 'self' https://*.supabase.co https://vitals.vercel-insights.com",
+  // Sentry: o tunnelRoute "/monitoring" (withSentryConfig) faz os eventos
+  // saírem same-origin ('self'); *.sentry.io fica como reserva caso o túnel
+  // não seja usado.
+  "connect-src 'self' https://*.supabase.co https://vitals.vercel-insights.com https://*.sentry.io",
   "frame-src https://*.googlesyndication.com https://*.g.doubleclick.net https://*.doubleclick.net",
+  // Web worker do Session Replay do Sentry é carregado de um blob.
+  "worker-src 'self' blob:",
 ].join("; ");
 
 const SECURITY_HEADERS = [
@@ -48,4 +54,19 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Sentry (org chupacabras / projeto lotoanalitica). Envolve a config acima
+// (preservando os security headers) e, nos builds de produção, faz upload
+// dos source maps — para os stack traces mostrarem o código original em vez
+// do bundle minificado. Precisa de SENTRY_AUTH_TOKEN (segredo de build) no
+// ambiente de produção/CI; sem ele o build roda igual, só não sobe os maps.
+export default withSentryConfig(nextConfig, {
+  org: "chupacabras",
+  project: "lotoanalitica",
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  // Sobe um conjunto mais amplo de arquivos de cliente p/ melhor resolução.
+  widenClientFileUpload: true,
+  // Rota-proxy same-origin que contorna ad-blockers (o plugin a cria sozinho).
+  tunnelRoute: "/monitoring",
+  // Silencia o output do plugin fora de CI.
+  silent: !process.env.CI,
+});
