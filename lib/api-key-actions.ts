@@ -2,10 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { gerarApiKey, hashApiKey, prefixoApiKey } from "@/lib/api-auth";
 import { calcularIsPremium } from "@/lib/plano";
 import { logError } from "@/lib/telemetry";
+
+// SEC-002 (auditoria 27/10/2026): toda ESCRITA em api_keys passa pelo service
+// role. O client autenticado perdeu INSERT/UPDATE/DELETE na tabela (ver
+// migration 20261029000000) — antes a policy FOR ALL deixava o usuário gravar
+// a própria chave pelo supabase-js e burlar o limite de chaves e a quota
+// mensal. A sessão (createClient) é usada só para IDENTIFICAR o usuário; a
+// autorização (premium, limite de chaves, dono) é toda server-side.
 
 // ── Criar nova API key ────────────────────────────────────────────────────────
 export async function criarApiKeyAction(
@@ -15,8 +22,10 @@ export async function criarApiKeyAction(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { ok: false, erro: "Não autenticado." };
 
+  const admin = createAdminClient();
+
   // Verificar se é premium
-  const { data: profile } = await supabase
+  const { data: profile } = await admin
     .from("profiles")
     .select("plan, plan_expires_at")
     .eq("id", user.id)
@@ -29,7 +38,7 @@ export async function criarApiKeyAction(
   }
 
   // Limitar a 3 chaves ativas por usuário
-  const { count } = await supabase
+  const { count } = await admin
     .from("api_keys")
     .select("id", { count: "exact", head: true })
     .eq("user_id", user.id)
@@ -40,7 +49,7 @@ export async function criarApiKeyAction(
   }
 
   const key = gerarApiKey();
-  const { error } = await supabase.from("api_keys").insert({
+  const { error } = await admin.from("api_keys").insert({
     user_id: user.id,
     key_hash: hashApiKey(key),
     key_prefix: prefixoApiKey(key),
@@ -67,7 +76,9 @@ export async function revogarApiKeyAction(
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { ok: false, erro: "Não autenticado." };
 
-  const { error } = await supabase
+  // Escrita pelo service role; o .eq("user_id", …) com o id da sessão garante
+  // que o usuário só revoga as próprias chaves (ver SEC-002).
+  const { error } = await createAdminClient()
     .from("api_keys")
     .update({ ativo: false })
     .eq("id", keyId)
