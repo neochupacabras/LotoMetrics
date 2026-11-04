@@ -113,6 +113,51 @@ export const getUltimoConcurso = unstable_cache(
   { tags: ["concursos"], revalidate: 300 }
 );
 
+// Versão em lote do getUltimoConcurso: o último concurso (com premiações) de
+// VÁRIAS loterias numa única query. A home mostra um card por loteria; chamar
+// getUltimoConcurso uma vez por loteria repetia a mesma query ~9x na mesma
+// requisição e era detectado como N+1 (LOTOANALITICA-4). Aqui DISTINCT ON pega
+// o concurso mais recente de cada loteria e o json_agg correlato resolve as
+// faixas dentro do mesmo SQL — uma ida só ao banco. Retorna um objeto indexado
+// por loteriaId (Record, e não Map, para ser serializável pelo unstable_cache).
+export const getUltimosConcursos = unstable_cache(
+  async (loteriaIds: number[]): Promise<Record<number, Concurso>> => {
+    const resultado: Record<number, Concurso> = {};
+    if (loteriaIds.length === 0) return resultado;
+    const { rows } = await pool.query(
+      `WITH ultimos AS (
+         SELECT DISTINCT ON (loteria_id) *
+         FROM concurso
+         WHERE loteria_id = ANY($1)
+         ORDER BY loteria_id, numero DESC
+       )
+       SELECT c.*,
+         COALESCE(
+           (SELECT json_agg(
+               json_build_object(
+                 'faixa', pf.faixa,
+                 'descricao_faixa', pf.descricao_faixa,
+                 'qtd_ganhadores', pf.qtd_ganhadores,
+                 'valor_premio', pf.valor_premio
+               ) ORDER BY pf.faixa)
+            FROM premiacao_faixa pf WHERE pf.concurso_id = c.id),
+           '[]'::json
+         ) AS premiacoes
+       FROM ultimos c`,
+      [loteriaIds]
+    );
+    for (const r of rows) {
+      resultado[r.loteria_id] = {
+        ...mapConcursoRow(r),
+        premiacoes: mapPremiacoesJson(r.premiacoes),
+      };
+    }
+    return resultado;
+  },
+  ["ultimos-concursos"],
+  { tags: ["concursos"], revalidate: 300 }
+);
+
 export interface ConcursoParaExportacao {
   numero: number;
   dataSorteio: string;

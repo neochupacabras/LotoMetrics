@@ -7,7 +7,7 @@ import MaisLoteriasMenu from "@/components/MaisLoteriasMenu";
 import DesafioIntuicao from "@/components/DesafioIntuicao";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { getAnalisesRecentes } from "@/lib/analises";
-import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
+import { getLoteriaPorCodigo, getUltimosConcursos } from "@/lib/queries";
 import { ARTIGOS } from "@/lib/artigos";
 
 // Só lê dados públicos do banco (já cacheados via unstable_cache em
@@ -262,17 +262,21 @@ export default async function HomePage() {
     getLoteriaPorCodigo("supersete"),
   ]);
 
-  const [ultimoLF, ultimoMS, ultimoQ, ultimoLM, ultimoDS, ultimoMM, ultimoTM, ultimoDS2, ultimoSS] = await Promise.all([
-    loteriaLF ? getUltimoConcurso(loteriaLF.id) : null,
-    loteriaMS ? getUltimoConcurso(loteriaMS.id) : null,
-    loteriaQ  ? getUltimoConcurso(loteriaQ.id)  : null,
-    loteriaLM ? getUltimoConcurso(loteriaLM.id) : null,
-    loteriaDS ? getUltimoConcurso(loteriaDS.id) : null,
-    loteriaMM ? getUltimoConcurso(loteriaMM.id) : null,
-    loteriaTM ? getUltimoConcurso(loteriaTM.id) : null,
-    loteriaDuplaSena ? getUltimoConcurso(loteriaDuplaSena.id) : null,
-    loteriaSS ? getUltimoConcurso(loteriaSS.id) : null,
-  ]);
+  // Último concurso de todas as loterias numa query só (evita N+1 na home).
+  const ultimos = await getUltimosConcursos(
+    [loteriaLF, loteriaMS, loteriaQ, loteriaLM, loteriaDS, loteriaMM, loteriaTM, loteriaDuplaSena, loteriaSS]
+      .filter((l): l is NonNullable<typeof l> => l !== null)
+      .map((l) => l.id)
+  );
+  const ultimoLF  = loteriaLF ? (ultimos[loteriaLF.id] ?? null) : null;
+  const ultimoMS  = loteriaMS ? (ultimos[loteriaMS.id] ?? null) : null;
+  const ultimoQ   = loteriaQ  ? (ultimos[loteriaQ.id]  ?? null) : null;
+  const ultimoLM  = loteriaLM ? (ultimos[loteriaLM.id] ?? null) : null;
+  const ultimoDS  = loteriaDS ? (ultimos[loteriaDS.id] ?? null) : null;
+  const ultimoMM  = loteriaMM ? (ultimos[loteriaMM.id] ?? null) : null;
+  const ultimoTM  = loteriaTM ? (ultimos[loteriaTM.id] ?? null) : null;
+  const ultimoDS2 = loteriaDuplaSena ? (ultimos[loteriaDuplaSena.id] ?? null) : null;
+  const ultimoSS  = loteriaSS ? (ultimos[loteriaSS.id] ?? null) : null;
 
   const itensBoletim: ItemBoletim[] = [
     ultimoLF  && { loteria: "Lotofácil",    numero: ultimoLF.numero,  destaque: ultimoLF.acumulado  ? "acumulou" : "sem acumular" },
