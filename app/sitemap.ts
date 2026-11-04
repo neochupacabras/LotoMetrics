@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getLoteriaPorCodigo, getNumerosConcursos } from "@/lib/queries";
+import { getLoteriaPorCodigo, getNumerosConcursosPorLoterias } from "@/lib/queries";
 import { getCategoriasParaLoteria } from "@/lib/categorias";
 import { ARTIGOS } from "@/lib/artigos";
 import { ANALISES } from "@/lib/analises";
@@ -96,10 +96,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   try {
-    for (const codigoLoteria of LOTERIAS) {
-      const loteria = await getLoteriaPorCodigo(codigoLoteria);
-      if (!loteria) continue;
+    // Resolve as loterias (cada getLoteriaPorCodigo é unstable_cache, então
+    // praticamente sempre vem do cache — não bate no banco a cada sitemap).
+    const loterias = await Promise.all(
+      LOTERIAS.map(async (codigo) => ({ codigo, loteria: await getLoteriaPorCodigo(codigo) }))
+    );
+    const existentes = loterias.filter((l) => l.loteria !== null) as {
+      codigo: (typeof LOTERIAS)[number];
+      loteria: NonNullable<Awaited<ReturnType<typeof getLoteriaPorCodigo>>>;
+    }[];
 
+    // Uma única query para os concursos de TODAS as loterias (evita o N+1).
+    const concursosPorLoteria = await getNumerosConcursosPorLoterias(
+      existentes.map((l) => l.loteria.id),
+      MAX_CONCURSOS_POR_LOTERIA
+    );
+
+    for (const { codigo: codigoLoteria, loteria } of existentes) {
       for (const [aba, priority, changeFrequency] of ABAS) {
         if (!abaAplicavel(codigoLoteria, aba)) continue;
         entradas.push({
@@ -117,8 +130,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         });
       }
 
-      const concursos = await getNumerosConcursos(loteria.id, MAX_CONCURSOS_POR_LOTERIA);
-      for (const c of concursos) {
+      for (const c of concursosPorLoteria.get(loteria.id) ?? []) {
         entradas.push({
           url: `${SITE_URL}/${codigoLoteria}/resultados/${c.numero}`,
           lastModified: c.dataSorteio,

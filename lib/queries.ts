@@ -62,25 +62,52 @@ async function getPremiacoes(concursoId: number): Promise<PremiacaoFaixa[]> {
      FROM premiacao_faixa WHERE concurso_id = $1 ORDER BY faixa`,
     [concursoId]
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return rows.map((r: any) => ({
+  return rows.map(mapPremiacaoRow);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapPremiacaoRow(r: any): PremiacaoFaixa {
+  return {
     faixa: r.faixa,
     descricaoFaixa: r.descricao_faixa,
     qtdGanhadores: r.qtd_ganhadores,
     valorPremio: Number(r.valor_premio),
-  }));
+  };
+}
+
+// Premiações vindas como array JSON (json_agg) embutido na query do concurso
+// — usado quando concurso + faixas são buscados numa só ida ao banco.
+function mapPremiacoesJson(arr: unknown): PremiacaoFaixa[] {
+  return Array.isArray(arr) ? arr.map(mapPremiacaoRow) : [];
 }
 
 export const getUltimoConcurso = unstable_cache(
   async (loteriaId: number): Promise<Concurso | null> => {
+    // Concurso + premiações por faixa numa única query (json_agg) — evita a
+    // segunda consulta separada a premiacao_faixa, que, repetida uma vez por
+    // loteria na home, era detectada como N+1 pelo tracing (LOTOANALITICA-2).
     const { rows } = await pool.query(
-      `SELECT * FROM concurso WHERE loteria_id = $1 ORDER BY numero DESC LIMIT 1`,
+      `SELECT c.*,
+         COALESCE(
+           (SELECT json_agg(
+               json_build_object(
+                 'faixa', pf.faixa,
+                 'descricao_faixa', pf.descricao_faixa,
+                 'qtd_ganhadores', pf.qtd_ganhadores,
+                 'valor_premio', pf.valor_premio
+               ) ORDER BY pf.faixa)
+            FROM premiacao_faixa pf WHERE pf.concurso_id = c.id),
+           '[]'::json
+         ) AS premiacoes
+       FROM concurso c
+       WHERE c.loteria_id = $1
+       ORDER BY c.numero DESC
+       LIMIT 1`,
       [loteriaId]
     );
     if (rows.length === 0) return null;
     const concurso = mapConcursoRow(rows[0]);
-    const premiacoes = await getPremiacoes(rows[0].id);
-    return { ...concurso, premiacoes };
+    return { ...concurso, premiacoes: mapPremiacoesJson(rows[0].premiacoes) };
   },
   ["ultimo-concurso"],
   { tags: ["concursos"], revalidate: 300 }
@@ -139,6 +166,35 @@ export async function getNumerosConcursos(
     numero: r.numero,
     dataSorteio: r.data_sorteio.toISOString(),
   }));
+}
+
+// Versão em lote do getNumerosConcursos: os N concursos mais recentes de
+// VÁRIAS loterias numa única query (ROW_NUMBER particionado por loteria), em
+// vez de uma query por loteria. Evita o N+1 no sitemap, que percorre todas as
+// loterias (LOTOANALITICA-3). Retorna um Map loteriaId -> concursos (recentes
+// primeiro).
+export async function getNumerosConcursosPorLoterias(
+  loteriaIds: number[],
+  limitePorLoteria: number
+): Promise<Map<number, { numero: number; dataSorteio: string }[]>> {
+  const mapa = new Map<number, { numero: number; dataSorteio: string }[]>();
+  if (loteriaIds.length === 0) return mapa;
+  const { rows } = await pool.query(
+    `SELECT loteria_id, numero, data_sorteio FROM (
+       SELECT loteria_id, numero, data_sorteio,
+         ROW_NUMBER() OVER (PARTITION BY loteria_id ORDER BY numero DESC) AS rn
+       FROM concurso WHERE loteria_id = ANY($1)
+     ) t
+     WHERE rn <= $2
+     ORDER BY loteria_id, numero DESC`,
+    [loteriaIds, limitePorLoteria]
+  );
+  for (const r of rows) {
+    const lista = mapa.get(r.loteria_id) ?? [];
+    lista.push({ numero: r.numero, dataSorteio: r.data_sorteio.toISOString() });
+    mapa.set(r.loteria_id, lista);
+  }
+  return mapa;
 }
 
 export const getConcursoPorNumero = cache(
