@@ -54,7 +54,7 @@ async function montarLinhas(): Promise<LinhaComparador[]> {
         numeroUltimo: ultimo?.numero ?? null,
         acumulou: ultimo?.acumulado ?? false,
         premioEstimado: ultimo?.valorEstimadoProximo ?? ultimo?.valorAcumuladoProximo ?? null,
-        proximoSorteio: proximoSorteio(cod, agora),
+        proximoSorteio: proximoSorteio(cod, agora, ultimo?.dataProximoConcurso?.slice(0, 10)),
       };
     })
   );

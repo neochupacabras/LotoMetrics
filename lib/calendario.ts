@@ -112,7 +112,14 @@ function janelaParaDia(agenda: AgendaLoteria, diaSemana: number): JanelaSorteio 
 }
 
 /** Dado um código de loteria e uma data de referência, retorna a data do próximo sorteio (ou hoje, se ainda houver sorteio hoje). */
-export function proximoSorteio(codigo: CodigoLoteria, referencia: Date): Date {
+export function proximoSorteio(codigo: CodigoLoteria, referencia: Date, dataOficial?: string | null): Date {
+  // Data oficial da Caixa (ver instanteOficial) vale se não for anterior a hoje.
+  const oficial = dataOficial?.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (oficial) {
+    const candidata = new Date(Number(oficial[1]), Number(oficial[2]) - 1, Number(oficial[3]));
+    const hoje = new Date(referencia.getFullYear(), referencia.getMonth(), referencia.getDate());
+    if (candidata.getTime() >= hoje.getTime()) return candidata;
+  }
   const agenda = AGENDA.find((a) => a.codigo === codigo)!;
   const dias = todosOsDias(agenda);
   const diaSemanaHoje = referencia.getDay();
@@ -222,14 +229,7 @@ export function getAgendaOrdenadaPorProximoSorteio(
 ) {
   return AGENDA
     .map((a) => {
-      let proxima = proximoSorteio(a.codigo, referencia);
-      const oficial = datasOficiais[a.codigo]?.match(/^(\d{4})-(\d{2})-(\d{2})/);
-      if (oficial) {
-        // Data oficial da Caixa (ver instanteOficial) — vale se não for anterior a hoje.
-        const candidata = new Date(Number(oficial[1]), Number(oficial[2]) - 1, Number(oficial[3]));
-        const hoje = new Date(referencia.getFullYear(), referencia.getMonth(), referencia.getDate());
-        if (candidata.getTime() >= hoje.getTime()) proxima = candidata;
-      }
+      const proxima = proximoSorteio(a.codigo, referencia, datasOficiais[a.codigo]);
       const horario = janelaParaDia(a, proxima.getDay()).horario;
       return { ...a, proxima, horario };
     })
