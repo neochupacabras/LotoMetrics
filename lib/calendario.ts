@@ -146,10 +146,37 @@ function dataIsoBrasilia(dia: Date): string {
   return `${dia.getFullYear()}-${String(dia.getMonth() + 1).padStart(2, "0")}-${String(dia.getDate()).padStart(2, "0")}`;
 }
 
-export function dataHoraProximoSorteio(codigo: CodigoLoteria, referencia: Date): Date {
+// `dataOficial` ("AAAA-MM-DD", em Brasília) é a data_proximo_concurso que a
+// Caixa publica junto com o último resultado. A grade semanal fixa (AGENDA) é
+// só uma aproximação: a Caixa remaneja datas (Mega Semana, feriados, concursos
+// especiais) e a grade passa a divergir — ex.: 04/11/2026, quarta, com o próximo
+// sorteio da Mega-Sena na sexta 06/11. Quando a data oficial existe e ainda não
+// passou, ela manda; a grade só serve de fallback.
+function instanteOficial(agenda: AgendaLoteria, dataOficial: string): Date | null {
+  const m = dataOficial.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return null;
+  const [ano, mes, dia] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  const diaSemana = new Date(Date.UTC(ano, mes - 1, dia)).getUTCDay();
+  // Horário da janela que cobre esse dia da semana; sem janela (dia fora da
+  // grade), usa o horário da primeira janela (sorteios de dia útil, 21h).
+  const horario = (agenda.sorteios.find((j) => j.dias.includes(diaSemana)) ?? agenda.sorteios[0]).horario;
+  const hora = Number(horario.match(/\d+/)?.[0] ?? 21);
+  const instante = new Date(Date.UTC(ano, mes - 1, dia, hora + 3, 0, 0));
+  return instante.getTime() > Date.now() ? instante : null;
+}
+
+export function dataHoraProximoSorteio(
+  codigo: CodigoLoteria,
+  referencia: Date,
+  dataOficial?: string | null
+): Date {
   const agenda = AGENDA.find((a) => a.codigo === codigo)!;
   const pausa = PAUSAS_AGENDA.find((p) => p.codigo === codigo);
   const agoraReal = Date.now();
+  if (dataOficial && !pausa) {
+    const oficial = instanteOficial(agenda, dataOficial);
+    if (oficial) return oficial;
+  }
   for (let i = 0; i <= 8; i++) {
     const dia = new Date(referencia);
     dia.setDate(dia.getDate() + i);
@@ -189,10 +216,20 @@ export function descricaoProximoSorteioEspecial(codigo: CodigoLoteria, referenci
   return alvo.toISOString() === pausa.sorteioEspecial.instanteIso ? pausa.sorteioEspecial.descricao : null;
 }
 
-export function getAgendaOrdenadaPorProximoSorteio(referencia: Date) {
+export function getAgendaOrdenadaPorProximoSorteio(
+  referencia: Date,
+  datasOficiais: Partial<Record<CodigoLoteria, string>> = {}
+) {
   return AGENDA
     .map((a) => {
-      const proxima = proximoSorteio(a.codigo, referencia);
+      let proxima = proximoSorteio(a.codigo, referencia);
+      const oficial = datasOficiais[a.codigo]?.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (oficial) {
+        // Data oficial da Caixa (ver instanteOficial) — vale se não for anterior a hoje.
+        const candidata = new Date(Number(oficial[1]), Number(oficial[2]) - 1, Number(oficial[3]));
+        const hoje = new Date(referencia.getFullYear(), referencia.getMonth(), referencia.getDate());
+        if (candidata.getTime() >= hoje.getTime()) proxima = candidata;
+      }
       const horario = janelaParaDia(a, proxima.getDay()).horario;
       return { ...a, proxima, horario };
     })

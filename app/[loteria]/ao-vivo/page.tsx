@@ -47,7 +47,11 @@ export default async function AoVivoPage({
   const ultimoConcurso = await getUltimoConcurso(loteria.id);
   const nomeLoteria = NOME_LOTERIA[codigoLoteria] ?? loteria.nome;
   const agenda = AGENDA.find((a) => a.codigo === codigoLoteria);
-  const alvo = dataHoraProximoSorteio(codigoLoteria as CodigoLoteria, agoraBrasilia());
+  const alvo = dataHoraProximoSorteio(
+    codigoLoteria as CodigoLoteria,
+    agoraBrasilia(),
+    ultimoConcurso?.dataProximoConcurso?.slice(0, 10)
+  );
   const observacaoEspecial = descricaoProximoSorteioEspecial(codigoLoteria as CodigoLoteria, agoraBrasilia());
 
   return (

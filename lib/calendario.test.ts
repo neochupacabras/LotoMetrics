@@ -83,3 +83,25 @@ describe("descricaoProximoSorteioEspecial", () => {
     expect(descricaoProximoSorteioEspecial("megasena", referencia)).toBeNull();
   });
 });
+
+describe("dataHoraProximoSorteio — data oficial da Caixa", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("usa a data oficial mesmo fora da grade (Mega-Sena na sexta 06/11/2026)", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-11-05T14:00:00Z")); // quinta, 11h em Brasília
+    const referencia = new Date(2026, 10, 5, 11, 0, 0);
+    // Sem a data oficial, a grade apontaria pra quinta 05/11 às 21h.
+    expect(dataHoraProximoSorteio("megasena", referencia).toISOString()).toBe("2026-11-06T00:00:00.000Z");
+    expect(dataHoraProximoSorteio("megasena", referencia, "2026-11-06").toISOString()).toBe("2026-11-07T00:00:00.000Z");
+  });
+
+  it("ignora data oficial já passada e cai na grade", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-11-05T14:00:00Z"));
+    const referencia = new Date(2026, 10, 5, 11, 0, 0);
+    expect(dataHoraProximoSorteio("megasena", referencia, "2026-11-04").toISOString()).toBe("2026-11-06T00:00:00.000Z");
+  });
+});

@@ -10,6 +10,8 @@ import {
   getAgendaOrdenadaPorProximoSorteio,
   nomeLoteria,
 } from "@/lib/calendario";
+import { getDatasProximosConcursos } from "@/lib/queries";
+import type { CodigoLoteria } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -36,10 +38,14 @@ function formatarData(d: Date) {
   return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
 }
 
-export default function CalendarioPage() {
+export default async function CalendarioPage() {
   const agora = agoraBrasilia();
   const diaSemanaHoje = agora.getDay();
-  const agendaOrdenada = getAgendaOrdenadaPorProximoSorteio(agora);
+  const datasOficiais = await getDatasProximosConcursos();
+  const agendaOrdenada = getAgendaOrdenadaPorProximoSorteio(
+    agora,
+    datasOficiais as Partial<Record<CodigoLoteria, string>>
+  );
 
   return (
     <>
@@ -134,9 +140,12 @@ export default function CalendarioPage() {
             Os horários acima são os de início do sorteio, no horário de
             Brasília. As apostas costumam fechar entre 1 e 2 horas antes do
             sorteio — o horário exato pode variar por loteria e por canal
-            (casa lotérica ou aplicativo). Feriados e datas especiais (como a
-            Mega da Virada ou a Lotofácil da Independência) também podem
-            alterar essa grade temporariamente.
+            (casa lotérica ou aplicativo). A grade semanal acima é o
+            padrão, mas a Caixa remaneja datas com frequência (Mega Semana,
+            feriados, concursos especiais como a Mega da Virada ou a Lotofácil
+            da Independência). Por isso a lista de próximos sorteios segue a
+            data oficial divulgada pela Caixa, e pode mostrar um dia diferente
+            do da grade.
           </p>
           <p style={{ marginTop: 8 }}>
             Para confirmar o horário exato de fechamento das apostas antes de

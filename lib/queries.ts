@@ -469,3 +469,24 @@ export async function getConcursosAcumulados(loteriaId: number): Promise<number>
   );
   return Number(rows[0]?.total ?? 0);
 }
+
+// Data oficial do próximo concurso de cada loteria (data_proximo_concurso do
+// último resultado importado), indexada por código, em "AAAA-MM-DD". Uma query
+// só para todas as loterias — usada pelo calendário, que não pode confiar só na
+// grade semanal fixa (a Caixa remaneja datas).
+export const getDatasProximosConcursos = unstable_cache(
+  async (): Promise<Record<string, string>> => {
+    const { rows } = await pool.query(
+      `SELECT DISTINCT ON (c.loteria_id) l.codigo,
+              to_char(c.data_proximo_concurso, 'YYYY-MM-DD') AS data_proximo
+       FROM concurso c JOIN loteria l ON l.id = c.loteria_id
+       WHERE c.data_proximo_concurso IS NOT NULL
+       ORDER BY c.loteria_id, c.numero DESC`
+    );
+    const out: Record<string, string> = {};
+    for (const r of rows) out[r.codigo] = r.data_proximo;
+    return out;
+  },
+  ["datas-proximos-concursos"],
+  { tags: ["concursos"], revalidate: 300 }
+);
