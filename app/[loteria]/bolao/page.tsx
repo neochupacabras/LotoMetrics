@@ -118,7 +118,7 @@ export default async function BolaoPage({
               um bilhete acerta 15 pontos.
             </p>
             <p>
-              O otimizador abaixo gera planos de bolão por orçamento: diga quanto o grupo
+              O otimizador acima gera planos de bolão por orçamento: diga quanto o grupo
               quer gastar, escolha as dezenas do pool e o sistema seleciona o fechamento mais
               eficiente para aquele orçamento — com o maior nível de cobertura possível pelo
               valor disponível. No final, um PDF com todos os bilhetes pode ser gerado para
