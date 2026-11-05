@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Masthead from "@/components/Masthead";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { LOTERIAS, formatarMoeda, formatarData } from "@/lib/format";
-import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
+import { getLoteriaPorCodigo, getUltimosConcursos } from "@/lib/queries";
 import { AGENDA, agoraBrasilia, proximoSorteio, DIAS_SEMANA } from "@/lib/calendario";
 import type { CodigoLoteria } from "@/lib/types";
 
@@ -42,11 +42,17 @@ interface LinhaComparador {
 async function montarLinhas(): Promise<LinhaComparador[]> {
   const agora = agoraBrasilia();
 
+  const codigos = Object.keys(LOTERIAS) as CodigoLoteria[];
+  const loterias = await Promise.all(codigos.map((c) => getLoteriaPorCodigo(c)));
+  // Uma única query para o último concurso de todas as loterias (evita N+1).
+  const ultimos = await getUltimosConcursos(
+    loterias.filter((l): l is NonNullable<typeof l> => l !== null).map((l) => l.id)
+  );
+
   const linhas = await Promise.all(
-    Object.keys(LOTERIAS).map(async (codigo) => {
-      const cod = codigo as CodigoLoteria;
-      const loteria = await getLoteriaPorCodigo(cod);
-      const ultimo = loteria ? await getUltimoConcurso(loteria.id) : null;
+    codigos.map(async (cod, i) => {
+      const loteria = loterias[i];
+      const ultimo = loteria ? (ultimos[loteria.id] ?? null) : null;
 
       return {
         codigo: cod,
