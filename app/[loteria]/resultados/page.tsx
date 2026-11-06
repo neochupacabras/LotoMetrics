@@ -202,7 +202,7 @@ export default async function ResultadosPage({
         sorteio futuro — cada concurso é um evento independente.
       </div>
 
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginTop: "44px" }}>
+      <div className="historico-cabecalho" style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginTop: "44px" }}>
         <p className="eyebrow" style={{ margin: 0 }}>
           Histórico de concursos
         </p>
