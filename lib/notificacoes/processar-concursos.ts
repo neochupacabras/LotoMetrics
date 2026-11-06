@@ -1,12 +1,14 @@
 import pool from "@/lib/db";
 import { createAdminClient } from "@/lib/supabase/server";
 import { calcularIsPremium } from "@/lib/plano";
-import { LOTERIAS } from "@/lib/format";
+import { LOTERIAS, preposicaoLoteria } from "@/lib/format";
 import { pontuarJogo, type ConcursoConferencia, type FaixaConcurso } from "@/lib/conferencia";
 import { contarSequenciaAcumulada, deveAlertarAcumulo } from "@/lib/notificacoes/regras";
 import { enviarEmail } from "@/lib/notificacoes/enviar";
 import { urlDescadastro } from "@/lib/notificacoes/unsubscribe";
 import { emailAlertaAcumulo, emailResultadoConcurso } from "@/lib/email-templates";
+import { notificarConcursoPush } from "@/lib/push/concursos";
+import { notificarUsuario, semFalhar, type ResumoPush } from "@/lib/push/servidor";
 
 // Orquestrador central da Fase 1 (tarefas 1.3/1.4 do plano de
 // implementação): processa concursos recém-importados e envia
@@ -53,6 +55,8 @@ export interface ResumoProcessamento {
   emailsFalhos: number;
   emailsSimulados: number;
   detalhes: DetalheEnvio[];
+  // Web Push (PWA) — resumo por evento; ver lib/push/*.
+  push: ResumoPush[];
 }
 
 interface ConcursoRow {
@@ -173,7 +177,8 @@ interface JogoComPerfil {
 async function processarResultadoJogos(
   concurso: ConcursoRow,
   faixas: FaixaConcurso[],
-  opcoes: OpcoesProcessamento
+  opcoes: OpcoesProcessamento,
+  pushResumos: ResumoPush[]
 ): Promise<DetalheEnvio[]> {
   const admin = createAdminClient();
   const { data: jogos } = await admin
@@ -196,7 +201,8 @@ async function processarResultadoJogos(
   const porUsuario = new Map<string, { perfil: JogoComPerfil["profiles"]; jogos: JogoComPerfil[] }>();
   for (const jogo of jogos) {
     if (!calcularIsPremium(jogo.profiles)) continue; // rastreamento é Premium
-    if (jogo.profiles.receber_emails === false) continue;
+    // receber_emails NÃO filtra aqui: vale só para o e-mail (abaixo). A
+    // notificação push tem preferência própria (push_inscricoes.categorias).
     if (!jogo.profiles.email) continue;
     const entrada = porUsuario.get(jogo.user_id) ?? { perfil: jogo.profiles, jogos: [] };
     entrada.jogos.push(jogo);
@@ -217,6 +223,37 @@ async function processarResultadoJogos(
     });
     const temPremio = resultadosPorJogo.some((r) => r.faixa !== null);
     const nomeUsuario = perfil.display_name ?? perfil.email!.split("@")[0];
+
+    // Push "meus_jogos" (PWA): respeita os mesmos modos de teste do e-mail.
+    if (!opcoes.somenteEmails || opcoes.somenteEmails.has(perfil.email!)) {
+      const melhor = Math.max(...resultadosPorJogo.map((r) => r.acertos));
+      const premiados = resultadosPorJogo.filter((r) => r.faixa !== null).length;
+      const { em } = preposicaoLoteria(concurso.loteria_codigo);
+      const r = await semFalhar(
+        () =>
+          notificarUsuario(
+            userId,
+            "meus_jogos",
+            `jogos:${concurso.loteria_codigo}:${concurso.numero}`,
+            {
+              titulo: temPremio
+                ? `🎉 Você teve resultado ${em} ${nomeLoteria} ${concurso.numero}!`
+                : `Seus jogos ${em} ${nomeLoteria} ${concurso.numero}`,
+              corpo: temPremio
+                ? `${premiados} jogo(s) premiado(s). Toque para ver os detalhes.`
+                : `Melhor jogo: ${melhor} acerto(s) em ${resultadosPorJogo.length} jogo(s) conferido(s).`,
+              url: "/conta/jogos",
+              tag: `jogos-${concurso.loteria_codigo}`,
+              categoria: "meus_jogos",
+            },
+            { dryRun: opcoes.dryRun }
+          ),
+        `meus_jogos ${userId}`
+      );
+      if (r) pushResumos.push(r);
+    }
+
+    if (perfil.receber_emails === false) continue;
 
     const detalhe = await reivindicarEEnviar(
       opcoes,
@@ -292,10 +329,17 @@ export async function processarConcursosNovos(opcoes: OpcoesProcessamento): Prom
   const concursos = await buscarConcursosRecentes(janelaHoras);
 
   const detalhes: DetalheEnvio[] = [];
+  const push: ResumoPush[] = [];
   for (const concurso of concursos) {
     const faixas = await buscarFaixas(concurso.concurso_id);
-    detalhes.push(...(await processarResultadoJogos(concurso, faixas, opcoes)));
+    detalhes.push(...(await processarResultadoJogos(concurso, faixas, opcoes, push)));
     detalhes.push(...(await processarAlertasAcumulo(concurso, opcoes)));
+    // Push público (resultado/acumulado) vai para inscrições anônimas, sem
+    // e-mail: o modo de teste somenteEmails não tem como filtrá-las, então
+    // nesse modo o push público fica de fora (só o dryRun o relata).
+    if (!opcoes.somenteEmails) {
+      push.push(...(await notificarConcursoPush(concurso, { dryRun: opcoes.dryRun })));
+    }
   }
 
   return {
@@ -304,5 +348,6 @@ export async function processarConcursosNovos(opcoes: OpcoesProcessamento): Prom
     emailsFalhos: detalhes.filter((d) => d.status === "falhou").length,
     emailsSimulados: detalhes.filter((d) => d.status === "simulado").length,
     detalhes,
+    push,
   };
 }

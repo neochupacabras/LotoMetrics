@@ -1,3 +1,4 @@
+import { notificarUsuario, semFalhar } from "@/lib/push/servidor";
 import pool from "@/lib/db";
 import { createAdminClient } from "@/lib/supabase/server";
 import { calcularIsPremium } from "@/lib/plano-premium";
@@ -210,6 +211,34 @@ export async function conferirBoloes(opcoes: OpcoesProcessamento): Promise<Resum
             ),
           })
         )
+      );
+    }
+
+    // Push "bolao" (PWA) para o organizador — preferência própria, separada
+    // do e-mail; mesmos modos de teste (dryRun / somenteEmails).
+    if (!opcoes.somenteEmails || (b.profiles.email && opcoes.somenteEmails.has(b.profiles.email))) {
+      await semFalhar(
+        () =>
+          notificarUsuario(
+            b.owner_id,
+            "bolao",
+            `bolao:${b.id}:${concurso.numero}`,
+            {
+              titulo:
+                resultado.premiados > 0
+                  ? `🎉 Bolão "${b.titulo.slice(0, 40)}" premiado!`
+                  : `Bolão "${b.titulo.slice(0, 40)}" conferido`,
+              corpo:
+                resultado.premiados > 0
+                  ? `${nomeLoteria} ${concurso.numero}: ${resultado.premiados} jogo(s) premiado(s).`
+                  : `${nomeLoteria} ${concurso.numero}: melhor jogo com ${resumoEmail.melhorAcerto} acerto(s).`,
+              url: `/conta/boloes/${b.id}`,
+              tag: `bolao-${b.id}`,
+              categoria: "bolao",
+            },
+            { dryRun: opcoes.dryRun }
+          ),
+        `bolao ${b.id}`
       );
     }
 

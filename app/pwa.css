@@ -1,0 +1,1019 @@
+/* ============================================================
+   App mobile (PWA)
+   ------------------------------------------------------------
+   Regra de ouro: o desktop NÃO muda. Tudo que altera layout
+   existente fica dentro de @media (max-width: 640px) — o mesmo
+   breakpoint usado no resto de globals.css. Fora da media query
+   só existem estilos de componentes NOVOS (que não aparecem em
+   nenhuma página antiga no desktop) ou que são escondidos nele.
+   ============================================================ */
+
+:root {
+  --bottom-nav-altura: 62px;
+  --app-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ---------- Escondidos no desktop ---------- */
+
+.bottom-nav,
+.convite-instalacao,
+.masthead-mobile__acoes {
+  display: none;
+}
+
+/* ============================================================
+   CELULAR
+   ============================================================ */
+@media (max-width: 640px) {
+  /* Espaço para a barra inferior não cobrir o rodapé. */
+  body {
+    padding-bottom: calc(var(--bottom-nav-altura) + env(safe-area-inset-bottom, 0px));
+  }
+
+  footer.rodape {
+    margin-top: 40px;
+  }
+
+  /* O toque já tem feedback próprio (abaixo); sem o retângulo azul. */
+  a,
+  button,
+  summary,
+  label {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ---------- Cabeçalho compacto ---------- */
+
+  .masthead {
+    /* App instalado com barra de status translúcida / notch */
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .masthead__linha1,
+  .masthead[data-encolhido="true"] .masthead__linha1 {
+    align-items: center;
+    padding: 10px 8px 10px 16px;
+  }
+
+  .masthead__title,
+  .masthead[data-encolhido="true"] .masthead__title {
+    font-size: 1.45rem;
+    line-height: 1.1;
+  }
+
+  /* Tagline, UserMenu e a régua de seções saem do topo no celular: a
+     navegação passa para a barra inferior + folha "Mais". */
+  .masthead__tagline,
+  .masthead__linha1 > .usermenu,
+  .masthead__linha1 > .usermenu--carregando,
+  .masthead__linha2 {
+    display: none;
+  }
+
+  .masthead-mobile__acoes {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .masthead-mobile__botao {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    color: var(--ink);
+    border-radius: 50%;
+    transition: background-color 0.15s ease, transform 0.15s var(--app-ease);
+  }
+
+  .masthead-mobile__botao:active {
+    background: rgba(23, 23, 26, 0.07);
+    transform: scale(0.92);
+  }
+
+  .masthead-mobile__perfil[data-logado="true"] {
+    color: var(--pine);
+  }
+
+  .masthead-mobile__selo {
+    position: absolute;
+    top: 7px;
+    right: 6px;
+    font-size: 0.62rem;
+    color: var(--ochre);
+  }
+
+  /* ---------- Barra de navegação inferior ---------- */
+
+  .bottom-nav {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background: rgba(250, 249, 244, 0.94);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    backdrop-filter: saturate(1.4) blur(14px);
+    /* Espelha a régua de tinta do masthead: o app "fecha" em cima e embaixo. */
+    border-top: 2px solid var(--ink);
+    transition: transform 0.22s var(--app-ease);
+  }
+
+  .bottom-nav[data-oculta="true"] {
+    transform: translateY(110%);
+  }
+
+  .bottom-nav__lista {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    max-width: 560px;
+    height: var(--bottom-nav-altura);
+  }
+
+  .bottom-nav__lista > li {
+    display: flex;
+  }
+
+  .bottom-nav__item {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 0;
+    padding: 0 2px;
+    background: none;
+    border: none;
+    font: inherit;
+    color: var(--ink-faint);
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    transition: color 0.18s ease;
+  }
+
+  /* Indicador da seção ativa: régua coral no topo, que "cresce" do centro. */
+  .bottom-nav__item::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: 22%;
+    right: 22%;
+    height: 3px;
+    background: var(--pine);
+    transform: scaleX(0);
+    transition: transform 0.28s var(--app-ease);
+  }
+
+  .bottom-nav__item[data-ativo="true"] {
+    color: var(--pine);
+  }
+
+  .bottom-nav__item[data-ativo="true"]::before {
+    transform: scaleX(1);
+  }
+
+  .bottom-nav__icone {
+    display: flex;
+    transition: transform 0.18s var(--app-ease);
+  }
+
+  .bottom-nav__icone svg {
+    width: 23px;
+    height: 23px;
+  }
+
+  .bottom-nav__item:active .bottom-nav__icone {
+    transform: scale(0.86);
+  }
+
+  .bottom-nav__rotulo {
+    font-family: var(--font-body);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .bottom-nav__item[data-ativo="true"] .bottom-nav__rotulo {
+    font-weight: 600;
+  }
+
+  /* ---------- Convite de instalação (acima da barra) ---------- */
+
+  .convite-instalacao {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: calc(var(--bottom-nav-altura) + env(safe-area-inset-bottom, 0px) + 10px);
+    z-index: 55;
+    padding: 10px 6px 10px 14px;
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    animation: convite-entrar 0.35s var(--app-ease) both;
+  }
+
+  .convite-instalacao__texto {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
+
+  .convite-instalacao__texto strong {
+    font-weight: 600;
+  }
+
+  .convite-instalacao__texto span {
+    color: #c9c7bd;
+  }
+
+  .convite-instalacao .instalar-link {
+    color: var(--paper);
+    background: var(--pine);
+    padding: 9px 12px;
+    font-size: 0.78rem;
+  }
+
+  .convite-instalacao .instalar-link svg {
+    display: none;
+  }
+
+  .convite-instalacao__fechar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: none;
+    border: none;
+    color: #c9c7bd;
+    cursor: pointer;
+  }
+
+  .convite-instalacao__fechar svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* ---------- Feedback de toque nos controles existentes ---------- */
+
+  .botao-gerar,
+  .botao-secundario,
+  .nav-dropdown__btn,
+  .subnav a,
+  .mais-loterias__btn {
+    transition: transform 0.12s var(--app-ease), background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .botao-gerar:active:not(:disabled),
+  .botao-secundario:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  /* Alvos de toque mínimos (44px) nos botões principais. */
+  .botao-gerar,
+  .botao-secundario {
+    min-height: 44px;
+  }
+
+  /* Campos com fonte >= 16px: evita o zoom automático do iOS ao focar. */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="search"],
+  input[type="tel"],
+  input:not([type]),
+  select,
+  textarea {
+    font-size: max(16px, 1em);
+  }
+
+  /* Títulos de página um pouco menores: sobra mais tela para o conteúdo. */
+  h1.titulo-edicao {
+    font-size: clamp(2.1rem, 9vw, 2.6rem);
+  }
+}
+
+/* App aberto pelo ícone (standalone): sem a "puxada" elástica que revela o
+   fundo do navegador e sem seleção acidental de texto na navegação. */
+html[data-standalone="true"] body {
+  overscroll-behavior-y: none;
+}
+
+/* ============================================================
+   FOLHA "MAIS" (só é aberta pela barra inferior)
+   ============================================================ */
+
+.mais-sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  width: 100%;
+  max-width: 560px;
+  max-height: min(86vh, 86dvh);
+  margin: 0 auto;
+  padding: 0;
+  border: none;
+  border-top: 2px solid var(--ink);
+  background: var(--paper-raised);
+  color: var(--ink);
+  overflow: hidden;
+  transform: translateY(100%);
+  transition:
+    transform 0.32s var(--app-ease),
+    overlay 0.32s allow-discrete,
+    display 0.32s allow-discrete;
+}
+
+.mais-sheet[open] {
+  transform: translateY(0);
+}
+
+@starting-style {
+  .mais-sheet[open] {
+    transform: translateY(100%);
+  }
+}
+
+.mais-sheet::backdrop {
+  background: rgba(23, 23, 26, 0);
+  transition:
+    background-color 0.32s ease,
+    overlay 0.32s allow-discrete,
+    display 0.32s allow-discrete;
+}
+
+.mais-sheet[open]::backdrop {
+  background: rgba(23, 23, 26, 0.42);
+}
+
+@starting-style {
+  .mais-sheet[open]::backdrop {
+    background: rgba(23, 23, 26, 0);
+  }
+}
+
+.mais-sheet__painel {
+  display: flex;
+  flex-direction: column;
+  max-height: inherit;
+}
+
+.mais-sheet__alca {
+  width: 36px;
+  height: 4px;
+  margin: 8px auto 0;
+  background: var(--line-strong);
+  border-radius: 2px;
+}
+
+.mais-sheet__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px 6px 18px;
+}
+
+.mais-sheet__titulo {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.7rem;
+  margin: 0;
+}
+
+.mais-sheet__fechar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.mais-sheet__conteudo {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 18px calc(18px + env(safe-area-inset-bottom, 0px));
+}
+
+.mais-sheet__atalhos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mais-sheet__atalho {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 6px;
+  border: 1px solid var(--line-strong);
+  background: var(--paper);
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--ink);
+  text-align: center;
+  transition: transform 0.12s var(--app-ease), border-color 0.15s ease;
+}
+
+.mais-sheet__atalho:active {
+  transform: scale(0.96);
+  border-color: var(--pine);
+}
+
+.mais-sheet__atalho--premium {
+  color: var(--ochre);
+  font-weight: 600;
+}
+
+.mais-sheet__atalho--premium span:first-child {
+  font-size: 1.25rem;
+  line-height: 24px;
+}
+
+.mais-sheet__secao {
+  margin-top: 18px;
+}
+
+.mais-sheet__rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  margin: 0 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+.mais-sheet__loterias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mais-sheet__chip {
+  padding: 8px 12px;
+  border: 1px solid var(--line-strong);
+  font-size: 0.84rem;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.mais-sheet__chip[data-ativo="true"] {
+  border-color: var(--pine);
+  color: var(--pine);
+  font-weight: 600;
+}
+
+.mais-sheet__grade {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.mais-sheet__link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 2px;
+  font-size: 0.95rem;
+  text-decoration: none;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+
+.mais-sheet__link:active,
+.mais-sheet__chip:active {
+  color: var(--pine);
+}
+
+.mais-sheet__rodape {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.mais-sheet__rodape a {
+  color: var(--ink-faint);
+  text-decoration: none;
+  padding: 6px 0;
+}
+
+html[data-sheet-aberto="true"] {
+  overflow: hidden;
+}
+
+/* ============================================================
+   INSTALAÇÃO
+   ============================================================ */
+
+.instalar-cartao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.12s var(--app-ease);
+}
+
+.instalar-cartao:active {
+  transform: scale(0.98);
+}
+
+.instalar-cartao__icone {
+  display: flex;
+  color: var(--pine);
+  background: var(--paper);
+  padding: 6px;
+}
+
+.instalar-cartao__texto {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: #c9c7bd;
+}
+
+.instalar-cartao__texto strong {
+  font-size: 0.92rem;
+  color: var(--paper);
+  font-weight: 600;
+}
+
+.instalar-botao__icone {
+  width: 18px;
+  height: 18px;
+}
+
+.instalar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.pwa-dialogo {
+  width: min(440px, calc(100vw - 32px));
+  padding: 0;
+  border: 2px solid var(--ink);
+  background: var(--paper-raised);
+  color: var(--ink);
+}
+
+.pwa-dialogo::backdrop {
+  background: rgba(23, 23, 26, 0.45);
+}
+
+.pwa-dialogo[open] {
+  animation: dialogo-entrar 0.25s var(--app-ease);
+}
+
+.pwa-dialogo__painel {
+  padding: 22px 22px 20px;
+}
+
+.pwa-dialogo__titulo {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.7rem;
+  line-height: 1.1;
+  margin: 0 0 14px;
+}
+
+.pwa-dialogo__texto {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+
+.pwa-dialogo__ok {
+  width: 100%;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.pwa-passos {
+  list-style: none;
+  counter-reset: passo;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.pwa-passos li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.pwa-passos__icone {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line-strong);
+  background: var(--paper);
+  color: var(--ink-soft);
+}
+
+/* No iOS, o azul do sistema: é o ícone que o usuário procura no Safari. */
+.pwa-passos--ios .pwa-passos__icone {
+  color: #0a7aff;
+}
+
+.pwa-passos__icone--texto {
+  font-size: 0.66rem;
+  font-weight: 600;
+}
+
+/* ============================================================
+   AVISOS (offline / reconectado / versão nova)
+   ============================================================ */
+
+.avisos-app {
+  position: fixed;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(440px, calc(100vw - 20px));
+  pointer-events: none;
+}
+
+.aviso-app {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.85rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  pointer-events: auto;
+  animation: aviso-entrar 0.3s var(--app-ease) both;
+}
+
+.aviso-app--offline {
+  background: var(--rust);
+}
+
+.aviso-app--ok {
+  background: #2f5d3a;
+}
+
+.aviso-app__icone {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.aviso-app__acao {
+  margin-left: auto;
+  padding: 6px 12px;
+  border: 1px solid var(--paper);
+  background: none;
+  color: var(--paper);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ============================================================
+   PÁGINAS DO APP (/notificacoes, /aplicativo, /offline)
+   ============================================================ */
+
+.pagina-app {
+  max-width: 680px;
+}
+
+.pagina-app__nota {
+  margin-top: 24px;
+}
+
+.pagina-app__subtitulo {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.6rem;
+  margin: 36px 0 10px;
+}
+
+.botao-secundario {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.botao-secundario:hover {
+  border-color: var(--pine);
+  color: var(--pine);
+}
+
+.notif-cartao {
+  border: 1px solid var(--line-strong);
+  background: var(--paper-raised);
+  padding: 20px;
+}
+
+.notif-cartao--carregando {
+  min-height: 220px;
+  background: linear-gradient(90deg, var(--paper-raised) 25%, var(--paper) 50%, var(--paper-raised) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-brilho 1.2s linear infinite;
+}
+
+.notif-cartao__titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.notif-status {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #2f8a4a;
+  box-shadow: 0 0 0 3px rgba(47, 138, 74, 0.18);
+}
+
+.notif-beneficios {
+  margin: 0 0 12px;
+  padding-left: 18px;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.notif-aviso {
+  padding: 10px 12px;
+  border-left: 3px solid var(--ochre);
+  background: #f5ecd9;
+  font-size: 0.85rem;
+}
+
+.notif-grupo {
+  border: none;
+  margin: 18px 0 0;
+  padding: 0;
+}
+
+.notif-grupo__titulo {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.notif-opcao {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  cursor: pointer;
+}
+
+.notif-opcao[data-desabilitada="true"] {
+  cursor: default;
+  color: var(--ink-faint);
+}
+
+.notif-opcao__check {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--pine);
+}
+
+.notif-opcao__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+}
+
+.notif-opcao__texto strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.notif-opcao[data-desabilitada="true"] strong {
+  color: var(--ink-faint);
+}
+
+.notif-opcao__texto a {
+  color: var(--pine);
+}
+
+.notif-loterias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.notif-chip {
+  min-height: 38px;
+  padding: 7px 12px;
+  border: 1px solid var(--line-strong);
+  background: var(--paper);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.notif-chip[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.notif-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.notif-acoes .botao-gerar {
+  margin-top: 0;
+}
+
+.notif-desativar {
+  border: none;
+  background: none;
+  padding: 10px 4px;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--rust);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.notif-mensagem {
+  margin: 14px 0 0;
+  font-size: 0.88rem;
+  animation: aviso-entrar 0.25s var(--app-ease) both;
+}
+
+.notif-mensagem--ok {
+  color: #2f6b3f;
+}
+
+.notif-mensagem--erro {
+  color: var(--rust);
+}
+
+.offline-salvas {
+  margin-top: 32px;
+}
+
+.offline-salvas__titulo {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  margin: 0 0 6px;
+}
+
+.offline-salvas__lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.offline-salvas__lista a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+@media (max-width: 640px) {
+  /* Avisos sobem para não ficar atrás da barra inferior (fica aqui, depois
+     da regra base de .avisos-app, para vencer na cascata). */
+  .avisos-app {
+    bottom: calc(var(--bottom-nav-altura) + env(safe-area-inset-bottom, 0px) + 10px);
+  }
+
+  .notif-acoes .botao-gerar,
+  .notif-acoes .botao-secundario {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .notif-cartao {
+    padding: 16px;
+  }
+}
+
+/* ============================================================
+   ANIMAÇÕES
+   ============================================================ */
+
+@keyframes convite-entrar {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes aviso-entrar {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dialogo-entrar {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes skeleton-brilho {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav,
+  .bottom-nav__item::before,
+  .bottom-nav__icone,
+  .mais-sheet,
+  .mais-sheet::backdrop,
+  .convite-instalacao,
+  .aviso-app,
+  .pwa-dialogo[open],
+  .notif-mensagem,
+  .notif-cartao--carregando {
+    transition: none !important;
+    animation: none !important;
+  }
+}

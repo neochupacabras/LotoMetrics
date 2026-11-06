@@ -5,6 +5,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import Masthead from "@/components/Masthead";
 import AlertasForm from "@/components/conta/AlertasForm";
+import FormSair from "@/components/pwa/FormSair";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/auth-actions";
 import { calcularIsPremium } from "@/lib/plano";
@@ -75,9 +76,7 @@ export default async function ContaPage({
             </h1>
             <p className="conta-email">{user.email}</p>
           </div>
-          <form action={signOut}>
-            <button type="submit" className="conta-sair-btn">Sair</button>
-          </form>
+          <FormSair action={signOut} className="conta-sair-btn" />
         </div>
 
         {/* ── Plano ──────────────────────────────────────────────────── */}
@@ -109,6 +108,20 @@ export default async function ContaPage({
             </p>
           </section>
         )}
+
+        {/* ── App e notificações (PWA) ─────────────────────────────── */}
+        <section className="conta-secao">
+          <div className="conta-secao-header">
+            <h2 className="conta-secao-titulo">App e notificações</h2>
+            <Link href="/notificacoes" className="conta-link-acao">
+              Notificações →
+            </Link>
+          </div>
+          <p className="conta-alertas-desc">
+            Receba resultados, acúmulos e a conferência dos seus jogos direto no celular.{" "}
+            <Link href="/aplicativo">Instalar o aplicativo</Link>.
+          </p>
+        </section>
 
         {/* ── Bolões ────────────────────────────────────────────────── */}
         <section className="conta-secao">

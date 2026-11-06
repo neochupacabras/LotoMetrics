@@ -3824,8 +3824,11 @@ footer.rodape {
   .conta-header { flex-direction: column; }
   .auth-card { padding: 28px 20px; }
 
-  /* Margens laterais no mobile */
-  .container { padding: 0 16px; }
+  /* Margens laterais no mobile — longhand de propósito (mesmo motivo do
+     comentário em .secao): o shorthand "padding: 0 16px" zerava o
+     padding-top/bottom de .container.secao e de main.container no
+     celular, colando o título das páginas no cabeçalho. */
+  .container { padding-left: 16px; padding-right: 16px; }
   .masthead__inner { padding: 20px 16px 16px; }
 
   /* "Criar conta" no mobile: compacto mas mantém fundo verde */
