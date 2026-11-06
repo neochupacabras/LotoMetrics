@@ -8,12 +8,16 @@ interface PlanoUsuario {
   carregando: boolean;
   logado: boolean;
   isPremium: boolean;
+  // Usado pelo PWA para desvincular notificações pessoais quando a sessão
+  // muda (logout/troca de conta) — ver components/pwa/PwaProvider.tsx.
+  userId: string | null;
 }
 
 const PlanoUsuarioContext = createContext<PlanoUsuario>({
   carregando: true,
   logado: false,
   isPremium: false,
+  userId: null,
 });
 
 // Busca o login e o plano UMA VEZ no cliente e compartilha entre quem
@@ -26,6 +30,7 @@ export function PlanoUsuarioProvider({ children }: { children: React.ReactNode }
     carregando: true,
     logado: false,
     isPremium: false,
+    userId: null,
   });
 
   useEffect(() => {
@@ -37,7 +42,7 @@ export function PlanoUsuarioProvider({ children }: { children: React.ReactNode }
       if (!ativo) return;
 
       if (!user) {
-        setEstado({ carregando: false, logado: false, isPremium: false });
+        setEstado({ carregando: false, logado: false, isPremium: false, userId: null });
         return;
       }
 
@@ -52,7 +57,7 @@ export function PlanoUsuarioProvider({ children }: { children: React.ReactNode }
       // auditoria de 13/09/2026: antes, um Pix vencido continuava
       // liberando a experiência sem anúncio no client mesmo depois de o
       // servidor já considerar a conta free.
-      setEstado({ carregando: false, logado: true, isPremium: calcularIsPremium(profile) });
+      setEstado({ carregando: false, logado: true, isPremium: calcularIsPremium(profile), userId: user.id });
     })();
 
     return () => {

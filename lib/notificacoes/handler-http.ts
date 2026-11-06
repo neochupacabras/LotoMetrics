@@ -109,6 +109,7 @@ export async function handleProcessarConcursos(
         emailsFalhos,
         emailsSimulados,
         detalhes,
+        push: resumo.push,
       },
       error:
         [
@@ -127,6 +128,7 @@ export async function handleProcessarConcursos(
       emailsFalhos,
       emailsSimulados,
       detalhes,
+      push: resumo.push,
     });
   } catch (err) {
     await logJobRun({ jobName, status: "failed", startedAt, error: (err as Error).message });

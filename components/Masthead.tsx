@@ -4,6 +4,7 @@ import { LOTERIAS } from "@/lib/format";
 import UserMenu from "@/components/auth/UserMenu";
 import NavLoterias from "@/components/NavLoterias";
 import MastheadShell from "@/components/MastheadShell";
+import AcoesMastheadMobile from "@/components/pwa/AcoesMastheadMobile";
 
 export default function Masthead({
   loteriaAtiva,
@@ -63,6 +64,8 @@ export default function Masthead({
         </div>
 
         <UserMenu />
+        {/* Só no celular (app/pwa.css): sino + perfil no lugar do UserMenu. */}
+        <AcoesMastheadMobile />
       </div>
 
       <div className="container masthead__linha2">

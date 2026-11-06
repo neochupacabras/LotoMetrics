@@ -1,39 +1,11 @@
 "use server";
 
-import { createHash } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
-import { createAdminClient, createClient } from "@/lib/supabase/server";
-
+import { createClient } from "@/lib/supabase/server";
 // SEC-006 (auditoria 27/10/2026): rate limit por IP em cadastro e reset de
-// senha — reaproveita o RPC consumir_rate_limit (migration 20261028000000),
-// executado pelo service role. Fail-open: se o RPC falhar, deixa passar
-// (melhor que travar gente legítima) e registra no console. Isto é defesa em
-// profundidade sobre os limites embutidos do Supabase Auth; não os substitui.
-async function dentroDoLimitePorIp(
-  prefixo: string,
-  max: number,
-  janelaSegundos: number
-): Promise<boolean> {
-  try {
-    const forwarded = (await headers()).get("x-forwarded-for") ?? "";
-    const ip = forwarded.split(",")[0]?.trim() || "desconhecido";
-    const ipHash = createHash("sha256").update(ip).digest("hex").slice(0, 32);
-    const { data, error } = await createAdminClient().rpc("consumir_rate_limit", {
-      p_chave: `${prefixo}:${ipHash}`,
-      p_max: max,
-      p_janela_segundos: janelaSegundos,
-    });
-    if (error) {
-      console.error("rate limit indisponível:", error.message);
-      return true;
-    }
-    return data !== false;
-  } catch {
-    return true;
-  }
-}
+// senha — helper compartilhado em lib/rate-limit.ts (fail-open).
+import { dentroDoLimitePorIp } from "@/lib/rate-limit";
 
 // SEC-005: mensagem única para cadastro, igual quer o e-mail seja novo ou já
 // exista — impede enumeração de e-mails cadastrados pela resposta.
