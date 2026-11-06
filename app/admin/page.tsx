@@ -6,6 +6,7 @@ import {
   getUltimosJobRuns,
   getSaudeErros,
   getUsoFerramentasComparado,
+  getMetricasPwa,
   type KpiComparado,
   type StatusSaude,
 } from "@/lib/admin/queries";
@@ -37,6 +38,13 @@ const NOME_JOB: Record<string, string> = {
   cron_relatorio: "Relatório mensal",
   revalidar: "Revalidar cache",
   importador_resultados: "Importador de resultados",
+};
+
+const NOME_PLATAFORMA: Record<string, string> = {
+  ios: "iPhone/iPad",
+  android: "Android",
+  desktop: "Computador",
+  outro: "Outros",
 };
 
 function statusGeral(statuses: StatusSaude[]): StatusSaude {
@@ -127,7 +135,7 @@ export default async function AdminOverviewPage({
   const periodoId: PeriodoId = ehPeriodoId(sp.period) ? sp.period : "30d";
   const periodo = resolverPeriodo(periodoId, sp.from, sp.to);
 
-  const [kpis, frescor, jobs, ultimosJobs, erros, usoFerramentas, mrr, pagamentos, receitaPeriodo] = await Promise.all([
+  const [kpis, frescor, jobs, ultimosJobs, erros, usoFerramentas, mrr, pagamentos, receitaPeriodo, pwa] = await Promise.all([
     getKpisExecutivos(periodo),
     getFrescorLoterias(),
     getSaudeJobs(),
@@ -137,6 +145,7 @@ export default async function AdminOverviewPage({
     getMrrAtual(),
     getSaudePagamentos(),
     getReceitaPeriodo(periodo),
+    getMetricasPwa(periodo),
   ]);
   const dadosLoteriasStatus = statusGeral(frescor.map((f) => f.status));
   const jobsStatus = statusGeral(jobs.map((j) => j.status));
@@ -241,6 +250,29 @@ export default async function AdminOverviewPage({
         *Só as ferramentas com paywall estão instrumentadas até agora (gerador, simulador,
         conferidor, OCR, exportação CSV, relatório PDF) — não é o total das 16 ferramentas do site.
       </p>
+
+      <p className={styles.sectionTitle}>Aplicativo (PWA)</p>
+      <p className={styles.note}>
+        Contagem a partir de 06/11/2026 (quando o app foi lançado). Instalações confirmadas só
+        existem no Chrome/Edge/Samsung — o Safari do iPhone não avisa a instalação, então o
+        iPhone entra pelos <strong>apps abertos</strong>: aparelhos distintos que abriram o app
+        pelo ícone da tela inicial. Desinstalação não é detectável; o acumulado só cresce.
+      </p>
+      <div className={styles.kpiGrid}>
+        <KpiComparadoCell label="Instalações confirmadas (Android/PC)" dado={pwa.instalacoesConfirmadas} />
+        <KpiComparadoCell label="Apps abertos no período" dado={pwa.appsAbertosNoPeriodo} />
+        <Kpi label="Apps já abertos (acumulado)" value={pwa.appsJaAbertos} />
+        <Kpi label="Aparelhos com notificação" value={pwa.pushInscricoes} />
+        <Kpi label="… ligados a uma conta" value={pwa.pushComConta} />
+      </div>
+      {pwa.porPlataforma.length > 0 && (
+        <p className={styles.note}>
+          Apps já abertos por plataforma:{" "}
+          {pwa.porPlataforma
+            .map((p) => `${NOME_PLATAFORMA[p.plataforma] ?? p.plataforma}: ${p.apps.toLocaleString("pt-BR")}`)
+            .join(" · ")}
+        </p>
+      )}
 
       <p className={styles.sectionTitle}>Frescor de dados por loteria</p>
       <p className={styles.note}>

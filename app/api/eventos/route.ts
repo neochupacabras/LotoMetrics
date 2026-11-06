@@ -22,6 +22,8 @@ const EVENTOS_PERMITIDOS = new Set<ToolEventName>([
   "limit_reached",
   "bolao_public_view",
   "bolao_shared",
+  "pwa_installed",
+  "pwa_open",
 ]);
 
 export async function POST(request: Request) {

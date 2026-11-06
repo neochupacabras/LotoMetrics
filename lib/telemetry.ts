@@ -54,7 +54,14 @@ export type ToolEventName =
   | "bolao_created"
   | "bolao_public_view"
   | "bolao_shared"
-  | "participant_email_added";
+  | "participant_email_added"
+  // App instalado (PWA), emitidos por components/pwa/PwaProvider.tsx:
+  // pwa_installed = evento `appinstalled` do navegador (só Chrome/Edge/
+  // Samsung — o Safari do iPhone não avisa); pwa_open = app aberto pelo
+  // ícone (modo standalone), no máx. 1x/dia por aparelho, com
+  // metadata.instalacaoId (UUID guardado no aparelho) e metadata.plataforma.
+  | "pwa_installed"
+  | "pwa_open";
 
 export interface LogToolEventInput {
   eventName: ToolEventName;

@@ -476,3 +476,63 @@ export async function getFrescorLoterias(): Promise<FrescorLoteria[]> {
     };
   });
 }
+
+// ── Aplicativo (PWA) ─────────────────────────────────────────────────────────
+// Eventos emitidos por components/pwa/PwaProvider.tsx (ver lib/telemetry.ts):
+//  - pwa_installed: confirmação de instalação do navegador — só Chrome/Edge/
+//    Samsung (Android e computador). O Safari do iPhone não emite.
+//  - pwa_open: app aberto pelo ícone, 1x/dia por aparelho, com
+//    metadata.instalacaoId. Contar ids distintos é o que pega o iPhone.
+// Desinstalação não é detectável: "instalados já abertos" é acumulado; o
+// número que reflete uso real é o de apps abertos no período.
+
+export interface MetricasPwa {
+  instalacoesConfirmadas: KpiComparado;
+  appsAbertosNoPeriodo: KpiComparado;
+  appsJaAbertos: number;
+  porPlataforma: { plataforma: string; apps: number }[];
+  pushInscricoes: number;
+  pushComConta: number;
+}
+
+async function contarAppsAbertos(from: Date | null, to: Date | null): Promise<number> {
+  const { rows } = await pool.query<{ count: string }>(
+    `SELECT count(DISTINCT metadata->>'instalacaoId') FROM product_events
+     WHERE event_name = 'pwa_open' AND metadata->>'instalacaoId' IS NOT NULL
+       AND ($1::timestamptz IS NULL OR created_at >= $1) AND ($2::timestamptz IS NULL OR created_at < $2)`,
+    [from, to]
+  );
+  return Number(rows[0]?.count ?? 0);
+}
+
+export async function getMetricasPwa(periodo: Periodo): Promise<MetricasPwa> {
+  const [instAtual, instAnterior, abertosAtual, abertosAnterior, jaAbertos, plataformas, push] = await Promise.all([
+    contarEventosNoPeriodo("pwa_installed", periodo.from, periodo.to),
+    contarEventosNoPeriodo("pwa_installed", periodo.fromAnterior, periodo.toAnterior),
+    contarAppsAbertos(periodo.from, periodo.to),
+    contarAppsAbertos(periodo.fromAnterior, periodo.toAnterior),
+    contarAppsAbertos(null, null),
+    pool.query<{ plataforma: string; apps: string }>(
+      `SELECT coalesce(metadata->>'plataforma', 'outro') AS plataforma,
+              count(DISTINCT metadata->>'instalacaoId') AS apps
+       FROM product_events
+       WHERE event_name = 'pwa_open' AND metadata->>'instalacaoId' IS NOT NULL
+       GROUP BY 1 ORDER BY 2 DESC`
+    ),
+    // Tabela de push pode não existir num banco de desenvolvimento antigo.
+    pool
+      .query<{ total: string; com_conta: string }>(
+        `SELECT count(*) AS total, count(user_id) AS com_conta FROM push_inscricoes`
+      )
+      .catch(() => ({ rows: [{ total: "0", com_conta: "0" }] })),
+  ]);
+
+  return {
+    instalacoesConfirmadas: { atual: instAtual, anterior: instAnterior, variacaoPct: variacaoPct(instAtual, instAnterior) },
+    appsAbertosNoPeriodo: { atual: abertosAtual, anterior: abertosAnterior, variacaoPct: variacaoPct(abertosAtual, abertosAnterior) },
+    appsJaAbertos: jaAbertos,
+    porPlataforma: plataformas.rows.map((r) => ({ plataforma: r.plataforma, apps: Number(r.apps) })),
+    pushInscricoes: Number(push.rows[0]?.total ?? 0),
+    pushComConta: Number(push.rows[0]?.com_conta ?? 0),
+  };
+}
