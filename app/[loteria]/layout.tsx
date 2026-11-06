@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Masthead from "@/components/Masthead";
+import SeletorLoteria from "@/components/pwa/SeletorLoteria";
 import { isCodigoLoteriaValido, LOTERIAS } from "@/lib/format";
 
 // Sem isto, o segmento dinâmico [loteria] nunca é elegível para cache —
@@ -27,6 +28,8 @@ export default async function LoteriaLayout({
   return (
     <>
       <Masthead loteriaAtiva={loteria} />
+      {/* Só no celular (app/pwa.css): nome da loteria atual + troca. */}
+      <SeletorLoteria codigoLoteria={loteria} />
       <main>{children}</main>
     </>
   );
