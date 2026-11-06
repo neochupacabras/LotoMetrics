@@ -95,6 +95,7 @@ evento.
 - O SW só abre caminhos internos ao clicar numa notificação; o conteúdo da
   notificação de teste é fixo no servidor.
 - Inscrições com 404/410 são apagadas na hora; após 5 falhas seguidas, também.
+- O cabeçalho `Topic` (substitui avisos ainda não entregues) não é enviado para `*.push.apple.com`: a Apple responde `400 BadWebPushTopic` (visto em iPhone real em 06/11/2026).
 
 ## Colocar em produção (pendências externas)
 
@@ -134,7 +135,7 @@ existentes deixam de funcionar (e são limpas aos poucos pelos 404/410).
 | Firefox Android | instala via menu, push ✓ | — | Firefox desktop não instala |
 
 ## Limitações conhecidas
-- iOS não tem prompt de instalação programático: só instruções.
+- iOS não tem prompt de instalação programático: só instruções. No Safari atual: três tracinhos ao lado do endereço → Compartilhar → "Ver mais" → Adicionar à Tela de Início (texto em `BotaoInstalar.tsx`).
 - iOS: push exige app instalado e iOS 16.4+; no Chrome/Firefox do iPhone a instalação depende da versão do iOS.
 - Formulários e ferramentas que dependem do servidor (gerador, conferidor, simulador, conta) não funcionam offline — por decisão: não simulamos resultado sem dados oficiais. Nada é enfileirado para sincronizar depois (não há operação que faça sentido offline com segurança).
 - `/offline` e páginas guardadas podem estar desatualizadas (o aviso diz isso).
