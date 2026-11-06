@@ -147,3 +147,17 @@ existentes deixam de funcionar (e são limpas aos poucos pelos 404/410).
 - Queries de segmentação, `CHECK` de categoria pessoal, desvínculo, descarte após 5 falhas e deduplicação: testados em Postgres local dentro de transação.
 - Rotas `/api/push/*` exercitadas por HTTP (CSRF, SSRF, corpo grande, gravação, consulta) e envio real assinado ao FCM (inscrição inexistente → 404 → removida).
 - Navegador (build de produção, 375px e 1280px): barra inferior, folha "Mais", navegação/estado ativo, SW registrado, aviso de nova versão + atualização, offline com página salva e página nunca visitada, desktop sem alteração de layout.
+
+## Métricas no /admin
+Seção "Aplicativo (PWA)" na Overview (`getMetricasPwa` em `lib/admin/queries.ts`),
+a partir de dois eventos em `product_events` emitidos por `PwaProvider`:
+- `pwa_installed` — o navegador confirmou a instalação (`appinstalled`). Só
+  Chrome/Edge/Samsung; o Safari do iPhone não emite.
+- `pwa_open` — o app foi aberto pelo ícone (modo standalone), no máximo 1x por
+  dia por aparelho, com `metadata.instalacaoId` (UUID anônimo guardado no
+  aparelho) e `metadata.plataforma`.
+
+"Apps abertos" = `instalacaoId` distintos — é o que conta o iPhone. No iPhone
+cada instalação tem armazenamento próprio, então reinstalar gera um id novo; no
+Android o id é o do navegador do aparelho. Desinstalação não é detectável.
+Também mostra quantas inscrições push existem (e quantas ligadas a conta).

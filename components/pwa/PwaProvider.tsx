@@ -11,6 +11,7 @@ import {
   type Plataforma,
 } from "@/lib/pwa/cliente";
 import { gravarLocal, lerLocal, useLocal, useNoCliente } from "@/lib/pwa/armazenamento";
+import { enviarBeacon, obterOuCriarAnonymousId } from "@/lib/telemetria-cliente";
 
 // Estado do PWA compartilhado pela navegação inferior, convite de
 // instalação, tela de notificações etc.:
@@ -47,6 +48,19 @@ const PwaContext = createContext<EstadoPwa | null>(null);
 
 const CHAVE_INSTALADO = "la:pwa-instalado";
 const CHAVE_PRECACHE = "la:pwa-precache-offline";
+const CHAVE_ABERTURA = "la:pwa-ultima-abertura";
+const CHAVE_INSTALACAO_ID = "la:pwa-id";
+
+// Identificador anônimo do aparelho/instalação (UUID aleatório, sem dado
+// pessoal) — só para contar apps distintos no /admin. No iPhone cada app
+// instalado tem armazenamento próprio, então vale por instalação.
+function obterInstalacaoId(): string {
+  const existente = lerLocal(CHAVE_INSTALACAO_ID);
+  if (existente) return existente;
+  const novo = crypto.randomUUID();
+  gravarLocal(CHAVE_INSTALACAO_ID, novo);
+  return novo;
+}
 
 const semInscricao = () => () => {};
 
@@ -85,7 +99,21 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
   // que o app está instalado neste aparelho.
   useEffect(() => {
     document.documentElement.dataset.standalone = String(standalone);
-    if (standalone) gravarLocal(CHAVE_INSTALADO, "1");
+    if (!standalone) return;
+    gravarLocal(CHAVE_INSTALADO, "1");
+    // Métrica de apps instalados em uso (/admin): 1 evento por dia por
+    // aparelho. É o único sinal que existe no iPhone, onde o Safari não
+    // avisa a instalação.
+    const hoje = new Date().toISOString().slice(0, 10);
+    if (lerLocal(CHAVE_ABERTURA) !== hoje) {
+      gravarLocal(CHAVE_ABERTURA, hoje);
+      enviarBeacon({
+        eventName: "pwa_open",
+        tool: null,
+        anonymousId: obterOuCriarAnonymousId(),
+        metadata: { instalacaoId: obterInstalacaoId(), plataforma: detectarPlataforma() },
+      });
+    }
   }, [standalone]);
 
   // Instalação: beforeinstallprompt (Chrome/Edge/Samsung) e appinstalled.
@@ -102,6 +130,12 @@ export function PwaProvider({ children }: { children: React.ReactNode }) {
       promptRef.current = null;
       setPodeInstalarNativo(false);
       gravarLocal(CHAVE_INSTALADO, "1");
+      enviarBeacon({
+        eventName: "pwa_installed",
+        tool: null,
+        anonymousId: obterOuCriarAnonymousId(),
+        metadata: { instalacaoId: obterInstalacaoId(), plataforma: detectarPlataforma() },
+      });
     };
     window.addEventListener("beforeinstallprompt", aoPrompt);
     window.addEventListener("appinstalled", aoInstalar);
