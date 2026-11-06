@@ -138,3 +138,13 @@ export function IconeOffline({ className }: Props) {
     </svg>
   );
 }
+
+// "Ver mais" da folha de compartilhar do iOS (seta para baixo num círculo)
+export function IconeVerMais({ className }: Props) {
+  return (
+    <svg {...base} className={className} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="m8.5 10.5 3.5 3.5 3.5-3.5" />
+    </svg>
+  );
+}

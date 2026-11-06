@@ -1017,3 +1017,8 @@ html[data-sheet-aberto="true"] {
     animation: none !important;
   }
 }
+
+.pwa-passos__nota {
+  margin: 14px 0 0;
+  font-size: 0.82rem;
+}

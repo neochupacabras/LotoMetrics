@@ -3,7 +3,14 @@
 import { useRef, useState } from "react";
 import { usePwa } from "@/components/pwa/PwaProvider";
 import { ehSafariIOS } from "@/lib/pwa/cliente";
-import { IconeAdicionarIOS, IconeCompartilharIOS, IconeInstalar, IconeMenuVertical } from "@/components/pwa/Icones";
+import {
+  IconeAdicionarIOS,
+  IconeCompartilharIOS,
+  IconeInstalar,
+  IconeMais,
+  IconeMenuVertical,
+  IconeVerMais,
+} from "@/components/pwa/Icones";
 
 // "Instalar aplicativo": um único componente para todas as plataformas.
 //  - Chrome/Edge/Samsung (Android e desktop): dispara o diálogo nativo
@@ -92,28 +99,42 @@ export function InstrucoesInstalacao({ plataforma }: { plataforma: string }) {
         </p>
       );
     }
+    // Safari atual (iOS 26): o Compartilhar fica dentro do menu ao lado do
+    // endereço, e "Adicionar à Tela de Início" fica escondido em "Ver mais".
     return (
-      <ol className="pwa-passos pwa-passos--ios">
-        <li>
-          <span className="pwa-passos__icone"><IconeCompartilharIOS /></span>
-          <span>
-            Toque em <strong>Compartilhar</strong> na barra do Safari (embaixo no iPhone, em cima no iPad).
-          </span>
-        </li>
-        <li>
-          <span className="pwa-passos__icone"><IconeAdicionarIOS /></span>
-          <span>
-            Role a lista e escolha <strong>Adicionar à Tela de Início</strong>.
-          </span>
-        </li>
-        <li>
-          <span className="pwa-passos__icone pwa-passos__icone--texto">Adicionar</span>
-          <span>
-            Confirme em <strong>Adicionar</strong>. O ícone aparece na tela inicial — abra por ele para
-            usar em tela cheia e receber notificações.
-          </span>
-        </li>
-      </ol>
+      <>
+        <ol className="pwa-passos pwa-passos--ios">
+          <li>
+            <span className="pwa-passos__icone"><IconeMais /></span>
+            <span>
+              Toque nos <strong>três tracinhos</strong> ao lado esquerdo do endereço da página.
+            </span>
+          </li>
+          <li>
+            <span className="pwa-passos__icone"><IconeCompartilharIOS /></span>
+            <span>
+              Escolha <strong>Compartilhar</strong>.
+            </span>
+          </li>
+          <li>
+            <span className="pwa-passos__icone"><IconeVerMais /></span>
+            <span>
+              Toque na setinha para baixo, <strong>Ver mais</strong>.
+            </span>
+          </li>
+          <li>
+            <span className="pwa-passos__icone"><IconeAdicionarIOS /></span>
+            <span>
+              Escolha <strong>Adicionar à Tela de Início</strong> e confirme. Abra pelo ícone na tela
+              inicial para usar em tela cheia e receber notificações.
+            </span>
+          </li>
+        </ol>
+        <p className="pwa-dialogo__texto pwa-passos__nota">
+          Em versões anteriores do iOS, o botão <strong>Compartilhar</strong> fica direto na barra do
+          Safari; depois é só rolar a lista até “Adicionar à Tela de Início”.
+        </p>
+      </>
     );
   }
 

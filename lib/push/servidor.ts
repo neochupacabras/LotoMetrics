@@ -58,6 +58,14 @@ function topico(tag: string): string {
   return tag.replace(/[^A-Za-z0-9_-]/g, "-").slice(0, 32);
 }
 
+function ehApple(endpoint: string): boolean {
+  try {
+    return new URL(endpoint).hostname.endsWith(".push.apple.com");
+  } catch {
+    return false;
+  }
+}
+
 export async function enviarParaInscricao(
   inscricao: InscricaoRow,
   payload: PayloadPush,
@@ -69,9 +77,12 @@ export async function enviarParaInscricao(
   const opcoes = {
     TTL: opts.ttlSegundos ?? 60 * 60 * 12,
     urgency: opts.urgencia ?? "normal",
-    topic: topico(payload.tag),
+    // O serviço da Apple (web.push.apple.com) recusa o cabeçalho Topic com
+    // 400 {"reason":"BadWebPushTopic"} — visto no iPhone em 06/11/2026.
+    // Lá ele vai sem tópico; a tag da notificação já evita duplicadas na tela.
+    ...(ehApple(inscricao.endpoint) ? {} : { topic: topico(payload.tag) }),
     timeout: 10_000,
-  } as const;
+  };
 
   // 1 tentativa extra para erros transitórios (429 / 5xx / rede).
   for (let tentativa = 0; tentativa < 2; tentativa++) {
