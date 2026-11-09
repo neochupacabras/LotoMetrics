@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
-import { getConcursoPorNumero, getLoteriaPorCodigo } from "@/lib/queries";
-import { analisarConcurso } from "@/lib/analise-concurso";
+import { getConcursoPorNumero, getContextoConcurso, getLoteriaPorCodigo } from "@/lib/queries";
+import { montarResumoConcurso } from "@/lib/resumo-concurso";
+import type { Concurso } from "@/lib/types";
+import { analisarConcurso, type AnaliseConcurso } from "@/lib/analise-concurso";
 import { formatarData, formatarMoeda, isCodigoLoteriaValido } from "@/lib/format";
 import { SITE_URL, SITE_NAME, NOME_LOTERIA } from "@/lib/seo";
 
@@ -27,6 +29,41 @@ export async function generateStaticParams() {
   return [];
 }
 
+// Monta o resumo em texto do concurso — usado no corpo da página e na meta
+// description. As queries por trás (concurso anterior, análise, contexto) já
+// são deduplicadas/cacheadas, então chamar isto em generateMetadata e na
+// página não duplica trabalho no banco.
+async function carregarResumo(
+  codigoLoteria: string,
+  nomeLoteria: string,
+  loteria: { id: number; dezenaMax: number; gridColunas: number },
+  concurso: Concurso
+) {
+  const [concursoAnterior, contexto] = await Promise.all([
+    getConcursoPorNumero(loteria.id, concurso.numero - 1),
+    getContextoConcurso(loteria.id, concurso.numero),
+  ]);
+  const analise: AnaliseConcurso = await analisarConcurso(
+    loteria.id,
+    concurso.dezenas,
+    concursoAnterior?.dezenas ?? null,
+    { dezenaMax: loteria.dezenaMax, gridColunas: loteria.gridColunas }
+  );
+  const resumo = montarResumoConcurso({
+    codigoLoteria,
+    nomeLoteria,
+    concurso,
+    contexto,
+    repetidas: analise.repetidas,
+    pares: analise.pares,
+    impares: analise.impares,
+    percentualParImpar: analise.percentualParImpar,
+    soma: analise.soma,
+    percentualSoma: analise.percentualSoma,
+  });
+  return { analise, resumo };
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -47,13 +84,13 @@ export async function generateMetadata({
   const nomeLoteria = NOME_LOTERIA[codigoLoteria] ?? loteria.nome;
   const dezenasStr = concurso.dezenas.map((d) => String(d).padStart(2, "0")).join("-");
   const data = formatarData(concurso.dataSorteio);
-  const statusPremio = concurso.acumulado
-    ? "Acumulou — não teve ganhador na faixa principal."
-    : "Teve ganhador na faixa principal.";
+  const { resumo } = await carregarResumo(codigoLoteria, nomeLoteria, loteria, concurso);
 
   // Título otimizado para buscas como "resultado lotofácil 3200" e "lotofácil 3200 dezenas"
   const titulo = `Resultado ${nomeLoteria} ${concurso.numero} — ${data} — Dezenas: ${dezenasStr}`;
-  const descricao = `Resultado do concurso ${concurso.numero} da ${nomeLoteria} sorteado em ${data}. Dezenas: ${dezenasStr}. ${statusPremio} Confira a premiação por faixa, ganhadores e análise estatística completa.`;
+  // Manchete primeiro: é o que responde "acumulou?" / "quanto vai pagar"
+  // direto no resultado de busca.
+  const descricao = `${resumo.manchete}. Sorteio de ${data}, dezenas ${dezenasStr}. Premiação por faixa, próximo prêmio e análise estatística.`;
   const url = `${SITE_URL}/${codigoLoteria}/resultados/${concurso.numero}`;
   // Imagem própria com as dezenas sorteadas (app/[loteria]/resultados/[numero]/opengraph-image.tsx),
   // não a genérica do site — melhora o CTR do link compartilhado.
@@ -107,16 +144,22 @@ export default async function DetalheConcursoPage({
     notFound();
   }
 
-  const concursoAnterior = await getConcursoPorNumero(loteria.id, numero - 1);
-
-  const analise = await analisarConcurso(
-    loteria.id,
-    concurso.dezenas,
-    concursoAnterior?.dezenas ?? null,
-    { dezenaMax: loteria.dezenaMax, gridColunas: loteria.gridColunas }
-  );
-
   const nomeLoteria = NOME_LOTERIA[codigoLoteria] ?? loteria.nome;
+  const { analise, resumo } = await carregarResumo(codigoLoteria, nomeLoteria, loteria, concurso);
+
+  const urlPagina = `${SITE_URL}/${codigoLoteria}/resultados/${concurso.numero}`;
+  const newsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: resumo.manchete,
+    description: resumo.paragrafos[0],
+    datePublished: concurso.dataSorteio.slice(0, 10),
+    url: urlPagina,
+    mainEntityOfPage: { "@type": "WebPage", "@id": urlPagina },
+    image: [`${urlPagina}/opengraph-image`],
+    author: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
+    publisher: { "@type": "Organization", name: SITE_NAME, url: SITE_URL },
+  };
 
   return (
     <>
@@ -127,9 +170,15 @@ export default async function DetalheConcursoPage({
           { nome: `Concurso ${concurso.numero}`, caminho: `/${codigoLoteria}/resultados/${concurso.numero}` },
         ]}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(newsJsonLd).replace(/</g, "\\u003c") }}
+      />
     <div className="container secao">
       <p className="eyebrow">Boletim do concurso</p>
-      <h1 className="titulo-edicao">Concurso {concurso.numero}</h1>
+      <h1 className="titulo-edicao">
+        {nomeLoteria} {concurso.numero}
+      </h1>
       <p className="subtitulo-edicao">
         Sorteado em {formatarData(concurso.dataSorteio)}
         {concurso.localSorteio ? ` · ${concurso.localSorteio}` : ""}
@@ -164,6 +213,15 @@ export default async function DetalheConcursoPage({
           <span className="resultado-mes-sorte__valor">{concurso.mesSorte}</span>
         </div>
       )}
+
+      <section className="resumo-concurso" aria-labelledby="resumo-concurso-titulo">
+        <h2 id="resumo-concurso-titulo" className="resumo-concurso__manchete">
+          {resumo.manchete}
+        </h2>
+        {resumo.paragrafos.map((p, i) => (
+          <p key={i} className="resumo-concurso__texto">{p}</p>
+        ))}
+      </section>
 
       <h2 className="bloco__titulo" style={{ marginTop: "28px" }}>
         Análise estatística deste concurso
