@@ -121,6 +121,14 @@ describe("montarResumoConcurso", () => {
     expect(r.paragrafos[0]).toMatch(/^O Super Sete 2930, sorteado no sábado/);
   });
 
+  it("Super Sete não fala de repetidas nem de pares/ímpares", () => {
+    const r = montarResumoConcurso(entrada({ codigoLoteria: "supersete", nomeLoteria: "Super Sete" }));
+    const texto = r.paragrafos.join(" ");
+    expect(texto).not.toContain("repetiram");
+    expect(texto).not.toContain("pares");
+    expect(texto).toContain("Na faixa seguinte, 112 apostas fizeram 5 acertos");
+  });
+
   it("sem ganhador e sem acúmulo (concurso especial) explica a regra", () => {
     const r = montarResumoConcurso(entrada({ concurso: concursoBase({ acumulado: false }) }));
     expect(r.manchete).toBe("Resultado da Mega-Sena 2930");

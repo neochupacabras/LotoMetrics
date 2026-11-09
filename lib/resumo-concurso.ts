@@ -219,14 +219,17 @@ export function montarResumoConcurso(e: EntradaResumo): ResumoConcurso {
         : `Na faixa seguinte${dupla ? " do 1º sorteio" : ""}, ${frase}.`
     );
   }
-  if (e.repetidas !== null && e.repetidas > 0) {
+  // Super Sete sorteia um algarismo (0–9) por coluna: "dezenas repetidas" e
+  // pares/ímpares não dizem nada útil ao apostador, então ficam de fora.
+  const semEstatisticaDezenas = codigoLoteria === "supersete";
+  if (!semEstatisticaDezenas && e.repetidas !== null && e.repetidas > 0) {
     partes.push(
       e.repetidas === 1
         ? `Uma das dezenas repetiu o concurso anterior.`
         : `${e.repetidas} dezenas repetiram o concurso anterior.`
     );
   }
-  if (e.percentualParImpar !== null) {
+  if (!semEstatisticaDezenas && e.percentualParImpar !== null) {
     partes.push(
       `A divisão de ${plural(e.pares, "par", "pares")} e ${plural(e.impares, "ímpar", "ímpares")} aparece em ${percentual(e.percentualParImpar)} do histórico, e a soma ${e.soma}${
         e.percentualSoma !== null ? ` cai numa faixa que reúne ${percentual(e.percentualSoma)} dos concursos` : ""
