@@ -9091,3 +9091,26 @@ footer.rodape {
 .auth-senha__toggle:hover,
 .auth-senha__toggle:focus-visible { border-color: var(--pine); color: var(--pine); }
 .bolao-editor__linha { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+/* ---------- Resumo em texto do concurso (/[loteria]/resultados/[numero]) ---------- */
+.resumo-concurso {
+  max-width: 68ch;
+  margin: 28px 0 8px;
+  padding: 20px 0 4px;
+  border-top: 1px solid var(--line);
+}
+
+.resumo-concurso__manchete {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.35rem, 3vw, 1.7rem);
+  line-height: 1.2;
+  margin: 0 0 12px;
+}
+
+.resumo-concurso__texto {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ink);
+  margin: 0 0 12px;
+}

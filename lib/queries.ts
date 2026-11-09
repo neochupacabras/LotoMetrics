@@ -2,6 +2,7 @@ import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import pool from "./db";
 import { Concurso, ConcursoResumo, Loteria, PremiacaoFaixa } from "./types";
+import type { ContextoConcurso } from "./resumo-concurso";
 
 // unstable_cache (não o cache() do React, que só dedup dentro de uma
 // mesma requisição): esse cache persiste ENTRE requisições. É o que
@@ -253,6 +254,54 @@ export const getConcursoPorNumero = cache(
     const premiacoes = await getPremiacoes(rows[0].id);
     return { ...concurso, premiacoes };
   }
+);
+
+// Contexto histórico de um concurso para o resumo em texto
+// (lib/resumo-concurso.ts), olhando só para concursos ATÉ ele — assim a
+// página de um concurso antigo continua dizendo o que era verdade na época
+// e o resultado não muda com o tempo (combina com o ISR da página).
+// Uma query só; varre a faixa 1 de uma loteria (alguns milhares de linhas).
+// unstable_cache por (loteria, número): o site renderiza dinamicamente (ver
+// nota no topo), então sem isso a query rodaria a cada visita do Googlebot.
+export const getContextoConcurso = unstable_cache(
+  async (loteriaId: number, numero: number): Promise<ContextoConcurso | null> => {
+    const { rows } = await pool.query(
+      `WITH f1 AS (
+         SELECT c.numero, c.data_sorteio, pf.qtd_ganhadores, pf.valor_premio
+         FROM concurso c
+         JOIN premiacao_faixa pf ON pf.concurso_id = c.id AND pf.faixa = 1
+         WHERE c.loteria_id = $1 AND c.numero <= $2
+       ),
+       alvo AS (SELECT * FROM f1 WHERE numero = $2),
+       ultimo_ganhador AS (
+         SELECT COALESCE(MAX(numero), 0) AS n
+         FROM f1 WHERE qtd_ganhadores > 0 AND numero < $2
+       )
+       SELECT
+         (SELECT COUNT(*) FROM f1
+           WHERE qtd_ganhadores = 0 AND numero < $2
+             AND numero > (SELECT n FROM ultimo_ganhador))::int AS acumulados_antes,
+         (SELECT COUNT(*) FROM f1, alvo
+           WHERE alvo.qtd_ganhadores > 0 AND f1.qtd_ganhadores > 0
+             AND f1.valor_premio > alvo.valor_premio)::int AS maiores_historico,
+         (SELECT COUNT(*) FROM f1, alvo
+           WHERE alvo.qtd_ganhadores > 0 AND f1.qtd_ganhadores > 0
+             AND f1.valor_premio > alvo.valor_premio
+             AND date_part('year', f1.data_sorteio) = date_part('year', alvo.data_sorteio))::int AS maiores_ano,
+         (SELECT qtd_ganhadores FROM alvo) AS ganhadores_alvo`,
+      [loteriaId, numero]
+    );
+    const r = rows[0];
+    if (!r || r.ganhadores_alvo === null) return null;
+    const teveGanhador = Number(r.ganhadores_alvo) > 0;
+    return {
+      acumuladosAntes: r.acumulados_antes,
+      premiosMaioresHistorico: teveGanhador ? r.maiores_historico : null,
+      premiosMaioresAno: teveGanhador ? r.maiores_ano : null,
+    };
+  },
+  ["contexto-concurso"],
+  { tags: ["concursos"], revalidate: 86400 }
 );
 
 export async function getConcursosPaginado(
