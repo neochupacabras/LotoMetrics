@@ -139,4 +139,36 @@ describe("montarResumoConcurso", () => {
     expect(r.manchete).toBe("Mega-Sena 2930 acumula");
     expect(r.paragrafos).toEqual(["A Mega-Sena 2930, sorteada no sábado (07/11), acumulou."]);
   });
+
+  it("Dupla Sena separa 1º e 2º sorteio (caso real do concurso 3029)", () => {
+    const c = concursoBase({
+      numero: 3029,
+      dataSorteio: "2026-11-06",
+      dataProximoConcurso: "2026-11-09",
+      valorEstimadoProximo: 11_600_000,
+      premiacoes: [
+        { faixa: 1, descricaoFaixa: "6 acertos", qtdGanhadores: 0, valorPremio: 0 },
+        { faixa: 2, descricaoFaixa: "5 acertos", qtdGanhadores: 21, valorPremio: 5249.02 },
+        { faixa: 5, descricaoFaixa: "6 acertos", qtdGanhadores: 1, valorPremio: 121252.46 },
+      ],
+    });
+    const r = montarResumoConcurso(
+      entrada({
+        codigoLoteria: "duplasena",
+        nomeLoteria: "Dupla Sena",
+        concurso: c,
+        contexto: { acumuladosAntes: 40, premiosMaioresHistorico: null, premiosMaioresAno: null },
+      })
+    );
+    expect(r.paragrafos[0]).toMatch(
+      /^A Dupla Sena 3029, sorteada na sexta-feira \(06\/11\), acumulou: ninguém fez 6 acertos no 1º sorteio\. É a 41ª vez seguida sem ganhador no 1º sorteio\. No 2º sorteio, 1 aposta fez 6 acertos e leva R\$\s121\.252,46\.$/
+    );
+    expect(r.paragrafos[2]).toMatch(/^Na faixa seguinte do 1º sorteio, 21 apostas fizeram 5 acertos/);
+  });
+
+  it("outras loterias não ganham ressalva de sorteio", () => {
+    const r = montarResumoConcurso(entrada());
+    expect(r.paragrafos.join(" ")).not.toContain("sorteio,");
+    expect(r.paragrafos[0]).not.toContain("1º sorteio");
+  });
 });

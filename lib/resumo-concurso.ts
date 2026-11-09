@@ -121,6 +121,12 @@ export function montarResumoConcurso(e: EntradaResumo): ResumoConcurso {
     : null;
   const dataProximo = diaComData(concurso.dataProximoConcurso);
   const semGanhador = faixa1 !== null && faixa1.qtdGanhadores === 0;
+  // Dupla Sena: faixas 1–4 são do 1º sorteio e 5–8 do 2º (sena = faixa 5).
+  // Sem essa ressalva, "ninguém fez 6 acertos" mentiria quando a sena do 2º
+  // sorteio teve ganhador.
+  const dupla = codigoLoteria === "duplasena";
+  const no1Sorteio = dupla ? " no 1º sorteio" : "";
+  const sena2 = dupla ? concurso.premiacoes.find((p) => p.faixa === 5) ?? null : null;
 
   // ── Manchete ──
   let manchete: string;
@@ -152,10 +158,10 @@ export function montarResumoConcurso(e: EntradaResumo): ResumoConcurso {
   if (faixa1) {
     if (semGanhador) {
       p1 += concurso.acumulado
-        ? `${acumulou}: ${frasePremioFaixa(faixa1, true)}.`
-        : `: ${frasePremioFaixa(faixa1, true)}, mas pelas regras deste concurso o prêmio principal não acumula.`;
+        ? `${acumulou}: ${frasePremioFaixa(faixa1, true)}${no1Sorteio}.`
+        : `: ${frasePremioFaixa(faixa1, true)}${no1Sorteio}, mas pelas regras deste concurso o prêmio principal não acumula.`;
     } else {
-      p1 += `: ${frasePremioFaixa(faixa1, true)}.`;
+      p1 += `: ${frasePremioFaixa(faixa1, true)}${no1Sorteio}.`;
     }
   } else {
     p1 += concurso.acumulado ? `${acumulou}.` : `${sorteadoEm ? "," : ""} teve o resultado divulgado.`;
@@ -164,10 +170,15 @@ export function montarResumoConcurso(e: EntradaResumo): ResumoConcurso {
   if (contexto) {
     if (concurso.acumulado && semGanhador) {
       const seguidas = contexto.acumuladosAntes + 1;
-      if (seguidas >= 2) p1 += ` É a ${ordinal(seguidas)} vez seguida sem ganhador.`;
+      if (seguidas >= 2) p1 += ` É a ${ordinal(seguidas)} vez seguida sem ganhador${no1Sorteio}.`;
     } else if (faixa1 && faixa1.qtdGanhadores > 0 && contexto.acumuladosAntes >= 2) {
       p1 += ` O prêmio vinha acumulado havia ${contexto.acumuladosAntes} concursos.`;
     }
+  }
+
+  if (sena2) p1 += ` No 2º sorteio, ${frasePremioFaixa(sena2, true)}.`;
+
+  if (contexto) {
 
     // Ranking só faz sentido com ganhador; valores são nominais (sem
     // correção pela inflação), então "da história" é por aposta e em valores
@@ -202,7 +213,11 @@ export function montarResumoConcurso(e: EntradaResumo): ResumoConcurso {
   const partes: string[] = [];
   if (faixa2) {
     const frase = frasePremioFaixa(faixa2, false);
-    partes.push(frase.endsWith(".") ? frase : `Na faixa seguinte, ${frase}.`);
+    partes.push(
+      frase.endsWith(".")
+        ? `${frase.slice(0, -1)}${no1Sorteio}.`
+        : `Na faixa seguinte${dupla ? " do 1º sorteio" : ""}, ${frase}.`
+    );
   }
   if (e.repetidas !== null && e.repetidas > 0) {
     partes.push(
