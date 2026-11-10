@@ -30,7 +30,7 @@ import logging
 import os
 import sys
 import time
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 
 import psycopg2
@@ -184,7 +184,23 @@ def obter_ultimo_numero_salvo(conn, loteria_id: int) -> int:
         return cur.fetchone()[0]
 
 
+# Sorteios anteriores ao Real (1o/07/1994) vem da Caixa em cruzeiros reais
+# (CR$). Na pratica so os concursos 1 a 28 da Quina. Converte para reais na
+# taxa oficial (R$ 1 = CR$ 2.750), a mesma da migration
+# 20261111000000_quina_cruzeiro_real.sql, para uma reimportacao nao trazer os
+# valores antigos de volta.
+DATA_INICIO_REAL = date(1994, 7, 1)
+CRUZEIROS_REAIS_POR_REAL = 2750
+
+
+def converter_moeda_antiga(valor, data_sorteio):
+    if valor is None or data_sorteio is None or data_sorteio >= DATA_INICIO_REAL:
+        return valor
+    return round(float(valor) / CRUZEIROS_REAIS_POR_REAL, 2)
+
+
 def salvar_concurso(conn, loteria_id: int, dados: dict) -> None:
+    data_sorteio = parse_data(dados.get("dataApuracao"))
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -214,15 +230,15 @@ def salvar_concurso(conn, loteria_id: int, dados: dict) -> None:
             (
                 loteria_id,
                 dados.get("numero"),
-                parse_data(dados.get("dataApuracao")),
+                data_sorteio,
                 parse_dezenas(dados.get("listaDezenas")),
                 parse_dezenas(dados.get("dezenasSorteadasOrdemSorteio")),
                 dados.get("acumulado", False),
                 sanitizar_texto(dados.get("localSorteio")),
                 sanitizar_texto(dados.get("nomeMunicipioUFSorteio")),
-                dados.get("valorArrecadado"),
-                dados.get("valorAcumuladoProximoConcurso"),
-                dados.get("valorEstimadoProximoConcurso"),
+                converter_moeda_antiga(dados.get("valorArrecadado"), data_sorteio),
+                converter_moeda_antiga(dados.get("valorAcumuladoProximoConcurso"), data_sorteio),
+                converter_moeda_antiga(dados.get("valorEstimadoProximoConcurso"), data_sorteio),
                 parse_data(dados.get("dataProximoConcurso")),
                 sanitizar_texto(dados.get("nomeTimeCoracaoMesSorte")),  # campo exclusivo do Dia de Sorte / Timemania
                 parse_dezenas(dados.get("trevosSorteados")),  # campo exclusivo da +Milionária
@@ -243,7 +259,7 @@ def salvar_concurso(conn, loteria_id: int, dados: dict) -> None:
                     faixa.get("faixa"),
                     faixa.get("descricaoFaixa"),
                     faixa.get("numeroDeGanhadores", 0),
-                    faixa.get("valorPremio", 0),
+                    converter_moeda_antiga(faixa.get("valorPremio", 0), data_sorteio),
                 ),
             )
     conn.commit()
