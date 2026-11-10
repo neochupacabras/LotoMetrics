@@ -203,7 +203,12 @@ export async function simularHistorico(
   return resultado;
 }
 
-async function simularHistoricoInterno(
+// Exportada para a rota do card (app/api/simulador/card), que precisa do
+// mesmo cálculo sem gravar tool_completed: cada card gerado, e cada prévia
+// de link que o WhatsApp busca, não é uma simulação feita por alguém. Como o
+// arquivo é "use server", ela também fica disponível como ação, com o mesmo
+// poder de simularHistorico (só sem o registro).
+export async function simularHistoricoInterno(
   codigoLoteria: string,
   dezenas: number[],
   limiteHistorico?: number,

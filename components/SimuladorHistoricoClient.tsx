@@ -12,6 +12,7 @@ import { formatarDezena, preposicaoLoteria } from "@/lib/format";
 import SeletorColunasSuperSete from "./SeletorColunasSuperSete";
 import { jogoParaTexto, lerJogoDigitado } from "@/lib/jogo-digitado";
 import { enviarBeacon, obterOuCriarAnonymousId } from "@/lib/telemetria-cliente";
+import CompartilharJogoSimulador from "./CompartilharJogoSimulador";
 import "./simulador-campo.css";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -229,8 +230,9 @@ interface Props {
   // Texto da página (explicação, aviso do plano Free) mostrado logo depois
   // do campo de digitar, para o campo ficar acima da dobra no celular.
   introducao?: ReactNode;
-  // Jogo vindo do link compartilhado (?jogo=05-12-23-34-41-60).
+  // Jogo vindo do link compartilhado (?jogo=05-12-23-34-41-60&t=1-4).
   jogoInicial?: string | null;
+  trevosIniciais?: number[];
 }
 
 type Modo = "simples" | "comparar";
@@ -252,7 +254,7 @@ function exemploJogo(min: number, max: number, qtd: number, superSete: boolean):
 export default function SimuladorHistoricoClient({
   codigoLoteria, nomeLoteria, dezenaMin, dezenaMax,
   qtdDezenasSorteadas, limiteHistorico = null, logado = false, premium = false,
-  introducao, jogoInicial = null,
+  introducao, jogoInicial = null, trevosIniciais = [],
 }: Props) {
   const [modo, setModo] = useState<Modo>("simples");
   const usaTrevos = codigoLoteria === "maismilionaria";
@@ -277,7 +279,7 @@ export default function SimuladorHistoricoClient({
   const [selA, setSelA] = useState<Set<number>>(() =>
     ehSuperSete ? new Set() : new Set(lerJogoDigitado(jogoInicial ?? "", configJogo).numeros)
   );
-  const [trevosA, setTrevosA] = useState<Set<number>>(new Set());
+  const [trevosA, setTrevosA] = useState<Set<number>>(() => new Set(trevosIniciais));
   const [colA, setColA] = useState<number[]>(() => {
     const l = lerJogoDigitado(jogoInicial ?? "", configJogo);
     return ehSuperSete && l.completo ? l.numeros : [0, 0, 0, 0, 0, 0, 0];
@@ -617,6 +619,15 @@ export default function SimuladorHistoricoClient({
               <BotaoSalvar codigoLoteria={codigoLoteria} dezenas={dezenasA} logado={logado} />
             </div>
           </div>
+
+          <CompartilharJogoSimulador
+            codigoLoteria={codigoLoteria}
+            emLoteria={`${prepEm} ${nomeLoteria}`}
+            dezenas={dezenasA}
+            trevos={usaTrevos ? Array.from(trevosA) : []}
+            superSete={ehSuperSete}
+            onCompartilhar={(canal) => medirInicio("simulador", { etapa: "compartilhar", canal })}
+          />
 
           <InsightCallout kicker="Traduzindo pra reais">
             Se você tivesse jogado esse jogo desde sempre, {resultado.saldoFinal >= 0
