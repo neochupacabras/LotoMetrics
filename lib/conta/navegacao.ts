@@ -2,8 +2,8 @@
 // (desktop/tablet), a barra inferior e a folha "Conta" (celular).
 //
 // Só entram aqui rotas que EXISTEM. As seções planejadas na proposta
-// (docs/membros/REDESIGN_AREA_MEMBROS.md) — Ferramentas, Loterias,
-// Alertas, Perfil — são acrescentadas conforme cada uma for entregue.
+// (docs/membros/REDESIGN_AREA_MEMBROS.md) — Ferramentas e Loterias — são
+// acrescentadas conforme cada uma for entregue.
 
 export type IconeNav =
   | "painel"
@@ -11,7 +11,9 @@ export type IconeNav =
   | "bolao"
   | "desempenho"
   | "assinatura"
-  | "api";
+  | "api"
+  | "alertas"
+  | "perfil";
 
 export interface ItemNav {
   href: string;
@@ -45,6 +47,7 @@ export const NAV_MEMBROS: GrupoNav[] = [
         ativoEm: ["/conta/carteira", "/conta/meu-ano"],
         premium: true,
       },
+      { href: "/conta/alertas", rotulo: "Alertas", icone: "alertas" },
     ],
   },
   {
@@ -52,6 +55,12 @@ export const NAV_MEMBROS: GrupoNav[] = [
     itens: [
       { href: "/conta/assinatura", rotulo: "Assinatura", icone: "assinatura" },
       { href: "/conta/api", rotulo: "API de dados", icone: "api", premium: true },
+      {
+        href: "/conta/perfil",
+        rotulo: "Perfil e segurança",
+        icone: "perfil",
+        ativoEm: ["/conta/perfil", "/conta/nova-senha"],
+      },
     ],
   },
 ];

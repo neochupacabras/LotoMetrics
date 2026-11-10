@@ -105,8 +105,22 @@ export async function forgotPassword(formData: FormData) {
     return { error: "Muitas tentativas. Aguarde alguns minutos." };
   }
 
+  // Destino em cookie, como no cadastro: com ?next= no redirectTo a URL
+  // deixa de bater com a lista de Redirect URLs do Supabase (só
+  // `${SITE_URL}/auth/callback`, exato) e ele manda a pessoa para a home sem
+  // abrir a sessão. /auth/callback lê o cookie e leva a /conta/nova-senha.
+  // Se o link for aberto em outro aparelho (sem o cookie), a pessoa cai em
+  // /conta já logada e troca a senha em Perfil e segurança.
+  (await cookies()).set(COOKIE_DESTINO_CADASTRO, "/conta/nova-senha", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60,
+  });
+
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${SITE_URL}/auth/callback?next=/conta/nova-senha`,
+    redirectTo: `${SITE_URL}/auth/callback`,
   });
 
   if (error) {
@@ -127,8 +141,8 @@ export async function updatePassword(formData: FormData) {
     return { error: traduzirErroAuth(error.message) };
   }
 
-  revalidatePath("/conta");
-  redirect("/conta");
+  revalidatePath("/conta", "layout");
+  redirect("/conta/perfil?senha=alterada");
 }
 
 // ── Helper: traduzir mensagens de erro do Supabase ────────────────────────────
