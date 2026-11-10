@@ -28,18 +28,44 @@ export function descreverResultado(r: ResumoResultadoBolao): string {
   return `Melhor jogo: ${acertos} — ${r.premiados} jogo${r.premiados !== 1 ? "s" : ""} premiado${r.premiados !== 1 ? "s" : ""}`;
 }
 
+// Dados do convite (antes do sorteio): o que o grupo precisa saber para
+// decidir se entra — qual concurso, quanto custa a cota e quantos jogos.
+export interface ConviteBolao {
+  alvo: string;
+  concursoAlvo: number | null;
+  valorCotaCents: number;
+  qtdCotas: number;
+  totalJogos?: number | null;
+}
+
+export function descreverConcursoAlvo(alvo: string, concursoAlvo: number | null): string | null {
+  if (alvo === "virada") return "Mega da Virada";
+  return concursoAlvo ? `concurso ${concursoAlvo}` : null;
+}
+
 export function montarMensagemWhatsapp(opts: {
   titulo: string;
   nomeLoteria: string;
   url: string;
   resultado?: ResumoResultadoBolao | null;
+  convite?: ConviteBolao | null;
 }): string {
-  const { titulo, nomeLoteria, url, resultado } = opts;
+  const { titulo, nomeLoteria, url, resultado, convite } = opts;
   if (resultado) {
     return [
       `Resultado do bolão "${titulo}" (${nomeLoteria}, concurso ${resultado.concurso}):`,
       descreverResultado(resultado),
       "Confira os jogos e o rateio:",
+      url,
+    ].join("\n");
+  }
+  if (convite) {
+    const concurso = descreverConcursoAlvo(convite.alvo, convite.concursoAlvo);
+    const jogos = convite.totalJogos ? `${convite.totalJogos} jogos · ` : "";
+    return [
+      `Bolão "${titulo}" (${nomeLoteria}${concurso ? `, ${concurso}` : ""})`,
+      `${jogos}cota de ${formatarMoedaCents(convite.valorCotaCents)} (${convite.qtdCotas} cotas)`,
+      "Quem quiser entrar, me avisa. Os jogos e quem já pagou estão aqui:",
       url,
     ].join("\n");
   }

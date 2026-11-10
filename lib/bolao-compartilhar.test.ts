@@ -64,3 +64,45 @@ describe("mensagem do WhatsApp", () => {
     expect(u).toBe("https://wa.me/?text=a%20b%0Ac%26d");
   });
 });
+
+describe("mensagem de convite", () => {
+  it("traz concurso, jogos, cota e link", () => {
+    const m = montarMensagemWhatsapp({
+      titulo: "Bolão da Firma",
+      nomeLoteria: "Mega-Sena",
+      url: "https://x/b/abc",
+      convite: { alvo: "virada", concursoAlvo: null, valorCotaCents: 6300, qtdCotas: 20, totalJogos: 210 },
+    }).replace(/\u00a0/g, " ");
+    expect(m.split("\n")).toEqual([
+      'Bolão "Bolão da Firma" (Mega-Sena, Mega da Virada)',
+      "210 jogos · cota de R$ 63,00 (20 cotas)",
+      "Quem quiser entrar, me avisa. Os jogos e quem já pagou estão aqui:",
+      "https://x/b/abc",
+    ]);
+  });
+
+  it("concurso numerado, sem total de jogos", () => {
+    const m = montarMensagemWhatsapp({
+      titulo: "B",
+      nomeLoteria: "Lotofácil",
+      url: "u",
+      convite: { alvo: "numero", concursoAlvo: 3500, valorCotaCents: 1000, qtdCotas: 5 },
+    }).replace(/\u00a0/g, " ");
+    expect(m).toContain("(Lotofácil, concurso 3500)");
+    expect(m).toContain("cota de R$ 10,00 (5 cotas)");
+  });
+
+  it("o resultado tem prioridade sobre o convite", () => {
+    const m = montarMensagemWhatsapp({
+      titulo: "B",
+      nomeLoteria: "Mega-Sena",
+      url: "u",
+      convite: { alvo: "proximo", concursoAlvo: 1, valorCotaCents: 1, qtdCotas: 1 },
+      resultado: {
+        concurso: 1, melhorAcerto: 3, premiados: 0, totalJogos: 1,
+        premioTotalCents: 0, porCotaCents: 0, indeterminado: false, acumulado: false,
+      },
+    });
+    expect(m.startsWith("Resultado do bolão")).toBe(true);
+  });
+});

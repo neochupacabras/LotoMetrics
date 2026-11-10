@@ -6,22 +6,13 @@ import { createClient } from "@/lib/supabase/server";
 // SEC-006 (auditoria 27/10/2026): rate limit por IP em cadastro e reset de
 // senha — helper compartilhado em lib/rate-limit.ts (fail-open).
 import { dentroDoLimitePorIp } from "@/lib/rate-limit";
+// SEC-004: só caminhos internos no `next` (ver lib/caminho-seguro.ts).
+import { caminhoInternoSeguro } from "@/lib/caminho-seguro";
 
 // SEC-005: mensagem única para cadastro, igual quer o e-mail seja novo ou já
 // exista — impede enumeração de e-mails cadastrados pela resposta.
 const MSG_CADASTRO =
   "Enviamos um e-mail com o próximo passo. Verifique sua caixa de entrada (e o spam).";
-
-// SEC-004 (auditoria 27/10/2026): o `next` vem da query string e ia direto
-// pro redirect() — `/entrar?next=https://site-malicioso` levava o usuário
-// pra fora do domínio após o login (open redirect / phishing). Só aceitamos
-// caminhos internos: precisa começar com "/" e não pode ser "//"/"/\" (que o
-// navegador interpreta como URL protocol-relative pra outro host).
-function caminhoInternoSeguro(next: unknown, fallback = "/conta"): string {
-  if (typeof next !== "string" || !next.startsWith("/")) return fallback;
-  if (next.startsWith("//") || next.startsWith("/\\")) return fallback;
-  return next;
-}
 
 // ── Cadastro ──────────────────────────────────────────────────────────────────
 export async function signUp(formData: FormData) {
@@ -30,6 +21,10 @@ export async function signUp(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const name = formData.get("name") as string;
+  // Volta para onde a pessoa estava (ex.: o bolão que acabou de montar) depois
+  // de confirmar o e-mail. O link de confirmação abre numa aba nova, então o
+  // destino precisa viajar no próprio link.
+  const next = caminhoInternoSeguro(formData.get("next"), "");
 
   if (!(await dentroDoLimitePorIp("signup:ip", 10, 3600))) {
     return { error: "Muitas tentativas. Aguarde alguns minutos." };
@@ -41,7 +36,9 @@ export async function signUp(formData: FormData) {
     options: {
       data: { name },
       // URL para onde o Supabase redireciona após confirmação do e-mail
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback${
+        next ? `?next=${encodeURIComponent(next)}` : ""
+      }`,
     },
   });
 

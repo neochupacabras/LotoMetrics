@@ -53,6 +53,8 @@ export interface CriarBolaoInput {
   precoApostaCents: number;
   qtdCotas: number;
   tickets: number[][];
+  // De onde veio o organizador (funil do bolão), ex.: "bolao_publico".
+  origem?: string | null;
 }
 
 export async function criarBolaoAction(
@@ -174,7 +176,12 @@ export async function criarBolaoAction(
       lottery: input.codigoLoteria,
       userId: u.id,
       plan: u.premium ? "premium" : "free",
-      metadata: { qtd_cotas: input.qtdCotas, alvo: input.alvo },
+      metadata: {
+        qtd_cotas: input.qtdCotas,
+        alvo: input.alvo,
+        // Só um rótulo curto: vem do cliente, não pode inflar a tabela.
+        origem: typeof input.origem === "string" ? input.origem.slice(0, 40) : null,
+      },
     })
   );
   revalidatePath("/conta/boloes");

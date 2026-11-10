@@ -16,6 +16,10 @@ export const runtime = "nodejs";
 // requisição por causa de um 4xx.
 const EVENTOS_PERMITIDOS = new Set<ToolEventName>([
   "tool_view",
+  // Funil do bolão montado no navegador (components/BolaoClient.tsx):
+  // tool_started com metadata.etapa e tool_completed ao gerar os jogos.
+  "tool_started",
+  "tool_completed",
   "pricing_view",
   "visit_landing",
   "waitlist_joined",
