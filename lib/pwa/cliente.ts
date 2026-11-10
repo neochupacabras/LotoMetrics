@@ -103,9 +103,11 @@ export async function consultarPreferencias(endpoint: string): Promise<EstadoSer
   return chamar("/api/push/consultar", "POST", { endpoint });
 }
 
-// Pede permissão (só a partir de um clique do usuário), inscreve no
-// serviço de push e salva no servidor.
-export async function ativarPush(prefs: PreferenciasPush): Promise<PushSubscription> {
+// Pede permissão (só a partir de um clique do usuário) e inscreve no serviço
+// de push, sem salvar preferências. Usado também pelo aviso de jogo do
+// simulador (components/AvisoJogoSimulador.tsx), que guarda a inscrição em
+// /api/alertas/jogo sem assinar nenhuma categoria.
+export async function obterInscricaoPush(): Promise<PushSubscription> {
   const chave = chavePublicaVapid();
   if (!chave) throw new Error("Notificações ainda não configuradas neste site.");
   const reg = await registroSW();
@@ -124,6 +126,12 @@ export async function ativarPush(prefs: PreferenciasPush): Promise<PushSubscript
   if (!sub) {
     sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: base64UrlParaBytes(chave) });
   }
+  return sub;
+}
+
+// Pede permissão, inscreve no serviço de push e salva no servidor.
+export async function ativarPush(prefs: PreferenciasPush): Promise<PushSubscription> {
+  const sub = await obterInscricaoPush();
   await chamar("/api/push/inscricao", "POST", { inscricao: sub.toJSON(), ...prefs });
   return sub;
 }

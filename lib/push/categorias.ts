@@ -68,6 +68,8 @@ export interface PayloadPush {
   url: string;
   // Notificações com a mesma tag substituem a anterior em vez de empilhar.
   tag: string;
-  categoria: CategoriaPush | "teste";
+  // "alerta_jogo": aviso de jogo do simulador (lib/notificacoes/alertas-jogo-envio.ts),
+  // fora de push_inscricoes.categorias porque é por jogo, não por tipo.
+  categoria: CategoriaPush | "teste" | "alerta_jogo";
   acoes?: { acao: string; titulo: string; url: string }[];
 }

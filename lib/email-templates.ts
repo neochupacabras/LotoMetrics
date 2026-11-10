@@ -575,3 +575,65 @@ export function emailResultadoBolao(
 
   return layout(conteudo, rodape);
 }
+
+// ── Avisos de jogo do simulador (alertas_jogo) ───────────────────────────────
+
+function escaparHtml(texto: string): string {
+  return texto.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+}
+
+function linhaDezenas(rotulo: string, dezenas: string, cor: string): string {
+  return `
+    <div style="background:${COR.paper};border-radius:6px;padding:14px 16px;margin-bottom:12px;">
+      <div style="font-size:11px;color:${COR.inkSoft};text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">${rotulo}</div>
+      <div style="font-family:'Courier New',monospace;font-size:16px;font-weight:bold;color:${cor};letter-spacing:2px;">${dezenas}</div>
+    </div>`;
+}
+
+// Opt-in duplo: o aviso por e-mail só começa depois deste clique.
+export function emailConfirmarAvisoJogo(
+  nomeLoteria: string,
+  emLoteria: string, // "na Mega-Sena"
+  jogo: string,
+  urlConfirmar: string
+): string {
+  const conteudo = `
+    ${titulo("Confirme o aviso do seu jogo")}
+    ${subtitulo(`Falta um clique para você receber, a cada sorteio ${escaparHtml(emLoteria)}, a conferência deste jogo.`)}
+    ${linhaDezenas(`Seu jogo — ${escaparHtml(nomeLoteria)}`, escaparHtml(jogo), COR.ink)}
+    ${botao("Confirmar o aviso →", urlConfirmar)}
+    <p style="font-size:12px;color:${COR.inkFaint};margin:20px 0 0;line-height:1.6;">
+      Se não foi você que pediu, ignore este e-mail: sem a confirmação, nada será enviado e o pedido é apagado em 7 dias.
+    </p>`;
+  const rodape = `Você recebeu este e-mail porque alguém pediu um aviso de jogo no simulador do LotoAnalítica com este endereço.`;
+  return layout(conteudo, rodape);
+}
+
+// Conferência do jogo depois de cada sorteio.
+export function emailAvisoJogo(
+  tituloAviso: string,
+  nomeLoteria: string,
+  concurso: number,
+  dezenasSorteadas: string,
+  jogo: string,
+  detalhes: string[],
+  premiado: boolean,
+  urlResultado: string,
+  urlDescadastro: string
+): string {
+  const conteudo = `
+    ${titulo(escaparHtml(tituloAviso))}
+    ${subtitulo(premiado ? "Confira os detalhes do prêmio no resultado oficial." : "Veja como foi o sorteio e confira o próximo.")}
+    ${linhaDezenas(`Dezenas sorteadas — ${escaparHtml(nomeLoteria)} ${concurso}`, escaparHtml(dezenasSorteadas), COR.pine)}
+    ${linhaDezenas("Seu jogo", escaparHtml(jogo), COR.ink)}
+    <ul style="font-size:14px;color:${COR.ink};margin:12px 0 0;padding-left:20px;line-height:1.6;">
+      ${detalhes.map((d) => `<li>${escaparHtml(d)}</li>`).join("")}
+    </ul>
+    ${botao("Ver o resultado completo →", urlResultado)}
+    <p style="font-size:12px;color:${COR.inkFaint};margin:20px 0 0;line-height:1.6;">
+      Cada sorteio é independente: o resultado de hoje não muda as chances do próximo.
+    </p>`;
+  const rodape = `Você recebe este aviso porque pediu a conferência deste jogo a cada sorteio.
+    <a href="${urlDescadastro}" style="color:${COR.inkFaint};">Parar de receber o aviso deste jogo</a>.`;
+  return layout(conteudo, rodape);
+}
