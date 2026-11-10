@@ -316,10 +316,12 @@ export default function SimuladorHistoricoClient({
     setOrigem("grade");
   }
 
-  function medir(eventName: "tool_started" | "tool_completed", metadata: Record<string, unknown>) {
+  // Só tool_started sai do navegador; o tool_completed é gravado pela ação
+  // do servidor (lib/simulador-actions.ts), com a origem e o resultado.
+  function medirInicio(tool: "simulador" | "simulador-comparador", metadata: Record<string, unknown>) {
     enviarBeacon({
-      eventName,
-      tool: "simulador",
+      eventName: "tool_started",
+      tool,
       lottery: codigoLoteria,
       anonymousId: obterOuCriarAnonymousId(),
       metadata: { limite: limiteHistorico, pagina: window.location.pathname, ...metadata },
@@ -345,12 +347,13 @@ export default function SimuladorHistoricoClient({
       return;
     }
     const dezenas = ehSuperSete ? colA : Array.from(selA).sort((a, b) => a - b);
-    medir("tool_started", { modo: "simples", origem });
+    medirInicio("simulador", { origem });
     startTransition(async () => {
       setErro(null);
       const res = await simularHistorico(
         codigoLoteria, dezenas, limiteHistorico ?? undefined,
-        usaTrevos ? Array.from(trevosA) : undefined
+        usaTrevos ? Array.from(trevosA) : undefined,
+        origem
       );
       if ("erro" in res) {
         setErro(res.erro);
@@ -358,13 +361,6 @@ export default function SimuladorHistoricoClient({
       }
       setResultado(res);
       mostrarResultado();
-      medir("tool_completed", {
-        modo: "simples",
-        origem,
-        concursos: res.totalConcursos,
-        premiado: res.totalGanho > 0,
-        maiorAcerto: res.melhores[0]?.acertos ?? null,
-      });
     });
   }
 
@@ -375,7 +371,7 @@ export default function SimuladorHistoricoClient({
     }
     const dA = ehSuperSete ? colA : Array.from(selA).sort((a, b) => a - b);
     const dB = ehSuperSete ? colB : Array.from(selB).sort((a, b) => a - b);
-    medir("tool_started", { modo: "comparar" });
+    medirInicio("simulador-comparador", {});
     startTransition(async () => {
       setErro(null);
       const res = await compararJogos(
@@ -389,7 +385,6 @@ export default function SimuladorHistoricoClient({
       }
       setComparacao(res);
       mostrarResultado();
-      medir("tool_completed", { modo: "comparar" });
     });
   }
 
