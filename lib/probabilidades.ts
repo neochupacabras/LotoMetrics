@@ -116,7 +116,7 @@ export const PARAMS_LOTERIA = {
   megasena: {
     n: 60, m: 6,
     percFaixa1: 0.3565,
-    precoAposta: 5.00,
+    precoAposta: 6.00,               // reajuste da Caixa em 2025 (era 5,00)
     ticketsMedios: 80_000_000,
   },
   quina: {
