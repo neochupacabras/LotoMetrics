@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Masthead from "@/components/Masthead";
 import { SITE_URL } from "@/lib/seo";
 
@@ -126,7 +127,7 @@ export default function PrivacidadePage() {
           <ul>
             <li><strong>Acesso</strong> — consultar quais dados temos sobre você.</li>
             <li><strong>Correção</strong> — atualizar informações incorretas.</li>
-            <li><strong>Exclusão</strong> — solicitar a remoção da sua conta e todos os dados associados.</li>
+            <li><strong>Exclusão</strong> — excluir sua conta e todos os dados associados, a qualquer momento, em <Link href="/conta">Minha conta</Link> (seção “Excluir conta”).</li>
             <li><strong>Portabilidade</strong> — receber seus dados em formato estruturado.</li>
             <li><strong>Revogação do consentimento</strong> — desativar alertas e notificações a qualquer momento na área da conta.</li>
           </ul>
