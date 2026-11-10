@@ -127,6 +127,15 @@ export const CALCULADORAS: Calculadora[] = [
     descricao: "Calculadora de imposto de renda sobre prêmio de loteria: os 30% retidos na fonte pela Caixa incidem sobre qualquer prêmio, de qualquer faixa, em qualquer uma das 9 loterias — descubra quanto sobra líquido.",
   },
   {
+    slug: "quanto-rende-o-premio",
+    titulo: "Quanto Rende o Prêmio",
+    subtitulo: "Rendimento por mês na poupança, no Tesouro Selic e no CDB, já sem o imposto",
+    emoji: "💰",
+    cor: "pine",
+    categoria: "loteria",
+    descricao: "Calculadora de rendimento do prêmio de loteria: quanto o prêmio da Mega da Virada ou de outra loteria rende por mês na poupança, no Tesouro Selic e num CDB, já sem os 30% de imposto e com as taxas do Banco Central.",
+  },
+  {
     slug: "financiamento",
     titulo: "Financiamento e Empréstimo",
     subtitulo: "Simule parcelas pelo sistema Price (fixas) ou SAC (decrescentes)",
