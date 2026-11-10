@@ -3,6 +3,7 @@ import { unstable_cache } from "next/cache";
 import pool from "./db";
 import { Concurso, ConcursoResumo, Loteria, PremiacaoFaixa } from "./types";
 import type { ContextoConcurso } from "./resumo-concurso";
+import type { HistoricoDezena } from "./links-concurso";
 import { CONCURSOS_VIRADA, anoDaEdicao, type EdicaoVirada } from "./mega-da-virada";
 
 // unstable_cache (não o cache() do React, que só dedup dentro de uma
@@ -302,6 +303,57 @@ export const getContextoConcurso = unstable_cache(
     };
   },
   ["contexto-concurso"],
+  { tags: ["concursos"], revalidate: 86400 }
+);
+
+// Histórico, ATÉ este concurso, das dezenas sorteadas nele: quantas vezes
+// cada uma saiu e o último concurso anterior em que saiu. Alimenta as frases
+// com link para as tabelas (lib/links-concurso.ts). Só concursos <= numero,
+// então o resultado de um concurso antigo não muda com o tempo. Mesma
+// contagem de fn_frequencia/fn_atraso (coluna `dezenas`).
+export const getHistoricoDezenasConcurso = unstable_cache(
+  async (
+    loteriaId: number,
+    numero: number,
+    dezenas: number[]
+  ): Promise<{ total: number; dezenas: HistoricoDezena[] } | null> => {
+    const { rows } = await pool.query(
+      `SELECT d AS dezena,
+              COUNT(*)::int AS vezes,
+              MAX(c.numero) FILTER (WHERE c.numero < $2) AS ultimo_antes,
+              (SELECT COUNT(*)::int FROM concurso WHERE loteria_id = $1 AND numero <= $2) AS total
+       FROM concurso c, unnest(c.dezenas) AS d
+       WHERE c.loteria_id = $1 AND c.numero <= $2 AND d = ANY($3::int[])
+       GROUP BY d`,
+      [loteriaId, numero, dezenas]
+    );
+    if (rows.length === 0) return null;
+    return {
+      total: rows[0].total,
+      dezenas: rows.map((r) => ({
+        dezena: r.dezena,
+        vezes: r.vezes,
+        ultimoAntes: r.ultimo_antes ?? null,
+      })),
+    };
+  },
+  ["historico-dezenas-concurso"],
+  { tags: ["concursos"], revalidate: 86400 }
+);
+
+// Concursos que fecharam ciclo (todas as dezenas sorteadas ao menos uma vez),
+// com quantos concursos cada ciclo levou. Depende só da loteria: uma execução
+// de fn_ciclos_historico por loteria por dia, compartilhada por todas as
+// páginas de concurso.
+export const getFinsDeCiclo = unstable_cache(
+  async (loteriaId: number): Promise<[number, number][]> => {
+    const { rows } = await pool.query(
+      `SELECT concurso_fim, qtd_concursos FROM fn_ciclos_historico($1)`,
+      [loteriaId]
+    );
+    return rows.map((r) => [r.concurso_fim, r.qtd_concursos]);
+  },
+  ["fins-de-ciclo"],
   { tags: ["concursos"], revalidate: 86400 }
 );
 

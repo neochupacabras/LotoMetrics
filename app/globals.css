@@ -9115,6 +9115,13 @@ footer.rodape {
   margin: 0 0 12px;
 }
 
+/* Links no meio do texto para as tabelas da loteria (lib/links-concurso.ts). */
+.resumo-concurso__texto a {
+  color: var(--pine);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* ---------- Excluir conta (confirmação dupla) ---------- */
 
 .excluir-conta {

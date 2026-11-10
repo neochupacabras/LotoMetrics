@@ -24,7 +24,6 @@ export interface EntradaResumo {
   nomeLoteria: string;
   concurso: Concurso;
   contexto: ContextoConcurso | null;
-  repetidas: number | null;
   pares: number;
   impares: number;
   percentualParImpar: number | null;
@@ -222,13 +221,8 @@ export function montarResumoConcurso(e: EntradaResumo): ResumoConcurso {
   // Super Sete sorteia um algarismo (0–9) por coluna: "dezenas repetidas" e
   // pares/ímpares não dizem nada útil ao apostador, então ficam de fora.
   const semEstatisticaDezenas = codigoLoteria === "supersete";
-  if (!semEstatisticaDezenas && e.repetidas !== null && e.repetidas > 0) {
-    partes.push(
-      e.repetidas === 1
-        ? `Uma das dezenas repetiu o concurso anterior.`
-        : `${e.repetidas} dezenas repetiram o concurso anterior.`
-    );
-  }
+  // As repetidas do concurso anterior ficam numa frase própria, com as
+  // dezenas e o link para a tabela de repetidas (lib/links-concurso.ts).
   if (!semEstatisticaDezenas && e.percentualParImpar !== null) {
     partes.push(
       `A divisão de ${plural(e.pares, "par", "pares")} e ${plural(e.impares, "ímpar", "ímpares")} aparece em ${percentual(e.percentualParImpar)} do histórico, e a soma ${e.soma}${
