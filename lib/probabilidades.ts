@@ -105,12 +105,13 @@ export function probabilidadeAoMenosK(n: number, m: number, b: number, k: number
 
 // ── Probabilidades de acúmulo ─────────────────────────────────────────────────
 
-// Parâmetros estruturais das loterias (fonte: Caixa)
+// Parâmetros estruturais das loterias (fonte: Caixa). Preços conferidos nas
+// páginas oficiais em 10/11/2026 (reajuste de julho de 2025).
 export const PARAMS_LOTERIA = {
   lotofacil: {
     n: 25, m: 15,                    // universo e sorteadas
     percFaixa1: 0.35,                // % da arrecadação para a faixa 1
-    precoAposta: 3.00,               // preço base (15 dezenas)
+    precoAposta: 3.50,              // preço base (15 dezenas)
     ticketsMedios: 60_000_000,       // estimativa de apostas por concurso
   },
   megasena: {
@@ -122,7 +123,7 @@ export const PARAMS_LOTERIA = {
   quina: {
     n: 80, m: 5,
     percFaixa1: 0.35,
-    precoAposta: 2.50,
+    precoAposta: 3.00,
     ticketsMedios: 40_000_000,
   },
   lotomania: {
@@ -146,20 +147,20 @@ export const PARAMS_LOTERIA = {
   timemania: {
     n: 80, m: 7,
     percFaixa1: 0.35,
-    precoAposta: 3.00,
+    precoAposta: 3.50,
     ticketsMedios: 10_000_000,
   },
   duplasena: {
     n: 50, m: 6,  // dois sorteios independentes de 6 dezenas de 1-50
     percFaixa1: 0.35,
-    precoAposta: 2.50,
+    precoAposta: 3.00,
     ticketsMedios: 6_000_000,
   },
   supersete: {
     // 7 colunas de 0-9: 10^7 = 10.000.000 combinações possíveis
     n: 10, m: 7,
     percFaixa1: 0.35,
-    precoAposta: 2.50,
+    precoAposta: 3.00,
     ticketsMedios: 5_000_000,
   },
 } as const;

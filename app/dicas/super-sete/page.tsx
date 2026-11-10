@@ -59,7 +59,7 @@ export default function ArtigoSuperSetePage() {
         </p>
         <p>
           Os sorteios acontecem segunda, quarta e sexta às 20h. A aposta simples
-          (1 número por coluna) custa R$2,50.
+          (1 número por coluna) custa R$3,00.
         </p>
 
         <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>A consequência mais importante: repetição</h2>
