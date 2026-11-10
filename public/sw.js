@@ -360,7 +360,13 @@ self.addEventListener("pushsubscriptionchange", (event) => {
       await fetch("/api/push/inscricao", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ inscricao: nova.toJSON(), ...preferencias }),
+        // endpointAnterior: o servidor passa os avisos de jogo (alertas_jogo)
+        // da inscrição antiga para a nova antes de a antiga ser apagada.
+        body: JSON.stringify({
+          inscricao: nova.toJSON(),
+          ...preferencias,
+          ...(antiga && antiga.endpoint !== nova.endpoint ? { endpointAnterior: antiga.endpoint } : {}),
+        }),
         credentials: "same-origin",
       }).catch(() => {});
 

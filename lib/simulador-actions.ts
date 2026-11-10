@@ -1,13 +1,14 @@
 "use server";
 
 import { after } from "next/server";
+import { cookies } from "next/headers";
 import { getLoteriaPorCodigo, getDrawsParaSimulacao, getMapaFaixasPorAcertos, ConcessaoSimulacao } from "@/lib/queries";
-import { isCodigoLoteriaValido } from "@/lib/format";
-import { PARAMS_LOTERIA, FAIXAS_MILIONARIA, FAIXAS_DUPLASENA_POR_SORTEIO } from "@/lib/probabilidades";
+import { isCodigoLoteriaValido, qtdDezenasAposta } from "@/lib/format";
+import { PARAMS_LOTERIA, FAIXAS_MILIONARIA, FAIXAS_DUPLASENA_POR_SORTEIO, faixaLotomania } from "@/lib/probabilidades";
 import { contarColunasAcertadas } from "@/lib/classificacao";
 import { logToolEvent } from "@/lib/telemetry";
 import { getPlanoPremium } from "@/lib/plano";
-import { limiteHistoricoPorPlano, recortarHistorico, ERRO_COMPARADOR_PREMIUM } from "@/lib/simulador-plano";
+import { limiteHistoricoPorPlano, recortarHistorico, ERRO_COMPARADOR_PREMIUM, LIMITE_HISTORICO_FREE } from "@/lib/simulador-plano";
 
 export interface ResultadoSimulacao {
   nomeLoteria: string;
@@ -66,7 +67,17 @@ function pontuarDraw(
     | { tipo: "milionaria"; trevosSet: Set<number> }
     | { tipo: "supersete"; mapaFaixas: Record<number, number> }
     | { tipo: "duplasena" }
+    | { tipo: "lotomania" }
 ): Pontuacao[] {
+  if (contexto.tipo === "lotomania") {
+    const jogoSet = new Set(jogo);
+    const acertos = draw.dezenas.filter((d) => jogoSet.has(d)).length;
+    const faixa = faixaLotomania(acertos, draw.premios[7] !== undefined);
+    const premio = faixa !== undefined ? (draw.premios[faixa] ?? 0) : 0;
+    return faixa !== undefined && premio > 0
+      ? [{ faixa, premio, acertosExibicao: acertos, descricao: `${acertos} acertos` }]
+      : [];
+  }
   if (contexto.tipo === "supersete") {
     const acertos = contarColunasAcertadas(jogo, draw.dezenas);
     const faixa = contexto.mapaFaixas[acertos];
@@ -135,6 +146,7 @@ async function contextoPontuacao(
   | { tipo: "milionaria"; trevosSet: Set<number> }
   | { tipo: "supersete"; mapaFaixas: Record<number, number> }
   | { tipo: "duplasena" }
+  | { tipo: "lotomania" }
 > {
   if (codigoLoteria === "maismilionaria") {
     if (!trevos || trevos.length !== 2) return { erro: "Selecione exatamente 2 trevos." };
@@ -150,7 +162,34 @@ async function contextoPontuacao(
   if (codigoLoteria === "duplasena") {
     return { tipo: "duplasena" };
   }
+  if (codigoLoteria === "lotomania") {
+    return { tipo: "lotomania" };
+  }
   return { tipo: "padrao", mapaFaixas: await getMapaFaixasPorAcertos(loteriaId) };
+}
+
+// Como o jogo chegou ao simulador (components/SimuladorHistoricoClient.tsx).
+const ORIGENS_JOGO = new Set(["digitado", "grade", "link"]);
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// anonymous_id do visitante (cookie la_aid, lib/telemetria-cliente.ts), para
+// o tool_completed se ligar ao visit_landing e ao tool_started do navegador.
+async function anonymousIdDoCookie(): Promise<string | null> {
+  const valor = (await cookies()).get("la_aid")?.value ?? "";
+  return UUID_REGEX.test(valor) ? valor : null;
+}
+
+// Simulação do card compartilhável (app/api/simulador/card): sempre nos
+// últimos LIMITE_HISTORICO_FREE concursos, o mesmo recorte do plano grátis,
+// e sem gravar tool_completed (gerar o card ou a prévia do link não é uma
+// simulação feita por alguém). Como ação chamável pelo navegador, não dá
+// acesso a nada além do que o plano grátis já dá.
+export async function simularParaCard(
+  codigoLoteria: string,
+  dezenas: number[],
+  trevos?: number[]
+): Promise<ResultadoSimulacao | { erro: string }> {
+  return simularHistoricoInterno(codigoLoteria, dezenas, LIMITE_HISTORICO_FREE, trevos);
 }
 
 export async function simularHistorico(
@@ -160,13 +199,17 @@ export async function simularHistorico(
   // omiti-lo pra simular o histórico completo (Premium). Mantido só pra não
   // quebrar a assinatura; o servidor decide pelo plano da sessão.
   _limiteHistoricoDoCliente?: number,
-  trevos?: number[] // +Milionária
+  trevos?: number[], // +Milionária
+  origem?: string // "digitado" | "grade" | "link", só para medição
 ): Promise<ResultadoSimulacao | { erro: string }> {
   const inicio = Date.now();
   const { premium } = await getPlanoPremium();
   const limiteHistorico = limiteHistoricoPorPlano(premium);
   const resultado = await simularHistoricoInterno(codigoLoteria, dezenas, limiteHistorico, trevos);
   const falhou = "erro" in resultado;
+  const anonymousId = await anonymousIdDoCookie();
+  // Único registro de tool_completed do simulador: o navegador manda só o
+  // tool_started, para a mesma simulação não contar duas vezes.
   after(() =>
     logToolEvent({
       eventName: falhou ? "tool_failed" : "tool_completed",
@@ -175,11 +218,26 @@ export async function simularHistorico(
       success: !falhou,
       plan: premium ? "premium" : "free",
       durationMs: Date.now() - inicio,
+      anonymousId,
+      metadata: {
+        origem: origem && ORIGENS_JOGO.has(origem) ? origem : null,
+        ...(falhou
+          ? {}
+          : {
+              concursos: resultado.totalConcursos,
+              premiado: resultado.totalGanho > 0,
+              maiorAcerto: resultado.melhores[0]?.acertos ?? null,
+            }),
+      },
     })
   );
   return resultado;
 }
 
+// Cálculo da simulação. NÃO exportar: num arquivo "use server" toda função
+// exportada vira ação que o navegador pode chamar com qualquer argumento, e
+// com limiteHistorico = null isto devolveria o histórico completo (Premium)
+// para qualquer um.
 async function simularHistoricoInterno(
   codigoLoteria: string,
   dezenas: number[],
@@ -192,8 +250,9 @@ async function simularHistoricoInterno(
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) return { erro: "Loteria não encontrada" };
 
-  if (dezenas.length !== loteria.qtdDezenasSorteadas)
-    return { erro: `Selecione exatamente ${loteria.qtdDezenasSorteadas} dezenas` };
+  const qtdAposta = qtdDezenasAposta(codigoLoteria, loteria.qtdDezenasSorteadas);
+  if (dezenas.length !== qtdAposta)
+    return { erro: `Selecione exatamente ${qtdAposta} dezenas` };
 
   const contexto = await contextoPontuacao(codigoLoteria, loteria.id, trevos);
   if ("erro" in contexto) return contexto;
@@ -332,7 +391,7 @@ async function compararJogosInterno(
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) return { erro: "Loteria não encontrada" };
 
-  const n = loteria.qtdDezenasSorteadas;
+  const n = qtdDezenasAposta(codigoLoteria, loteria.qtdDezenasSorteadas);
   if (dezenasA.length !== n || dezenasB.length !== n)
     return { erro: `Cada jogo precisa ter exatamente ${n} dezenas` };
 

@@ -12,6 +12,14 @@ export const LOTERIAS: Record<CodigoLoteria, { nome: string; slug: CodigoLoteria
   supersete:  { nome: "Super Sete",  slug: "supersete"  },
 };
 
+// Quantas dezenas o apostador marca num jogo simples. É igual à quantidade
+// sorteada em todas as loterias, menos a Lotomania: lá se marcam 50 dos 100
+// números e a Caixa sorteia 20 (prêmio para 20, 19, 18, 17, 16, 15 ou 0
+// acertos entre os 20 sorteados).
+export function qtdDezenasAposta(codigoLoteria: string, qtdDezenasSorteadas: number): number {
+  return codigoLoteria === "lotomania" ? 50 : qtdDezenasSorteadas;
+}
+
 export function isCodigoLoteriaValido(valor: string): valor is CodigoLoteria {
   return ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "duplasena", "supersete"].includes(valor);
 }

@@ -7,27 +7,43 @@ import BloqueadoPremium from "@/components/BloqueadoPremium";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { getLoteriaPorCodigo } from "@/lib/queries";
-import { isCodigoLoteriaValido, preposicaoLoteria } from "@/lib/format";
+import { isCodigoLoteriaValido, preposicaoLoteria, qtdDezenasAposta } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import FaqItem from "@/components/FaqItem";
 import { getPlanoPremium } from "@/lib/plano";
 import { LIMITE_HISTORICO_FREE } from "@/lib/simulador-plano";
 
+// Jogo e trevos do link compartilhado (?jogo=05-12-23-34-41-60&t=1-4): só
+// dígitos e separadores; o campo do simulador e a rota do card validam o resto.
+type ParamsBusca = Promise<{ jogo?: string | string[]; t?: string | string[] }>;
+
+function lerParamsJogo(busca: Awaited<ParamsBusca>) {
+  const jogo = typeof busca.jogo === "string" && /^[\d\s,.;/-]{1,200}$/.test(busca.jogo) ? busca.jogo : null;
+  const t = typeof busca.t === "string" && /^[1-6][-\s]?[1-6]$/.test(busca.t) ? busca.t : null;
+  return {
+    jogo,
+    trevos: t ? (t.match(/[1-6]/g) ?? []).map(Number) : [],
+  };
+}
+
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ loteria: string }>;
+  searchParams: ParamsBusca;
 }): Promise<Metadata> {
   const { loteria: codigoLoteria } = await params;
   if (!isCodigoLoteriaValido(codigoLoteria)) return {};
   const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
   const { em } = preposicaoLoteria(codigoLoteria);
+  const { jogo, trevos } = lerParamsJogo(await searchParams);
   // Título alinhado à busca real (Search Console, 13/09/2026: "eu teria
   // ganho na lotofácil" tinha 581 impressões, posição 8, só 2 cliques —
   // achado #2.1 do plano de implementação). O antigo "simulador histórico
   // — e se eu tivesse jogado todo concurso?" ranqueava pra essa busca sem
   // responder a ela no próprio título.
-  return metadataPagina(
+  const base = metadataPagina(
     codigoLoteria,
     "/simulador",
     // 09/11/2026 (auditoria de growth, achado T6): ~2.450 impressões em 90
@@ -37,6 +53,21 @@ export async function generateMetadata({
     `Eu teria ganho ${em} ${nome}? Confira seus números grátis`,
     `Digite seus números e veja na hora se eles já teriam sido premiados ${em} ${nome}: acertos por faixa, quanto teria gastado e quanto teria ganhado com os prêmios reais. Grátis e sem cadastro.`
   );
+  if (!jogo) return base;
+
+  // Link compartilhado: a prévia no WhatsApp é o card do jogo, e a página
+  // não entra no índice (o canonical continua sendo /simulador), para não
+  // criar uma URL indexável por jogo.
+  const numeros = jogo.match(/\d+/g)?.join("-") ?? "";
+  const trevosParam = trevos.length === 2 ? `&t=${trevos.join("-")}` : "";
+  // Relativa: o metadataBase do layout raiz completa com o domínio.
+  const card = `/api/simulador/card?l=${codigoLoteria}&j=${numeros}${trevosParam}&f=og`;
+  return {
+    ...base,
+    robots: { index: false, follow: true },
+    openGraph: { ...base.openGraph, images: [{ url: card, width: 1200, height: 630 }] },
+    twitter: { card: "summary_large_image", images: [card] },
+  };
 }
 
 // Free: últimos 100 concursos. Premium: histórico completo.
@@ -44,10 +75,14 @@ const LIMITE_FREE = LIMITE_HISTORICO_FREE;
 
 export default async function SimuladorPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ loteria: string }>;
+  searchParams: ParamsBusca;
 }) {
   const { loteria: codigoLoteria } = await params;
+  const { jogo, trevos: trevosIniciais } = lerParamsJogo(await searchParams);
+  const jogoInicial = jogo ? jogo.replace(/[-.;/]/g, " ") : null;
 
   if (!isCodigoLoteriaValido(codigoLoteria)) notFound();
 
@@ -112,36 +147,45 @@ export default async function SimuladorPage({
     <div className="container secao">
       <p className="eyebrow">Estatísticas de {loteria.nome}</p>
       <h1 className="titulo-edicao">Eu teria ganho {em} {loteria.nome}?</h1>
-      <p className="subtitulo-edicao" style={{ maxWidth: 600 }}>
-        Escolha uma combinação e veja quanto teria gasto e ganho se tivesse apostado
-        esse mesmo jogo {premium ? `em cada um dos ${totalConcursosLabel} concursos` : "nos últimos 100 concursos"} da história {de} {loteria.nome} — com os prêmios históricos reais.
-      </p>
-
-      {!premium && (
-        <div className="simulador-aviso-free">
-          <span className="simulador-aviso-free__badge">Free</span>
-          Simulação limitada aos últimos {LIMITE_FREE} concursos.{" "}
-          <a href="/assinar" className="simulador-aviso-free__link">
-            Assine o Premium para rodar no histórico completo →
-          </a>
-        </div>
-      )}
-
-      {codigoLoteria === "duplasena" && (
-        <div className="aviso-legal" style={{ marginBottom: 20 }}>
-          <strong>Dupla Sena:</strong> cada concurso tem dois sorteios, e o simulador
-          confere seu jogo contra os dois — se ele bater faixa premiada no 1º e no 2º
-          sorteio do mesmo concurso, os dois prêmios entram na conta, exatamente como
-          aconteceria na prática.
-        </div>
-      )}
 
       <SimuladorHistoricoClient
+        jogoInicial={jogoInicial}
+        trevosIniciais={codigoLoteria === "maismilionaria" ? trevosIniciais : []}
+        introducao={
+          <div>
+            <p className="subtitulo-edicao" style={{ maxWidth: 600 }}>
+              Veja quanto teria gasto e ganho se tivesse apostado esse mesmo
+              jogo {premium ? `em cada um dos ${totalConcursosLabel} concursos` : "nos últimos 100 concursos"} da
+              história {de} {loteria.nome}, com os prêmios históricos reais.
+            </p>
+
+            {!premium && (
+              <div className="simulador-aviso-free">
+                <span className="simulador-aviso-free__badge">Free</span>
+                Simulação limitada aos últimos {LIMITE_FREE} concursos.{" "}
+                <a href="/assinar" className="simulador-aviso-free__link">
+                  Assine o Premium para rodar no histórico completo →
+                </a>
+              </div>
+            )}
+
+            {codigoLoteria === "duplasena" && (
+              <div className="aviso-legal" style={{ marginBottom: 20 }}>
+                <strong>Dupla Sena:</strong> cada concurso tem dois sorteios, e o simulador
+                confere seu jogo contra os dois — se ele bater faixa premiada no 1º e no 2º
+                sorteio do mesmo concurso, os dois prêmios entram na conta, exatamente como
+                aconteceria na prática.
+              </div>
+            )}
+          </div>
+        }
         codigoLoteria={codigoLoteria}
         nomeLoteria={loteria.nome}
         dezenaMin={loteria.dezenaMin}
         dezenaMax={loteria.dezenaMax}
-        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        // Tamanho do jogo que a pessoa marca (50 na Lotomania), não a
+        // quantidade sorteada.
+        qtdDezenasSorteadas={qtdDezenasAposta(codigoLoteria, loteria.qtdDezenasSorteadas)}
         limiteHistorico={premium ? null : LIMITE_FREE}
         logado={logado}
         premium={premium}

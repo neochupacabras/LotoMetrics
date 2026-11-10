@@ -1,0 +1,273 @@
+/* Campo de digitar o jogo no simulador "eu teria ganho"
+   (components/SimuladorHistoricoClient.tsx). Semana 4 do roadmap de growth:
+   76% dos cliques vêm do celular, e a grade de números ficava abaixo de
+   900 px em 375 px de largura. O campo fica logo abaixo do H1. */
+
+.campo-jogo {
+  margin: 0;
+  max-width: 560px;
+}
+
+.campo-jogo__label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.campo-jogo__linha {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.campo-jogo__input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  /* 16px ou mais: o Safari do iPhone não dá zoom ao focar. */
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+}
+
+.campo-jogo__input::placeholder {
+  color: var(--ink-faint, #8a8980);
+  letter-spacing: 0;
+}
+
+.campo-jogo__input:focus {
+  outline: 2px solid var(--pine);
+  outline-offset: 1px;
+}
+
+.campo-jogo__input[aria-invalid="true"] {
+  border-color: var(--rust);
+}
+
+.campo-jogo__botao {
+  margin-top: 0;
+  align-self: stretch;
+  min-height: 48px;
+  padding: 0 18px;
+  flex-shrink: 0;
+}
+
+.campo-jogo__botao:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.campo-jogo__status {
+  margin: 6px 0 0;
+  min-height: 1.3em;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.campo-jogo__status[data-erro="true"] {
+  color: var(--rust);
+  font-weight: 600;
+}
+
+.campo-jogo__status[data-pronto="true"] {
+  color: var(--pine);
+  font-weight: 600;
+}
+
+/* O resultado rola para o topo do simulador: deixa espaço para o
+   cabeçalho fixo do celular. */
+.simulador-hist-wrapper {
+  scroll-margin-top: 80px;
+}
+
+/* O link do aviso Free tinha white-space: nowrap e vazava da tela em 375 px. */
+.simulador-aviso-free__link {
+  white-space: normal;
+}
+
+@media (max-width: 640px) {
+  /* Com o teclado aberto, a barra inferior e o convite de instalação não
+     ficam por cima do campo. */
+  body:has(.campo-jogo__input:focus) .bottom-nav,
+  body:has(.campo-jogo__input:focus) .convite-instalacao {
+    display: none;
+  }
+
+  .simulador-aviso-free {
+    flex-wrap: wrap;
+  }
+
+  /* Campo mais perto do H1 no celular. */
+  .simulador-hist-wrapper {
+    margin-top: 12px;
+  }
+}
+
+/* Botão de compartilhar o card "meu jogo teria ganho"
+   (components/CompartilharJogoSimulador.tsx). */
+.compartilhar-jogo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  padding: 16px;
+  border: 1.5px solid var(--ink);
+  background: #fff;
+}
+
+.compartilhar-jogo__texto {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.compartilhar-jogo__titulo {
+  margin: 0 0 4px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.compartilhar-jogo__nota {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.compartilhar-jogo__acoes {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.compartilhar-jogo__botao {
+  margin-top: 0;
+  min-height: 48px;
+}
+
+.compartilhar-jogo__botao:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.compartilhar-jogo__baixar {
+  font-size: 0.85rem;
+  color: var(--pine);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .compartilhar-jogo__acoes,
+  .compartilhar-jogo__botao {
+    width: 100%;
+  }
+
+  .compartilhar-jogo__botao {
+    justify-content: center;
+  }
+}
+
+/* CTA único do aviso de jogo (components/AvisoJogoSimulador.tsx). */
+.aviso-jogo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border: 2px solid var(--pine);
+  background: #fff;
+}
+
+.aviso-jogo__titulo {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: 1.2rem;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.aviso-jogo__nota {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.aviso-jogo__botao {
+  margin-top: 0;
+  min-height: 48px;
+  align-self: flex-start;
+}
+
+.aviso-jogo__email {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.aviso-jogo__rotulo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.aviso-jogo__linha {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.aviso-jogo__input {
+  flex: 1 1 200px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  background: #fff;
+  color: var(--ink);
+  font-size: 1rem; /* 16px: sem zoom no iPhone */
+}
+
+.aviso-jogo__botao-email {
+  margin-top: 0;
+  min-height: 48px;
+}
+
+.aviso-jogo__botao-email--secundario {
+  background: transparent;
+  color: var(--pine);
+  border: 1.5px solid var(--pine);
+}
+
+.aviso-jogo__dica,
+.aviso-jogo__legal {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.aviso-jogo__dica a,
+.aviso-jogo__legal a {
+  color: var(--pine);
+}
+
+@media (max-width: 640px) {
+  .aviso-jogo__botao,
+  .aviso-jogo__botao-email {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Teclado aberto no e-mail: barra inferior e convite somem. */
+  body:has(.aviso-jogo__input:focus) .bottom-nav,
+  body:has(.aviso-jogo__input:focus) .convite-instalacao {
+    display: none;
+  }
+}

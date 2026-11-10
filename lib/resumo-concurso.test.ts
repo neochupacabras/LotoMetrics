@@ -32,7 +32,6 @@ function entrada(over: Partial<EntradaResumo> = {}): EntradaResumo {
     nomeLoteria: "Mega-Sena",
     concurso: concursoBase(),
     contexto: { acumuladosAntes: 3, premiosMaioresHistorico: null, premiosMaioresAno: null },
-    repetidas: 2,
     pares: 3,
     impares: 3,
     percentualParImpar: 33,
@@ -62,7 +61,7 @@ describe("montarResumoConcurso", () => {
     );
     expect(r.paragrafos[1]).toMatch(/^O próximo concurso é na quarta-feira \(11\/11\), com prêmio estimado em R\$\s85\.000\.000,00\.$/);
     expect(r.paragrafos[2]).toMatch(/^Na faixa seguinte, 112 apostas fizeram 5 acertos e levam R\$\s41\.230,18 cada\./);
-    expect(r.paragrafos[2]).toContain("2 dezenas repetiram o concurso anterior.");
+    expect(r.paragrafos[2]).not.toContain("repetiram");
     expect(r.paragrafos[2]).toContain("não muda as chances do próximo sorteio");
     expect(r.paragrafos[2]).toContain("3 pares e 3 ímpares aparece em 33% do histórico");
   });
@@ -139,7 +138,6 @@ describe("montarResumoConcurso", () => {
     const r = montarResumoConcurso(
       entrada({
         contexto: null,
-        repetidas: null,
         percentualParImpar: null,
         concurso: concursoBase({ valorEstimadoProximo: null, dataProximoConcurso: null, premiacoes: [] }),
       })
