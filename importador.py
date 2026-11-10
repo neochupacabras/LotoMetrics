@@ -259,10 +259,12 @@ def importar_concurso(conn, loteria_codigo: str, loteria_id: int, numero: int) -
     return True
 
 
-def importar_intervalo(conn, loteria_codigo: str, inicio: int, fim: int) -> None:
+def importar_intervalo(conn, loteria_codigo: str, inicio: int, fim: int) -> list:
+    """Importa [inicio, fim] e devolve os numeros salvos com sucesso."""
     loteria_id = obter_loteria_id(conn, loteria_codigo)
     total = fim - inicio + 1
     sucesso = 0
+    salvos = []
     for i, numero in enumerate(range(inicio, fim + 1), start=1):
         # Reconectar a cada 100 concursos para evitar timeout do pooler do Supabase
         if i > 1 and i % 100 == 1:
@@ -278,6 +280,7 @@ def importar_intervalo(conn, loteria_codigo: str, inicio: int, fim: int) -> None
             try:
                 if importar_concurso(conn, loteria_codigo, loteria_id, numero):
                     sucesso += 1
+                    salvos.append(numero)
                 break
             except psycopg2.OperationalError as e:
                 log.warning("Erro de conexao no concurso %d (tentativa %d/3): %s", numero, tentativa, e)
@@ -293,6 +296,13 @@ def importar_intervalo(conn, loteria_codigo: str, inicio: int, fim: int) -> None
             log.info("Progresso %s: %d/%d concursos processados (%d ok).", loteria_codigo, i, total, sucesso)
         time.sleep(INTERVALO_ENTRE_CHAMADAS)
     log.info("Backfill de %s concluido: %d/%d concursos importados com sucesso.", loteria_codigo, sucesso, total)
+    return salvos
+
+
+# Concursos novos desta execucao (modos incremental e unico), mandados pra
+# /api/revalidar, que repassa as URLs ao IndexNow. O backfill fica de fora:
+# reimportar milhares de concursos antigos nao e mudanca a anunciar.
+concursos_novos: list = []
 
 
 def importar_incremental(conn, loteria_codigo: str) -> bool:
@@ -325,14 +335,16 @@ def importar_incremental(conn, loteria_codigo: str) -> bool:
         return False
 
     log.info("%s: importando concursos %d a %d.", loteria_codigo, ultimo_salvo + 1, ultimo_disponivel)
-    importar_intervalo(conn, loteria_codigo, ultimo_salvo + 1, ultimo_disponivel)
+    salvos = importar_intervalo(conn, loteria_codigo, ultimo_salvo + 1, ultimo_disponivel)
+    concursos_novos.extend({"loteria": loteria_codigo, "numero": n} for n in salvos)
     return True
 
 
 def invalidar_cache_site() -> None:
     """Avisa o site pra descartar o cache de resultados (getUltimoConcurso/
     getLoteriaPorCodigo em lib/queries.ts), senao a home/pagina de resultados
-    continua mostrando o concurso anterior ate o cache expirar sozinho."""
+    continua mostrando o concurso anterior ate o cache expirar sozinho.
+    Leva junto a lista de concursos novos, que o site repassa ao IndexNow."""
     token = os.environ.get("REVALIDAR_SECRET")
     if not token:
         log.warning("REVALIDAR_SECRET nao configurado; pulando invalidacao de cache do site.")
@@ -340,7 +352,12 @@ def invalidar_cache_site() -> None:
 
     url = f"{SITE_URL}/api/revalidar"
     try:
-        resposta = requests.post(url, headers={"Authorization": f"Bearer {token}"}, timeout=TIMEOUT_SEGUNDOS)
+        resposta = requests.post(
+            url,
+            headers={"Authorization": f"Bearer {token}"},
+            json={"concursos": concursos_novos},
+            timeout=TIMEOUT_SEGUNDOS,
+        )
         if resposta.ok:
             log.info("Cache do site invalidado com sucesso (%s).", url)
         else:
@@ -446,6 +463,7 @@ def main():
                 loteria_id = obter_loteria_id(conn, loteria_codigo)
                 if importar_concurso(conn, loteria_codigo, loteria_id, args.numero):
                     houve_atualizacao = True
+                    concursos_novos.append({"loteria": loteria_codigo, "numero": args.numero})
     except Exception as e:
         registrar_job_run("failed", iniciado_em, detalhes={"modo": args.modo, "loterias": loterias}, erro=str(e))
         raise
