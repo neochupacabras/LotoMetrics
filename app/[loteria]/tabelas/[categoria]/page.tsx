@@ -12,7 +12,8 @@ import SomaCalculadora from "@/components/SomaCalculadora";
 import { SimuladorFrequenciaAleatoria } from "@/components/SimuladorFrequenciaAleatoria";
 import { getCategoriaPorSlug, getCategoriasParaLoteria } from "@/lib/categorias";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
-import { formatarDezena, isCodigoLoteriaValido } from "@/lib/format";
+import { formatarData, formatarDezena, isCodigoLoteriaValido } from "@/lib/format";
+import { metadataTextoTabela, tituloBuscaTabela } from "@/lib/seo-tabelas";
 import { compararTempoComMundoReal, estimarDiasCorridos } from "@/lib/insights";
 import { qtdSorteiosPorSemana } from "@/lib/calendario";
 import * as Estat from "@/lib/estatisticas";
@@ -45,13 +46,32 @@ export async function generateMetadata({
   if (!isCodigoLoteriaValido(codigoLoteria)) return {};
   const categoria = getCategoriaPorSlug(slugCategoria);
   if (!categoria) return {};
-  const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
-  return metadataPagina(
+  // Dado vivo no título/description (concurso de referência e, nos ciclos,
+  // quantas dezenas faltam). Se o banco falhar, cai no texto sem número em
+  // vez de derrubar a página — metadado nunca deve impedir a renderização.
+  let ultimoConcurso: { numero: number; data: string } | null = null;
+  let dezenasFaltantesCiclo: number | null = null;
+  try {
+    const loteria = await getLoteriaPorCodigo(codigoLoteria);
+    if (loteria) {
+      const [ultimo, ciclos] = await Promise.all([
+        getUltimoConcurso(loteria.id),
+        categoria.slug === "ciclos" ? Estat.getCiclos(loteria.id) : Promise.resolve(null),
+      ]);
+      if (ultimo) ultimoConcurso = { numero: ultimo.numero, data: formatarData(ultimo.dataSorteio) };
+      if (ciclos?.atual) dezenasFaltantesCiclo = ciclos.atual.dezenasFaltantes.length;
+    }
+  } catch (err) {
+    console.error("Tabelas: falha ao buscar dados para o metadado", (err as Error).message);
+  }
+  const { titulo, descricao } = metadataTextoTabela(
+    categoria.slug,
     codigoLoteria,
-    `/tabelas/${categoria.slug}`,
-    `${categoria.titulo} — Tabela estatística da ${nome}`,
-    categoria.descricao
+    categoria.titulo,
+    categoria.descricao,
+    { ultimoConcurso, dezenasFaltantesCiclo }
   );
+  return metadataPagina(codigoLoteria, `/tabelas/${categoria.slug}`, titulo, descricao);
 }
 
 export default async function CategoriaPage({
@@ -103,7 +123,7 @@ export default async function CategoriaPage({
         ← Todas as tabelas
       </Link>
       <p className="eyebrow">{loteria.nome}</p>
-      <h1 className="titulo-edicao">{categoria.titulo}</h1>
+      <h1 className="titulo-edicao">{tituloBuscaTabela(categoria.slug, codigoLoteria, categoria.titulo)}</h1>
       <p className="subtitulo-edicao" style={{ maxWidth: 620 }}>
         {categoria.descricao}
       </p>

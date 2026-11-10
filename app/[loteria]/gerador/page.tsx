@@ -2,15 +2,14 @@ import { notFound } from "next/navigation";
 export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
-import { after } from "next/server";
 import GeradorClient from "@/components/GeradorClient";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { prepararDadosGerador } from "@/lib/gerador";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import { getPlanoPremium } from "@/lib/plano";
-import { logToolEvent } from "@/lib/telemetry";
 
 export async function generateMetadata({
   params,
@@ -45,19 +44,11 @@ export default async function GeradorPage({
   ]);
   if (!loteria) notFound();
 
-  after(() =>
-    logToolEvent({
-      eventName: "tool_view",
-      tool: "gerador",
-      lottery: codigoLoteria,
-      plan: logado ? (premium ? "premium" : "free") : null,
-    })
-  );
-
   const dados = await prepararDadosGerador(loteria.id);
 
   return (
     <>
+      <TelemetriaBeacon tool="gerador" lottery={codigoLoteria} />
       <BreadcrumbJsonLd
         itens={[
           { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },

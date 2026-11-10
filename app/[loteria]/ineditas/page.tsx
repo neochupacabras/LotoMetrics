@@ -1,14 +1,13 @@
 import { notFound } from "next/navigation";
-import { after } from "next/server";
 import type { Metadata } from "next";
 import Subnav from "@/components/Subnav";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import Dezenas from "@/components/Dezenas";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { getCoberturaTrincas } from "@/lib/estatisticas";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
-import { logToolEvent } from "@/lib/telemetry";
 
 // A cobertura só muda quando sai um concurso novo — 1x por dia no máximo.
 export const revalidate = 3600;
@@ -39,8 +38,6 @@ export default async function IneditasPage({
 
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) notFound();
-
-  after(() => logToolEvent({ eventName: "tool_view", tool: "ineditas", lottery: codigoLoteria }));
 
   const nomeLoteria = NOME_LOTERIA[codigoLoteria] ?? loteria.nome;
 
@@ -78,6 +75,7 @@ export default async function IneditasPage({
 
   return (
     <>
+      <TelemetriaBeacon tool="ineditas" lottery={codigoLoteria} />
       <BreadcrumbJsonLd
         itens={[
           { nome: nomeLoteria, caminho: `/${codigoLoteria}/resultados` },
