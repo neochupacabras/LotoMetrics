@@ -109,3 +109,68 @@
     margin-top: 12px;
   }
 }
+
+/* Botão de compartilhar o card "meu jogo teria ganho"
+   (components/CompartilharJogoSimulador.tsx). */
+.compartilhar-jogo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  padding: 16px;
+  border: 1.5px solid var(--ink);
+  background: #fff;
+}
+
+.compartilhar-jogo__texto {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.compartilhar-jogo__titulo {
+  margin: 0 0 4px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.compartilhar-jogo__nota {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.compartilhar-jogo__acoes {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.compartilhar-jogo__botao {
+  margin-top: 0;
+  min-height: 48px;
+}
+
+.compartilhar-jogo__botao:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.compartilhar-jogo__baixar {
+  font-size: 0.85rem;
+  color: var(--pine);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .compartilhar-jogo__acoes,
+  .compartilhar-jogo__botao {
+    width: 100%;
+  }
+
+  .compartilhar-jogo__botao {
+    justify-content: center;
+  }
+}

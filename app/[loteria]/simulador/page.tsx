@@ -12,21 +12,37 @@ import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import FaqItem from "@/components/FaqItem";
 import { getPlanoPremium } from "@/lib/plano";
 
+// Jogo e trevos do link compartilhado (?jogo=05-12-23-34-41-60&t=1-4): só
+// dígitos e separadores; o campo do simulador e a rota do card validam o resto.
+type ParamsBusca = Promise<{ jogo?: string | string[]; t?: string | string[] }>;
+
+function lerParamsJogo(busca: Awaited<ParamsBusca>) {
+  const jogo = typeof busca.jogo === "string" && /^[\d\s,.;/-]{1,200}$/.test(busca.jogo) ? busca.jogo : null;
+  const t = typeof busca.t === "string" && /^[1-6][-\s]?[1-6]$/.test(busca.t) ? busca.t : null;
+  return {
+    jogo,
+    trevos: t ? (t.match(/[1-6]/g) ?? []).map(Number) : [],
+  };
+}
+
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ loteria: string }>;
+  searchParams: ParamsBusca;
 }): Promise<Metadata> {
   const { loteria: codigoLoteria } = await params;
   if (!isCodigoLoteriaValido(codigoLoteria)) return {};
   const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
   const { em } = preposicaoLoteria(codigoLoteria);
+  const { jogo, trevos } = lerParamsJogo(await searchParams);
   // Título alinhado à busca real (Search Console, 13/09/2026: "eu teria
   // ganho na lotofácil" tinha 581 impressões, posição 8, só 2 cliques —
   // achado #2.1 do plano de implementação). O antigo "simulador histórico
   // — e se eu tivesse jogado todo concurso?" ranqueava pra essa busca sem
   // responder a ela no próprio título.
-  return metadataPagina(
+  const base = metadataPagina(
     codigoLoteria,
     "/simulador",
     // 09/11/2026 (auditoria de growth, achado T6): ~2.450 impressões em 90
@@ -36,6 +52,21 @@ export async function generateMetadata({
     `Eu teria ganho ${em} ${nome}? Confira seus números grátis`,
     `Digite seus números e veja na hora se eles já teriam sido premiados ${em} ${nome}: acertos por faixa, quanto teria gastado e quanto teria ganhado com os prêmios reais. Grátis e sem cadastro.`
   );
+  if (!jogo) return base;
+
+  // Link compartilhado: a prévia no WhatsApp é o card do jogo, e a página
+  // não entra no índice (o canonical continua sendo /simulador), para não
+  // criar uma URL indexável por jogo.
+  const numeros = jogo.match(/\d+/g)?.join("-") ?? "";
+  const trevosParam = trevos.length === 2 ? `&t=${trevos.join("-")}` : "";
+  // Relativa: o metadataBase do layout raiz completa com o domínio.
+  const card = `/api/simulador/card?l=${codigoLoteria}&j=${numeros}${trevosParam}&f=og`;
+  return {
+    ...base,
+    robots: { index: false, follow: true },
+    openGraph: { ...base.openGraph, images: [{ url: card, width: 1200, height: 630 }] },
+    twitter: { card: "summary_large_image", images: [card] },
+  };
 }
 
 // Free: últimos 100 concursos. Premium: histórico completo.
@@ -46,14 +77,11 @@ export default async function SimuladorPage({
   searchParams,
 }: {
   params: Promise<{ loteria: string }>;
-  searchParams: Promise<{ jogo?: string | string[] }>;
+  searchParams: ParamsBusca;
 }) {
   const { loteria: codigoLoteria } = await params;
-  // Jogo compartilhado por link (?jogo=05-12-23-34-41-60): só dígitos e
-  // separadores; o campo do simulador valida o resto.
-  const jogoParam = (await searchParams).jogo;
-  const jogoInicial =
-    typeof jogoParam === "string" && /^[\d\s,.;/-]{1,80}$/.test(jogoParam) ? jogoParam.replace(/[-.;/]/g, " ") : null;
+  const { jogo, trevos: trevosIniciais } = lerParamsJogo(await searchParams);
+  const jogoInicial = jogo ? jogo.replace(/[-.;/]/g, " ") : null;
 
   if (!isCodigoLoteriaValido(codigoLoteria)) notFound();
 
@@ -121,6 +149,7 @@ export default async function SimuladorPage({
 
       <SimuladorHistoricoClient
         jogoInicial={jogoInicial}
+        trevosIniciais={codigoLoteria === "maismilionaria" ? trevosIniciais : []}
         introducao={
           <div>
             <p className="subtitulo-edicao" style={{ maxWidth: 600 }}>
