@@ -7,6 +7,8 @@ export interface EnvioEmail {
   subject: string;
   html: string;
   attachments?: { filename: string; content: string }[]; // base64, sem o prefixo data:
+  // Cabeçalhos extras (ex.: List-Unsubscribe para descadastro em um clique).
+  headers?: Record<string, string>;
 }
 
 export async function enviarEmail(email: EnvioEmail): Promise<{ ok: boolean; erro?: string }> {
@@ -26,6 +28,7 @@ export async function enviarEmail(email: EnvioEmail): Promise<{ ok: boolean; err
         subject: email.subject,
         html: email.html,
         ...(email.attachments ? { attachments: email.attachments } : {}),
+        ...(email.headers ? { headers: email.headers } : {}),
       }),
     });
 

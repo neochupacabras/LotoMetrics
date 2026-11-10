@@ -13,6 +13,7 @@ import SeletorColunasSuperSete from "./SeletorColunasSuperSete";
 import { jogoParaTexto, lerJogoDigitado } from "@/lib/jogo-digitado";
 import { enviarBeacon, obterOuCriarAnonymousId } from "@/lib/telemetria-cliente";
 import CompartilharJogoSimulador from "./CompartilharJogoSimulador";
+import AvisoJogoSimulador from "./AvisoJogoSimulador";
 import "./simulador-campo.css";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -640,6 +641,14 @@ export default function SimuladorHistoricoClient({
           </InsightCallout>
 
           <CardsResumo r={resultado} />
+
+          <AvisoJogoSimulador
+            codigoLoteria={codigoLoteria}
+            emLoteria={`${prepEm} ${nomeLoteria}`}
+            dezenas={dezenasA}
+            trevos={usaTrevos ? Array.from(trevosA) : []}
+            onInscrito={(canal) => medirInicio("simulador", { etapa: "aviso", canal })}
+          />
 
           {/* Card drawdown */}
           <div className="simulador-drawdown-card">

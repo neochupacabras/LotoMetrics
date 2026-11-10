@@ -29,7 +29,11 @@ export async function POST(request: Request) {
   const userId = await usuarioAtual();
   const categorias = normalizarCategorias(corpo.categorias, !!userId);
   const loterias = normalizarLoterias(corpo.loterias);
-  if (categorias.length === 0) return erro(400, "Escolha ao menos um tipo de notificação");
+  // Rotação feita pelo service worker (pushsubscriptionchange): manda o
+  // endpoint antigo para os avisos de jogo (alertas_jogo) passarem para a
+  // inscrição nova. Inscrição só com avisos de jogo tem categorias vazias.
+  const endpointAnterior = endpointPermitido(corpo.endpointAnterior) ? (corpo.endpointAnterior as string) : null;
+  if (categorias.length === 0 && !endpointAnterior) return erro(400, "Escolha ao menos um tipo de notificação");
 
   const userAgent = (request.headers.get("user-agent") ?? "").slice(0, 300);
 
@@ -46,6 +50,22 @@ export async function POST(request: Request) {
      RETURNING categorias, loterias`,
     [inscricao.endpoint, inscricao.p256dh, inscricao.auth, userId, categorias, loterias, userAgent]
   );
+  if (endpointAnterior && endpointAnterior !== inscricao.endpoint) {
+    // ON CONFLICT DO NOTHING no UPDATE não existe: um jogo que já está na
+    // inscrição nova fica de fora e cai junto com a antiga.
+    await pool.query(
+      `UPDATE alertas_jogo a SET push_inscricao_id = nova.id
+       FROM push_inscricoes antiga, push_inscricoes nova
+       WHERE antiga.endpoint = $1 AND nova.endpoint = $2
+         AND a.push_inscricao_id = antiga.id
+         AND NOT EXISTS (
+           SELECT 1 FROM alertas_jogo b
+           WHERE b.push_inscricao_id = nova.id AND b.loteria = a.loteria
+             AND b.dezenas = a.dezenas AND coalesce(b.trevos, '{}') = coalesce(a.trevos, '{}')
+         )`,
+      [endpointAnterior, inscricao.endpoint]
+    );
+  }
 
   return ok({ categorias: rows[0].categorias, loterias: rows[0].loterias, vinculadaAConta: !!userId });
 }

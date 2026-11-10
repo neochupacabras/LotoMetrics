@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { logJobRun } from "@/lib/telemetry";
 import { processarConcursosNovos, type OpcoesProcessamento } from "@/lib/notificacoes/processar-concursos";
+import { processarAlertasJogo, type ResumoAlertas } from "@/lib/notificacoes/alertas-jogo-envio";
 import { conferirBoloes } from "@/lib/notificacoes/processar-boloes";
 import { verificarPixVencendo } from "@/lib/notificacoes/pix-vencendo";
 import { enviarNewsletterSemanal } from "@/lib/notificacoes/newsletter-semanal";
@@ -85,6 +86,20 @@ export async function handleProcessarConcursos(
       erroBoloes = (err as Error).message;
       console.error("conferirBoloes falhou:", erroBoloes);
     }
+    // Avisos de jogo do simulador (alertas_jogo): também isolados. O modo
+    // de teste somenteEmails não tem como filtrar inscrições por push, então
+    // nesse modo os avisos só são simulados.
+    let alertas: ResumoAlertas | null = null;
+    let erroAlertas: string | null = null;
+    try {
+      alertas = await processarAlertasJogo({
+        dryRun: opcoes.dryRun || !!opcoes.somenteEmails,
+        janelaHoras: opcoes.janelaHoras,
+      });
+    } catch (err) {
+      erroAlertas = (err as Error).message;
+      console.error("processarAlertasJogo falhou:", erroAlertas);
+    }
     const detalhesPix = opts.incluirPixVencendo ? await verificarPixVencendo(opcoes) : [];
     const detalhesNewsletter = opts.incluirNewsletterSemanal ? await enviarNewsletterSemanal(opcoes) : [];
     const detalhesRetrospectiva = opts.incluirRetrospectivaAnual
@@ -98,7 +113,7 @@ export async function handleProcessarConcursos(
 
     await logJobRun({
       jobName,
-      status: emailsFalhos > 0 || erroBoloes ? "partial" : "success",
+      status: emailsFalhos > 0 || erroBoloes || erroAlertas || (alertas?.falhos ?? 0) > 0 ? "partial" : "success",
       startedAt,
       details: {
         dryRun: opcoes.dryRun,
@@ -110,6 +125,8 @@ export async function handleProcessarConcursos(
         emailsSimulados,
         detalhes,
         push: resumo.push,
+        // Sem e-mail nem endpoint: só contagens e status por aviso.
+        alertasJogo: alertas,
       },
       error:
         [
@@ -117,6 +134,7 @@ export async function handleProcessarConcursos(
             ? [detalhes.filter((d) => d.status === "falhou").map((d) => `${d.email}: ${d.erro}`).join("; ")]
             : []),
           ...(erroBoloes ? [erroBoloes] : []),
+          ...(erroAlertas ? [`alertasJogo: ${erroAlertas}`] : []),
         ].join(" | ") || null,
     });
     return NextResponse.json({
@@ -124,6 +142,8 @@ export async function handleProcessarConcursos(
       concursosProcessados: resumo.concursosProcessados,
       boloesConferidos: boloes.conferidos,
       erroBoloes,
+      alertasJogo: alertas && { enviados: alertas.enviados, falhos: alertas.falhos, simulados: alertas.simulados },
+      erroAlertas,
       emailsEnviados,
       emailsFalhos,
       emailsSimulados,

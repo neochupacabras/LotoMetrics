@@ -174,3 +174,100 @@
     justify-content: center;
   }
 }
+
+/* CTA único do aviso de jogo (components/AvisoJogoSimulador.tsx). */
+.aviso-jogo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border: 2px solid var(--pine);
+  background: #fff;
+}
+
+.aviso-jogo__titulo {
+  margin: 0;
+  font-family: var(--font-display, inherit);
+  font-size: 1.2rem;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.aviso-jogo__nota {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.aviso-jogo__botao {
+  margin-top: 0;
+  min-height: 48px;
+  align-self: flex-start;
+}
+
+.aviso-jogo__email {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.aviso-jogo__rotulo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.aviso-jogo__linha {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.aviso-jogo__input {
+  flex: 1 1 200px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--ink);
+  border-radius: 0;
+  background: #fff;
+  color: var(--ink);
+  font-size: 1rem; /* 16px: sem zoom no iPhone */
+}
+
+.aviso-jogo__botao-email {
+  margin-top: 0;
+  min-height: 48px;
+}
+
+.aviso-jogo__botao-email--secundario {
+  background: transparent;
+  color: var(--pine);
+  border: 1.5px solid var(--pine);
+}
+
+.aviso-jogo__dica,
+.aviso-jogo__legal {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.aviso-jogo__dica a,
+.aviso-jogo__legal a {
+  color: var(--pine);
+}
+
+@media (max-width: 640px) {
+  .aviso-jogo__botao,
+  .aviso-jogo__botao-email {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Teclado aberto no e-mail: barra inferior e convite somem. */
+  body:has(.aviso-jogo__input:focus) .bottom-nav,
+  body:has(.aviso-jogo__input:focus) .convite-instalacao {
+    display: none;
+  }
+}
