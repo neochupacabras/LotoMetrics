@@ -10,3 +10,7 @@ export function caminhoInternoSeguro(next: unknown, fallback = "/conta"): string
   if (next.startsWith("//") || next.startsWith("/\\")) return fallback;
   return next;
 }
+
+// Destino depois de confirmar o e-mail do cadastro (gravado por signUp,
+// lido e apagado por /auth/callback).
+export const COOKIE_DESTINO_CADASTRO = "la_pos_cadastro";
