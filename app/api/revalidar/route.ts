@@ -3,6 +3,11 @@ import { after, NextResponse } from "next/server";
 import { LOTERIAS } from "@/lib/format";
 import { enviarIndexNow, urlsParaConcursos, type ConcursoNovo } from "@/lib/indexnow";
 import { logJobRun } from "@/lib/telemetry";
+import { aquecerUrls } from "@/lib/aquecer-cache";
+
+// O aquecimento do cache roda em after(), depois da resposta: o prazo da
+// função precisa cobrir as visitas (ver lib/aquecer-cache.ts).
+export const maxDuration = 60;
 
 // Chamado pelo importador.py (invalidar_cache_site) logo após uma
 // importação que trouxe concurso novo, pra limpar o cache da home.
@@ -59,9 +64,42 @@ export async function POST(request: Request) {
 
   await logJobRun({ jobName: "revalidar", status: "success", startedAt });
 
-  // IndexNow depois da resposta: o importador tem timeout de 10 s e uma
-  // falha aqui nunca deve virar erro da revalidação nem da importação.
+  // IndexNow e aquecimento depois da resposta: o importador tem timeout de
+  // 10 s e uma falha aqui nunca deve virar erro da revalidação nem da
+  // importação.
   const urls = urlsParaConcursos(concursos);
+
+  // Visita as páginas que mudaram (concurso novo, hub de resultados,
+  // tabelas, recordes, home) para que a próxima pessoa já as receba do
+  // cache. Com revalidateTag "max", a visita recebe a versão velha e
+  // dispara a regeneração com o dado novo; o concurso novo, que ainda não
+  // existe no cache, é gerado na hora. Só em produção, como o IndexNow.
+  if (urls.length > 0 && process.env.VERCEL_ENV === "production") {
+    after(async () => {
+      const inicio = new Date();
+      const r = await aquecerUrls(urls);
+      await logJobRun({
+        jobName: "aquecer_cache",
+        status: r.falhas.length === 0 && r.puladas === 0 ? "success" : "failed",
+        startedAt: inicio,
+        details: {
+          urls: r.total,
+          ok: r.ok,
+          cache: r.cache,
+          puladas: r.puladas,
+          falhas: r.falhas.slice(0, 10),
+          concursos,
+        },
+        error:
+          r.falhas.length > 0
+            ? `${r.falhas.length} de ${r.total} URLs falharam`
+            : r.puladas > 0
+              ? `${r.puladas} de ${r.total} URLs ficaram de fora pelo prazo`
+              : null,
+      });
+    });
+  }
+
   if (urls.length > 0) {
     after(async () => {
       const inicio = new Date();
