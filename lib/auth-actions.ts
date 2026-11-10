@@ -9,6 +9,10 @@ import { dentroDoLimitePorIp } from "@/lib/rate-limit";
 // SEC-004: só caminhos internos no `next` (ver lib/caminho-seguro.ts).
 import { COOKIE_DESTINO_CADASTRO, caminhoInternoSeguro } from "@/lib/caminho-seguro";
 import { cookies } from "next/headers";
+// Com default: NEXT_PUBLIC_SITE_URL não existe na produção da Vercel, e o link
+// de confirmação saía como "undefined/auth/callback" — o Supabase recusava e
+// mandava para a Site URL (home) sem fazer o login (achado em 10/11/2026).
+import { SITE_URL } from "@/lib/seo";
 
 // SEC-005: mensagem única para cadastro, igual quer o e-mail seja novo ou já
 // exista — impede enumeração de e-mails cadastrados pela resposta.
@@ -49,7 +53,7 @@ export async function signUp(formData: FormData) {
     options: {
       data: { name },
       // URL para onde o Supabase redireciona após confirmação do e-mail
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      emailRedirectTo: `${SITE_URL}/auth/callback`,
     },
   });
 
@@ -102,7 +106,7 @@ export async function forgotPassword(formData: FormData) {
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=/conta/nova-senha`,
+    redirectTo: `${SITE_URL}/auth/callback?next=/conta/nova-senha`,
   });
 
   if (error) {
