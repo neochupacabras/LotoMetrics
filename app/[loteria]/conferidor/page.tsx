@@ -2,14 +2,13 @@ import { notFound } from "next/navigation";
 export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
-import { after } from "next/server";
 import ConferidorClient from "@/components/ConferidorClient";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import { getPlanoPremium } from "@/lib/plano";
-import { logToolEvent } from "@/lib/telemetry";
 
 export async function generateMetadata({
   params,
@@ -44,17 +43,9 @@ export default async function ConferidorPage({
   ]);
   if (!loteria) notFound();
 
-  after(() =>
-    logToolEvent({
-      eventName: "tool_view",
-      tool: "conferidor",
-      lottery: codigoLoteria,
-      plan: logado ? (premium ? "premium" : "free") : null,
-    })
-  );
-
   return (
     <>
+      <TelemetriaBeacon tool="conferidor" lottery={codigoLoteria} />
       <BreadcrumbJsonLd
         itens={[
           { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },

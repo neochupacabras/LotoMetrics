@@ -1,13 +1,12 @@
 import { notFound } from "next/navigation";
-import { after } from "next/server";
 import type { Metadata } from "next";
 import AcumulosClient from "@/components/AcumulosClient";
 import Subnav from "@/components/Subnav";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { getLoteriaPorCodigo, getAcumulos } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
-import { logToolEvent } from "@/lib/telemetry";
 
 export async function generateMetadata({
   params,
@@ -37,12 +36,11 @@ export default async function AcumulosPage({
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) notFound();
 
-  after(() => logToolEvent({ eventName: "tool_view", tool: "acumulos", lottery: codigoLoteria }));
-
   const acumulos = await getAcumulos(loteria.id);
 
   return (
     <>
+      <TelemetriaBeacon tool="acumulos" lottery={codigoLoteria} />
       <BreadcrumbJsonLd
         itens={[
           { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },

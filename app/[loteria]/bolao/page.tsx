@@ -1,14 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { after } from "next/server";
 import type { Metadata } from "next";
 import BolaoClient from "@/components/BolaoClient";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import { temOpcoesBolao } from "@/lib/bolao-opcoes";
-import { logToolEvent } from "@/lib/telemetry";
 
 export async function generateMetadata({
   params,
@@ -37,12 +36,11 @@ export default async function BolaoPage({
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) notFound();
 
-  after(() => logToolEvent({ eventName: "tool_view", tool: "bolao", lottery: codigoLoteria }));
-
   const disponivel = temOpcoesBolao(codigoLoteria);
 
   return (
     <>
+      <TelemetriaBeacon tool="bolao" lottery={codigoLoteria} />
       <BreadcrumbJsonLd
         itens={[
           { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },

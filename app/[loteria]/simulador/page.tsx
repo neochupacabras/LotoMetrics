@@ -2,16 +2,15 @@ import { notFound } from "next/navigation";
 export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
-import { after } from "next/server";
 import SimuladorHistoricoClient from "@/components/SimuladorHistoricoClient";
 import BloqueadoPremium from "@/components/BloqueadoPremium";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido, preposicaoLoteria } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import FaqItem from "@/components/FaqItem";
 import { getPlanoPremium } from "@/lib/plano";
-import { logToolEvent } from "@/lib/telemetry";
 
 export async function generateMetadata({
   params,
@@ -30,10 +29,12 @@ export async function generateMetadata({
   return metadataPagina(
     codigoLoteria,
     "/simulador",
-    `Eu teria ganho ${em} ${nome}? Teste seus números em todos os concursos`,
-    `Descubra se sua combinação já teria sido premiada em algum concurso ${
-      em === "na" ? "da" : "do"
-    } ${nome} — de graça, sem cadastro. Veja o gasto, o ganho e o saldo real com os prêmios históricos de cada concurso.`
+    // 09/11/2026 (auditoria de growth, achado T6): ~2.450 impressões em 90
+    // dias na posição 8 com ~6 cliques. O título anterior prometia "todos os
+    // concursos", mas o plano grátis confere os últimos 100 — o snippet
+    // agora destaca o que vale para todo mundo: grátis, na hora, sem cadastro.
+    `Eu teria ganho ${em} ${nome}? Confira seus números grátis`,
+    `Digite seus números e veja na hora se eles já teriam sido premiados ${em} ${nome}: acertos por faixa, quanto teria gastado e quanto teria ganhado com os prêmios reais. Grátis e sem cadastro.`
   );
 }
 
@@ -55,15 +56,6 @@ export default async function SimuladorPage({
   ]);
   if (!loteria) notFound();
 
-  after(() =>
-    logToolEvent({
-      eventName: "tool_view",
-      tool: "simulador",
-      lottery: codigoLoteria,
-      plan: logado ? (premium ? "premium" : "free") : null,
-    })
-  );
-
   const totalLabel: Record<string, string> = {
     lotofacil:      "3.700+",
     megasena:       "3.000+",
@@ -81,7 +73,7 @@ export default async function SimuladorPage({
   const perguntasFrequentes = [
     {
       pergunta: `Como sei se eu já teria ganhado ${em} ${loteria.nome}?`,
-      resposta: `Digite as dezenas que você costuma jogar no simulador abaixo. Ele confere essa combinação contra todos os ${totalConcursosLabel} concursos já realizados ${de} ${loteria.nome} e mostra em quais delas você teria batido alguma faixa premiada, com o valor real pago naquele concurso.`,
+      resposta: `Digite as dezenas que você costuma jogar no simulador abaixo. Ele confere essa combinação contra os concursos já realizados ${de} ${loteria.nome} (os últimos 100 no plano gratuito, todos os ${totalConcursosLabel} no Premium) e mostra em quais você teria batido alguma faixa premiada, com o valor real pago naquele concurso.`,
     },
     {
       pergunta: "O simulador aumenta minha chance de ganhar?",
@@ -105,6 +97,7 @@ export default async function SimuladorPage({
 
   return (
     <>
+      <TelemetriaBeacon tool="simulador" lottery={codigoLoteria} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}

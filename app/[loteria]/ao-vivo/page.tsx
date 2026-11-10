@@ -1,15 +1,14 @@
 import { notFound } from "next/navigation";
-import { after } from "next/server";
 import type { Metadata } from "next";
 import Subnav from "@/components/Subnav";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import AoVivoClient from "@/components/AoVivoClient";
 import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
 import { isCodigoLoteriaValido, formatarData } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import { agoraBrasilia, dataHoraProximoSorteio, descricaoProximoSorteioEspecial, AGENDA, descricaoAgenda } from "@/lib/calendario";
 import type { CodigoLoteria } from "@/lib/types";
-import { logToolEvent } from "@/lib/telemetry";
 
 // A contagem em si roda no cliente — o servidor só precisa saber o horário
 // alvo e o último concurso conhecido, e isso muda no máximo 1x por dia.
@@ -42,8 +41,6 @@ export default async function AoVivoPage({
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) notFound();
 
-  after(() => logToolEvent({ eventName: "tool_view", tool: "ao-vivo", lottery: codigoLoteria }));
-
   const ultimoConcurso = await getUltimoConcurso(loteria.id);
   const nomeLoteria = NOME_LOTERIA[codigoLoteria] ?? loteria.nome;
   const agenda = AGENDA.find((a) => a.codigo === codigoLoteria);
@@ -56,6 +53,7 @@ export default async function AoVivoPage({
 
   return (
     <>
+      <TelemetriaBeacon tool="ao-vivo" lottery={codigoLoteria} />
       <BreadcrumbJsonLd
         itens={[
           { nome: nomeLoteria, caminho: `/${codigoLoteria}/resultados` },

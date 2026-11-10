@@ -2,16 +2,15 @@
 // isso só muda quando sai um novo resultado, daí caber cache de 1h.
 export const revalidate = 3600;
 import { notFound } from "next/navigation";
-import { after } from "next/server";
 import type { Metadata } from "next";
 import ProbabilidadesClient from "@/components/ProbabilidadesClient";
 import ProjecaoAcumuloCard from "@/components/ProjecaoAcumuloCard";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
+import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { getLoteriaPorCodigo, getUltimoConcurso, getConcursosAcumulados } from "@/lib/queries";
 import { FAIXAS_PREMIADAS, calcularProjecao, PARAMS_LOTERIA } from "@/lib/probabilidades";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
-import { logToolEvent } from "@/lib/telemetry";
 
 export async function generateMetadata({
   params,
@@ -40,8 +39,6 @@ export default async function ProbabilidadesPage({
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) notFound();
 
-  after(() => logToolEvent({ eventName: "tool_view", tool: "probabilidades", lottery: codigoLoteria }));
-
   const faixasPremiadas = FAIXAS_PREMIADAS[codigoLoteria] ?? [];
 
   // Dados para a projeção de acúmulo (só se a loteria tiver params configurados)
@@ -69,6 +66,7 @@ export default async function ProbabilidadesPage({
 
   return (
     <>
+      <TelemetriaBeacon tool="probabilidades" lottery={codigoLoteria} />
       <BreadcrumbJsonLd
         itens={[
           { nome: loteria.nome, caminho: `/${codigoLoteria}/resultados` },

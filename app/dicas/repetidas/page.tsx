@@ -4,7 +4,11 @@ import Masthead from "@/components/Masthead";
 import { SITE_URL, SITE_NAME, articleJsonLd } from "@/lib/seo";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
-const TITULO = "Repetidas: quantas dezenas se repetem de um concurso pro outro";
+// 09/11/2026 (auditoria de growth, achado T4): este artigo e a tabela
+// /lotofacil/tabelas/repetidas disputavam as mesmas buscas ("dezenas
+// repetidas lotofácil"). Quem busca isso quer a tabela atualizada; o
+// artigo fica com a pergunta "por quê" e manda para as tabelas logo no topo.
+const TITULO = "Por que as dezenas se repetem? A média de repetidas na Lotofácil e na Mega-Sena";
 const DESCRICAO =
   "Na Lotofácil, a média é 9 dezenas repetidas do concurso anterior. Na Mega-Sena, mais da metade dos sorteios não repete nenhuma. O motivo é o mesmo.";
 
@@ -52,6 +56,16 @@ export default function ArtigoRepetidasPage() {
           Mega-Sena, quase nenhuma. O cálculo é o mesmo nos dois casos; o que muda é
           a proporção de dezenas sorteadas por vez.
         </p>
+
+        <div className="bloco" style={{ marginTop: "24px" }}>
+          <p className="bloco__nota" style={{ margin: 0 }}>
+            Procurando os números do último concurso? Veja a{" "}
+            <Link href="/lotofacil/tabelas/repetidas">tabela de dezenas repetidas da Lotofácil</Link>{" "}
+            ou a{" "}
+            <Link href="/megasena/tabelas/repetidas">tabela de dezenas repetidas da Mega-Sena</Link>,
+            atualizadas a cada sorteio.
+          </p>
+        </div>
 
         <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           Lotofácil: repetir muito é esperado
