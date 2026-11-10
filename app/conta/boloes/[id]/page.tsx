@@ -2,7 +2,6 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import Masthead from "@/components/Masthead";
 import BolaoEditorClient from "@/components/conta/BolaoEditorClient";
 import { createClient } from "@/lib/supabase/server";
 import { calcularIsPremium } from "@/lib/plano-premium";
@@ -46,9 +45,9 @@ export default async function ContaBolaoPage({ params }: { params: Promise<{ id:
 
   return (
     <>
-      <Masthead />
-      <main className="conta-page container">
-        <Link href="/conta/boloes" className="conta-voltar">← Meus bolões</Link>
+        <Link href="/conta/boloes" className="m-cabecalho__voltar">
+          <span aria-hidden>←</span> Bolões
+        </Link>
         <BolaoEditorClient
           bolao={{
             id: bolao.id,
@@ -78,7 +77,6 @@ export default async function ContaBolaoPage({ params }: { params: Promise<{ id:
           userId={user.id}
           comprovante={comprovante}
         />
-      </main>
     </>
   );
 }

@@ -1,11 +1,10 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import Masthead from "@/components/Masthead";
+import { CabecalhoPagina, RecursoBloqueado } from "@/components/membros/MembrosShell";
+import { getContaContexto } from "@/lib/conta/contexto";
 import ApiKeysClient from "@/components/conta/ApiKeysClient";
 import { createClient } from "@/lib/supabase/server";
-import { calcularIsPremium } from "@/lib/plano";
 
 export const metadata: Metadata = {
   title: "API de dados — LotoAnalítica",
@@ -13,60 +12,35 @@ export const metadata: Metadata = {
 };
 
 export default async function ContaApiPage() {
+  const contexto = await getContaContexto();
+  if (!contexto) redirect("/entrar?next=/conta/api");
+  const { isPremium } = contexto;
+
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/entrar?next=/conta/api");
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("plan, plan_expires_at")
-    .eq("id", user.id)
-    .single();
-
-  const isPremium = calcularIsPremium(profile);
-
   const { data: keys } = await supabase
     .from("api_keys")
     .select("id, key_prefix, label, requests_mes, limite_mes, ativo, created_at, last_used_at")
-    .eq("user_id", user.id)
+    .eq("user_id", contexto.userId)
     .eq("ativo", true)
     .order("created_at", { ascending: false });
 
   return (
     <>
-      <Masthead />
-      <main className="conta-page container">
-        <div className="conta-header">
-          <div>
-            <Link href="/conta" className="conta-voltar">← Minha conta</Link>
-            <h1 className="conta-titulo">API de dados</h1>
-            <p className="conta-email">
-              Acesse resultados e estatísticas via REST API
-            </p>
-          </div>
-          <a
-            href="/api/v1/docs"
-            target="_blank"
-            className="botao-copiar"
-            style={{ whiteSpace: "nowrap" }}
-          >
-            Ver documentação →
-          </a>
-        </div>
+        <CabecalhoPagina
+          titulo="API de dados"
+          descricao="Resultados e estatísticas processadas via REST API, com autenticação por chave."
+          acoes={
+            <a href="/api/v1/docs" target="_blank" rel="noopener" className="m-botao m-botao--secundario">
+              Ver documentação ↗
+            </a>
+          }
+        />
 
         {!isPremium ? (
-          <div className="conta-secao">
-            <div className="conta-jogos-vazio">
-              <p>A API de dados é exclusiva para assinantes Premium.</p>
-              <p className="conta-jogos-dica">
-                Com o Premium você pode acessar resultados históricos e estatísticas
-                processadas via REST API com autenticação por chave.
-              </p>
-              <Link href="/assinar" className="botao-gerar">
-                Assinar Premium →
-              </Link>
-            </div>
-          </div>
+          <RecursoBloqueado titulo="API de dados históricos">
+            Acesso REST aos resultados e às estatísticas processadas, com chave própria e 1.000
+            requisições por mês incluídas.
+          </RecursoBloqueado>
         ) : (
           <>
             <section className="conta-secao">
@@ -123,7 +97,6 @@ curl -H "Authorization: Bearer la_suachave" \\
             </section>
           </>
         )}
-      </main>
     </>
   );
 }

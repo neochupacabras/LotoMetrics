@@ -22,7 +22,9 @@ const CHAVE_LOTERIA = "la:loteria";
 const LOTERIA_PADRAO: CodigoLoteria = "lotofacil";
 
 // Rotas com navegação própria, onde a barra inferior atrapalha.
-const SEM_BARRA = ["/admin"];
+// /conta tem a barra inferior própria da área de membros
+// (components/membros/NavMembros.tsx).
+const SEM_BARRA = ["/admin", "/conta"];
 
 export function useLoteriaAtual(): CodigoLoteria {
   const pathname = usePathname() ?? "/";
@@ -64,7 +66,8 @@ export default function BottomNav() {
     };
   }, []);
 
-  if (SEM_BARRA.some((p) => pathname.startsWith(p))) return null;
+  // Segmento inteiro: "/conta" não pode pegar "/conta-excluida".
+  if (SEM_BARRA.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return null;
 
   const resto = pathname.split("/")[2] ?? "";
   const naLoteria = isCodigoLoteriaValido(pathname.split("/")[1] ?? "");
