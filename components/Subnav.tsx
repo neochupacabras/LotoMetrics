@@ -8,7 +8,7 @@ import { abaAplicavel } from "@/lib/abas-loteria";
 type AbaAtiva =
   | "resultados" | "tabelas" | "gerador" | "simulador" | "probabilidades"
   | "fechamentos" | "conferidor" | "destaques" | "bolao" | "analisador"
-  | "heatmap" | "acumulos" | "equilibrio" | "ineditas" | "data-da-sorte" | "ao-vivo";
+  | "heatmap" | "acumulos" | "recordes" | "equilibrio" | "ineditas" | "data-da-sorte" | "ao-vivo";
 
 const ABAS_COMPLETAS: { slug: AbaAtiva; label: string }[] = [
   { slug: "resultados",     label: "Resultados"     },
@@ -22,6 +22,7 @@ const ABAS_COMPLETAS: { slug: AbaAtiva; label: string }[] = [
   { slug: "analisador",     label: "Analisador"     },
   { slug: "heatmap",        label: "Heatmap"        },
   { slug: "acumulos",       label: "Acúmulos"       },
+  { slug: "recordes",       label: "Recordes"       },
   { slug: "probabilidades", label: "Probabilidades" },
   { slug: "equilibrio",     label: "Equilíbrio"     },
   { slug: "ineditas",       label: "Inéditas"       },

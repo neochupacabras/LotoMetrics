@@ -154,7 +154,7 @@ export async function logJobRun(input: LogJobRunInput): Promise<void> {
 export const FERRAMENTAS_CONHECIDAS = [
   "resultados", "destaques", "tabelas", "gerador", "simulador", "fechamentos",
   "bolao", "conferidor", "analisador", "heatmap", "acumulos", "probabilidades",
-  "equilibrio", "ineditas", "data-da-sorte", "ao-vivo",
+  "equilibrio", "ineditas", "data-da-sorte", "ao-vivo", "recordes",
 ] as const;
 
 const LOTERIAS_CONHECIDAS = new Set([

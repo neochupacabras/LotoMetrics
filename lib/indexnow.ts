@@ -23,9 +23,10 @@ export interface ConcursoNovo {
 
 /**
  * URLs que mudam quando entra concurso novo: a página de cada concurso, a
- * lista de resultados e as tabelas da loteria afetada, mais a home (que
- * mostra o último resultado de todas). Ignora loteria desconhecida e número
- * inválido, porque o corpo vem de fora (importador).
+ * lista de resultados, as tabelas e os recordes da loteria afetada, mais a
+ * home (que mostra o último resultado de todas) e o hub de recordes. Ignora
+ * loteria desconhecida e número inválido, porque o corpo vem de fora
+ * (importador).
  */
 export function urlsParaConcursos(concursos: ConcursoNovo[], base: string = SITE_URL): string[] {
   const urls = new Set<string>();
@@ -35,11 +36,15 @@ export function urlsParaConcursos(concursos: ConcursoNovo[], base: string = SITE
     urls.add(`${base}/${loteria}/resultados/${numero}`);
     urls.add(`${base}/${loteria}/resultados`);
     urls.add(`${base}/${loteria}/tabelas`);
+    urls.add(`${base}/${loteria}/recordes`);
     for (const categoria of getCategoriasParaLoteria(loteria)) {
       urls.add(`${base}/${loteria}/tabelas/${categoria.slug}`);
     }
   }
-  if (urls.size > 0) urls.add(base);
+  if (urls.size > 0) {
+    urls.add(base);
+    urls.add(`${base}/recordes`);
+  }
   return [...urls];
 }
 
