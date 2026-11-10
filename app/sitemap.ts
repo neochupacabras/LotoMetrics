@@ -21,28 +21,33 @@ const LOTERIAS = ["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "
 // de concurso — só não ficam reanunciados aqui pra sempre.
 const MAX_CONCURSOS_POR_LOTERIA = 500;
 
-const ABAS: [string, number, MetadataRoute.Sitemap[number]["changeFrequency"]][] = [
+// O 4º campo diz se o conteúdo da aba muda a cada concurso: essas recebem
+// lastModified com a data do último concurso da loteria (achado T8 de
+// docs/growth/SEO_TECHNICAL_AUDIT.md). Ferramentas cujo texto não depende
+// do sorteio (gerador, simulador, conferidor...) ficam sem data, para o
+// sitemap não anunciar uma mudança que não houve.
+const ABAS: [string, number, MetadataRoute.Sitemap[number]["changeFrequency"], boolean][] = [
   // "resultado" (singular) não entra aqui de propósito: é só um alias que
   // sempre redireciona pro concurso mais recente (ver app/[loteria]/resultado/page.tsx)
   // — nunca serve conteúdo, então não deveria estar num sitemap (o Google
   // trata URL-que-só-redireciona no sitemap como sinal de qualidade ruim).
-  ["resultados", 0.9, "daily"],
-  ["destaques", 0.7, "daily"],
-  ["tabelas", 0.6, "weekly"],
-  ["gerador", 0.6, "monthly"],
-  ["simulador", 0.6, "monthly"],
-  ["fechamentos", 0.5, "monthly"],
-  ["bolao", 0.5, "monthly"],
-  ["conferidor", 0.5, "monthly"],
-  ["analisador", 0.6, "monthly"],
-  ["heatmap", 0.6, "weekly"],
-  ["acumulos", 0.6, "daily"],
-  ["recordes", 0.6, "daily"],
-  ["probabilidades", 0.5, "monthly"],
-  ["equilibrio",     0.6, "monthly"],
-  ["ineditas",       0.5, "weekly"],
-  ["data-da-sorte",  0.5, "yearly"],
-  ["ao-vivo",        0.6, "daily"],
+  ["resultados",     0.9, "daily",   true],
+  ["destaques",      0.7, "daily",   true],
+  ["tabelas",        0.6, "weekly",  true],
+  ["gerador",        0.6, "monthly", false],
+  ["simulador",      0.6, "monthly", false],
+  ["fechamentos",    0.5, "monthly", false],
+  ["bolao",          0.5, "monthly", false],
+  ["conferidor",     0.5, "monthly", false],
+  ["analisador",     0.6, "monthly", false],
+  ["heatmap",        0.6, "weekly",  true],
+  ["acumulos",       0.6, "daily",   true],
+  ["recordes",       0.6, "daily",   true],
+  ["probabilidades", 0.5, "monthly", true],
+  ["equilibrio",     0.6, "monthly", false],
+  ["ineditas",       0.5, "weekly",  true],
+  ["data-da-sorte",  0.5, "yearly",  false],
+  ["ao-vivo",        0.6, "daily",   true],
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -118,10 +123,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     );
 
     for (const { codigo: codigoLoteria, loteria } of existentes) {
-      for (const [aba, priority, changeFrequency] of ABAS) {
+      const concursos = concursosPorLoteria.get(loteria.id) ?? [];
+      // A lista vem do mais novo para o mais antigo.
+      const ultimoSorteio = concursos[0]?.dataSorteio;
+
+      for (const [aba, priority, changeFrequency, mudaComConcurso] of ABAS) {
         if (!abaAplicavel(codigoLoteria, aba)) continue;
         entradas.push({
           url: `${SITE_URL}/${codigoLoteria}/${aba}`,
+          ...(mudaComConcurso && ultimoSorteio ? { lastModified: ultimoSorteio } : {}),
           changeFrequency,
           priority,
         });
@@ -130,12 +140,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       for (const categoria of getCategoriasParaLoteria(codigoLoteria)) {
         entradas.push({
           url: `${SITE_URL}/${codigoLoteria}/tabelas/${categoria.slug}`,
+          ...(ultimoSorteio ? { lastModified: ultimoSorteio } : {}),
           changeFrequency: "daily",
           priority: 0.6,
         });
       }
 
-      for (const c of concursosPorLoteria.get(loteria.id) ?? []) {
+      for (const c of concursos) {
         entradas.push({
           url: `${SITE_URL}/${codigoLoteria}/resultados/${c.numero}`,
           lastModified: c.dataSorteio,
