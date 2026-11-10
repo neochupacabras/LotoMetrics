@@ -2469,8 +2469,8 @@ export const ANALISES: Analise[] = [
     corpo: `
       <p>
         A aposta mínima da +Milionária (6 dezenas de 1 a 50, mais 2 trevos de 1 a 6)
-        custa R$ 6,00 — mais cara que a Mega-Sena (R$ 5,00) e bem mais cara que a
-        Lotofácil (R$ 3,00). Vale a pena o preço extra?
+        custa R$ 6,00 — o mesmo preço da aposta simples da Mega-Sena e bem mais
+        que a Lotofácil. Vale a pena o preço extra?
       </p>
 
       <h2>O que o preço extra compra</h2>
@@ -2490,7 +2490,7 @@ export const ANALISES: Analise[] = [
             <tr><th>Loteria</th><th class="num">Preço</th><th class="num">Prob. faixa principal</th></tr>
           </thead>
           <tbody>
-            <tr><td>Mega-Sena</td><td class="num">R$ 5,00</td><td class="num">1 em 50.063.860</td></tr>
+            <tr><td>Mega-Sena</td><td class="num">R$ 6,00</td><td class="num">1 em 50.063.860</td></tr>
             <tr><td>+Milionária</td><td class="num">R$ 6,00</td><td class="num">1 em 238.360.500</td></tr>
           </tbody>
         </table>
@@ -2499,8 +2499,8 @@ export const ANALISES: Analise[] = [
         A faixa principal da +Milionária (6 dezenas + 2 trevos) é quase 5 vezes
         mais difícil que a sena da Mega-Sena — resultado de multiplicar a
         probabilidade das dezenas (1 em 15.890.700) pela dos 2 trevos (1 em 15).
-        O preço 20% maior não compra uma faixa principal mais fácil; compra um
-        prêmio mínimo maior e faixas extras de premiação.
+        Pelo mesmo preço da Mega-Sena, a faixa principal fica bem mais difícil;
+        em troca vêm um prêmio mínimo maior e faixas extras de premiação.
       </p>
 
       <h2>Os trevos isoladamente</h2>
