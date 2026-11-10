@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import Masthead from "@/components/Masthead";
 import AlertasForm from "@/components/conta/AlertasForm";
 import FormSair from "@/components/pwa/FormSair";
+import ExcluirContaForm from "@/components/conta/ExcluirContaForm";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/lib/auth-actions";
 import { calcularIsPremium } from "@/lib/plano";
@@ -42,10 +43,11 @@ export default async function ContaPage({
 
   const { checkout } = await searchParams;
 
-  const [profileRes, jogosRes, alertasRes] = await Promise.all([
+  const [profileRes, jogosRes, alertasRes, assinaturaRes] = await Promise.all([
     supabase.from("profiles").select("display_name, plan, plan_expires_at, stripe_customer_id").eq("id", user.id).single(),
     supabase.from("user_games").select("id, loteria, dezenas, label, ativo").eq("user_id", user.id).eq("ativo", true).order("created_at", { ascending: false }).limit(3),
     supabase.from("alert_preferences").select("loteria, threshold_brl, sorteios_sem_ganhador, ativo").eq("user_id", user.id),
+    supabase.from("subscriptions").select("id").eq("user_id", user.id).in("status", ["active", "trialing", "past_due"]).limit(1),
   ]);
 
   const profile = profileRes.data;
@@ -53,6 +55,7 @@ export default async function ContaPage({
   const alertas = alertasRes.data ?? [];
 
   const isPremium = calcularIsPremium(profile);
+  const temAssinaturaStripe = (assinaturaRes.data?.length ?? 0) > 0;
 
   const expiresAt = profile?.plan_expires_at
     ? new Date(profile.plan_expires_at).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" })
@@ -237,6 +240,15 @@ export default async function ContaPage({
             <Link href="/assinar" className="botao-gerar">Ver planos e assinar →</Link>
           </section>
         )}
+
+        {/* ── Excluir conta ─────────────────────────────────────────── */}
+        <section className="conta-secao excluir-conta" aria-labelledby="excluir-conta-secao">
+          <h2 id="excluir-conta-secao" className="conta-secao-titulo">Excluir conta</h2>
+          <p className="conta-alertas-desc">
+            Apaga sua conta e todos os dados associados a ela. Esta ação não pode ser desfeita.
+          </p>
+          <ExcluirContaForm isPremium={isPremium} temAssinaturaStripe={temAssinaturaStripe} />
+        </section>
       </main>
     </>
   );
