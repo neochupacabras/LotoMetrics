@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import CardSimulador, { TAMANHO_CARD, type FormatoCard } from "@/components/og/CardSimulador";
 import { getLoteriaPorCodigo } from "@/lib/queries";
-import { simularHistoricoInterno } from "@/lib/simulador-actions";
+import { simularParaCard } from "@/lib/simulador-actions";
 import { montarTextoCard } from "@/lib/card-simulador";
 import { lerJogoDigitado } from "@/lib/jogo-digitado";
 import { isCodigoLoteriaValido, preposicaoLoteria } from "@/lib/format";
@@ -16,7 +16,6 @@ import { NOME_LOTERIA } from "@/lib/seo";
 //
 // O resultado só muda quando sai concurso novo: cache de 1 hora na CDN, e
 // até 1 dia servindo a versão anterior enquanto revalida.
-const CONCURSOS_CARD = 100;
 const CABECALHO_CACHE = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400";
 
 function respostaInvalida(motivo: string): Response {
@@ -55,7 +54,8 @@ export async function GET(request: Request) {
   if (trevos && (trevos.length !== 2 || trevos[0] === trevos[1])) return respostaInvalida("Trevos inválidos");
 
   const dezenas = superSete ? jogo.numeros : [...jogo.numeros].sort((a, b) => a - b);
-  const resultado = await simularHistoricoInterno(codigoLoteria, dezenas, CONCURSOS_CARD, trevos);
+  // simularParaCard usa o mesmo recorte do plano grátis (100 concursos).
+  const resultado = await simularParaCard(codigoLoteria, dezenas, trevos);
   if ("erro" in resultado) return respostaInvalida(resultado.erro);
   if (resultado.totalConcursos === 0) return respostaInvalida("Sem concursos para simular");
 

@@ -11,6 +11,7 @@ import { isCodigoLoteriaValido, preposicaoLoteria, qtdDezenasAposta } from "@/li
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import FaqItem from "@/components/FaqItem";
 import { getPlanoPremium } from "@/lib/plano";
+import { LIMITE_HISTORICO_FREE } from "@/lib/simulador-plano";
 
 // Jogo e trevos do link compartilhado (?jogo=05-12-23-34-41-60&t=1-4): só
 // dígitos e separadores; o campo do simulador e a rota do card validam o resto.
@@ -70,7 +71,7 @@ export async function generateMetadata({
 }
 
 // Free: últimos 100 concursos. Premium: histórico completo.
-const LIMITE_FREE = 100;
+const LIMITE_FREE = LIMITE_HISTORICO_FREE;
 
 export default async function SimuladorPage({
   params,

@@ -7,6 +7,8 @@ import { isCodigoLoteriaValido, qtdDezenasAposta } from "@/lib/format";
 import { PARAMS_LOTERIA, FAIXAS_MILIONARIA, FAIXAS_DUPLASENA_POR_SORTEIO, faixaLotomania } from "@/lib/probabilidades";
 import { contarColunasAcertadas } from "@/lib/classificacao";
 import { logToolEvent } from "@/lib/telemetry";
+import { getPlanoPremium } from "@/lib/plano";
+import { limiteHistoricoPorPlano, recortarHistorico, ERRO_COMPARADOR_PREMIUM, LIMITE_HISTORICO_FREE } from "@/lib/simulador-plano";
 
 export interface ResultadoSimulacao {
   nomeLoteria: string;
@@ -177,14 +179,32 @@ async function anonymousIdDoCookie(): Promise<string | null> {
   return UUID_REGEX.test(valor) ? valor : null;
 }
 
+// Simulação do card compartilhável (app/api/simulador/card): sempre nos
+// últimos LIMITE_HISTORICO_FREE concursos, o mesmo recorte do plano grátis,
+// e sem gravar tool_completed (gerar o card ou a prévia do link não é uma
+// simulação feita por alguém). Como ação chamável pelo navegador, não dá
+// acesso a nada além do que o plano grátis já dá.
+export async function simularParaCard(
+  codigoLoteria: string,
+  dezenas: number[],
+  trevos?: number[]
+): Promise<ResultadoSimulacao | { erro: string }> {
+  return simularHistoricoInterno(codigoLoteria, dezenas, LIMITE_HISTORICO_FREE, trevos);
+}
+
 export async function simularHistorico(
   codigoLoteria: string,
   dezenas: number[],
-  limiteHistorico?: number, // undefined = histórico completo (premium)
+  // Ignorado de propósito: o limite vinha do navegador e qualquer um podia
+  // omiti-lo pra simular o histórico completo (Premium). Mantido só pra não
+  // quebrar a assinatura; o servidor decide pelo plano da sessão.
+  _limiteHistoricoDoCliente?: number,
   trevos?: number[], // +Milionária
   origem?: string // "digitado" | "grade" | "link", só para medição
 ): Promise<ResultadoSimulacao | { erro: string }> {
   const inicio = Date.now();
+  const { premium } = await getPlanoPremium();
+  const limiteHistorico = limiteHistoricoPorPlano(premium);
   const resultado = await simularHistoricoInterno(codigoLoteria, dezenas, limiteHistorico, trevos);
   const falhou = "erro" in resultado;
   const anonymousId = await anonymousIdDoCookie();
@@ -196,10 +216,7 @@ export async function simularHistorico(
       tool: "simulador",
       lottery: codigoLoteria,
       success: !falhou,
-      // limiteHistorico presente = usuário free (ver docs/ADMIN_AUDIT.md,
-      // matriz Free vs Premium) — evita round-trip extra de auth só pra
-      // registrar o plano.
-      plan: limiteHistorico ? "free" : "premium",
+      plan: premium ? "premium" : "free",
       durationMs: Date.now() - inicio,
       anonymousId,
       metadata: {
@@ -217,15 +234,14 @@ export async function simularHistorico(
   return resultado;
 }
 
-// Exportada para a rota do card (app/api/simulador/card), que precisa do
-// mesmo cálculo sem gravar tool_completed: cada card gerado, e cada prévia
-// de link que o WhatsApp busca, não é uma simulação feita por alguém. Como o
-// arquivo é "use server", ela também fica disponível como ação, com o mesmo
-// poder de simularHistorico (só sem o registro).
-export async function simularHistoricoInterno(
+// Cálculo da simulação. NÃO exportar: num arquivo "use server" toda função
+// exportada vira ação que o navegador pode chamar com qualquer argumento, e
+// com limiteHistorico = null isto devolveria o histórico completo (Premium)
+// para qualquer um.
+async function simularHistoricoInterno(
   codigoLoteria: string,
   dezenas: number[],
-  limiteHistorico?: number,
+  limiteHistorico: number | null, // null = histórico completo
   trevos?: number[]
 ): Promise<ResultadoSimulacao | { erro: string }> {
   if (!isCodigoLoteriaValido(codigoLoteria))
@@ -243,7 +259,7 @@ export async function simularHistoricoInterno(
 
   const todosDraws = await getDrawsParaSimulacao(loteria.id);
   // Aplica limite: free usa últimos N concursos, premium usa todos
-  const draws = limiteHistorico ? todosDraws.slice(-limiteHistorico) : todosDraws;
+  const draws = recortarHistorico(todosDraws, limiteHistorico);
   const preco = precoAposta(codigoLoteria);
 
   let saldoCumulativo = 0;
@@ -338,11 +354,16 @@ export async function compararJogos(
   codigoLoteria: string,
   dezenasA: number[],
   dezenasB: number[],
-  limiteHistorico?: number,
+  // Ignorado: ver simularHistorico. O comparador é só Premium, então roda
+  // sempre no histórico completo.
+  _limiteHistoricoDoCliente?: number,
   trevosA?: number[],
   trevosB?: number[]
 ): Promise<ResultadoComparacao | { erro: string }> {
-  const resultado = await compararJogosInterno(codigoLoteria, dezenasA, dezenasB, limiteHistorico, trevosA, trevosB);
+  const { premium } = await getPlanoPremium();
+  const resultado = premium
+    ? await compararJogosInterno(codigoLoteria, dezenasA, dezenasB, limiteHistoricoPorPlano(premium), trevosA, trevosB)
+    : { erro: ERRO_COMPARADOR_PREMIUM };
   const falhou = "erro" in resultado;
   after(() =>
     logToolEvent({
@@ -350,6 +371,7 @@ export async function compararJogos(
       tool: "simulador-comparador",
       lottery: codigoLoteria,
       success: !falhou,
+      plan: premium ? "premium" : "free",
     })
   );
   return resultado;
@@ -359,7 +381,7 @@ async function compararJogosInterno(
   codigoLoteria: string,
   dezenasA: number[],
   dezenasB: number[],
-  limiteHistorico?: number,
+  limiteHistorico: number | null,
   trevosA?: number[],
   trevosB?: number[]
 ): Promise<ResultadoComparacao | { erro: string }> {
@@ -379,7 +401,7 @@ async function compararJogosInterno(
   if ("erro" in contextoB) return contextoB;
 
   const todosDraws = await getDrawsParaSimulacao(loteria.id);
-  const draws = limiteHistorico ? todosDraws.slice(-limiteHistorico) : todosDraws;
+  const draws = recortarHistorico(todosDraws, limiteHistorico);
 
   const preco = precoAposta(codigoLoteria);
 
