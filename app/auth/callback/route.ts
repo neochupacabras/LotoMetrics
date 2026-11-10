@@ -15,16 +15,35 @@ export async function GET(request: Request) {
   const destinoCadastro = cookieStore.get(COOKIE_DESTINO_CADASTRO)?.value;
   const next = caminhoInternoSeguro(searchParams.get("next") ?? destinoCadastro);
 
-  if (code) {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
-      const resposta = NextResponse.redirect(`${origin}${next}`);
-      if (destinoCadastro) resposta.cookies.delete(COOKIE_DESTINO_CADASTRO);
-      return resposta;
-    }
+  function irPara(caminho: string) {
+    const resposta = NextResponse.redirect(`${origin}${caminho}`);
+    if (destinoCadastro) resposta.cookies.delete(COOKIE_DESTINO_CADASTRO);
+    return resposta;
   }
 
-  // Algo deu errado — redireciona para login com mensagem
-  return NextResponse.redirect(`${origin}/entrar?erro=link-invalido`);
+  const supabase = await createClient();
+  let motivo: string | null = searchParams.get("error_code") ?? searchParams.get("error");
+
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (!error) return irPara(next);
+    motivo = error.message;
+  }
+
+  // O mesmo link costuma chegar aqui DUAS vezes em menos de 1 s (visto nos
+  // logs da Vercel em 10/11/2026: o navegador/app de e-mail abre o link de
+  // novo). A primeira requisição troca o código e grava a sessão; a segunda
+  // falha com "código já usado". Se a sessão já existe, segue normalmente.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) return irPara(next);
+
+  console.error("auth/callback: não foi possível abrir a sessão", { motivo, temCodigo: !!code });
+
+  // Sem sessão: o e-mail em geral já foi confirmado pelo Supabase antes de
+  // chegar aqui (link aberto em outro navegador, por exemplo). Manda entrar
+  // com e-mail e senha, guardando o destino para voltar ao bolão depois.
+  const destino = destinoCadastro || searchParams.get("next") ? `&next=${encodeURIComponent(next)}` : "";
+  return NextResponse.redirect(`${origin}/entrar?erro=${code ? "confirmado" : "link-invalido"}${destino}`);
 }
