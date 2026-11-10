@@ -2,8 +2,8 @@
 
 import { after } from "next/server";
 import { getLoteriaPorCodigo, getDrawsParaSimulacao, getMapaFaixasPorAcertos, ConcessaoSimulacao } from "@/lib/queries";
-import { isCodigoLoteriaValido } from "@/lib/format";
-import { PARAMS_LOTERIA, FAIXAS_MILIONARIA, FAIXAS_DUPLASENA_POR_SORTEIO } from "@/lib/probabilidades";
+import { isCodigoLoteriaValido, qtdDezenasAposta } from "@/lib/format";
+import { PARAMS_LOTERIA, FAIXAS_MILIONARIA, FAIXAS_DUPLASENA_POR_SORTEIO, faixaLotomania } from "@/lib/probabilidades";
 import { contarColunasAcertadas } from "@/lib/classificacao";
 import { logToolEvent } from "@/lib/telemetry";
 
@@ -64,7 +64,17 @@ function pontuarDraw(
     | { tipo: "milionaria"; trevosSet: Set<number> }
     | { tipo: "supersete"; mapaFaixas: Record<number, number> }
     | { tipo: "duplasena" }
+    | { tipo: "lotomania" }
 ): Pontuacao[] {
+  if (contexto.tipo === "lotomania") {
+    const jogoSet = new Set(jogo);
+    const acertos = draw.dezenas.filter((d) => jogoSet.has(d)).length;
+    const faixa = faixaLotomania(acertos, draw.premios[7] !== undefined);
+    const premio = faixa !== undefined ? (draw.premios[faixa] ?? 0) : 0;
+    return faixa !== undefined && premio > 0
+      ? [{ faixa, premio, acertosExibicao: acertos, descricao: `${acertos} acertos` }]
+      : [];
+  }
   if (contexto.tipo === "supersete") {
     const acertos = contarColunasAcertadas(jogo, draw.dezenas);
     const faixa = contexto.mapaFaixas[acertos];
@@ -133,6 +143,7 @@ async function contextoPontuacao(
   | { tipo: "milionaria"; trevosSet: Set<number> }
   | { tipo: "supersete"; mapaFaixas: Record<number, number> }
   | { tipo: "duplasena" }
+  | { tipo: "lotomania" }
 > {
   if (codigoLoteria === "maismilionaria") {
     if (!trevos || trevos.length !== 2) return { erro: "Selecione exatamente 2 trevos." };
@@ -147,6 +158,9 @@ async function contextoPontuacao(
   // o mapeamento fixo de índice de faixa da Caixa (FAIXAS_DUPLASENA_POR_SORTEIO).
   if (codigoLoteria === "duplasena") {
     return { tipo: "duplasena" };
+  }
+  if (codigoLoteria === "lotomania") {
+    return { tipo: "lotomania" };
   }
   return { tipo: "padrao", mapaFaixas: await getMapaFaixasPorAcertos(loteriaId) };
 }
@@ -188,8 +202,9 @@ async function simularHistoricoInterno(
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) return { erro: "Loteria não encontrada" };
 
-  if (dezenas.length !== loteria.qtdDezenasSorteadas)
-    return { erro: `Selecione exatamente ${loteria.qtdDezenasSorteadas} dezenas` };
+  const qtdAposta = qtdDezenasAposta(codigoLoteria, loteria.qtdDezenasSorteadas);
+  if (dezenas.length !== qtdAposta)
+    return { erro: `Selecione exatamente ${qtdAposta} dezenas` };
 
   const contexto = await contextoPontuacao(codigoLoteria, loteria.id, trevos);
   if ("erro" in contexto) return contexto;
@@ -322,7 +337,7 @@ async function compararJogosInterno(
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) return { erro: "Loteria não encontrada" };
 
-  const n = loteria.qtdDezenasSorteadas;
+  const n = qtdDezenasAposta(codigoLoteria, loteria.qtdDezenasSorteadas);
   if (dezenasA.length !== n || dezenasB.length !== n)
     return { erro: `Cada jogo precisa ter exatamente ${n} dezenas` };
 
