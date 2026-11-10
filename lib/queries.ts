@@ -357,27 +357,31 @@ export const getFinsDeCiclo = unstable_cache(
   { tags: ["concursos"], revalidate: 86400 }
 );
 
-export async function getConcursosPaginado(
-  loteriaId: number,
-  pagina: number,
-  porPagina: number = 20
-): Promise<{ concursos: ConcursoResumo[]; total: number }> {
-  const offset = (pagina - 1) * porPagina;
+// Total de concursos da loteria: muda só quando entra concurso novo.
+const getTotalConcursos = unstable_cache(
+  async (loteriaId: number): Promise<number> => {
+    const { rows } = await pool.query(`SELECT COUNT(*) FROM concurso WHERE loteria_id = $1`, [loteriaId]);
+    return Number(rows[0].count);
+  },
+  ["total-concursos"],
+  { tags: ["concursos"], revalidate: 3600 }
+);
 
-  const [{ rows }, { rows: countRows }] = await Promise.all([
-    pool.query(
+// Uma página do histórico (mais recentes primeiro). Cacheada por loteria e
+// página (os argumentos entram na chave) e limpa pela tag "concursos" a
+// cada importação — a página 2 muda sempre que entra um concurso novo.
+const getPaginaConcursos = unstable_cache(
+  async (loteriaId: number, pagina: number, porPagina: number): Promise<ConcursoResumo[]> => {
+    const offset = (pagina - 1) * porPagina;
+    const { rows } = await pool.query(
       `SELECT numero, data_sorteio, dezenas, acumulado, mes_sorte, trevos, dezenas_segundo_sorteio
        FROM concurso WHERE loteria_id = $1
        ORDER BY numero DESC
        LIMIT $2 OFFSET $3`,
       [loteriaId, porPagina, offset]
-    ),
-    pool.query(`SELECT COUNT(*) FROM concurso WHERE loteria_id = $1`, [loteriaId]),
-  ]);
-
-  return {
+    );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    concursos: rows.map((r: any) => ({
+    return rows.map((r: any) => ({
       numero: r.numero,
       dataSorteio: r.data_sorteio instanceof Date ? r.data_sorteio.toISOString() : r.data_sorteio,
       dezenas: r.dezenas,
@@ -385,9 +389,22 @@ export async function getConcursosPaginado(
       mesSorte: r.mes_sorte ?? null,
       trevos: r.trevos ?? null,
       dezenasSegundoSorteio: r.dezenas_segundo_sorteio ?? null,
-    })),
-    total: Number(countRows[0].count),
-  };
+    }));
+  },
+  ["pagina-concursos"],
+  { tags: ["concursos"], revalidate: 3600 }
+);
+
+export async function getConcursosPaginado(
+  loteriaId: number,
+  pagina: number,
+  porPagina: number = 20
+): Promise<{ concursos: ConcursoResumo[]; total: number }> {
+  const [concursos, total] = await Promise.all([
+    getPaginaConcursos(loteriaId, pagina, porPagina),
+    getTotalConcursos(loteriaId),
+  ]);
+  return { concursos, total };
 }
 
 // Frequência de cada dezena para o heatmap interativo.

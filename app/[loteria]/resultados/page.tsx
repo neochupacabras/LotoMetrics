@@ -2,7 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
-import Anuncio from "@/components/Anuncio";
+import HistoricoConcursos, {
+  CONCURSOS_POR_PAGINA,
+  totalPaginasResultados,
+} from "@/components/HistoricoConcursos";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import BotaoExportarCsv from "@/components/BotaoExportarCsv";
 import TelemetriaBeacon from "@/components/TelemetriaBeacon";
@@ -10,29 +13,21 @@ import { getConcursosPaginado, getLoteriaPorCodigo, getUltimoConcurso } from "@/
 import { formatarData, formatarMoeda, isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 
-const POR_PAGINA = 20;
+// ISR: a página mais visitada de cada loteria. Antes ela lia ?pagina=N, o
+// que obrigava a renderizar a cada visita (1,8 a 3,3 s medidos em
+// 10/11/2026). Agora mostra só a página 1 do histórico; as seguintes ficam
+// em /resultados/pagina/N. Também é revalidada pelo /api/revalidar depois
+// de cada importação.
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,
-  searchParams,
 }: {
   params: Promise<{ loteria: string }>;
-  searchParams: Promise<{ pagina?: string }>;
 }): Promise<Metadata> {
   const { loteria: codigoLoteria } = await params;
   if (!isCodigoLoteriaValido(codigoLoteria)) return {};
   const nome = NOME_LOTERIA[codigoLoteria] ?? codigoLoteria;
-
-  // Páginas 2+ do histórico mostram concursos diferentes da página 1 — sem
-  // título/descrição/canonical próprios, o Google via elas como conteúdo
-  // duplicado da página 1 (mesmo texto, mesmo canonical, tabela diferente).
-  const { pagina: paginaParam } = await searchParams;
-  const pagina = Math.max(1, Number(paginaParam) || 1);
-  if (pagina > 1) {
-    const titulo = `Histórico de resultados da ${nome} — página ${pagina}`;
-    const descricao = `Concursos mais antigos já sorteados da ${nome}, com dezenas, premiação por faixa e status de acumulado — página ${pagina} do histórico completo.`;
-    return metadataPagina(codigoLoteria, `/resultados?pagina=${pagina}`, titulo, descricao);
-  }
 
   // Buscar último concurso para enriquecer título e descrição
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
@@ -55,13 +50,10 @@ export async function generateMetadata({
 
 export default async function ResultadosPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ loteria: string }>;
-  searchParams: Promise<{ pagina?: string }>;
 }) {
   const { loteria: codigoLoteria } = await params;
-  const { pagina: paginaParam } = await searchParams;
 
   if (!isCodigoLoteriaValido(codigoLoteria)) {
     notFound();
@@ -72,14 +64,10 @@ export default async function ResultadosPage({
     notFound();
   }
 
-  const pagina = Math.max(1, Number(paginaParam) || 1);
-
   const [ultimo, { concursos, total }] = await Promise.all([
     getUltimoConcurso(loteria.id),
-    getConcursosPaginado(loteria.id, pagina, POR_PAGINA),
+    getConcursosPaginado(loteria.id, 1, CONCURSOS_POR_PAGINA),
   ]);
-
-  const totalPaginas = Math.max(1, Math.ceil(total / POR_PAGINA));
 
   return (
     <>
@@ -209,44 +197,12 @@ export default async function ResultadosPage({
         <BotaoExportarCsv codigoLoteria={codigoLoteria} />
       </div>
 
-      <div className="ledger">
-        {concursos.map((c) => (
-          <Link
-            key={c.numero}
-            href={`/${codigoLoteria}/resultados/${c.numero}`}
-            className="ledger__linha"
-          >
-            <span className="ledger__numero">#{c.numero}</span>
-            <span className="ledger__data">{formatarData(c.dataSorteio)}</span>
-            <Dezenas dezenas={c.dezenas} tamanho="pequena" wrapperClassName="ledger__dezenas" />
-            <span className="ledger__status">
-              {c.acumulado ? (
-                <span className="badge badge--acumulou">Acumulou</span>
-              ) : (
-                <span className="badge badge--teve-ganhador">Ganhador</span>
-              )}
-            </span>
-          </Link>
-        ))}
-      </div>
-
-      <Anuncio slot="8557071463" className="anuncio-entre-secoes" />
-
-      <div className="paginacao">
-        {pagina > 1 ? (
-          <Link href={`/${codigoLoteria}/resultados?pagina=${pagina - 1}`}>← Mais recentes</Link>
-        ) : (
-          <span className="desabilitado">← Mais recentes</span>
-        )}
-        <span>
-          Página {pagina} de {totalPaginas}
-        </span>
-        {pagina < totalPaginas ? (
-          <Link href={`/${codigoLoteria}/resultados?pagina=${pagina + 1}`}>Mais antigos →</Link>
-        ) : (
-          <span className="desabilitado">Mais antigos →</span>
-        )}
-      </div>
+      <HistoricoConcursos
+        codigoLoteria={codigoLoteria}
+        concursos={concursos}
+        pagina={1}
+        totalPaginas={totalPaginasResultados(total)}
+      />
     </div>
     </>
   );
