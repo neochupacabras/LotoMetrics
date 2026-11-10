@@ -1,4 +1,8 @@
 import { notFound } from "next/navigation";
+// Continua dinâmica por causa do ?jogo= (a prévia do link compartilhado
+// depende dele), mas sem consultar o plano no servidor: o que muda com o
+// plano aqui é só a tela (PorPlano e SimuladorHistoricoClient). O limite
+// de concursos do Free é decidido na server action (lib/simulador-actions).
 export const dynamic = "force-dynamic";
 
 import type { Metadata } from "next";
@@ -10,7 +14,7 @@ import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido, preposicaoLoteria, qtdDezenasAposta } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import FaqItem from "@/components/FaqItem";
-import { getPlanoPremium } from "@/lib/plano";
+import { SoParaFree, TextoPorPlano } from "@/components/PorPlano";
 import { LIMITE_HISTORICO_FREE } from "@/lib/simulador-plano";
 
 // Jogo e trevos do link compartilhado (?jogo=05-12-23-34-41-60&t=1-4): só
@@ -86,10 +90,7 @@ export default async function SimuladorPage({
 
   if (!isCodigoLoteriaValido(codigoLoteria)) notFound();
 
-  const [loteria, { logado, premium }] = await Promise.all([
-    getLoteriaPorCodigo(codigoLoteria),
-    getPlanoPremium(),
-  ]);
+  const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) notFound();
 
   const totalLabel: Record<string, string> = {
@@ -155,11 +156,15 @@ export default async function SimuladorPage({
           <div>
             <p className="subtitulo-edicao" style={{ maxWidth: 600 }}>
               Veja quanto teria gasto e ganho se tivesse apostado esse mesmo
-              jogo {premium ? `em cada um dos ${totalConcursosLabel} concursos` : "nos últimos 100 concursos"} da
+              jogo{" "}
+              <TextoPorPlano
+                premium={`em cada um dos ${totalConcursosLabel} concursos`}
+                free={`nos últimos ${LIMITE_FREE} concursos`}
+              />{" "}da
               história {de} {loteria.nome}, com os prêmios históricos reais.
             </p>
 
-            {!premium && (
+            <SoParaFree>
               <div className="simulador-aviso-free">
                 <span className="simulador-aviso-free__badge">Free</span>
                 Simulação limitada aos últimos {LIMITE_FREE} concursos.{" "}
@@ -167,7 +172,7 @@ export default async function SimuladorPage({
                   Assine o Premium para rodar no histórico completo →
                 </a>
               </div>
-            )}
+            </SoParaFree>
 
             {codigoLoteria === "duplasena" && (
               <div className="aviso-legal" style={{ marginBottom: 20 }}>
@@ -186,9 +191,6 @@ export default async function SimuladorPage({
         // Tamanho do jogo que a pessoa marca (50 na Lotomania), não a
         // quantidade sorteada.
         qtdDezenasSorteadas={qtdDezenasAposta(codigoLoteria, loteria.qtdDezenasSorteadas)}
-        limiteHistorico={premium ? null : LIMITE_FREE}
-        logado={logado}
-        premium={premium}
       />
 
       <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 40 }}>

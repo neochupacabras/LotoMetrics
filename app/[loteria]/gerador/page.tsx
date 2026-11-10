@@ -1,5 +1,9 @@
 import { notFound } from "next/navigation";
-export const dynamic = "force-dynamic";
+
+// ISR: o plano do visitante é lido no navegador (GeradorClient) e os dados
+// estatísticos vêm de prepararDadosGerador, cacheado por loteria e
+// invalidado pela tag "concursos" a cada importação.
+export const revalidate = 3600;
 
 import type { Metadata } from "next";
 import GeradorClient from "@/components/GeradorClient";
@@ -9,7 +13,6 @@ import { prepararDadosGerador } from "@/lib/gerador";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
-import { getPlanoPremium } from "@/lib/plano";
 
 export async function generateMetadata({
   params,
@@ -38,10 +41,7 @@ export default async function GeradorPage({
     notFound();
   }
 
-  const [loteria, { logado, premium }] = await Promise.all([
-    getLoteriaPorCodigo(codigoLoteria),
-    getPlanoPremium(),
-  ]);
+  const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) notFound();
 
   const dados = await prepararDadosGerador(loteria.id);
@@ -71,8 +71,6 @@ export default async function GeradorPage({
         qtdDezenasPadrao={loteria.qtdDezenasSorteadas}
         dados={dados}
         nomeLoteria={loteria.nome}
-        modoAvancadoLiberado={premium}
-        logado={logado}
       />
 
       <div className="aviso-legal">
