@@ -9,6 +9,7 @@ import { formatarData, formatarDezena } from "@/lib/format";
 import GraficoBarras from "./GraficoBarras";
 import InsightCallout from "./InsightCallout";
 import { LOTERIAS_COM_OCR } from "@/lib/ocr-suporte";
+import { usePlanoUsuario } from "@/components/auth/PlanoUsuarioProvider";
 
 // Importação dinâmica para não incluir no bundle inicial
 const ConferidorFoto = dynamic(() => import("./ConferidorFoto"), { ssr: false });
@@ -18,18 +19,17 @@ export default function ConferidorClient({
   dezenaMin,
   dezenaMax,
   qtdDezenasSorteadas,
-  jogoUnico = false,
-  logado = false,
-  isPremium = false,
 }: {
   codigoLoteria: string;
   dezenaMin: number;
   dezenaMax: number;
   qtdDezenasSorteadas: number;
-  jogoUnico?: boolean;
-  logado?: boolean;
-  isPremium?: boolean;
 }) {
+  // Plano lido no navegador, para a página poder sair do cache (ISR). O
+  // limite "1 jogo por sessão" do Free sempre foi só da tela; a foto do
+  // bilhete é conferida de novo no servidor (app/api/ocr).
+  const { carregando, logado, isPremium } = usePlanoUsuario();
+  const jogoUnico = !isPremium;
   const ehSuperSete = codigoLoteria === "supersete";
   // OCR só conhece a faixa de dezenas de Lotofácil/Mega-Sena — nas demais
   // (fora Super Sete, que já não tem essa aba por outro motivo: o acerto é
@@ -154,7 +154,7 @@ export default function ConferidorClient({
             onClick={() => setAba("foto")}
           >
             Foto do bilhete
-            {!isPremium && <span className="modo-toggle__lock">✦ Premium</span>}
+            {!carregando && !isPremium && <span className="modo-toggle__lock">✦ Premium</span>}
           </button>
         </div>
       )}

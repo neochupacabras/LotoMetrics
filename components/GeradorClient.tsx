@@ -8,6 +8,7 @@ import { gerarJogo, gerarJogoSuperSete, amostrarSubconjunto, ResultadoGeracao } 
 import { DadosGerador } from "@/lib/gerador";
 import { formatarDezena } from "@/lib/format";
 import { analisar } from "@/lib/analisador";
+import { usePlanoUsuario } from "@/components/auth/PlanoUsuarioProvider";
 
 // Mesma leitura raro/comum do Analisador, condensada numa linha — conecta
 // duas ferramentas que hoje respondem a mesma pergunta ("esse jogo é
@@ -40,8 +41,6 @@ export default function GeradorClient({
   qtdDezenasPadrao,
   dados,
   nomeLoteria = "Loteria",
-  modoAvancadoLiberado = false,
-  logado = false,
 }: {
   codigoLoteria: string;
   dezenaMin: number;
@@ -50,9 +49,11 @@ export default function GeradorClient({
   qtdDezenasPadrao: number;
   dados: DadosGerador;
   nomeLoteria?: string;
-  modoAvancadoLiberado?: boolean;
-  logado?: boolean;
 }) {
+  // O plano é lido no navegador para a página poder sair do cache (ISR):
+  // aqui ele só decide o que aparece na tela, os dados do gerador são os
+  // mesmos para todo mundo. Enquanto carrega, nem cadeado nem overlay.
+  const { carregando, logado, isPremium: modoAvancadoLiberado } = usePlanoUsuario();
   const ehSuperSete = codigoLoteria === "supersete";
   const [modo, setModo] = useState<"simples" | "avancado">("simples");
   const [qtdJogos, setQtdJogos] = useState(1);
@@ -248,7 +249,7 @@ export default function GeradorClient({
             data-ativo={modo === "avancado"}
             onClick={() => setModo("avancado")}
           >
-            Modo avançado {!modoAvancadoLiberado && <span className="modo-toggle__lock">✦ Premium</span>}
+            Modo avançado {!carregando && !modoAvancadoLiberado && <span className="modo-toggle__lock">✦ Premium</span>}
           </button>
         </div>
       )}
@@ -273,7 +274,7 @@ export default function GeradorClient({
           />
         </div>
 
-        {!ehSuperSete && modo === "avancado" && !modoAvancadoLiberado && (
+        {!ehSuperSete && modo === "avancado" && !carregando && !modoAvancadoLiberado && (
           <div className="gerador-premium-overlay">
             <div className="gerador-premium-overlay__card">
               <p className="gerador-premium-overlay__icone">✦</p>

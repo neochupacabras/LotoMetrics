@@ -14,6 +14,8 @@ import { jogoParaTexto, lerJogoDigitado } from "@/lib/jogo-digitado";
 import { enviarBeacon, obterOuCriarAnonymousId } from "@/lib/telemetria-cliente";
 import CompartilharJogoSimulador from "./CompartilharJogoSimulador";
 import AvisoJogoSimulador from "./AvisoJogoSimulador";
+import { usePlanoUsuario } from "@/components/auth/PlanoUsuarioProvider";
+import { limiteHistoricoPorPlano } from "@/lib/simulador-plano";
 import "./simulador-campo.css";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -225,9 +227,6 @@ interface Props {
   dezenaMin: number;
   dezenaMax: number;
   qtdDezenasSorteadas: number;
-  limiteHistorico?: number | null;
-  logado?: boolean;
-  premium?: boolean;
   // Texto da página (explicação, aviso do plano Free) mostrado logo depois
   // do campo de digitar, para o campo ficar acima da dobra no celular.
   introducao?: ReactNode;
@@ -254,9 +253,14 @@ function exemploJogo(min: number, max: number, qtd: number, superSete: boolean):
 
 export default function SimuladorHistoricoClient({
   codigoLoteria, nomeLoteria, dezenaMin, dezenaMax,
-  qtdDezenasSorteadas, limiteHistorico = null, logado = false, premium = false,
+  qtdDezenasSorteadas,
   introducao, jogoInicial = null, trevosIniciais = [],
 }: Props) {
+  // Plano lido no navegador: aqui ele só muda a tela (cadeado do
+  // comparador, botão de salvar). Quantos concursos entram na simulação é
+  // decidido pela server action, pelo plano da sessão.
+  const { carregando, logado, isPremium: premium } = usePlanoUsuario();
+  const limiteHistorico = limiteHistoricoPorPlano(premium);
   const [modo, setModo] = useState<Modo>("simples");
   const usaTrevos = codigoLoteria === "maismilionaria";
   const ehSuperSete = codigoLoteria === "supersete";
@@ -505,7 +509,7 @@ export default function SimuladorHistoricoClient({
               if (premium) { setModo("comparar"); limpar(); }
             }}
           >
-            Comparar dois jogos {!premium && <span className="modo-toggle__lock">✦ Premium</span>}
+            Comparar dois jogos {!carregando && !premium && <span className="modo-toggle__lock">✦ Premium</span>}
           </button>
         </div>
       )}

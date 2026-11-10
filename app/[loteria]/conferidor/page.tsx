@@ -1,5 +1,8 @@
 import { notFound } from "next/navigation";
-export const dynamic = "force-dynamic";
+
+// ISR: o plano do visitante é lido no navegador (SoParaFree e
+// ConferidorClient), então o HTML é o mesmo para todo mundo.
+export const revalidate = 3600;
 
 import type { Metadata } from "next";
 import ConferidorClient from "@/components/ConferidorClient";
@@ -8,7 +11,7 @@ import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
-import { getPlanoPremium } from "@/lib/plano";
+import { SoParaFree } from "@/components/PorPlano";
 
 export async function generateMetadata({
   params,
@@ -37,10 +40,7 @@ export default async function ConferidorPage({
     notFound();
   }
 
-  const [loteria, { logado, premium }] = await Promise.all([
-    getLoteriaPorCodigo(codigoLoteria),
-    getPlanoPremium(),
-  ]);
+  const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) notFound();
 
   return (
@@ -58,7 +58,9 @@ export default async function ConferidorPage({
       <p className="subtitulo-edicao" style={{ maxWidth: 620 }}>
         Veja como um jogo se saiu contra todo o histórico de concursos já sorteados —
         quantos pontos faria em cada um, e se já bateu alguma faixa premiada.
-        {!premium && <span className="conferidor-aviso-free"> (Free: 1 jogo por sessão)</span>}
+        <SoParaFree>
+          <span className="conferidor-aviso-free"> (Free: 1 jogo por sessão)</span>
+        </SoParaFree>
       </p>
 
       <ConferidorClient
@@ -66,9 +68,6 @@ export default async function ConferidorPage({
         dezenaMin={loteria.dezenaMin}
         dezenaMax={loteria.dezenaMax}
         qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
-        jogoUnico={!premium}
-        logado={logado}
-        isPremium={premium}
       />
 
       <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 40 }}>

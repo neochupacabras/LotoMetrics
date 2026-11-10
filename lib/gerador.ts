@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import {
   getAtraso,
   getCiclos,
@@ -35,7 +36,16 @@ function valoresMaisComuns(
   return distribuicao.slice(0, k).map((d) => d.quantidade);
 }
 
-export async function prepararDadosGerador(loteriaId: number): Promise<DadosGerador> {
+// São 10 consultas estatísticas sobre o histórico inteiro, e o resultado
+// só muda quando entra concurso novo: cache por loteria (o loteriaId entra
+// na chave), limpo pela tag "concursos" no /api/revalidar.
+export const prepararDadosGerador = unstable_cache(
+  calcularDadosGerador,
+  ["dados-gerador"],
+  { tags: ["concursos"], revalidate: 3600 }
+);
+
+async function calcularDadosGerador(loteriaId: number): Promise<DadosGerador> {
   const [
     atraso,
     frequencia,
