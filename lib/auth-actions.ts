@@ -7,7 +7,8 @@ import { createClient } from "@/lib/supabase/server";
 // senha — helper compartilhado em lib/rate-limit.ts (fail-open).
 import { dentroDoLimitePorIp } from "@/lib/rate-limit";
 // SEC-004: só caminhos internos no `next` (ver lib/caminho-seguro.ts).
-import { caminhoInternoSeguro } from "@/lib/caminho-seguro";
+import { COOKIE_DESTINO_CADASTRO, caminhoInternoSeguro } from "@/lib/caminho-seguro";
+import { cookies } from "next/headers";
 
 // SEC-005: mensagem única para cadastro, igual quer o e-mail seja novo ou já
 // exista — impede enumeração de e-mails cadastrados pela resposta.
@@ -23,8 +24,20 @@ export async function signUp(formData: FormData) {
   const name = formData.get("name") as string;
   // Volta para onde a pessoa estava (ex.: o bolão que acabou de montar) depois
   // de confirmar o e-mail. O link de confirmação abre numa aba nova, então o
-  // destino precisa viajar no próprio link.
+  // destino vai num cookie (compartilhado entre abas). NÃO pode ir como
+  // ?next= no emailRedirectTo: a URL deixa de bater com a lista de Redirect
+  // URLs do Supabase e ele manda a pessoa para a Site URL sem fazer o login
+  // (aconteceu em produção em 10/11/2026).
   const next = caminhoInternoSeguro(formData.get("next"), "");
+  if (next) {
+    (await cookies()).set(COOKIE_DESTINO_CADASTRO, next, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 24 * 60 * 60,
+    });
+  }
 
   if (!(await dentroDoLimitePorIp("signup:ip", 10, 3600))) {
     return { error: "Muitas tentativas. Aguarde alguns minutos." };
@@ -36,9 +49,7 @@ export async function signUp(formData: FormData) {
     options: {
       data: { name },
       // URL para onde o Supabase redireciona após confirmação do e-mail
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback${
-        next ? `?next=${encodeURIComponent(next)}` : ""
-      }`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
     },
   });
 
