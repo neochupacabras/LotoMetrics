@@ -90,6 +90,19 @@ export const FAIXAS_DUPLASENA_POR_SORTEIO: Record<1 | 2, Record<number, number>>
   2: { 6: 5, 5: 6, 4: 7, 3: 8 },
 };
 
+// Lotomania: a Caixa mudou as faixas no meio do histórico (consulta em
+// premiacao_faixa, 10/11/2026). Nos concursos antigos eram 6 faixas, com a
+// 6ª pagando 0 acertos e nada para 15; nos novos são 7, com a 6ª pagando 15
+// acertos e a 7ª pagando 0. Um mapa único "acertos -> faixa" para o
+// histórico inteiro erra um dos dois períodos, então a faixa sai da
+// configuração do próprio concurso (se ele tem a faixa 7).
+export function faixaLotomania(acertos: number, concursoTemFaixa7: boolean): number | undefined {
+  const fixas: Record<number, number> = { 20: 1, 19: 2, 18: 3, 17: 4, 16: 5 };
+  if (acertos in fixas) return fixas[acertos];
+  if (concursoTemFaixa7) return acertos === 15 ? 6 : acertos === 0 ? 7 : undefined;
+  return acertos === 0 ? 6 : undefined;
+}
+
 // Probabilidade de PELO MENOS k das m dezenas sorteadas estarem dentro de
 // um pool de b dezenas escolhidas pelo apostador (universo de n dezenas).
 // Usada nos fechamentos para mostrar a chance real da condição que

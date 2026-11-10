@@ -7,7 +7,7 @@ import BloqueadoPremium from "@/components/BloqueadoPremium";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { getLoteriaPorCodigo } from "@/lib/queries";
-import { isCodigoLoteriaValido, preposicaoLoteria } from "@/lib/format";
+import { isCodigoLoteriaValido, preposicaoLoteria, qtdDezenasAposta } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import FaqItem from "@/components/FaqItem";
 import { getPlanoPremium } from "@/lib/plano";
@@ -140,7 +140,9 @@ export default async function SimuladorPage({
         nomeLoteria={loteria.nome}
         dezenaMin={loteria.dezenaMin}
         dezenaMax={loteria.dezenaMax}
-        qtdDezenasSorteadas={loteria.qtdDezenasSorteadas}
+        // Tamanho do jogo que a pessoa marca (50 na Lotomania), não a
+        // quantidade sorteada.
+        qtdDezenasSorteadas={qtdDezenasAposta(codigoLoteria, loteria.qtdDezenasSorteadas)}
         limiteHistorico={premium ? null : LIMITE_FREE}
         logado={logado}
         premium={premium}
