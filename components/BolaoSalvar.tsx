@@ -18,6 +18,7 @@ interface Props {
   // Guarda o que o usuário montou antes de mandá-lo pro login — o cadastro
   // só é pedido DEPOIS de montar o bolão, nunca antes.
   salvarRascunho: () => void;
+  origem?: string | null;
 }
 
 // Bloco "Salvar e compartilhar com o grupo" (etapa final do otimizador).
@@ -29,6 +30,7 @@ export default function BolaoSalvar({
   precoApostaCents,
   cotasSugeridas,
   salvarRascunho,
+  origem = null,
 }: Props) {
   const router = useRouter();
   const { carregando, logado } = usePlanoUsuario();
@@ -60,6 +62,7 @@ export default function BolaoSalvar({
         precoApostaCents,
         qtdCotas,
         tickets,
+        origem,
       });
       if (r.ok) {
         router.push(`/conta/boloes/${r.id}`);
@@ -83,7 +86,9 @@ export default function BolaoSalvar({
   function irParaLogin() {
     salvarRascunho();
     const volta = `${window.location.pathname}?retomar=1`;
-    router.push(`/entrar?next=${encodeURIComponent(volta)}`);
+    // Quase todo organizador é novo: vai direto para o cadastro (que tem o
+    // link "Já tenho conta"), em vez de cair num formulário de login.
+    router.push(`/cadastrar?next=${encodeURIComponent(volta)}`);
   }
 
   return (
@@ -97,10 +102,11 @@ export default function BolaoSalvar({
       {!carregando && !logado ? (
         <>
           <button type="button" className="botao-gerar" onClick={irParaLogin}>
-            Entrar para salvar e compartilhar →
+            Salvar e gerar o link do grupo (grátis) →
           </button>
           <p className="bloco__nota" style={{ marginTop: 8 }}>
-            Seus jogos ficam guardados enquanto você entra ou cria a conta.
+            Só pedimos nome, e-mail e senha. Seus jogos ficam guardados: ao confirmar o
+            e-mail, você volta direto para este bolão.
           </p>
         </>
       ) : (

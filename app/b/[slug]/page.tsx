@@ -210,6 +210,13 @@ export default async function BolaoPublicoPage({
               nomeLoteria,
               url: urlPublica,
               resultado: resumo,
+              convite: {
+                alvo: bolao.alvo,
+                concursoAlvo: bolao.concursoAlvo,
+                valorCotaCents: bolao.valorCotaCents,
+                qtdCotas: bolao.qtdCotas,
+                totalJogos: bolao.jogos.length,
+              },
             })}
             rotulo={resumo ? "Enviar resultado ao grupo" : "Enviar para o grupo"}
           />
@@ -226,7 +233,7 @@ export default async function BolaoPublicoPage({
           <p className="bloco__nota">
             Monte os jogos pelo orçamento do grupo e gere um link como este, grátis.
           </p>
-          <Link href={`/${bolao.loteria}/bolao`} className="botao-gerar">
+          <Link href={`/${bolao.loteria}/bolao?origem=bolao_publico`} className="botao-gerar">
             Organizar o meu bolão →
           </Link>
         </div>

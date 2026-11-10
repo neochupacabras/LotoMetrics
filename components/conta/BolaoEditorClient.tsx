@@ -17,6 +17,7 @@ import {
   removerParticipanteAction,
 } from "@/lib/bolao-actions";
 import { LIMITE_COTAS_GRATIS, LIMITE_COTAS_PRO } from "@/lib/bolao-limites";
+import { montarMensagemWhatsapp, urlWhatsapp } from "@/lib/bolao-compartilhar";
 import { enviarBeacon, obterOuCriarAnonymousId } from "@/lib/telemetria-cliente";
 
 interface BolaoView {
@@ -174,7 +175,20 @@ export default function BolaoEditorClient({
           </button>
           <a
             className="botao-copiar"
-            href={`https://wa.me/?text=${encodeURIComponent(`Bolão "${bolao.titulo}": ${linkPublico}`)}`}
+            href={urlWhatsapp(
+              montarMensagemWhatsapp({
+                titulo: bolao.titulo,
+                nomeLoteria: bolao.nomeLoteria,
+                url: linkPublico,
+                convite: {
+                  alvo: bolao.alvo,
+                  concursoAlvo: bolao.concursoAlvo,
+                  valorCotaCents: bolao.valorCotaCents,
+                  qtdCotas: bolao.qtdCotas,
+                  totalJogos: jogos.length,
+                },
+              })
+            )}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => registrarCompartilhamento("whatsapp")}

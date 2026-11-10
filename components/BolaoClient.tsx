@@ -8,21 +8,21 @@ import { planosViaveis, PlanoBolao } from "@/lib/bolao-opcoes";
 import { calcularFechamentoAction, FechamentoActionResult } from "@/lib/fechamento-actions";
 import { gerarPdfBolao, baixarPdfBolao } from "@/lib/bolao-pdf";
 import { formatarDezena } from "@/lib/format";
+import { chaveRascunho, lerRascunho, serializarRascunho, type RascunhoBolao } from "@/lib/bolao-rascunho";
+import { PRECO_APOSTA_SIMPLES } from "@/lib/mega-da-virada";
+import { enviarBeacon, obterOuCriarAnonymousId } from "@/lib/telemetria-cliente";
 
 const PREVIEW_MAX = 20;
 
-interface RascunhoBolao {
-  orcamento: string;
-  preco: string;
-  participantes: string;
-  tamanhoPool: number;
-  garantia: number;
-  selecionadas: number[];
-}
+// Preço da aposta simples já preenchido (editável) onde ele é conhecido com
+// certeza; nas outras loterias o campo continua vazio.
+const PRECO_SUGERIDO: Record<string, string> = {
+  megasena: PRECO_APOSTA_SIMPLES.toFixed(2).replace(".", ","),
+};
 
-function chaveRascunho(codigoLoteria: string) {
-  return `la_bolao_rascunho_${codigoLoteria}`;
-}
+// Etapas intermediárias do funil do bolão (tool_started + metadata.etapa).
+// O fim da montagem é tool_completed; a criação é bolao_created (servidor).
+type EtapaFunil = "planos" | "dezenas" | "pediu_login" | "retomado";
 
 function formatarMoeda(valor: number): string {
   return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -42,7 +42,10 @@ export default function BolaoClient({
   const [etapa, setEtapa] = useState<"orcamento" | "dezenas" | "resultado">("orcamento");
 
   const [orcamentoTexto, setOrcamentoTexto] = useState("");
-  const [precoTexto, setPrecoTexto] = useState("");
+  const [precoTexto, setPrecoTexto] = useState(PRECO_SUGERIDO[codigoLoteria] ?? "");
+  // De onde o organizador veio (ex.: "bolao_publico" = clicou em "Organizar o
+  // meu bolão" na página de outro bolão — o loop de aquisição).
+  const [origem, setOrigem] = useState<string | null>(null);
   const [participantesTexto, setParticipantesTexto] = useState("");
   const [planos, setPlanos] = useState<PlanoBolao[] | null>(null);
   const [planoEscolhido, setPlanoEscolhido] = useState<PlanoBolao | null>(null);
@@ -60,37 +63,81 @@ export default function BolaoClient({
 
   const todasDezenas = Array.from({ length: dezenaMax - dezenaMin + 1 }, (_, i) => dezenaMin + i);
 
-  // Volta do login (?retomar=1): restaura o plano e as dezenas escolhidas
-  // pra que o usuário só precise gerar os jogos de novo.
-  /* eslint-disable react-hooks/set-state-in-effect -- sincroniza com sessionStorage (sistema externo), só no cliente */
+  function funil(etapaFunil: EtapaFunil | "concluido", extra?: Record<string, unknown>, origemAtual = origem) {
+    enviarBeacon({
+      eventName: etapaFunil === "concluido" ? "tool_completed" : "tool_started",
+      tool: "bolao",
+      lottery: codigoLoteria,
+      anonymousId: obterOuCriarAnonymousId(),
+      metadata: {
+        ...(etapaFunil === "concluido" ? {} : { etapa: etapaFunil }),
+        origem: origemAtual,
+        pagina: window.location.pathname,
+        ...extra,
+      },
+    });
+  }
+
+  // Gera os jogos do plano. Usado pelo botão e pela volta do cadastro.
+  function gerarJogos(plano: PlanoBolao, dezenas: number[], aoGerar?: () => void, origemAtual = origem) {
+    startTransition(async () => {
+      const r = await calcularFechamentoAction(codigoLoteria, dezenas, "reduzido", plano.garantia);
+      if (!r.ok) {
+        setErroGeracao(r.erro ?? "Não foi possível gerar os jogos do bolão.");
+      } else {
+        setResultado(r);
+        setEtapa("resultado");
+        funil("concluido", { jogos: r.totalTickets, tamanho_pool: plano.tamanhoPool }, origemAtual);
+        aoGerar?.();
+      }
+    });
+  }
+
+  // Volta do login/cadastro (?retomar=1): restaura o bolão montado e já gera
+  // os jogos de novo, deixando o organizador direto no "Salvar e gerar link".
+  // Fora isso, só lê a origem (?origem=) para o funil.
+  /* eslint-disable react-hooks/set-state-in-effect -- sincroniza com localStorage/URL (sistema externo), só no cliente */
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const origemUrl = params.get("origem");
+    if (origemUrl) setOrigem(origemUrl);
+    if (params.get("retomar") !== "1") return;
+    let r: RascunhoBolao | null = null;
     try {
-      if (new URLSearchParams(window.location.search).get("retomar") !== "1") return;
-      const bruto = sessionStorage.getItem(chaveRascunho(codigoLoteria));
-      if (!bruto) return;
-      sessionStorage.removeItem(chaveRascunho(codigoLoteria));
-      const r: RascunhoBolao = JSON.parse(bruto);
-      const orc = Number(r.orcamento.replace(",", "."));
-      const prc = Number(r.preco.replace(",", "."));
-      const plano = planosViaveis(codigoLoteria, orc, prc).find(
-        (p) => p.tamanhoPool === r.tamanhoPool && p.garantia === r.garantia
-      );
-      if (!plano) return;
-      setOrcamentoTexto(r.orcamento);
-      setPrecoTexto(r.preco);
-      setParticipantesTexto(r.participantes);
-      setPlanos(planosViaveis(codigoLoteria, orc, prc));
-      setPlanoEscolhido(plano);
-      setSelecionadas(new Set(r.selecionadas));
-      setEtapa("dezenas");
+      r = lerRascunho(localStorage.getItem(chaveRascunho(codigoLoteria)), Date.now());
+      localStorage.removeItem(chaveRascunho(codigoLoteria));
     } catch {
-      // sessionStorage indisponível ou rascunho corrompido: começa do zero.
+      // localStorage indisponível: começa do zero.
     }
+    if (!r) return;
+    const orc = Number(r.orcamento.replace(",", "."));
+    const prc = Number(r.preco.replace(",", "."));
+    const viaveis = planosViaveis(codigoLoteria, orc, prc);
+    const plano = viaveis.find((p) => p.tamanhoPool === r.tamanhoPool && p.garantia === r.garantia);
+    if (!plano) return;
+    setOrcamentoTexto(r.orcamento);
+    setPrecoTexto(r.preco);
+    setParticipantesTexto(r.participantes);
+    setPlanos(viaveis);
+    setPlanoEscolhido(plano);
+    setSelecionadas(new Set(r.selecionadas));
+    setEtapa("dezenas");
+    const origemRascunho = origemUrl ?? r.origem;
+    setOrigem(origemRascunho);
+    funil("retomado", undefined, origemRascunho);
+    if (r.selecionadas.length === plano.tamanhoPool) {
+      gerarJogos(plano, r.selecionadas, () => {
+        // Espera o React desenhar a etapa de resultado antes de rolar.
+        setTimeout(() => document.querySelector(".bolao-salvar")?.scrollIntoView({ behavior: "smooth" }), 100);
+      }, origemRascunho);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- roda uma vez, na montagem
   }, [codigoLoteria]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   function salvarRascunho() {
     if (!planoEscolhido) return;
+    funil("pediu_login");
     try {
       const r: RascunhoBolao = {
         orcamento: orcamentoTexto,
@@ -99,10 +146,11 @@ export default function BolaoClient({
         tamanhoPool: planoEscolhido.tamanhoPool,
         garantia: planoEscolhido.garantia,
         selecionadas: Array.from(selecionadas),
+        origem,
       };
-      sessionStorage.setItem(chaveRascunho(codigoLoteria), JSON.stringify(r));
+      localStorage.setItem(chaveRascunho(codigoLoteria), serializarRascunho(r, Date.now()));
     } catch {
-      // sem sessionStorage o usuário só refaz a escolha depois do login.
+      // sem localStorage o usuário só refaz a escolha depois do login.
     }
   }
 
@@ -125,9 +173,11 @@ export default function BolaoClient({
       return;
     }
     setPlanos(encontrados);
+    funil("planos", { orcamento, planos: encontrados.length });
   }
 
   function escolherPlano(plano: PlanoBolao) {
+    funil("dezenas", { tamanho_pool: plano.tamanhoPool, garantia: plano.garantia });
     setPlanoEscolhido(plano);
     setSelecionadas(new Set());
     setResultado(null);
@@ -159,20 +209,7 @@ export default function BolaoClient({
       return;
     }
 
-    startTransition(async () => {
-      const r = await calcularFechamentoAction(
-        codigoLoteria,
-        Array.from(selecionadas),
-        "reduzido",
-        planoEscolhido.garantia
-      );
-      if (!r.ok) {
-        setErroGeracao(r.erro ?? "Não foi possível gerar os jogos do bolão.");
-      } else {
-        setResultado(r);
-        setEtapa("resultado");
-      }
-    });
+    gerarJogos(planoEscolhido, Array.from(selecionadas));
   }
 
   async function handleBaixarPdf() {
@@ -210,9 +247,9 @@ export default function BolaoClient({
       {etapa === "orcamento" && (
         <div>
           <p className="bloco__nota">
-            Diga o orçamento do grupo e o preço da aposta simples — não usamos um preço
-            fixo porque ele muda com o tempo. O sistema mostra quais fechamentos cabem no
-            orçamento, da maior garantia para a menor.
+            Diga o orçamento do grupo e confira o preço da aposta simples
+            {PRECO_SUGERIDO[codigoLoteria] ? " (já preenchido com o preço atual)" : ""}. O sistema
+            mostra quais fechamentos cabem no orçamento, da maior garantia para a menor.
           </p>
 
           <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
@@ -414,6 +451,7 @@ export default function BolaoClient({
             precoApostaCents={Math.round(preco * 100)}
             cotasSugeridas={participantes && participantes > 0 ? participantes : null}
             salvarRascunho={salvarRascunho}
+            origem={origem}
           />
 
           <div className="aviso-legal" style={{ marginTop: "16px" }}>
