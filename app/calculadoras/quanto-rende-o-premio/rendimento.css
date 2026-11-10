@@ -1,0 +1,124 @@
+/* Calculadora "quanto rende o prêmio". */
+
+.rendimento-atalhos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.rendimento-atalho {
+  padding: 6px 10px;
+  border: 1px solid var(--line-strong, var(--line));
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.rendimento-atalho:hover {
+  border-color: var(--pine);
+  color: var(--pine);
+}
+
+.rendimento-tipo {
+  border: none;
+  padding: 0;
+  margin: 18px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.rendimento-tipo legend {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.rendimento-tipo label {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  line-height: 1.4;
+}
+
+.rendimento-tipo input {
+  margin-top: 3px;
+  accent-color: var(--pine);
+}
+
+.rendimento-lista {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rendimento-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 12px 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.rendimento-item__nome {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.rendimento-item__nome strong {
+  display: block;
+  color: var(--ink);
+}
+
+.rendimento-nota {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.rendimento-item__valores {
+  display: flex;
+  gap: 18px;
+  margin: 0;
+}
+
+.rendimento-item__valores dt {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-faint);
+}
+
+.rendimento-item__valores dd {
+  margin: 2px 0 0;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.rendimento-fonte {
+  margin: 14px 0 0;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .calc-painel .calc-resultado-numero {
+    font-size: 2.2rem;
+    overflow-wrap: anywhere;
+  }
+}

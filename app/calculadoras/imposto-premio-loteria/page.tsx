@@ -50,6 +50,7 @@ export default function CalcImpostoPremioPage() {
           <p className="bloco__titulo" style={{ marginBottom: 12 }}>Relacionados</p>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <Link href="/dicas/retorno-ao-apostador" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Retorno ao apostador</Link>
+            <Link href="/calculadoras/quanto-rende-o-premio" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Quanto rende o prêmio</Link>
             <Link href="/calculadoras/rateio-bolao" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Rateio de bolão</Link>
             <Link href="/megasena/probabilidades" className="botao-copiar" style={{ fontSize: "0.85rem" }}>Probabilidades da Mega-Sena</Link>
           </div>

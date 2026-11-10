@@ -324,6 +324,8 @@ export default async function MegaDaViradaPage() {
           <p className="bloco__nota">
             Preço da aposta simples: {formatarMoeda(PRECO_APOSTA_SIMPLES)}. Mais faixas e o cálculo
             completo em <Link href="/megasena/probabilidades">probabilidades da Mega-Sena</Link>.
+            Quanto o prêmio renderia por mês depois do imposto:{" "}
+            <Link href="/calculadoras/quanto-rende-o-premio">calculadora de rendimento do prêmio</Link>.
           </p>
         </section>
 
