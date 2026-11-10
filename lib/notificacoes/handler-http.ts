@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { logJobRun } from "@/lib/telemetry";
 import { processarConcursosNovos, type OpcoesProcessamento } from "@/lib/notificacoes/processar-concursos";
 import { processarAlertasJogo, type ResumoAlertas } from "@/lib/notificacoes/alertas-jogo-envio";
+import { publicarResultadosNoCanal, type DetalheTelegram } from "@/lib/notificacoes/telegram-canal";
 import { conferirBoloes } from "@/lib/notificacoes/processar-boloes";
 import { verificarPixVencendo } from "@/lib/notificacoes/pix-vencendo";
 import { enviarNewsletterSemanal } from "@/lib/notificacoes/newsletter-semanal";
@@ -100,6 +101,19 @@ export async function handleProcessarConcursos(
       erroAlertas = (err as Error).message;
       console.error("processarAlertasJogo falhou:", erroAlertas);
     }
+    // Canal público do Telegram com o resultado de cada concurso novo.
+    // Isolado; em dryRun e somenteEmails só simula.
+    let telegram: DetalheTelegram[] = [];
+    let erroTelegram: string | null = null;
+    try {
+      telegram = await publicarResultadosNoCanal(resumo.concursosProcessados, {
+        dryRun: opcoes.dryRun || !!opcoes.somenteEmails,
+      });
+    } catch (err) {
+      erroTelegram = (err as Error).message;
+      console.error("publicarResultadosNoCanal falhou:", erroTelegram);
+    }
+    const telegramFalhou = !!erroTelegram || telegram.some((t) => t.status === "falhou" || t.status === "sem_config");
     const detalhesPix = opts.incluirPixVencendo ? await verificarPixVencendo(opcoes) : [];
     const detalhesNewsletter = opts.incluirNewsletterSemanal ? await enviarNewsletterSemanal(opcoes) : [];
     const detalhesRetrospectiva = opts.incluirRetrospectivaAnual
@@ -113,7 +127,7 @@ export async function handleProcessarConcursos(
 
     await logJobRun({
       jobName,
-      status: emailsFalhos > 0 || erroBoloes || erroAlertas || (alertas?.falhos ?? 0) > 0 ? "partial" : "success",
+      status: emailsFalhos > 0 || erroBoloes || erroAlertas || (alertas?.falhos ?? 0) > 0 || telegramFalhou ? "partial" : "success",
       startedAt,
       details: {
         dryRun: opcoes.dryRun,
@@ -127,6 +141,7 @@ export async function handleProcessarConcursos(
         push: resumo.push,
         // Sem e-mail nem endpoint: só contagens e status por aviso.
         alertasJogo: alertas,
+        telegram,
       },
       error:
         [
@@ -135,6 +150,8 @@ export async function handleProcessarConcursos(
             : []),
           ...(erroBoloes ? [erroBoloes] : []),
           ...(erroAlertas ? [`alertasJogo: ${erroAlertas}`] : []),
+          ...(erroTelegram ? [`telegram: ${erroTelegram}`] : []),
+          ...telegram.filter((t) => t.status === "sem_config").slice(0, 1).map(() => "telegram: TELEGRAM_BOT_TOKEN/TELEGRAM_CANAL ausentes"),
         ].join(" | ") || null,
     });
     return NextResponse.json({
@@ -143,6 +160,7 @@ export async function handleProcessarConcursos(
       boloesConferidos: boloes.conferidos,
       erroBoloes,
       alertasJogo: alertas && { enviados: alertas.enviados, falhos: alertas.falhos, simulados: alertas.simulados },
+      telegram,
       erroAlertas,
       emailsEnviados,
       emailsFalhos,
