@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useMemo } from "react";
+import { useState, useTransition, useMemo, useRef, type ReactNode } from "react";
 import {
   ResponsiveContainer, LineChart, Line,
   XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid, Legend,
@@ -10,6 +10,9 @@ import { salvarJogoAction } from "@/lib/jogo-actions";
 import InsightCallout from "./InsightCallout";
 import { formatarDezena, preposicaoLoteria } from "@/lib/format";
 import SeletorColunasSuperSete from "./SeletorColunasSuperSete";
+import { jogoParaTexto, lerJogoDigitado } from "@/lib/jogo-digitado";
+import { enviarBeacon, obterOuCriarAnonymousId } from "@/lib/telemetria-cliente";
+import "./simulador-campo.css";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -223,25 +226,62 @@ interface Props {
   limiteHistorico?: number | null;
   logado?: boolean;
   premium?: boolean;
+  // Texto da página (explicação, aviso do plano Free) mostrado logo depois
+  // do campo de digitar, para o campo ficar acima da dobra no celular.
+  introducao?: ReactNode;
+  // Jogo vindo do link compartilhado (?jogo=05-12-23-34-41-60).
+  jogoInicial?: string | null;
 }
 
 type Modo = "simples" | "comparar";
+// Como o jogo chegou ao simulador: medido em tool_started/tool_completed.
+type OrigemJogo = "digitado" | "grade" | "link";
+
+// "Ex.: 05 15 25 35 45 55": números espalhados pela faixa da loteria;
+// na Lotofácil e na Lotomania, só os primeiros, com reticências.
+function exemploJogo(min: number, max: number, qtd: number, superSete: boolean): string {
+  if (superSete) return "Ex.: 1 0 9 3 3 7 2";
+  const passo = Math.floor((max - min + 1) / qtd);
+  const nums = Array.from({ length: qtd }, (_, i) => min + i * passo + Math.min(4, passo - 1));
+  const mostrados = nums.slice(0, 6).map((n) => String(n).padStart(2, "0")).join(" ");
+  return `Ex.: ${mostrados}${qtd > 6 ? " …" : ""}`;
+}
 
 // ─── Componente principal ─────────────────────────────────────────────────────
 
 export default function SimuladorHistoricoClient({
   codigoLoteria, nomeLoteria, dezenaMin, dezenaMax,
   qtdDezenasSorteadas, limiteHistorico = null, logado = false, premium = false,
+  introducao, jogoInicial = null,
 }: Props) {
   const [modo, setModo] = useState<Modo>("simples");
   const usaTrevos = codigoLoteria === "maismilionaria";
   const ehSuperSete = codigoLoteria === "supersete";
-  const { de: prepDe } = preposicaoLoteria(codigoLoteria);
+  const { de: prepDe, em: prepEm } = preposicaoLoteria(codigoLoteria);
+  const qtdJogo = ehSuperSete ? 7 : qtdDezenasSorteadas;
+  const configJogo = {
+    dezenaMin: ehSuperSete ? 0 : dezenaMin,
+    dezenaMax: ehSuperSete ? 9 : dezenaMax,
+    qtd: qtdJogo,
+    superSete: ehSuperSete,
+    ondeLoteria: `${prepEm} ${nomeLoteria}`,
+  };
 
-  // Estado — modo simples
-  const [selA, setSelA] = useState<Set<number>>(new Set());
+  // Campo de digitar o jogo, sincronizado com a grade nos dois sentidos.
+  const [texto, setTexto] = useState(jogoInicial ?? "");
+  const lido = lerJogoDigitado(texto, configJogo);
+  const [origem, setOrigem] = useState<OrigemJogo>(jogoInicial ? "link" : "digitado");
+  const topoRef = useRef<HTMLDivElement>(null);
+
+  // Estado — modo simples (o jogo do link já chega preenchido)
+  const [selA, setSelA] = useState<Set<number>>(() =>
+    ehSuperSete ? new Set() : new Set(lerJogoDigitado(jogoInicial ?? "", configJogo).numeros)
+  );
   const [trevosA, setTrevosA] = useState<Set<number>>(new Set());
-  const [colA, setColA] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
+  const [colA, setColA] = useState<number[]>(() => {
+    const l = lerJogoDigitado(jogoInicial ?? "", configJogo);
+    return ehSuperSete && l.completo ? l.numeros : [0, 0, 0, 0, 0, 0, 0];
+  });
   const [resultado, setResultado] = useState<ResultadoSimulacao | null>(null);
 
   // Estado — modo comparar
@@ -253,7 +293,46 @@ export default function SimuladorHistoricoClient({
   const [erro, setErro] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
+  function digitar(valor: string) {
+    setTexto(valor);
+    setOrigem("digitado");
+    const l = lerJogoDigitado(valor, configJogo);
+    if (ehSuperSete) {
+      if (l.completo) setColA(l.numeros);
+    } else {
+      setSelA(new Set(l.numeros));
+    }
+  }
+
+  function escolherNaGrade(s: Set<number>) {
+    setSelA(s);
+    setTexto(jogoParaTexto([...s]));
+    setOrigem("grade");
+  }
+
+  function escolherColunas(c: number[]) {
+    setColA(c);
+    setTexto(jogoParaTexto(c, true));
+    setOrigem("grade");
+  }
+
+  function medir(eventName: "tool_started" | "tool_completed", metadata: Record<string, unknown>) {
+    enviarBeacon({
+      eventName,
+      tool: "simulador",
+      lottery: codigoLoteria,
+      anonymousId: obterOuCriarAnonymousId(),
+      metadata: { limite: limiteHistorico, pagina: window.location.pathname, ...metadata },
+    });
+  }
+
+  // Leva o topo do resultado para baixo do cabeçalho fixo.
+  function mostrarResultado() {
+    requestAnimationFrame(() => topoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+
   function limpar() {
+    setTexto("");
     setSelA(new Set()); setSelB(new Set());
     setTrevosA(new Set()); setTrevosB(new Set());
     setColA([0, 0, 0, 0, 0, 0, 0]); setColB([0, 0, 0, 0, 0, 0, 0]);
@@ -266,14 +345,26 @@ export default function SimuladorHistoricoClient({
       return;
     }
     const dezenas = ehSuperSete ? colA : Array.from(selA).sort((a, b) => a - b);
+    medir("tool_started", { modo: "simples", origem });
     startTransition(async () => {
       setErro(null);
       const res = await simularHistorico(
         codigoLoteria, dezenas, limiteHistorico ?? undefined,
         usaTrevos ? Array.from(trevosA) : undefined
       );
-      if ("erro" in res) setErro(res.erro);
-      else setResultado(res);
+      if ("erro" in res) {
+        setErro(res.erro);
+        return;
+      }
+      setResultado(res);
+      mostrarResultado();
+      medir("tool_completed", {
+        modo: "simples",
+        origem,
+        concursos: res.totalConcursos,
+        premiado: res.totalGanho > 0,
+        maiorAcerto: res.melhores[0]?.acertos ?? null,
+      });
     });
   }
 
@@ -284,6 +375,7 @@ export default function SimuladorHistoricoClient({
     }
     const dA = ehSuperSete ? colA : Array.from(selA).sort((a, b) => a - b);
     const dB = ehSuperSete ? colB : Array.from(selB).sort((a, b) => a - b);
+    medir("tool_started", { modo: "comparar" });
     startTransition(async () => {
       setErro(null);
       const res = await compararJogos(
@@ -291,8 +383,13 @@ export default function SimuladorHistoricoClient({
         usaTrevos ? Array.from(trevosA) : undefined,
         usaTrevos ? Array.from(trevosB) : undefined
       );
-      if ("erro" in res) setErro(res.erro);
-      else setComparacao(res);
+      if ("erro" in res) {
+        setErro(res.erro);
+        return;
+      }
+      setComparacao(res);
+      mostrarResultado();
+      medir("tool_completed", { modo: "comparar" });
     });
   }
 
@@ -334,9 +431,62 @@ export default function SimuladorHistoricoClient({
   );
 
   const emAndamento = !resultado && !comparacao;
+  const podeConferir =
+    !pending && !lido.erro && (ehSuperSete ? lido.completo || !texto.trim() : completoA) &&
+    (!usaTrevos || trevosA.size === 2);
+  const statusCampo = lido.erro
+    ?? (lido.completo
+      ? usaTrevos && trevosA.size !== 2 ? "Agora escolha os 2 trevos abaixo." : "Pronto. Toque em Conferir."
+      : texto.trim()
+        ? `${lido.numeros.length} de ${qtdJogo} ${ehSuperSete ? "colunas" : "números"}`
+        : "Separe com espaço ou vírgula. Pode colar do WhatsApp.");
 
   return (
-    <div className="simulador-hist-wrapper">
+    <div className="simulador-hist-wrapper" ref={topoRef}>
+
+      {/* ── Campo de digitar o jogo (acima da dobra no celular) ───── */}
+      {emAndamento && modo === "simples" && (
+        <form
+          className="campo-jogo"
+          onSubmit={(e) => { e.preventDefault(); if (podeConferir) handleSimular(); }}
+        >
+          <label htmlFor="campo-jogo-input" className="campo-jogo__label">
+            Digite {ehSuperSete ? "os 7 algarismos do seu jogo" : `os ${qtdJogo} números do seu jogo`}
+          </label>
+          <div className="campo-jogo__linha">
+            <input
+              id="campo-jogo-input"
+              className="campo-jogo__input"
+              type="text"
+              inputMode="decimal"
+              autoComplete="off"
+              enterKeyHint="go"
+              spellCheck={false}
+              placeholder={exemploJogo(dezenaMin, dezenaMax, qtdJogo, ehSuperSete)}
+              value={texto}
+              onChange={(e) => digitar(e.target.value)}
+              aria-invalid={!!lido.erro}
+              aria-describedby="campo-jogo-status"
+            />
+            <button type="submit" className="botao-gerar campo-jogo__botao" disabled={!podeConferir}>
+              {pending ? (<><span className="spinner-inline" aria-hidden /> …</>) : "Conferir"}
+            </button>
+          </div>
+          <p
+            id="campo-jogo-status"
+            className="campo-jogo__status"
+            data-erro={!!lido.erro}
+            data-pronto={lido.completo && !lido.erro}
+            aria-live="polite"
+          >
+            {statusCampo}
+          </p>
+          {usaTrevos && <SeletorTrevos selecionados={trevosA} onChange={setTrevosA} label="" />}
+          {erro && <p className="simulador-erro">{erro}</p>}
+        </form>
+      )}
+
+      {emAndamento && introducao}
 
       {/* ── Toggle modo ──────────────────────────────────────────── */}
       {emAndamento && (
@@ -382,24 +532,21 @@ export default function SimuladorHistoricoClient({
       {emAndamento && modo === "simples" && (
         <div className="bloco">
           <p className="analisador-instrucao">
-            Escolha as {qtdDezenasSorteadas} dezenas que você jogaria em todo
-            concurso — a simulação verifica esse jogo em cada sorteio da história
-            {" "}{prepDe} {nomeLoteria}.
+            Ou toque {ehSuperSete ? "nas colunas" : "nos números"}. A simulação confere esse jogo
+            em cada sorteio da história {prepDe} {nomeLoteria}.
           </p>
           {ehSuperSete ? (
-            <SeletorColunasSuperSete valores={colA} onChange={setColA} />
+            <SeletorColunasSuperSete valores={colA} onChange={escolherColunas} />
           ) : (
             <SeletorDezenas
               dezenaMin={dezenaMin} dezenaMax={dezenaMax}
-              qtd={qtdDezenasSorteadas} selecionadas={selA} onChange={setSelA}
+              qtd={qtdDezenasSorteadas} selecionadas={selA} onChange={escolherNaGrade}
               label=""
             />
           )}
-          {usaTrevos && <SeletorTrevos selecionados={trevosA} onChange={setTrevosA} label="" />}
-          {erro && <p className="simulador-erro">{erro}</p>}
           <div style={{ display:"flex", gap:"12px", marginTop:"20px" }}>
             <button type="button" className="botao-gerar"
-              disabled={!completoA || (usaTrevos && trevosA.size !== 2) || pending} onClick={handleSimular}>
+              disabled={!podeConferir} onClick={handleSimular}>
               {pending ? (<><span className="spinner-inline" aria-hidden /> Simulando…</>) : "Simular →"}
             </button>
             {(ehSuperSete || selA.size > 0) && <button type="button" className="botao-copiar" onClick={limpar}>Limpar</button>}
