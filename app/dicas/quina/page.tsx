@@ -59,7 +59,7 @@ export default function ArtigoQuinaPage() {
         </p>
         <p>
           Os sorteios acontecem de segunda a sábado, às 20h. A aposta simples de
-          5 dezenas custa R$2,50.
+          5 dezenas custa R$3,00.
         </p>
 
         <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Faixas de premiação</h2>

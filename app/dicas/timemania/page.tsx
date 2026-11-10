@@ -58,7 +58,7 @@ export default function ArtigoTimemaniaPage() {
         </p>
         <p>
           Os sorteios acontecem terça, quinta e sábado às 20h. A aposta simples de
-          10 dezenas custa R$3,00.
+          10 dezenas custa R$3,50.
         </p>
 
         <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>Faixas de premiação</h2>
