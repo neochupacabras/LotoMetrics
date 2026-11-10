@@ -3,6 +3,7 @@ import { unstable_cache } from "next/cache";
 import pool from "./db";
 import { Concurso, ConcursoResumo, Loteria, PremiacaoFaixa } from "./types";
 import type { ContextoConcurso } from "./resumo-concurso";
+import { CONCURSOS_VIRADA, anoDaEdicao, type EdicaoVirada } from "./mega-da-virada";
 
 // unstable_cache (não o cache() do React, que só dedup dentro de uma
 // mesma requisição): esse cache persiste ENTRE requisições. É o que
@@ -538,4 +539,53 @@ export const getDatasProximosConcursos = unstable_cache(
   },
   ["datas-proximos-concursos"],
   { tags: ["concursos"], revalidate: 300 }
+);
+
+// Todas as edições da Mega da Virada, com as faixas premiadas, numa só ida
+// ao banco. Passado = lista explícita de concursos (CONCURSOS_VIRADA); de
+// 2026 em diante, o concurso de 31/12 (ou de 01/01, se o sorteio atrasar)
+// entra sozinho assim que o importador o grava.
+export const getEdicoesVirada = unstable_cache(
+  async (): Promise<EdicaoVirada[]> => {
+    const { rows } = await pool.query(
+      `SELECT c.numero, c.data_sorteio, c.dezenas, c.valor_arrecadado,
+         COALESCE(
+           (SELECT json_agg(
+               json_build_object(
+                 'faixa', pf.faixa,
+                 'descricao_faixa', pf.descricao_faixa,
+                 'qtd_ganhadores', pf.qtd_ganhadores,
+                 'valor_premio', pf.valor_premio
+               ) ORDER BY pf.faixa)
+            FROM premiacao_faixa pf WHERE pf.concurso_id = c.id),
+           '[]'::json
+         ) AS premiacoes
+       FROM concurso c
+       JOIN loteria l ON l.id = c.loteria_id
+       WHERE l.codigo = 'megasena'
+         AND (
+           c.numero = ANY($1::int[])
+           OR (
+             c.data_sorteio >= '2026-12-31'
+             AND ((EXTRACT(MONTH FROM c.data_sorteio) = 12 AND EXTRACT(DAY FROM c.data_sorteio) = 31)
+               OR (EXTRACT(MONTH FROM c.data_sorteio) = 1 AND EXTRACT(DAY FROM c.data_sorteio) = 1))
+           )
+         )
+       ORDER BY c.numero`,
+      [Object.values(CONCURSOS_VIRADA)]
+    );
+    return rows.map((r) => {
+      const c = mapConcursoRow(r);
+      return {
+        ano: anoDaEdicao(c.dataSorteio),
+        numero: c.numero,
+        dataSorteio: c.dataSorteio,
+        dezenas: c.dezenas,
+        valorArrecadado: c.valorArrecadado,
+        premiacoes: mapPremiacoesJson(r.premiacoes),
+      };
+    });
+  },
+  ["edicoes-virada"],
+  { tags: ["concursos"], revalidate: 3600 }
 );

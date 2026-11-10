@@ -70,7 +70,8 @@ export default async function BolaoPage({
                 Veja o guia completo
               </Link>{" "}
               — custo por número de dezenas, como dividir o prêmio e as regras do
-              concurso especial.
+              concurso especial — e o histórico de todas as edições na{" "}
+              <Link href="/mega-da-virada">página da Mega da Virada</Link>.
             </p>
           )}
         </div>
