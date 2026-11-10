@@ -12,7 +12,9 @@ describe("urlsParaConcursos", () => {
     expect(urls).toContain(`${BASE}/megasena/tabelas`);
     expect(urls).toContain(`${BASE}/megasena/tabelas/frequencia`);
     expect(urls).toContain(BASE);
-    expect(urls).toHaveLength(4 + getCategoriasParaLoteria("megasena").length);
+    expect(urls).toContain(`${BASE}/megasena/recordes`);
+    expect(urls).toContain(`${BASE}/recordes`);
+    expect(urls).toHaveLength(6 + getCategoriasParaLoteria("megasena").length);
   });
 
   it("não repete as URLs da loteria quando entram dois concursos", () => {

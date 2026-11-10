@@ -96,6 +96,13 @@ describe("montarLinksConcurso", () => {
     expect(links(f)).toEqual(["/lotofacil/tabelas/ciclos"]);
   });
 
+  it("prêmio entre os 10 maiores: link para os recordes", () => {
+    const frases = montarLinksConcurso(base({ posicaoPremioHistorico: 3 }));
+    expect(frases.map(links).flat()).toContain("/megasena/recordes");
+    expect(texto(frases[frases.length - 1])).toContain("recordes da Mega-Sena");
+    expect(montarLinksConcurso(base({ posicaoPremioHistorico: 11 }))).toEqual([]);
+  });
+
   it("Super Sete fica sem frases", () => {
     expect(
       montarLinksConcurso(base({ codigoLoteria: "supersete", nomeLoteria: "Super Sete", dezenasAnterior: [5, 12] }))

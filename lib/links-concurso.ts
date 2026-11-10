@@ -43,6 +43,10 @@ export interface EntradaLinksConcurso {
   totalConcursos: number | null;
   // Preenchido só quando este concurso fechou um ciclo.
   cicloFechado: CicloFechado | null;
+  // Posição do prêmio deste concurso entre os maiores por aposta da história
+  // (1 = maior), quando teve ganhador na faixa 1. O resumo já diz a posição;
+  // aqui só entra o link para a página de recordes.
+  posicaoPremioHistorico?: number | null;
 }
 
 export type ParteFrase = string | { texto: string; href: string };
@@ -142,6 +146,15 @@ export function montarLinksConcurso(e: EntradaLinksConcurso): FraseLink[] {
       `Este concurso fechou um ciclo ${de} ${e.nomeLoteria}: as ${e.dezenaMax} dezenas saíram pelo menos uma vez em ${numeroBr(n)} ${n === 1 ? "concurso" : "concursos"}. Acompanhe o `,
       { texto: ancora("ciclos", "Ciclos"), href: href("ciclos") },
       " e quais dezenas faltam no ciclo atual.",
+    ]);
+  }
+
+  // ── Prêmio entre os 10 maiores da história ──
+  if (e.posicaoPremioHistorico && e.posicaoPremioHistorico <= 10) {
+    frases.push([
+      "Veja os 10 maiores prêmios, com data e número de ganhadores, nos ",
+      { texto: `recordes ${de} ${e.nomeLoteria}`, href: `/${e.codigoLoteria}/recordes` },
+      ".",
     ]);
   }
 

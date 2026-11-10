@@ -67,7 +67,7 @@ async function carregarResumo(
     soma: analise.soma,
     percentualSoma: analise.percentualSoma,
   });
-  return { analise, resumo, concursoAnterior };
+  return { analise, resumo, concursoAnterior, contexto };
 }
 
 // Frases com link para as tabelas da loteria (lib/links-concurso.ts). Falha
@@ -77,7 +77,8 @@ async function carregarLinksTabelas(
   nomeLoteria: string,
   loteria: { id: number; dezenaMax: number },
   concurso: Concurso,
-  dezenasAnterior: number[] | null
+  dezenasAnterior: number[] | null,
+  posicaoPremioHistorico: number | null
 ): Promise<FraseLink[]> {
   try {
     const [historico, finsDeCiclo] = await Promise.all([
@@ -95,6 +96,7 @@ async function carregarLinksTabelas(
       historico: historico?.dezenas ?? null,
       totalConcursos: historico?.total ?? null,
       cicloFechado: fim ? { qtdConcursos: fim[1] } : null,
+      posicaoPremioHistorico,
     });
   } catch (err) {
     console.error("Links do concurso para as tabelas:", (err as Error).message);
@@ -183,13 +185,14 @@ export default async function DetalheConcursoPage({
   }
 
   const nomeLoteria = NOME_LOTERIA[codigoLoteria] ?? loteria.nome;
-  const { analise, resumo, concursoAnterior } = await carregarResumo(codigoLoteria, nomeLoteria, loteria, concurso);
+  const { analise, resumo, concursoAnterior, contexto } = await carregarResumo(codigoLoteria, nomeLoteria, loteria, concurso);
   const frasesTabelas = await carregarLinksTabelas(
     codigoLoteria,
     nomeLoteria,
     loteria,
     concurso,
-    concursoAnterior?.dezenas ?? null
+    concursoAnterior?.dezenas ?? null,
+    contexto?.premiosMaioresHistorico != null ? contexto.premiosMaioresHistorico + 1 : null
   );
 
   const urlPagina = `${SITE_URL}/${codigoLoteria}/resultados/${concurso.numero}`;
