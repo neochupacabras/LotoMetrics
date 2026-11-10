@@ -12,7 +12,27 @@ const ROTAS_PUBLICAS = [
   "/entrar", "/cadastrar", "/esqueci-senha",
 ];
 
+// Semana 6 do roadmap de growth (desempenho): o hub /[loteria]/resultados
+// deixou de ler ?pagina=N para poder sair do cache (ISR); as páginas 2+ do
+// histórico agora são /resultados/pagina/N. O formato antigo, já indexado
+// e linkado, redireciona com 308. Fica aqui, e não em redirects() do
+// next.config, porque lá a query de origem é sempre repassada ao destino
+// (/pagina/5?pagina=5). Valor inválido ou 1 vai para o próprio hub.
+export function destinoPaginaResultados(url: URL): URL | null {
+  const m = url.pathname.match(/^\/([a-z]+)\/resultados\/?$/);
+  if (!m || !url.searchParams.has("pagina")) return null;
+  const valor = url.searchParams.get("pagina") ?? "";
+  const pagina = /^[1-9]\d{0,5}$/.test(valor) ? Number(valor) : 1;
+  const destino = new URL(url);
+  destino.searchParams.delete("pagina");
+  destino.pathname = pagina > 1 ? `/${m[1]}/resultados/pagina/${pagina}` : `/${m[1]}/resultados`;
+  return destino;
+}
+
 export async function proxy(request: NextRequest) {
+  const destinoPagina = destinoPaginaResultados(request.nextUrl);
+  if (destinoPagina) return NextResponse.redirect(destinoPagina, 308);
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -102,6 +122,13 @@ export async function proxy(request: NextRequest) {
 // já estão em ROTAS_PUBLICAS e nunca precisaram passar por getUser() —
 // incluí-las no matcher só gastava uma chamada de rede à toa numa página
 // de conversão de alto tráfego.
+//
+// O 3º item só casa com /[loteria]/resultados quando há ?pagina= na URL
+// (redirect acima): a visita normal ao hub nem passa pelo proxy.
 export const config = {
-  matcher: ["/conta/:path*", "/admin/:path*"],
+  matcher: [
+    "/conta/:path*",
+    "/admin/:path*",
+    { source: "/:loteria/resultados", has: [{ type: "query", key: "pagina" }] },
+  ],
 };
