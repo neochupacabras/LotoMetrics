@@ -3,8 +3,15 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Dezenas from "@/components/Dezenas";
 import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
-import { getConcursoPorNumero, getContextoConcurso, getLoteriaPorCodigo } from "@/lib/queries";
+import {
+  getConcursoPorNumero,
+  getContextoConcurso,
+  getFinsDeCiclo,
+  getHistoricoDezenasConcurso,
+  getLoteriaPorCodigo,
+} from "@/lib/queries";
 import { montarResumoConcurso } from "@/lib/resumo-concurso";
+import { montarLinksConcurso, type FraseLink } from "@/lib/links-concurso";
 import type { Concurso } from "@/lib/types";
 import { analisarConcurso, type AnaliseConcurso } from "@/lib/analise-concurso";
 import { formatarData, formatarMoeda, isCodigoLoteriaValido } from "@/lib/format";
@@ -54,14 +61,45 @@ async function carregarResumo(
     nomeLoteria,
     concurso,
     contexto,
-    repetidas: analise.repetidas,
     pares: analise.pares,
     impares: analise.impares,
     percentualParImpar: analise.percentualParImpar,
     soma: analise.soma,
     percentualSoma: analise.percentualSoma,
   });
-  return { analise, resumo };
+  return { analise, resumo, concursoAnterior };
+}
+
+// Frases com link para as tabelas da loteria (lib/links-concurso.ts). Falha
+// na consulta = página sem as frases, nunca página quebrada.
+async function carregarLinksTabelas(
+  codigoLoteria: string,
+  nomeLoteria: string,
+  loteria: { id: number; dezenaMax: number },
+  concurso: Concurso,
+  dezenasAnterior: number[] | null
+): Promise<FraseLink[]> {
+  try {
+    const [historico, finsDeCiclo] = await Promise.all([
+      getHistoricoDezenasConcurso(loteria.id, concurso.numero, concurso.dezenas),
+      getFinsDeCiclo(loteria.id),
+    ]);
+    const fim = finsDeCiclo.find(([numero]) => numero === concurso.numero);
+    return montarLinksConcurso({
+      codigoLoteria,
+      nomeLoteria,
+      numero: concurso.numero,
+      dezenaMax: loteria.dezenaMax,
+      dezenas: concurso.dezenas,
+      dezenasAnterior,
+      historico: historico?.dezenas ?? null,
+      totalConcursos: historico?.total ?? null,
+      cicloFechado: fim ? { qtdConcursos: fim[1] } : null,
+    });
+  } catch (err) {
+    console.error("Links do concurso para as tabelas:", (err as Error).message);
+    return [];
+  }
 }
 
 export async function generateMetadata({
@@ -145,7 +183,14 @@ export default async function DetalheConcursoPage({
   }
 
   const nomeLoteria = NOME_LOTERIA[codigoLoteria] ?? loteria.nome;
-  const { analise, resumo } = await carregarResumo(codigoLoteria, nomeLoteria, loteria, concurso);
+  const { analise, resumo, concursoAnterior } = await carregarResumo(codigoLoteria, nomeLoteria, loteria, concurso);
+  const frasesTabelas = await carregarLinksTabelas(
+    codigoLoteria,
+    nomeLoteria,
+    loteria,
+    concurso,
+    concursoAnterior?.dezenas ?? null
+  );
 
   const urlPagina = `${SITE_URL}/${codigoLoteria}/resultados/${concurso.numero}`;
   const newsJsonLd = {
@@ -220,6 +265,17 @@ export default async function DetalheConcursoPage({
         </h2>
         {resumo.paragrafos.map((p, i) => (
           <p key={i} className="resumo-concurso__texto">{p}</p>
+        ))}
+        {frasesTabelas.map((frase, i) => (
+          <p key={`tabela-${i}`} className="resumo-concurso__texto">
+            {frase.map((parte, j) =>
+              typeof parte === "string" ? (
+                parte
+              ) : (
+                <Link key={j} href={parte.href}>{parte.texto}</Link>
+              )
+            )}
+          </p>
         ))}
       </section>
 
