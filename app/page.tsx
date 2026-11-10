@@ -9,6 +9,8 @@ import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import { getAnalisesRecentes } from "@/lib/analises";
 import { getLoteriaPorCodigo, getUltimosConcursos } from "@/lib/queries";
 import { ARTIGOS } from "@/lib/artigos";
+import { agoraBrasilia } from "@/lib/calendario";
+import { emTemporadaDaVirada } from "@/lib/mega-da-virada";
 
 // Só lê dados públicos do banco (já cacheados via unstable_cache em
 // lib/queries.ts) — sem motivo pra ser dinâmica; o login agora é checado
@@ -313,6 +315,15 @@ export default async function HomePage() {
                   Dados oficiais da Caixa. Ferramentas reais baseadas em combinatória
                   e histórico completo. Sem previsões falsas, sem sistemas mágicos.
                 </p>
+                {emTemporadaDaVirada(agoraBrasilia()) && (
+                  // Só de novembro à 1ª semana de janeiro: link da home para o
+                  // hub da Virada enquanto ela domina as buscas.
+                  <p className="home-hero-subtitulo">
+                    <Link href="/mega-da-virada">
+                      Mega da Virada: resultado de todas as edições, números que mais saem e bolão →
+                    </Link>
+                  </p>
+                )}
               </div>
             </div>
           </div>

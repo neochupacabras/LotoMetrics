@@ -54,6 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/glossario`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/perguntas-frequentes`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/calendario`, changeFrequency: "daily", priority: 0.6 },
+    { url: `${SITE_URL}/mega-da-virada`, changeFrequency: "daily", priority: 0.8 },
     { url: `${SITE_URL}/comparador`, changeFrequency: "daily", priority: 0.7 },
     { url: `${SITE_URL}/quiz`, changeFrequency: "monthly", priority: 0.5 },
     { url: `${SITE_URL}/sobre`, changeFrequency: "yearly", priority: 0.3 },

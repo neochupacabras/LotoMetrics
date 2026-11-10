@@ -687,8 +687,9 @@ export const ANALISES: Analise[] = [
       <p>
         A forma mais honesta de ver a Mega da Virada: é o concurso com o melhor
         "custo de entretenimento" matemático do ano, graças ao prêmio acumulado —
-        não uma estratégia de investimento. Acompanhe o histórico completo de
-        acúmulos da Mega-Sena, incluindo edições anteriores da Mega da Virada, na
+        não uma estratégia de investimento. O resultado e o prêmio de todas as
+        edições estão na <a href="/mega-da-virada">página da Mega da Virada</a>; o
+        histórico completo de acúmulos da Mega-Sena fica na
         <a href="/megasena/acumulos">linha do tempo de acúmulos</a>. Se for jogar em
         grupo, veja o
         <a href="/analises/bolao-mega-da-virada-2026-como-organizar">guia completo
@@ -3341,9 +3342,9 @@ export const ANALISES: Analise[] = [
         de 1º de janeiro de 2026 (o sorteio de 31/12 atrasou por causa de um volume
         recorde de apostas de última hora), pagou <strong>R$ 1,09 bilhão</strong> —
         o maior prêmio já distribuído por uma loteria no Brasil, dividido entre 6
-        apostas vencedoras, cada uma levando cerca de R$ 182 milhões. Veja a
-        <a href="/megasena/acumulos">linha do tempo completa de acúmulos</a> da
-        Mega-Sena, incluindo todas as edições da Virada.
+        apostas vencedoras, cada uma levando cerca de R$ 182 milhões. O resultado e o
+        prêmio de cada edição estão na <a href="/mega-da-virada">página da Mega da
+        Virada</a>, com as dezenas que mais saíram.
       </p>
 
       <h2>Antes de apostar mais forte "porque é a Virada"</h2>
