@@ -6,6 +6,8 @@ import { isCodigoLoteriaValido } from "@/lib/format";
 import { PARAMS_LOTERIA, FAIXAS_MILIONARIA, FAIXAS_DUPLASENA_POR_SORTEIO } from "@/lib/probabilidades";
 import { contarColunasAcertadas } from "@/lib/classificacao";
 import { logToolEvent } from "@/lib/telemetry";
+import { getPlanoPremium } from "@/lib/plano";
+import { limiteHistoricoPorPlano, recortarHistorico, ERRO_COMPARADOR_PREMIUM } from "@/lib/simulador-plano";
 
 export interface ResultadoSimulacao {
   nomeLoteria: string;
@@ -154,10 +156,15 @@ async function contextoPontuacao(
 export async function simularHistorico(
   codigoLoteria: string,
   dezenas: number[],
-  limiteHistorico?: number, // undefined = histórico completo (premium)
+  // Ignorado de propósito: o limite vinha do navegador e qualquer um podia
+  // omiti-lo pra simular o histórico completo (Premium). Mantido só pra não
+  // quebrar a assinatura; o servidor decide pelo plano da sessão.
+  _limiteHistoricoDoCliente?: number,
   trevos?: number[] // +Milionária
 ): Promise<ResultadoSimulacao | { erro: string }> {
   const inicio = Date.now();
+  const { premium } = await getPlanoPremium();
+  const limiteHistorico = limiteHistoricoPorPlano(premium);
   const resultado = await simularHistoricoInterno(codigoLoteria, dezenas, limiteHistorico, trevos);
   const falhou = "erro" in resultado;
   after(() =>
@@ -166,10 +173,7 @@ export async function simularHistorico(
       tool: "simulador",
       lottery: codigoLoteria,
       success: !falhou,
-      // limiteHistorico presente = usuário free (ver docs/ADMIN_AUDIT.md,
-      // matriz Free vs Premium) — evita round-trip extra de auth só pra
-      // registrar o plano.
-      plan: limiteHistorico ? "free" : "premium",
+      plan: premium ? "premium" : "free",
       durationMs: Date.now() - inicio,
     })
   );
@@ -179,7 +183,7 @@ export async function simularHistorico(
 async function simularHistoricoInterno(
   codigoLoteria: string,
   dezenas: number[],
-  limiteHistorico?: number,
+  limiteHistorico: number | null, // null = histórico completo
   trevos?: number[]
 ): Promise<ResultadoSimulacao | { erro: string }> {
   if (!isCodigoLoteriaValido(codigoLoteria))
@@ -196,7 +200,7 @@ async function simularHistoricoInterno(
 
   const todosDraws = await getDrawsParaSimulacao(loteria.id);
   // Aplica limite: free usa últimos N concursos, premium usa todos
-  const draws = limiteHistorico ? todosDraws.slice(-limiteHistorico) : todosDraws;
+  const draws = recortarHistorico(todosDraws, limiteHistorico);
   const preco = precoAposta(codigoLoteria);
 
   let saldoCumulativo = 0;
@@ -291,11 +295,16 @@ export async function compararJogos(
   codigoLoteria: string,
   dezenasA: number[],
   dezenasB: number[],
-  limiteHistorico?: number,
+  // Ignorado: ver simularHistorico. O comparador é só Premium, então roda
+  // sempre no histórico completo.
+  _limiteHistoricoDoCliente?: number,
   trevosA?: number[],
   trevosB?: number[]
 ): Promise<ResultadoComparacao | { erro: string }> {
-  const resultado = await compararJogosInterno(codigoLoteria, dezenasA, dezenasB, limiteHistorico, trevosA, trevosB);
+  const { premium } = await getPlanoPremium();
+  const resultado = premium
+    ? await compararJogosInterno(codigoLoteria, dezenasA, dezenasB, limiteHistoricoPorPlano(premium), trevosA, trevosB)
+    : { erro: ERRO_COMPARADOR_PREMIUM };
   const falhou = "erro" in resultado;
   after(() =>
     logToolEvent({
@@ -303,6 +312,7 @@ export async function compararJogos(
       tool: "simulador-comparador",
       lottery: codigoLoteria,
       success: !falhou,
+      plan: premium ? "premium" : "free",
     })
   );
   return resultado;
@@ -312,7 +322,7 @@ async function compararJogosInterno(
   codigoLoteria: string,
   dezenasA: number[],
   dezenasB: number[],
-  limiteHistorico?: number,
+  limiteHistorico: number | null,
   trevosA?: number[],
   trevosB?: number[]
 ): Promise<ResultadoComparacao | { erro: string }> {
@@ -332,7 +342,7 @@ async function compararJogosInterno(
   if ("erro" in contextoB) return contextoB;
 
   const todosDraws = await getDrawsParaSimulacao(loteria.id);
-  const draws = limiteHistorico ? todosDraws.slice(-limiteHistorico) : todosDraws;
+  const draws = recortarHistorico(todosDraws, limiteHistorico);
 
   const preco = precoAposta(codigoLoteria);
 

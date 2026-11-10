@@ -11,6 +11,7 @@ import { isCodigoLoteriaValido, preposicaoLoteria } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import FaqItem from "@/components/FaqItem";
 import { getPlanoPremium } from "@/lib/plano";
+import { LIMITE_HISTORICO_FREE } from "@/lib/simulador-plano";
 
 export async function generateMetadata({
   params,
@@ -39,7 +40,7 @@ export async function generateMetadata({
 }
 
 // Free: últimos 100 concursos. Premium: histórico completo.
-const LIMITE_FREE = 100;
+const LIMITE_FREE = LIMITE_HISTORICO_FREE;
 
 export default async function SimuladorPage({
   params,
