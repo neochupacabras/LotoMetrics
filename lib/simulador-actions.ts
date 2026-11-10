@@ -1,6 +1,7 @@
 "use server";
 
 import { after } from "next/server";
+import { cookies } from "next/headers";
 import { getLoteriaPorCodigo, getDrawsParaSimulacao, getMapaFaixasPorAcertos, ConcessaoSimulacao } from "@/lib/queries";
 import { isCodigoLoteriaValido, qtdDezenasAposta } from "@/lib/format";
 import { PARAMS_LOTERIA, FAIXAS_MILIONARIA, FAIXAS_DUPLASENA_POR_SORTEIO, faixaLotomania } from "@/lib/probabilidades";
@@ -165,15 +166,30 @@ async function contextoPontuacao(
   return { tipo: "padrao", mapaFaixas: await getMapaFaixasPorAcertos(loteriaId) };
 }
 
+// Como o jogo chegou ao simulador (components/SimuladorHistoricoClient.tsx).
+const ORIGENS_JOGO = new Set(["digitado", "grade", "link"]);
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// anonymous_id do visitante (cookie la_aid, lib/telemetria-cliente.ts), para
+// o tool_completed se ligar ao visit_landing e ao tool_started do navegador.
+async function anonymousIdDoCookie(): Promise<string | null> {
+  const valor = (await cookies()).get("la_aid")?.value ?? "";
+  return UUID_REGEX.test(valor) ? valor : null;
+}
+
 export async function simularHistorico(
   codigoLoteria: string,
   dezenas: number[],
   limiteHistorico?: number, // undefined = histórico completo (premium)
-  trevos?: number[] // +Milionária
+  trevos?: number[], // +Milionária
+  origem?: string // "digitado" | "grade" | "link", só para medição
 ): Promise<ResultadoSimulacao | { erro: string }> {
   const inicio = Date.now();
   const resultado = await simularHistoricoInterno(codigoLoteria, dezenas, limiteHistorico, trevos);
   const falhou = "erro" in resultado;
+  const anonymousId = await anonymousIdDoCookie();
+  // Único registro de tool_completed do simulador: o navegador manda só o
+  // tool_started, para a mesma simulação não contar duas vezes.
   after(() =>
     logToolEvent({
       eventName: falhou ? "tool_failed" : "tool_completed",
@@ -185,6 +201,17 @@ export async function simularHistorico(
       // registrar o plano.
       plan: limiteHistorico ? "free" : "premium",
       durationMs: Date.now() - inicio,
+      anonymousId,
+      metadata: {
+        origem: origem && ORIGENS_JOGO.has(origem) ? origem : null,
+        ...(falhou
+          ? {}
+          : {
+              concursos: resultado.totalConcursos,
+              premiado: resultado.totalGanho > 0,
+              maiorAcerto: resultado.melhores[0]?.acertos ?? null,
+            }),
+      },
     })
   );
   return resultado;

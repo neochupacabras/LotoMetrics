@@ -24,8 +24,24 @@ export function obterOuCriarAnonymousId(): string {
   return id;
 }
 
+// Em desenvolvimento local os eventos não são enviados, para teste não
+// entrar no funil. Para testar a telemetria localmente, defina
+// NEXT_PUBLIC_TELEMETRIA_LOCAL=1.
+function ambienteLocal(): boolean {
+  if (process.env.NEXT_PUBLIC_TELEMETRIA_LOCAL === "1") return false;
+  const host = window.location.hostname;
+  return (
+    host === "localhost" || host === "127.0.0.1" || host === "[::1]" ||
+    host.endsWith(".localhost") || host.endsWith(".test")
+  );
+}
+
 export function enviarBeacon(payload: Record<string, unknown>): void {
   if (typeof navigator === "undefined" || !navigator.sendBeacon) return;
+  if (ambienteLocal()) {
+    console.debug("[telemetria local, não enviado]", payload);
+    return;
+  }
   const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
   navigator.sendBeacon("/api/eventos", blob);
 }
