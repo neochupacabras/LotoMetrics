@@ -2,11 +2,12 @@
 // (desktop/tablet), a barra inferior e a folha "Conta" (celular).
 //
 // Só entram aqui rotas que EXISTEM. As seções planejadas na proposta
-// (docs/membros/REDESIGN_AREA_MEMBROS.md) — Ferramentas e Loterias — são
-// acrescentadas conforme cada uma for entregue.
+// (docs/membros/REDESIGN_AREA_MEMBROS.md) — hoje só a Central de
+// loterias — entram quando forem entregues.
 
 export type IconeNav =
   | "painel"
+  | "ferramentas"
   | "jogos"
   | "bolao"
   | "desempenho"
@@ -33,7 +34,10 @@ export interface GrupoNav {
 export const NAV_MEMBROS: GrupoNav[] = [
   {
     rotulo: null,
-    itens: [{ href: "/conta", rotulo: "Painel", icone: "painel" }],
+    itens: [
+      { href: "/conta", rotulo: "Painel", icone: "painel" },
+      { href: "/conta/ferramentas", rotulo: "Ferramentas", icone: "ferramentas" },
+    ],
   },
   {
     rotulo: "Meu jogo",

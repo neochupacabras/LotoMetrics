@@ -150,3 +150,33 @@ export function IcCadeado({ className }: Props) {
     </svg>
   );
 }
+
+export function IcFerramentas({ className }: Props) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M3.5 3.5h7v7h-7zM13.5 3.5h7v7h-7zM3.5 13.5h7v7h-7z" />
+      <path d="M17 13.5v7M13.5 17h7" />
+    </svg>
+  );
+}
+
+export function IcBusca({ className }: Props) {
+  return (
+    <svg {...base} className={className}>
+      <circle cx="10.5" cy="10.5" r="6" />
+      <path d="m15 15 5.5 5.5" />
+    </svg>
+  );
+}
+
+// Estrela de favorito: contorno ou cheia.
+export function IcEstrela({ className, cheia }: Props & { cheia?: boolean }) {
+  return (
+    <svg {...base} width={18} height={18} strokeLinejoin="round" className={className}>
+      <path
+        d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9l-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z"
+        fill={cheia ? "currentColor" : "none"}
+      />
+    </svg>
+  );
+}

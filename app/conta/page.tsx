@@ -126,7 +126,7 @@ function ModuloLoterias({ dados }: { dados: DadosPainel }) {
 function ModuloAcessoRapido({ loteria }: { loteria: DadosPainel["loteriaContexto"] }) {
   return (
     <section className="m-modulo m-modulo--rapido" aria-labelledby="painel-rapido">
-      <CabecalhoModulo id="painel-rapido" titulo="Acesso rápido" />
+      <CabecalhoModulo id="painel-rapido" titulo="Acesso rápido" link={{ href: "/conta/ferramentas", rotulo: "Todas" }} />
       <p className="m-modulo__contexto">{LOTERIAS[loteria].nome}</p>
       <ul className="m-atalhos">
         {atalhosRapidos(loteria).map((a) => (

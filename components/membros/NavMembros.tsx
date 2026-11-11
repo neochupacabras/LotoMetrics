@@ -6,14 +6,17 @@ import { usePathname } from "next/navigation";
 import { NAV_MEMBROS, itemAtivo, type IconeNav, type ItemNav } from "@/lib/conta/navegacao";
 import { gravarLocal, useLocal } from "@/lib/pwa/armazenamento";
 import { limparDadosDoUsuario } from "@/lib/pwa/cliente";
+import BuscaRapida from "@/components/membros/BuscaRapida";
 import {
   IcAjuda,
+  IcBusca,
   IcApi,
   IcAssinatura,
   IcBolao,
   IcCadeado,
   IcConta,
   IcDesempenho,
+  IcFerramentas,
   IcFechar,
   IcJogos,
   IcPainel,
@@ -26,6 +29,7 @@ import {
 
 const ICONES: Record<IconeNav, ComponentType<{ className?: string }>> = {
   painel: IcPainel,
+  ferramentas: IcFerramentas,
   jogos: IcJogos,
   bolao: IcBolao,
   desempenho: IcDesempenho,
@@ -56,11 +60,27 @@ export default function NavMembros(props: Props) {
   const pathname = usePathname() ?? "/conta";
   const recolhida = useLocal(CHAVE_RECOLHIDA) === "1";
   const [folhaAberta, setFolhaAberta] = useState(false);
+  const [buscaAberta, setBuscaAberta] = useState(false);
+
+  // Ctrl+K / ⌘+K abre a busca rápida em qualquer página da área.
+  useEffect(() => {
+    const aoTeclar = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setBuscaAberta(true);
+      }
+    };
+    window.addEventListener("keydown", aoTeclar);
+    return () => window.removeEventListener("keydown", aoTeclar);
+  }, []);
+
+  const abrirBusca = () => setBuscaAberta(true);
 
   return (
     <>
-      <Lombada {...props} pathname={pathname} recolhida={recolhida} />
-      <TopoCelular isPremium={props.isPremium} />
+      <Lombada {...props} pathname={pathname} recolhida={recolhida} abrirBusca={abrirBusca} />
+      <TopoCelular isPremium={props.isPremium} abrirBusca={abrirBusca} />
+      <BuscaRapida aberta={buscaAberta} aoFechar={() => setBuscaAberta(false)} />
       <BarraInferior pathname={pathname} folhaAberta={folhaAberta} abrirFolha={() => setFolhaAberta(true)} />
       <FolhaConta {...props} pathname={pathname} aberta={folhaAberta} aoFechar={() => setFolhaAberta(false)} />
     </>
@@ -151,7 +171,8 @@ function Lombada({
   sair,
   pathname,
   recolhida,
-}: Props & { pathname: string; recolhida: boolean }) {
+  abrirBusca,
+}: Props & { pathname: string; recolhida: boolean; abrirBusca: () => void }) {
   return (
     <aside className="m-lombada" data-recolhida={recolhida} aria-label="Área de membros">
       <div className="m-lombada__topo">
@@ -173,6 +194,12 @@ function Lombada({
       </div>
 
       <SeloPlano isPremium={isPremium} validade={validade} />
+
+      <button type="button" className="m-nav m-lombada__buscar" onClick={abrirBusca} title="Buscar (Ctrl+K)">
+        <IcBusca className="m-nav__icone" />
+        <span className="m-nav__rotulo">Buscar</span>
+        <kbd className="m-tecla m-tecla--escura" aria-label="atalho Ctrl+K">Ctrl K</kbd>
+      </button>
 
       <nav className="m-lombada__nav" aria-label="Seções da conta">
         {NAV_MEMBROS.map((grupo, i) => (
@@ -226,7 +253,7 @@ function Lombada({
   );
 }
 
-function TopoCelular({ isPremium }: { isPremium: boolean }) {
+function TopoCelular({ isPremium, abrirBusca }: { isPremium: boolean; abrirBusca: () => void }) {
   return (
     <header className="m-topo-celular">
       <Link href="/conta" className="m-topo-celular__marca" aria-label="LotoAnalítica — Painel">
@@ -237,6 +264,9 @@ function TopoCelular({ isPremium }: { isPremium: boolean }) {
           <IcSelo /> Premium
         </span>
       )}
+      <button type="button" className="m-topo-celular__acao" aria-label="Buscar ferramenta" onClick={abrirBusca}>
+        <IcBusca />
+      </button>
       <Link href="/notificacoes" className="m-topo-celular__acao" aria-label="Notificações">
         <IcSino />
       </Link>
@@ -246,14 +276,10 @@ function TopoCelular({ isPremium }: { isPremium: boolean }) {
 
 // Barra inferior: 4 rotas de uso + a folha "Conta" (5 alvos, alcance do
 // polegar). Tudo que não cabe aqui fica na folha.
-const ITENS_BARRA: ItemNav[] = [
-  NAV_MEMBROS[0].itens[0],
-  ...NAV_MEMBROS[1].itens.filter((i) => i.href !== "/conta/alertas"),
-];
-const ITENS_FOLHA: ItemNav[] = [
-  ...NAV_MEMBROS[1].itens.filter((i) => i.href === "/conta/alertas"),
-  ...NAV_MEMBROS[2].itens,
-];
+const NA_BARRA = ["/conta", "/conta/ferramentas", "/conta/jogos", "/conta/boloes"];
+const TODOS_ITENS = NAV_MEMBROS.flatMap((g) => g.itens);
+const ITENS_BARRA: ItemNav[] = NA_BARRA.map((href) => TODOS_ITENS.find((i) => i.href === href)!);
+const ITENS_FOLHA: ItemNav[] = TODOS_ITENS.filter((i) => !NA_BARRA.includes(i.href));
 
 function BarraInferior({
   pathname,
