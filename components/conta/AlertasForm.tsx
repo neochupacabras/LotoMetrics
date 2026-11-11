@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useId, useState, useTransition } from "react";
 import { salvarAlertaDiretoAction, desativarAlertaAction } from "@/lib/jogo-actions";
 
 interface Alerta {
@@ -84,6 +84,9 @@ export default function AlertasForm({
 }: {
   alertasExistentes: Alerta[];
 }) {
+  // Rótulos associados aos campos (antes eram <label> soltos, sem htmlFor:
+  // o leitor de tela anunciava só "caixa de combinação"/"campo numérico").
+  const id = useId();
   const [loteria, setLoteria] = useState("megasena");
   const [thresholdBrl, setThresholdBrl] = useState("");
   const [sorteiosSemGanhador, setSorteiosSemGanhador] = useState("");
@@ -129,8 +132,9 @@ export default function AlertasForm({
 
         {/* Seletor de loteria */}
         <div className="auth-campo">
-          <label className="auth-label">Loteria</label>
+          <label htmlFor={`${id}-loteria`} className="auth-label">Loteria</label>
           <select
+            id={`${id}-loteria`}
             className="auth-input"
             value={loteria}
             onChange={e => setLoteria(e.target.value)}
@@ -142,8 +146,9 @@ export default function AlertasForm({
         </div>
 
         <div className="auth-campo">
-          <label className="auth-label">Alertar quando o prêmio estimado superar (R$)</label>
+          <label htmlFor={`${id}-valor`} className="auth-label">Alertar quando o prêmio estimado superar (R$)</label>
           <input
+            id={`${id}-valor`}
             type="number"
             className="auth-input"
             placeholder="ex: 5000000"
@@ -154,8 +159,9 @@ export default function AlertasForm({
         </div>
 
         <div className="auth-campo">
-          <label className="auth-label">Alertar após N sorteios consecutivos sem ganhador</label>
+          <label htmlFor={`${id}-sorteios`} className="auth-label">Alertar após N sorteios consecutivos sem ganhador</label>
           <input
+            id={`${id}-sorteios`}
             type="number"
             className="auth-input"
             placeholder="ex: 5"

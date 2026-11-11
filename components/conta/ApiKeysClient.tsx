@@ -145,6 +145,7 @@ export default function ApiKeysClient({ keys: keysInicial }: { keys: ApiKey[] })
               value={label}
               onChange={e => setLabel(e.target.value)}
               placeholder="Ex: Meu app, Script Python, Dashboard..."
+              aria-label="Nome da chave"
               className="auth-input"
               maxLength={40}
               style={{ maxWidth: 340 }}

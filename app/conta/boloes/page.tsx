@@ -6,6 +6,10 @@ import { CabecalhoPagina } from "@/components/membros/MembrosShell";
 import { getContaContexto } from "@/lib/conta/contexto";
 import { createClient } from "@/lib/supabase/server";
 import { NOME_LOTERIA } from "@/lib/seo";
+import { carregarLoteriasFavoritas } from "@/lib/conta/loterias";
+import { abaAplicavel } from "@/lib/abas-loteria";
+import { LOTERIAS, isCodigoLoteriaValido, preposicaoLoteria } from "@/lib/format";
+import type { CodigoLoteria } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "Meus bolões — LotoAnalítica",
@@ -23,18 +27,38 @@ export default async function ContaBoloesPage() {
   if (!contexto) redirect("/entrar?next=/conta/boloes");
 
   const supabase = await createClient();
-  const { data: boloes } = await supabase
-    .from("boloes")
-    .select("id, titulo, loteria, concurso_alvo, alvo, status, qtd_cotas, criado_em")
-    .eq("owner_id", contexto.userId)
-    .order("criado_em", { ascending: false });
+  const [{ data: boloes }, { favoritas }, { data: jogos }] = await Promise.all([
+    supabase
+      .from("boloes")
+      .select("id, titulo, loteria, concurso_alvo, alvo, status, qtd_cotas, criado_em")
+      .eq("owner_id", contexto.userId)
+      .order("criado_em", { ascending: false }),
+    carregarLoteriasFavoritas(contexto.userId),
+    supabase.from("user_games").select("loteria").eq("user_id", contexto.userId).eq("ativo", true).limit(50),
+  ]);
+
+  // "+ Novo bolão" abria sempre a Mega-Sena. Agora abre na primeira favorita
+  // que tenha bolão (Lotomania e Super Sete não têm), senão na loteria dos
+  // jogos salvos, senão na Mega-Sena — e diz qual é.
+  const candidatas = [...favoritas, ...(jogos ?? []).map((j) => j.loteria)].filter(isCodigoLoteriaValido);
+  const loteriaBolao: CodigoLoteria = candidatas.find((c) => abaAplicavel(c, "bolao")) ?? "megasena";
+  const { em } = preposicaoLoteria(loteriaBolao);
 
   return (
     <>
         <CabecalhoPagina
           titulo="Bolões"
           descricao={`${boloes?.length ?? 0} ${boloes?.length === 1 ? "bolão organizado" : "bolões organizados"} por você.`}
-          acoes={<Link href="/megasena/bolao" className="m-botao">+ Novo bolão</Link>}
+          acoes={
+            <>
+              <Link href={`/${loteriaBolao}/bolao`} className="m-botao">
+                + Novo bolão {em} {LOTERIAS[loteriaBolao].nome}
+              </Link>
+              <Link href="/conta/loterias" className="m-botao m-botao--secundario">
+                Outra loteria
+              </Link>
+            </>
+          }
         />
 
         {(boloes?.length ?? 0) === 0 ? (
@@ -43,7 +67,7 @@ export default async function ContaBoloesPage() {
             <p className="conta-jogos-dica">
               Monte o bolão por orçamento no otimizador e salve para compartilhar o link com o grupo.
             </p>
-            <Link href="/megasena/bolao" className="botao-gerar">Montar meu primeiro bolão →</Link>
+            <Link href={`/${loteriaBolao}/bolao`} className="botao-gerar">Montar meu primeiro bolão</Link>
           </div>
         ) : (
           <ul className="bolao-lista">

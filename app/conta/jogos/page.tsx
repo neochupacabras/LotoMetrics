@@ -74,7 +74,7 @@ export default async function ContaJogosPage() {
         )}
         {/* Seção de relatórios — só para premium com jogos */}
         {isPremium && (jogos?.length ?? 0) > 0 && (
-          <section className="conta-secao" style={{ marginTop: 40 }}>
+          <section className="conta-secao" style={{ marginTop: 40 }} aria-label="Relatórios mensais">
             <h2 className="conta-secao-titulo">Relatórios mensais</h2>
             <p className="conta-alertas-desc">
               Baixe o relatório completo de qualquer mês com o desempenho dos seus jogos.
@@ -98,7 +98,7 @@ function RelatorioBotoes() {
   const NOMES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 
   return (
-    <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+    <div className="m-acoes-linha">
       {meses.map(({ mes, ano }) => (
         <BotaoRelatorio
           key={`${mes}-${ano}`}

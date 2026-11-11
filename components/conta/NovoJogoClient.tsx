@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useMemo } from "react";
+import { useId, useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { salvarJogoAction } from "@/lib/jogo-actions";
 import SeletorColunasSuperSete from "@/components/SeletorColunasSuperSete";
@@ -29,6 +29,9 @@ function formatarDezena(n: number, max: number) {
 }
 
 export default function NovoJogoClient() {
+  // id único por instância (ver TetoGastoForm): evita id repetido com a
+  // página anterior que o Next mantém oculta no DOM.
+  const idNome = useId();
   const [loteria, setLoteria] = useState(LOTERIAS[0]);
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
   const [colunas, setColunas] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
@@ -144,9 +147,9 @@ export default function NovoJogoClient() {
 
       {/* Nome do jogo (opcional) */}
       <div className="auth-campo" style={{ maxWidth: 340, marginTop: 20 }}>
-        <label htmlFor="label" className="auth-label">Nome do jogo (opcional)</label>
+        <label htmlFor={idNome} className="auth-label">Nome do jogo (opcional)</label>
         <input
-          id="label"
+          id={idNome}
           type="text"
           value={label}
           onChange={e => setLabel(e.target.value)}

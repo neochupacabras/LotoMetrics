@@ -107,29 +107,25 @@ async function MeuAnoConteudo({
         </p>
       )}
 
-      <div className="transicao-resumo" style={{ marginTop: 20 }}>
-        <div className="transicao-resumo__item">
-          <p className="analise-cartao__rotulo">Total gasto</p>
-          <p className="transicao-resumo__valor" style={{ color: "var(--rust)" }}>
-            {formatarMoeda(carteira.totalGasto)}
-          </p>
+      <dl className="m-indicadores">
+        <div className="m-indicador">
+          <dt className="m-indicador__rotulo">Total gasto</dt>
+          <dd className="m-indicador__valor">{formatarMoeda(carteira.totalGasto)}</dd>
         </div>
-        <div className="transicao-resumo__item">
-          <p className="analise-cartao__rotulo">Total ganho</p>
-          <p className="transicao-resumo__valor" style={{ color: "var(--pine)" }}>
-            {formatarMoeda(carteira.totalGanho)}
-          </p>
+        <div className="m-indicador">
+          <dt className="m-indicador__rotulo">Total ganho</dt>
+          <dd className="m-indicador__valor">{formatarMoeda(carteira.totalGanho)}</dd>
         </div>
-        <div className="transicao-resumo__item">
-          <p className="analise-cartao__rotulo">Saldo do ano</p>
-          <p
-            className="transicao-resumo__valor"
-            style={{ color: carteira.saldoGeral >= 0 ? "var(--pine)" : "var(--rust)" }}
+        <div className="m-indicador">
+          <dt className="m-indicador__rotulo">Saldo do ano</dt>
+          <dd
+            className="m-indicador__valor"
+            data-sinal={carteira.saldoGeral > 0 ? "positivo" : carteira.saldoGeral < 0 ? "negativo" : "zero"}
           >
             {formatarMoeda(carteira.saldoGeral)}
-          </p>
+          </dd>
         </div>
-      </div>
+      </dl>
 
       <p className="bloco__nota" style={{ marginTop: 12 }}>
         Ao todo, você acompanhou {totalConcursos} concurso{totalConcursos !== 1 ? "s" : ""} em {ano}.
@@ -150,14 +146,14 @@ async function MeuAnoConteudo({
           <p className="retrospectiva-card__rotulo">Maior prêmio do ano</p>
           {destaquePremio ? (
             <>
-              <p className="retrospectiva-card__valor" style={{ color: "var(--pine)" }}>
+              <p className="retrospectiva-card__valor" data-sinal="positivo">
                 {formatarMoeda(destaquePremio.ganho ?? 0)}
               </p>
               <div style={{ marginTop: 8 }}>
                 <Dezenas dezenas={destaquePremio.dezenas} tamanho="pequena" />
               </div>
               {destaquePremio.label && (
-                <p className="retrospectiva-card__nota">{`"${destaquePremio.label}"`}</p>
+                <p className="retrospectiva-card__nota">{`“${destaquePremio.label}”`}</p>
               )}
             </>
           ) : (
@@ -179,7 +175,7 @@ async function MeuAnoConteudo({
         Esses valores mostram o que teria acontecido se você tivesse jogado cada combinação salva
         em todo concurso de {ano}, usando os prêmios históricos reais — o site não processa apostas
         reais. Veja o detalhe jogo a jogo na{" "}
-        <Link href="/conta/carteira" style={{ color: "var(--pine)" }}>Carteira do apostador</Link>.
+        <Link href="/conta/carteira">Carteira do apostador</Link>.
       </div>
     </>
   );
