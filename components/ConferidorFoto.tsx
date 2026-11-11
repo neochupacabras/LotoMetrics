@@ -56,7 +56,8 @@ interface ResultadoOCR {
 
 interface Props {
   codigoLoteria: string;
-  qtdDezenasSorteadas: number;
+  // Tamanho do jogo: 50 na Lotomania, 10 na Timemania, 7 colunas no Super Sete.
+  qtdNumeros: number;
   isPremium: boolean;
   logado: boolean;
   onDezenasDetectadas: (dezenas: number[]) => void;
@@ -64,7 +65,7 @@ interface Props {
 
 export default function ConferidorFoto({
   codigoLoteria,
-  qtdDezenasSorteadas,
+  qtdNumeros,
   isPremium,
   logado,
   onDezenasDetectadas,
@@ -74,6 +75,7 @@ export default function ConferidorFoto({
   const [processando, setProcessando] = useState(false);
   const [resultado, setResultado] = useState<ResultadoOCR | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const porColuna = codigoLoteria === "supersete";
 
   const handleArquivo = useCallback((file: File) => {
     if (!file.type.startsWith("image/")) return;
@@ -209,14 +211,14 @@ export default function ConferidorFoto({
                        "✕ Leitura incerta"}
                     </span>
                     <span className="ocr-resultado__count">
-                      {resultado.dezenas.length} de {qtdDezenasSorteadas} dezenas detectadas
+                      {resultado.dezenas.length} de {qtdNumeros} {porColuna ? "colunas detectadas" : "dezenas detectadas"}
                     </span>
                   </div>
 
                   <div className="ocr-resultado__dezenas">
-                    {resultado.dezenas.map(d => (
-                      <span key={d} className="ocr-resultado__dezena">
-                        {String(d).padStart(2, "0")}
+                    {resultado.dezenas.map((d, i) => (
+                      <span key={i} className="ocr-resultado__dezena">
+                        {porColuna ? d : String(d).padStart(2, "0")}
                       </span>
                     ))}
                   </div>
@@ -227,7 +229,7 @@ export default function ConferidorFoto({
 
                   {resultado.dezenas.length > 0 && resultado.confianca !== "baixa" && (
                     <p className="ocr-resultado__ok">
-                      As dezenas foram preenchidas no conferidor abaixo. Verifique e confirme.
+                      {porColuna ? "As colunas" : "As dezenas"} foram preenchidas no conferidor. Verifique e confirme.
                     </p>
                   )}
 
@@ -273,6 +275,9 @@ export default function ConferidorFoto({
         </div>
       )}
 
+      {codigoLoteria === "maismilionaria" && (
+        <p className="ocr-nota">A foto preenche as dezenas; os 2 trevos você marca no conferidor.</p>
+      )}
       <p className="ocr-nota">
         A foto não é armazenada — ela é processada e descartada imediatamente.
       </p>

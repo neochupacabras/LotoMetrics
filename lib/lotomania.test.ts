@@ -6,7 +6,12 @@ describe("qtdDezenasAposta", () => {
   it("Lotomania: marca 50, sorteia 20", () => {
     expect(qtdDezenasAposta("lotomania", 20)).toBe(50);
   });
+  it("Timemania: marca 10, sorteia 7", () => {
+    expect(qtdDezenasAposta("timemania", 7)).toBe(10);
+  });
   it("demais loterias: igual à quantidade sorteada", () => {
+    expect(qtdDezenasAposta("diadesorte", 7)).toBe(7);
+    expect(qtdDezenasAposta("supersete", 7)).toBe(7);
     expect(qtdDezenasAposta("megasena", 6)).toBe(6);
     expect(qtdDezenasAposta("lotofacil", 15)).toBe(15);
     expect(qtdDezenasAposta("quina", 5)).toBe(5);

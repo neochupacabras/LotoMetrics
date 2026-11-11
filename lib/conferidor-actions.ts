@@ -23,6 +23,7 @@ import {
   ResultadoConcurso,
 } from "./conferidor";
 import { getLoteriaPorCodigo } from "./queries";
+import { qtdDezenasAposta } from "./format";
 import { FAIXAS_PREMIADAS, FAIXAS_MILIONARIA } from "./probabilidades";
 
 export interface ConferidorActionResult {
@@ -133,10 +134,14 @@ async function conferirJogoInterno(
   if (dezenasUnicas.length !== dezenas.length) {
     return { ok: false, erro: "Há dezenas repetidas no jogo." };
   }
-  if (dezenas.length !== loteria.qtdDezenasSorteadas) {
+  // Tamanho da aposta simples, não a quantidade sorteada: 50 na Lotomania
+  // (sorteia 20) e 10 na Timemania (sorteia 7). A pontuação é a interseção
+  // com o sorteio, então a conta não muda.
+  const qtdAposta = qtdDezenasAposta(codigoLoteria, loteria.qtdDezenasSorteadas);
+  if (dezenas.length !== qtdAposta) {
     return {
       ok: false,
-      erro: `Selecione exatamente ${loteria.qtdDezenasSorteadas} dezenas (o tamanho de um jogo simples).`,
+      erro: `Selecione exatamente ${qtdAposta} dezenas (o tamanho de um jogo simples).`,
     };
   }
   if (dezenas.some((d) => d < loteria.dezenaMin || d > loteria.dezenaMax)) {

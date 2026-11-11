@@ -59,7 +59,7 @@ export const BENEFICIOS_PREMIUM: GrupoBeneficios[] = [
       {
         id: "conferidor",
         nome: "Conferidor ilimitado",
-        detalhe: "Quantos jogos quiser por vez; na Lotofácil e na Mega-Sena, também por foto do bilhete.",
+        detalhe: "Quantos jogos quiser por vez, também por foto do bilhete, em todas as loterias.",
         onde: (l) => ({ href: `/${l}/conferidor`, rotulo: "Conferidor" }),
       },
       {

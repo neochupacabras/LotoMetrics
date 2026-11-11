@@ -11,7 +11,7 @@
 
 import { pontuarJogo, type FaixaConcurso } from "./conferencia";
 import { FAIXAS_MILIONARIA } from "./probabilidades";
-import { formatarMoeda, isCodigoLoteriaValido, preposicaoLoteria } from "./format";
+import { formatarMoeda, isCodigoLoteriaValido, preposicaoLoteria, qtdDezenasAposta } from "./format";
 
 // Jogos inscritos por e-mail ou por aparelho, para o aviso não virar spam
 // e a lista não crescer com jogos aleatórios.
@@ -27,12 +27,12 @@ export function normalizarEmail(entrada: unknown): string | null {
   return email.length <= 200 && EMAIL_REGEX.test(email) ? email : null;
 }
 
-// Tamanho do jogo que a pessoa marca: 50 na Lotomania (que sorteia 20), 7
-// colunas no Super Sete, a quantidade sorteada nas demais.
+// Tamanho do jogo que a pessoa marca: 50 na Lotomania (que sorteia 20), 10
+// na Timemania (que sorteia 7), 7 colunas no Super Sete, a quantidade
+// sorteada nas demais (ver qtdDezenasAposta).
 export function tamanhoJogo(codigoLoteria: string, qtdDezenasSorteadas: number): number {
-  if (codigoLoteria === "lotomania") return 50;
   if (codigoLoteria === "supersete") return 7;
-  return qtdDezenasSorteadas;
+  return qtdDezenasAposta(codigoLoteria, qtdDezenasSorteadas);
 }
 
 export interface LoteriaParaValidar {

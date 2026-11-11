@@ -89,10 +89,10 @@ describe("extraPremiumEm", () => {
   const conferidor = FERRAMENTAS.find((f) => f.id === "conferidor")!;
   const gerador = FERRAMENTAS.find((f) => f.id === "gerador")!;
 
-  it("só promete foto do bilhete onde há OCR", () => {
-    expect(extraPremiumEm(conferidor, "megasena")).toMatch(/foto/);
-    expect(extraPremiumEm(conferidor, "lotofacil")).toMatch(/foto/);
-    expect(extraPremiumEm(conferidor, "quina")).toBe("Jogos ilimitados");
+  it("promete foto do bilhete em todas as loterias", () => {
+    for (const l of ["megasena", "lotofacil", "quina", "lotomania", "timemania", "supersete", "maismilionaria"] as const) {
+      expect(extraPremiumEm(conferidor, l)).toMatch(/foto/);
+    }
   });
 
   it("nas demais, o extra é o do registro", () => {

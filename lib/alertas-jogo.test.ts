@@ -51,6 +51,9 @@ describe("validarJogoAlerta", () => {
     expect(validarJogoAlerta(LOTOMANIA, cinquenta, undefined)).toHaveProperty("dezenas");
     expect(validarJogoAlerta(LOTOMANIA, cinquenta.slice(0, 20), undefined)).toHaveProperty("erro");
   });
+  it("Timemania exige 10 números (sorteia 7)", () => {
+    expect(tamanhoJogo("timemania", 7)).toBe(10);
+  });
   it("Super Sete: 7 algarismos na ordem, podem repetir", () => {
     expect(validarJogoAlerta(SUPER7, [1, 0, 9, 3, 3, 7, 2], undefined)).toEqual({ dezenas: [1, 0, 9, 3, 3, 7, 2], trevos: null });
     expect(validarJogoAlerta(SUPER7, [1, 0, 10, 3, 3, 7, 2], undefined)).toHaveProperty("erro");
