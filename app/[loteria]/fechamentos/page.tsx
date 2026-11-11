@@ -6,6 +6,7 @@ import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
+import { OPCOES_BOLAO } from "@/lib/bolao-opcoes";
 
 export async function generateMetadata({
   params,
@@ -23,18 +24,31 @@ export async function generateMetadata({
   );
 }
 
-const EXEMPLOS: Record<
+// O total do fechamento reduzido vem de OPCOES_BOLAO (saída real e verificada
+// de gerarFechamentoReduzido) em vez de ser digitado aqui: o número escrito à
+// mão para a Lotofácil (156) divergia do que o algoritmo gera (164) —
+// auditoria da Lotofácil, LF-39.
+const EXEMPLOS_BASE: Record<
   string,
-  { pool: number; completo: number; reduzido: number; k: number; sorteadas: number }
+  { pool: number; completo: number; k: number; sorteadas: number }
 > = {
-  lotofacil:      { pool: 18, completo: 816, reduzido: 156, k: 12, sorteadas: 15 },
-  megasena:       { pool: 10, completo: 210, reduzido: 27,  k: 4,  sorteadas: 6  },
-  quina:          { pool: 8,  completo: 56,  reduzido: 9,   k: 3,  sorteadas: 5  },
-  diadesorte:     { pool: 9,  completo: 36,  reduzido: 9,   k: 5,  sorteadas: 7  },
-  maismilionaria: { pool: 8,  completo: 28,  reduzido: 7,   k: 4,  sorteadas: 6  },
-  timemania:      { pool: 11, completo: 330, reduzido: 22,  k: 4,  sorteadas: 7  },
-  duplasena:      { pool: 8,  completo: 28,  reduzido: 7,   k: 4,  sorteadas: 6  },
+  lotofacil:      { pool: 18, completo: 816, k: 12, sorteadas: 15 },
+  megasena:       { pool: 10, completo: 210, k: 4,  sorteadas: 6  },
+  quina:          { pool: 8,  completo: 56,  k: 3,  sorteadas: 5  },
+  diadesorte:     { pool: 9,  completo: 36,  k: 5,  sorteadas: 7  },
+  maismilionaria: { pool: 8,  completo: 28,  k: 4,  sorteadas: 6  },
+  timemania:      { pool: 11, completo: 330, k: 4,  sorteadas: 7  },
+  duplasena:      { pool: 8,  completo: 28,  k: 4,  sorteadas: 6  },
 };
+
+function exemploFechamento(codigoLoteria: string) {
+  const base = EXEMPLOS_BASE[codigoLoteria];
+  if (!base) return null;
+  const opcao = OPCOES_BOLAO[codigoLoteria]?.find(
+    (o) => o.tamanhoPool === base.pool && o.garantia === base.k
+  );
+  return opcao ? { ...base, reduzido: opcao.totalJogos } : null;
+}
 
 export default async function FechamentosPage({
   params,
@@ -47,7 +61,7 @@ export default async function FechamentosPage({
   const loteria = await getLoteriaPorCodigo(codigoLoteria);
   if (!loteria) notFound();
 
-  const ex = EXEMPLOS[codigoLoteria];
+  const ex = exemploFechamento(codigoLoteria);
 
   return (
     <>

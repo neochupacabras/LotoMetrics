@@ -96,7 +96,7 @@ export function SimuladorFrequenciaAleatoria({
             })}
           </div>
           <div className="mat-resultado-extra" style={{ marginTop: 12 }}>
-            Repare como os percentuais ficam próximos — a leve diferença nas dezenas "mais frequentes" do histórico real é o tipo de variação natural que também aparece numa simulação puramente aleatória, não sinal de que essas dezenas sejam favorecidas.
+            Numa simulação puramente aleatória, as dezenas também ficam acima ou abaixo da média por alguns décimos de ponto. Atenção: as 5 dezenas acima foram escolhidas justamente por serem as mais frequentes do histórico real, então tendem a aparecer acima da média lá — e não na simulação. Seja qual for a diferença, o histórico não muda a chance de nenhuma dezena no próximo concurso.
           </div>
         </div>
       )}

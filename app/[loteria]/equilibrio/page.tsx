@@ -11,7 +11,25 @@ import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
-import { qtdCriteriosEquilibrio } from "@/lib/equilibrio";
+import { qtdCriteriosEquilibrio, pesosParaLoteria } from "@/lib/equilibrio";
+
+// Nome de cada critério na ordem em que a nota os pondera.
+const NOMES_CRITERIOS: [string, string][] = [
+  ["soma", "soma das dezenas"],
+  ["pares", "pares e ímpares"],
+  ["sequencias", "maior sequência consecutiva"],
+  ["primos", "números primos"],
+  ["fibonacci", "números de Fibonacci"],
+  ["multiplos3", "múltiplos de 3"],
+  ["moldura", "moldura e centro do volante"],
+];
+
+function descricaoPesos(codigoLoteria: string): string {
+  const pesos = pesosParaLoteria(codigoLoteria);
+  return NOMES_CRITERIOS.filter(([chave]) => (pesos[chave] ?? 0) > 0)
+    .map(([chave, nome]) => `${nome} (${Math.round(pesos[chave] * 100)}%)`)
+    .join(", ");
+}
 
 export async function generateMetadata({
   params,
@@ -98,19 +116,23 @@ export default async function EquilibrioPage({
         <div className="ferramenta-explicacao" style={{ maxWidth: 680, marginTop: 40 }}>
           <h2 className="bloco__titulo">O que é o Índice de Equilíbrio</h2>
           <p>
-            O Índice de Equilíbrio combina 7 critérios estatísticos em uma única nota
-            de 0 a 100, indicando o quão "típico" é o seu jogo em relação ao histórico
-            da {loteria.nome}. Uma nota próxima de 100 significa que o jogo tem um perfil
-            próximo da mediana histórica em todos os critérios; notas mais baixas indicam
-            que o jogo se afasta do perfil típico em alguma ou várias dimensões.
+            O Índice de Equilíbrio combina {qtdCriteriosEquilibrio(codigoLoteria)} critérios
+            estatísticos em uma única nota de 0 a 100, indicando o quão comum é o perfil
+            do seu jogo nos concursos já sorteados da {loteria.nome}.
           </p>
           <p>
-            Os 7 critérios avaliados são: soma das dezenas, distribuição par/ímpar,
-            tamanho da maior sequência consecutiva, divisão moldura/centro do volante,
-            quantidade de números primos, múltiplos de 3 e números de Fibonacci. Para
-            cada critério, o jogo é comparado com a distribuição de todas as combinações
-            possíveis — não com o histórico de resultados. Isso significa que a nota é
-            baseada em combinatória pura, e não muda com o tempo ou com concursos recentes.
+            Para cada critério, o site verifica em quantos % dos concursos do histórico
+            apareceu o mesmo valor do seu jogo (na soma, a mesma faixa de 10 em 10).
+            Um valor que aparece em 12% ou mais dos concursos recebe nota máxima naquele
+            critério; abaixo disso, a nota cai na mesma proporção. A nota final é a média
+            ponderada dos critérios: {descricaoPesos(codigoLoteria)}. Como a comparação é
+            com o histórico, a nota pode mudar um pouco conforme entram novos concursos.
+          </p>
+          <p>
+            Faixas: 75 ou mais, típico; 55 a 74, equilibrado; 35 a 54, razoável; abaixo
+            de 35, atípico. A maioria das combinações possíveis recebe nota alta — o
+            índice diferencia pouco os jogos comuns entre si e serve mais para apontar
+            jogos com um perfil muito incomum.
           </p>
           <p>
             Para entender qualquer um desses critérios individualmente, o{" "}

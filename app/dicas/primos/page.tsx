@@ -111,13 +111,13 @@ export default function ArtigoPrimosPage() {
               </tr>
               <tr>
                 <td>3 primos</td>
-                <td className="num">75.240</td>
-                <td className="num">2,30%</td>
+                <td className="num">152.880</td>
+                <td className="num">4,68%</td>
               </tr>
               <tr>
                 <td>8 primos</td>
-                <td className="num">84.942</td>
-                <td className="num">2,60%</td>
+                <td className="num">102.960</td>
+                <td className="num">3,15%</td>
               </tr>
             </tbody>
           </table>

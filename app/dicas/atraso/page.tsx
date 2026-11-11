@@ -142,8 +142,8 @@ export default function ArtigoAtrasoPage() {
         <p>
           Uma dezena da Mega-Sena com atraso de 25 concursos não está "devendo" — está
           dentro do intervalo esperado para um sorteio honesto. Já na Lotofácil, um
-          atraso de 8 já é estatisticamente incomum (menos de 1,7% de chance de
-          acontecer por pura aleatoriedade), mas ainda assim não prediz nada sobre o
+          atraso de 8 já é estatisticamente incomum (a chance de uma dezena específica
+          ficar 8 concursos seguidos sem sair é de cerca de 0,07%), mas ainda assim não prediz nada sobre o
           próximo concurso.
         </p>
 

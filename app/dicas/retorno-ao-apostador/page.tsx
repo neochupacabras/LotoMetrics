@@ -6,7 +6,7 @@ import BreadcrumbJsonLd from "@/components/BreadcrumbJsonLd";
 
 const TITULO = "Retorno ao apostador: quanto você perde por real jogado";
 const DESCRICAO =
-  "A Caixa destina 43,35% da arrecadação da Lotofácil a prêmios. O que acontece com os outros 56,65% — e o que esse número significa na prática.";
+  "A Caixa destina 43,79% da arrecadação da Lotofácil a prêmios. O que acontece com os outros 56,21% — e o que esse número significa na prática.";
 
 export const metadata: Metadata = {
   title: TITULO,
@@ -74,8 +74,8 @@ export default function ArtigoRetornoPage() {
             <tbody>
               <tr>
                 <td>Lotofácil</td>
-                <td className="num">43,35%</td>
-                <td className="num">R$ 56,65</td>
+                <td className="num">43,79%</td>
+                <td className="num">R$ 56,21</td>
                 <td className="num">~30%</td>
               </tr>
               <tr>
@@ -89,7 +89,8 @@ export default function ArtigoRetornoPage() {
         </div>
         <p>
           Traduzindo a linha da Lotofácil: a cada R$100 apostados ao longo do tempo,
-          R$43,35 voltam como prêmio bruto. Os outros R$56,65 financiam comissões de
+          R$43,79 voltam como prêmio bruto (percentual em vigor desde dezembro de 2024;
+          antes era 43,35%). Os outros R$56,21 financiam comissões de
           lotéricas, operação e repasses do governo. Esse é o custo médio de jogar —
           independente de qual estratégia você usa, quais números escolhe, ou quantas
           dezenas aposta.
@@ -105,7 +106,7 @@ export default function ArtigoRetornoPage() {
           Para onde vai o dinheiro que não vira prêmio
         </h2>
         <p>
-          Os 56,65% que não voltam como prêmio na Lotofácil têm destino definido pelo
+          Os 56,21% que não voltam como prêmio na Lotofácil têm destino definido pelo
           regulamento e pela legislação das loterias federais. A distribuição
           aproximada:
         </p>
@@ -120,7 +121,7 @@ export default function ArtigoRetornoPage() {
             <tbody>
               <tr>
                 <td>Prêmios (todas as faixas)</td>
-                <td className="num">43,35%</td>
+                <td className="num">43,79%</td>
               </tr>
               <tr>
                 <td>Fundo Nacional de Cultura</td>
@@ -140,7 +141,7 @@ export default function ArtigoRetornoPage() {
               </tr>
               <tr>
                 <td>Operação e margem da Caixa</td>
-                <td className="num">~22,65%</td>
+                <td className="num">~22,21%</td>
               </tr>
             </tbody>
           </table>
@@ -232,7 +233,7 @@ export default function ArtigoRetornoPage() {
         </h2>
         <p>
           Um aspecto particular da Lotofácil é que as faixas de 11, 12 e 13 acertos
-          têm prêmios fixos (R$5, R$10 e R$25 respectivamente) — não dependem do volume
+          têm prêmios fixos (R$7, R$14 e R$35 respectivamente) — não dependem do volume
           apostado naquele concurso. Isso significa que, na prática, o retorno real da
           Lotofácil para jogadores que acertam faixas intermediárias é mais previsível
           do que o da Mega-Sena, onde todas as faixas são rateio.

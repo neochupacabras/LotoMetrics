@@ -93,12 +93,20 @@ export default async function DataDaSortePage({
           <strong>Isso não muda sua chance de ganhar.</strong> A data só define quais números
           aparecem — o mesmo jogo poderia ter saído de um sorteio totalmente aleatório, e tem
           exatamente a mesma probabilidade de qualquer outra combinação. É só uma forma
-          memorável de escolher seus números, não uma estratégia. Veja também o{" "}
-          <Link href="/dicas/numeros-populares" style={{ color: "var(--pine)" }}>
-            artigo sobre números populares
-          </Link>{" "}
-          — datas de aniversário tendem a concentrar apostas nas dezenas de 1 a 31, o que pode
-          significar dividir mais um prêmio, se ele sair.
+          memorável de escolher seus números, não uma estratégia.
+          {/* O aviso sobre datas (dezenas de 1 a 31) só faz sentido onde o volante
+              vai além de 31 — na Lotofácil (1 a 25) todas as dezenas são "datas".
+              Auditoria da Lotofácil, LF-37. */}
+          {loteria.dezenaMax > 31 && (
+            <>
+              {" "}Veja também o{" "}
+              <Link href="/dicas/numeros-populares" style={{ color: "var(--pine)" }}>
+                artigo sobre números populares
+              </Link>{" "}
+              — datas de aniversário tendem a concentrar apostas nas dezenas de 1 a 31, o que pode
+              significar dividir mais um prêmio, se ele sair.
+            </>
+          )}
         </div>
       </div>
     </>

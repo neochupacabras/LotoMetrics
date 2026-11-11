@@ -72,7 +72,7 @@ export default function ArtigoPremiosPage() {
             <tbody>
               <tr>
                 <td>Lotofácil</td>
-                <td className="num">43,35%</td>
+                <td className="num">43,79%</td>
               </tr>
               <tr>
                 <td>Mega-Sena</td>
@@ -96,8 +96,8 @@ export default function ArtigoPremiosPage() {
         <p>
           O dinheiro não vai todo pra quem ganhou mais — ele é distribuído entre várias
           faixas de premiação, cada uma recebendo um percentual fixo do total disponível.
-          Na Lotofácil, após separar os prêmios fixos das faixas menores (R$5 para 11
-          acertos, R$10 para 12, R$25 para 13), o restante é dividido assim:
+          Na Lotofácil, após separar os prêmios fixos das faixas menores (R$7 para 11
+          acertos, R$14 para 12, R$35 para 13), o restante é dividido assim:
         </p>
         <div className="tabela-scroll">
           <table className="tabela-dados">
@@ -132,7 +132,7 @@ export default function ArtigoPremiosPage() {
               <tr>
                 <td>11, 12, 13 acertos</td>
                 <td>Valor fixo</td>
-                <td className="num">R$5 / R$10 / R$25</td>
+                <td className="num">R$7 / R$14 / R$35</td>
               </tr>
             </tbody>
           </table>
@@ -217,10 +217,10 @@ export default function ArtigoPremiosPage() {
           Por que faixas inferiores têm valores fixos na Lotofácil
         </h2>
         <p>
-          Na Lotofácil, os prêmios de 11, 12 e 13 acertos são valores fixos (R$5,
-          R$10 e R$25). Isso tem uma implicação importante: esses valores não dependem
+          Na Lotofácil, os prêmios de 11, 12 e 13 acertos são valores fixos (R$7,
+          R$14 e R$35). Isso tem uma implicação importante: esses valores não dependem
           do volume apostado naquele concurso — qualquer apostador que acertar 11
-          dezenas recebe exatamente R$5, em qualquer concurso, independente de ser uma
+          dezenas recebe exatamente R$7, em qualquer concurso, independente de ser uma
           semana com muita ou pouca arrecadação.
         </p>
         <p>

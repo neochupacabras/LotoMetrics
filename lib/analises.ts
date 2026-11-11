@@ -188,7 +188,7 @@ export const ANALISES: Analise[] = [
         praticamente idêntico:
       </p>
       <ul>
-        <li><strong>Lotofácil:</strong> 43,35% da arrecadação vai a prêmios</li>
+        <li><strong>Lotofácil:</strong> 43,79% da arrecadação vai a prêmios</li>
         <li><strong>Mega-Sena:</strong> 43,79% da arrecadação vai a prêmios</li>
       </ul>
       <p>
@@ -323,7 +323,7 @@ export const ANALISES: Analise[] = [
       </ul>
       <p>
         O total de prêmios brutos somados raramente ultrapassa 40-45% do total gasto
-        — exatamente o retorno ao apostador de 43,35% que a Caixa destina a prêmios.
+        — exatamente o retorno ao apostador de 43,79% que a Caixa destina a prêmios.
       </p>
 
       <h2>Para que serve essa informação</h2>
@@ -400,16 +400,15 @@ export const ANALISES: Analise[] = [
       <p>
         <strong>Mito (sem evidência).</strong> Os geradores eletrônicos usados pela Caixa
         são certificados por laboratórios independentes e auditados regularmente. Qualquer
-        alegação de fraude precisaria de evidência estatística — como uma discrepância
-        sistemática entre as frequências observadas e as esperadas. Essa discrepância
-        não existe nos dados históricos: a distribuição de frequências de todas as
-        dezenas está dentro do intervalo esperado por pura aleatoriedade.
+        alegação de fraude precisaria de evidência concreta, e não só de uma tabela de
+        frequências: diferenças entre as dezenas sempre aparecem, e explicá-las exige
+        olhar período por período, equipamento e dados oficiais.
       </p>
       <p>
         A tabela de <a href="/lotofacil/tabelas/frequencia">frequência da Lotofácil</a>
-        permite verificar isso: a variação entre a dezena mais e menos frequente está
-        dentro de 2 desvios padrões do esperado — exatamente o que um sorteio honesto
-        produziria.
+        mostra essas diferenças: a dezena mais sorteada saiu cerca de 4% acima da média
+        das outras. Seja qual for a origem de uma diferença dessas no passado, ela não
+        muda a chance de nenhuma dezena no próximo sorteio.
       </p>
 
       <h2>5. "Usar os números mais frequentes do histórico aumenta a chance"</h2>
@@ -466,10 +465,11 @@ export const ANALISES: Analise[] = [
       <h2>Quando o fechamento faz mais sentido</h2>
       <p>
         <strong>Em bolões com orçamento fixo.</strong> Se um grupo vai gastar R$500
-        no próximo concurso de qualquer jeito, um fechamento reduzido de um pool de
-        18 dezenas (que cobre faixas de 13+ acertos com cerca de R$350-500) é mais
-        eficiente do que 143 apostas simples aleatórias com o mesmo valor — porque
-        o fechamento cobre sistematicamente o pool sem buracos.
+        no próximo concurso de qualquer jeito, cabem por exemplo um pool de 17
+        dezenas com garantia de 14 acertos (64 jogos, R$224) ou um de 18 dezenas
+        com garantia de 11 acertos (100 jogos, R$350). Comparado a apostas simples
+        aleatórias com o mesmo valor, o fechamento não muda a chance de as dezenas
+        saírem — só cobre o pool de forma sistemática, sem buracos.
       </p>
       <p>
         <strong>Quando você tem convicção forte sobre um subconjunto de dezenas.</strong>
@@ -480,8 +480,9 @@ export const ANALISES: Analise[] = [
 
       <h2>Quando o fechamento não vale</h2>
       <p>
-        <strong>Quando o orçamento é pequeno.</strong> Um fechamento reduzido de 18
-        dezenas com cobertura de 12+ acertos exige pelo menos 40-60 jogos (~R$140-210).
+        <strong>Quando o orçamento é pequeno.</strong> O fechamento reduzido de 18
+        dezenas com cobertura de 12+ acertos gerado pelo site tem 164 jogos (R$574) —
+        e nenhum fechamento com essa garantia pode ter menos de 71 jogos.
         Para orçamentos menores, apostar em apostas simples diversificadas ou com mais
         dezenas por bilhete tem resultado equivalente com menos complexidade.
       </p>
@@ -494,11 +495,10 @@ export const ANALISES: Analise[] = [
 
       <h2>O simulador pode ajudar</h2>
       <p>
-        O <a href="/lotofacil/simulador">simulador histórico</a> permite verificar como
-        um pool específico de dezenas teria performado ao longo do histórico — quantas
-        vezes 15 ou mais dezenas do pool teriam aparecido nos sorteios reais. É a forma
-        mais honesta de avaliar retrospectivamente a qualidade de uma escolha de pool,
-        sem garantias para o futuro.
+        O <a href="/lotofacil/simulador">simulador histórico</a> mostra como um jogo de
+        15 dezenas teria se saído em cada concurso do histórico — você pode testar
+        alguns dos bilhetes do seu fechamento. Isso descreve o passado, sem garantias
+        para o futuro.
       </p>
       <p>
         A calculadora de <a href="/lotofacil/fechamentos">fechamentos</a> gera os
@@ -736,7 +736,7 @@ export const ANALISES: Analise[] = [
         Esse é o número mais importante para entender o prêmio real. A Lotofácil
         tem 5 faixas de premiação: 15, 14, 13, 12 e 11 acertos. O prêmio das
         faixas 14 e 15 é rateado — dividido igualmente entre todos os ganhadores
-        daquela faixa. As faixas 11, 12 e 13 têm valores fixos (R$5, R$10 e R$25).
+        daquela faixa. As faixas 11, 12 e 13 têm valores fixos (R$7, R$14 e R$35).
       </p>
       <p>
         Um concurso com 2 ganhadores de 15 acertos e prêmio total de R$4 milhões
@@ -793,47 +793,48 @@ export const ANALISES: Analise[] = [
         Para cada jogo analisado, o índice calcula:
       </p>
       <ul>
-        <li><strong>Soma das dezenas</strong> — quão próxima da média de 195</li>
-        <li><strong>Distribuição par/ímpar</strong> — quão próxima de 7-8</li>
-        <li><strong>Maior sequência consecutiva</strong> — quão típica para a Lotofácil</li>
-        <li><strong>Moldura vs. centro</strong> — proporção dentro do esperado</li>
-        <li><strong>Números primos</strong> — quão próximo de 5,4 por jogo</li>
-        <li><strong>Múltiplos de 3</strong> — quão próximo de 4,8 por jogo</li>
-        <li><strong>Números de Fibonacci</strong> — quão próximo de 4,2 por jogo</li>
+        <li><strong>Soma das dezenas</strong> — quão comum é a faixa da soma (a média é 195)</li>
+        <li><strong>Distribuição par/ímpar</strong> — quão comum é a divisão (a mais comum é 7-8)</li>
+        <li><strong>Maior sequência consecutiva</strong> — quão comum é o tamanho dela</li>
+        <li><strong>Moldura vs. centro</strong> — quão comum é a divisão</li>
+        <li><strong>Números primos</strong> — quão comum é a quantidade (média de 5,4 por jogo)</li>
+        <li><strong>Múltiplos de 3</strong> — quão comum é a quantidade (média de 4,8 por jogo)</li>
+        <li><strong>Números de Fibonacci</strong> — quão comum é a quantidade (média de 4,2 por jogo)</li>
       </ul>
       <p>
-        Cada critério é avaliado individualmente usando combinatória — comparando
-        o valor do jogo com a distribuição de todas as combinações possíveis. Um
-        jogo com soma de 195 exatos recebe nota máxima nesse critério; um jogo
-        com soma de 120 recebe nota próxima de zero (pois quase nenhuma das
-        3.268.760 combinações tem soma tão baixa).
+        Cada critério é avaliado contra o histórico de concursos já sorteados: o
+        índice verifica em quantos % dos concursos apareceu o mesmo valor do seu
+        jogo (na soma, a mesma faixa de 10 em 10). Um valor que aparece em 12% ou
+        mais dos concursos recebe nota máxima naquele critério; abaixo disso, a
+        nota cai na mesma proporção. Na Lotofácil, qualquer soma entre 180 e 219
+        já tira nota máxima; uma soma perto de 120 tira nota próxima de zero.
       </p>
 
       <h2>Como a nota final é calculada</h2>
       <p>
-        As notas dos 7 critérios são combinadas com pesos iguais numa média
-        ponderada. Um jogo que está exatamente na mediana em todos os 7 critérios
-        recebe nota 100. Qualquer desvio em qualquer critério reduz a nota
-        proporcionalmente à raridade desse desvio.
+        As notas dos critérios são combinadas numa média ponderada. Na Lotofácil,
+        os pesos são: soma 25%, pares e ímpares 20%, maior sequência 15%, e 10%
+        para cada um dos outros quatro (primos, Fibonacci, múltiplos de 3,
+        moldura e centro).
       </p>
       <p>
-        Importante: a nota é baseada em combinatória pura, não em histórico de
-        concursos. Isso significa que ela é estável — não muda com sorteios
-        recentes, e dois jogos idênticos sempre têm a mesma nota, independente
-        de quando são analisados.
+        Como a comparação é com o histórico, a nota pode mudar um pouco conforme
+        entram novos concursos — normalmente muito pouco, porque o histórico já
+        tem milhares de sorteios.
       </p>
 
       <h2>O que a nota diz</h2>
       <p>
-        Nota alta (acima de 70): o jogo tem um perfil estatisticamente próximo
-        do "jogo médio" em todos os critérios. A maioria das combinações possíveis
-        da Lotofácil teria uma nota parecida.
+        As faixas são: 75 ou mais, típico; 55 a 74, equilibrado; 35 a 54,
+        razoável; abaixo de 35, atípico. Na Lotofácil, cerca de 94% de todas as
+        combinações possíveis caem na faixa "típico" — e quase um terço tira nota
+        100. Ou seja, a nota alta é a regra, não a exceção.
       </p>
       <p>
-        Nota baixa (abaixo de 30): o jogo é estatisticamente incomum em pelo menos
-        um critério — soma muito extrema, distribuição par/ímpar muito desbalanceada,
-        ou outra característica rara. Isso não o torna pior para jogar, só mais
-        distante do perfil típico.
+        Nota baixa: o jogo é estatisticamente incomum em pelo menos um critério —
+        soma muito extrema, distribuição par/ímpar muito desbalanceada, ou outra
+        característica rara. Isso não o torna pior para jogar, só mais distante do
+        perfil típico.
       </p>
 
       <h2>O que a nota não diz</h2>
@@ -1288,15 +1289,17 @@ export const ANALISES: Analise[] = [
 
       <h2>O que o resultado típico mostra</h2>
       <p>
-        Para um jogo típico de 15 dezenas conferido contra todos os 3.720 concursos:
-        o custo total fica em torno de R$13.000. Os prêmios arrecadados somam cerca
-        de R$5.500 a R$6.000 (refletindo o retorno de ~43% da Caixa). O saldo final
-        fica negativo em aproximadamente R$7.000 a R$8.000.
+        Para um jogo de 15 dezenas conferido contra todo o histórico (cerca de 3.800
+        concursos), o custo total fica perto de R$13.400 — o simulador usa o preço
+        atual, R$3,50, em todos os concursos, embora a aposta já tenha custado de
+        R$1,00 a R$3,00 no passado. Em média, os prêmios recebidos somam cerca de
+        R$3.300, e o saldo final fica negativo em torno de R$10.000.
       </p>
       <p>
-        Isso inclui dezenas de concursos com 11 acertos (R$5 cada), cerca de 70-90
-        concursos com 12 acertos (R$10 cada), 10-15 concursos com 13 acertos (R$25
-        cada) e provavelmente zero ou um concurso com 14 ou 15 acertos. É um retrato
+        Em média, isso inclui cerca de 336 concursos com 11 acertos, 64 com 12
+        acertos, 5 ou 6 com 13 acertos e, quase sempre, nenhum com 14 ou 15. Os
+        prêmios fixos de 11, 12 e 13 acertos hoje são R$7, R$14 e R$35, mas já foram
+        menores (R$2, R$4 e R$10 em 2003), o que puxa o total para baixo. É um retrato
         honesto do que acontece na prática.
       </p>
 
@@ -1413,7 +1416,7 @@ export const ANALISES: Analise[] = [
       <p>
         Aceita apenas combinações com entre 6 e 9 dezenas pares (e portanto 6 a 9
         ímpares). As distribuições 7-8 e 8-7 são as mais comuns historicamente,
-        cobrindo ~57% de todas as combinações. Filtrar para 6-9 pares cobre ~98%
+        cobrindo ~57% de todas as combinações. Filtrar para 6-9 pares cobre ~89%
         das combinações — um filtro amplo que só exclui os extremos mais raros.
       </p>
 
@@ -1663,7 +1666,7 @@ export const ANALISES: Analise[] = [
       <p>
         Um resultado é estatisticamente incomum quando seu perfil cai em regiões
         raras da distribuição combinatória. Por exemplo: um resultado com soma
-        abaixo de 160 é incomum porque menos de 0,5% de todas as combinações têm
+        abaixo de 160 é incomum porque só cerca de 2,4% de todas as combinações têm
         essa propriedade. Um resultado com 10 dezenas pares é incomum porque apenas
         2,6% das combinações têm distribuição 10-5.
       </p>
@@ -1680,10 +1683,10 @@ export const ANALISES: Analise[] = [
         Ao longo de 3.720+ concursos, a Lotofácil já produziu resultados com:
       </p>
       <ul>
-        <li>Somas abaixo de 158 (menos de 0,2% das combinações)</li>
-        <li>Somas acima de 233 (menos de 0,3% das combinações)</li>
-        <li>9 ou mais dezenas pares (apenas 5,2% das combinações têm 9+ pares)</li>
-        <li>Sequências de 8 ou mais dezenas consecutivas (menos de 1% das combinações)</li>
+        <li>Somas abaixo de 158 (cerca de 1,8% das combinações)</li>
+        <li>Somas acima de 233 (cerca de 1,5% das combinações)</li>
+        <li>9 ou mais dezenas pares (cerca de 14,4% das combinações têm 9+ pares)</li>
+        <li>Sequências de 8 ou mais dezenas consecutivas (cerca de 6,5% das combinações)</li>
         <li>Nenhuma dezena prima ou apenas 1 primo (menos de 0,1% das combinações)</li>
       </ul>
       <p>
@@ -2712,20 +2715,20 @@ export const ANALISES: Analise[] = [
     slug: "como-jogar-lotofacil-regras-completas",
     titulo: "Como jogar na Lotofácil: regras e preço",
     resumo:
-      "15 a 20 dezenas de 1 a 25, sorteios de segunda a sábado, aposta a partir de R$ 3,50. O guia rápido com tudo que você precisa saber antes de apostar.",
+      "15 a 20 dezenas de 1 a 25, sorteios de segunda a sexta e aos domingos, aposta a partir de R$ 3,50. O guia rápido com tudo que você precisa saber antes de apostar.",
     data: "2026-08-24",
     categoria: "lotofacil" as const,
     tempoLeitura: 4,
     perguntasFrequentes: [
-      { pergunta: "Quanto custa jogar na Lotofácil?", resposta: "A aposta mínima, com 15 dezenas, custa R$ 3,50. Marcar mais dezenas (até o máximo de 20) aumenta o preço proporcionalmente." },
-      { pergunta: "Que dia é o sorteio da Lotofácil?", resposta: "Todos os dias, de segunda a sábado, às 21h (horário de Brasília). Não há sorteio aos domingos." },
+      { pergunta: "Quanto custa jogar na Lotofácil?", resposta: "A aposta mínima, com 15 dezenas, custa R$ 3,50. Marcar mais dezenas (até o máximo de 20) multiplica o preço pelo número de jogos de 15 contidos nela: 16 dezenas valem 16 apostas (R$ 56,00) e 20 dezenas valem 15.504 apostas (R$ 54.264,00)." },
+      { pergunta: "Que dia é o sorteio da Lotofácil?", resposta: "De segunda a sexta, às 21h, e aos domingos, às 11h (horário de Brasília). Desde 19/07/2026 o sorteio de sábado passou para domingo." },
       { pergunta: "Quantos números eu escolho na Lotofácil?", resposta: "De 15 a 20 números, entre 1 e 25. A Caixa sorteia 15 dezenas." },
       { pergunta: "Com quantos pontos a Lotofácil já paga prêmio?", resposta: "A partir de 11 acertos das 15 dezenas sorteadas." },
     ],
     corpo: `
       <p>
-        A Lotofácil é a loteria com o maior número de sorteios por semana da Caixa
-        e uma das faixas de premiação mais generosas do país — você já ganha algo
+        A Lotofácil está entre as loterias com mais sorteios por semana da Caixa
+        (seis) e tem uma das faixas de premiação mais generosas do país — você já ganha algo
         acertando "só" 11 das 15 dezenas sorteadas.
       </p>
 
@@ -2733,15 +2736,16 @@ export const ANALISES: Analise[] = [
       <p>
         Você escolhe de <strong>15 a 20 números entre 1 e 25</strong>. A Caixa
         sorteia 15 dezenas. A aposta mínima (15 números) custa <strong>R$ 3,50</strong>;
-        marcar mais números aumenta o preço e o número de combinações cobertas,
-        na mesma proporção — sem "desconto".
+        marcar mais números aumenta o preço e o número de combinações cobertas
+        na mesma proporção — sem "desconto": 16 números cobrem 16 jogos de 15
+        (R$ 56,00); 20 números cobrem 15.504 (R$ 54.264,00).
       </p>
 
       <h2>Quando é o sorteio</h2>
       <p>
-        <strong>Todos os dias, de segunda a sábado, às 21h</strong> (horário de
-        Brasília) — a única loteria da Caixa com sorteio praticamente diário. Não
-        há sorteio aos domingos.
+        <strong>De segunda a sexta, às 21h, e aos domingos, às 11h</strong>
+        (horário de Brasília). Desde 19/07/2026, o sorteio que era no sábado passou
+        para domingo de manhã.
       </p>
 
       <h2>Faixas de premiação</h2>

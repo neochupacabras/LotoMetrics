@@ -40,6 +40,17 @@ function corTexto(t: number): string {
   return t > 0.5 ? "#f3f1ea" : "#17171a"; // texto claro sobre tinta densa, escuro sobre papel
 }
 
+// Quantas das N dezenas ficaram a até 2 desvios-padrão da média esperada.
+// Pela teoria, cerca de 95% delas ficam nessa margem num sorteio honesto; a
+// frase antiga afirmava "exatamente o esperado" sem olhar os dados (no
+// histórico completo da Lotofácil, 20 de 25 ficaram dentro) — auditoria da
+// Lotofácil, LF-19.
+function fraseMargem(freqs: number[], universo: number, esperado: number, dp: number): string {
+  const comZero = [...freqs, ...Array(Math.max(0, universo - freqs.length)).fill(0)];
+  const dentro = comZero.filter((f) => Math.abs(f - esperado) <= 2 * dp).length;
+  return `${dentro} de ${universo} ficaram a até ±${(dp * 2).toFixed(0)} aparições da média (2 desvios-padrão); num sorteio perfeitamente aleatório, o esperado é cerca de 95% delas, ou ${Math.round(universo * 0.95)}.`;
+}
+
 // ─── Insight dinâmico baseado no período selecionado ─────────────────────────
 function insightTexto(periodo: PeriodoData, loteria: Loteria): string {
   const { totalConcursos, frequencias } = periodo;
@@ -55,7 +66,8 @@ function insightTexto(periodo: PeriodoData, loteria: Loteria): string {
   const dpEsperado = Math.sqrt(totalConcursos * taxaSorteio * (1 - taxaSorteio));
 
   if (totalConcursos >= 500) {
-    return `Com ${totalConcursos.toLocaleString("pt-BR")} concursos, a variação entre a dezena mais e menos frequente é de apenas ${variacaoPct}% em relação à média — exatamente o esperado pela teoria estatística (±${(dpEsperado * 2).toFixed(0)} aparições dentro de 2 desvios padrão).`;
+    const universo = loteria.dezenaMax - loteria.dezenaMin + 1;
+    return `Com ${totalConcursos.toLocaleString("pt-BR")} concursos, a diferença entre a dezena mais e a menos frequente é de ${variacaoPct.replace(".", ",")}% da média. Das dezenas, ${fraseMargem(freqs, universo, esperado, dpEsperado)}`;
   } else {
     return `Com apenas ${totalConcursos} concursos, a variação aparente é de ${variacaoPct}% — bem maior do que o histórico completo. Isso não é uma tendência: é ruído estatístico. Períodos curtos sempre parecem mais "desiguais" mesmo num sorteio perfeitamente honesto.`;
   }
@@ -81,7 +93,7 @@ function insightTextoSuperSete(periodo: PeriodoData): string {
   const variacaoPct = ((maxFreq - minFreq) / esperado * 100).toFixed(1);
 
   if (totalConcursos >= 500) {
-    return `Com ${totalConcursos.toLocaleString("pt-BR")} concursos — ${n.toLocaleString("pt-BR")} dígitos sorteados ao todo, contando as 7 colunas — a variação entre o valor mais e menos frequente é de apenas ${variacaoPct}% em relação à média — exatamente o esperado pela teoria estatística (±${(dpEsperado * 2).toFixed(0)} aparições dentro de 2 desvios padrão).`;
+    return `Com ${totalConcursos.toLocaleString("pt-BR")} concursos — ${n.toLocaleString("pt-BR")} dígitos sorteados ao todo, contando as 7 colunas — a diferença entre o valor mais e o menos frequente é de ${variacaoPct.replace(".", ",")}% da média. Dos valores, ${fraseMargem(freqs, 10, esperado, dpEsperado)}`;
   }
   return `Com apenas ${totalConcursos} concursos, a variação aparente é de ${variacaoPct}% — bem maior do que o histórico completo. Isso não é uma tendência: é ruído estatístico. Períodos curtos sempre parecem mais "desiguais" mesmo num sorteio perfeitamente honesto.`;
 }

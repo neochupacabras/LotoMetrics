@@ -115,13 +115,13 @@ export default function ArtigoRepetidasPage() {
               </tr>
               <tr>
                 <td>12 dezenas repetidas</td>
-                <td className="num">45.045</td>
-                <td className="num">1,38%</td>
+                <td className="num">54.600</td>
+                <td className="num">1,67%</td>
               </tr>
               <tr>
                 <td>6 dezenas repetidas</td>
-                <td className="num">57.750</td>
-                <td className="num">1,77%</td>
+                <td className="num">50.050</td>
+                <td className="num">1,53%</td>
               </tr>
             </tbody>
           </table>

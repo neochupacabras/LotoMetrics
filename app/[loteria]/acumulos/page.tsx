@@ -87,9 +87,10 @@ export default async function AcumulosPage({
           <p>
             Um ponto importante: acúmulos longos não significam que "o prêmio está
             próximo de ser ganho". Cada concurso é independente dos anteriores — a
-            probabilidade de haver um ganhador é sempre a mesma, independente de quantos
-            concursos já acumularam. Um acúmulo de 10 concursos não torna o 11º mais
-            provável de ter ganhador do que um concurso sem histórico de acúmulo.
+            chance de cada aposta ganhar é sempre a mesma, independente de quantos
+            concursos já acumularam. O que costuma mudar num acúmulo é o número de
+            apostas: com mais gente jogando, aumenta a chance de alguém ganhar — mas não
+            a sua.
           </p>
           <p>
             Para entender os detalhes de como os prêmios são calculados a partir da

@@ -63,7 +63,9 @@ export function qtdCriteriosEquilibrio(codigoLoteria: string): number {
   return pesosParaLoteria(codigoLoteria).moldura > 0 ? 7 : 6;
 }
 
-function pesosParaLoteria(codigoLoteria: string): Record<string, number> {
+// Exportada para a página descrever os pesos reais de cada loteria (a
+// descrição antiga dizia "pesos iguais" — auditoria da Lotofácil, LF-38).
+export function pesosParaLoteria(codigoLoteria: string): Record<string, number> {
   const base = PESOS[codigoLoteria];
   if (base) return base;
 

@@ -112,9 +112,12 @@ export default async function BolaoPage({
             <p>
               A vantagem em relação a jogar bilhetes avulsos é a cobertura: ao invés de
               vários bilhetes com dezenas sobrepostas por acaso, o fechamento distribui as
-              combinações de forma a não deixar "buracos" na cobertura do pool. Em um bolão
-              bem configurado, se 15 das 18 dezenas do pool aparecerem no sorteio, pelo menos
-              um bilhete acerta 15 pontos.
+              combinações de forma a não deixar "buracos" na cobertura do pool. Cada plano
+              garante uma pontuação mínima, sempre abaixo do prêmio máximo: com garantia de
+              13, por exemplo, se pelo menos 13 dezenas sorteadas estiverem no pool, pelo
+              menos um bilhete faz 13 pontos. O prêmio máximo só fica garantido com o
+              fechamento completo (todas as combinações do pool), que o otimizador não
+              oferece por ser caro demais.
             </p>
             <p>
               O otimizador acima gera planos de bolão por orçamento: diga quanto o grupo

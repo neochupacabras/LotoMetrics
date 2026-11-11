@@ -123,7 +123,7 @@ export const ARTIGOS: Artigo[] = [
     slug: "retorno-ao-apostador",
     titulo: "Retorno ao apostador: quanto você perde por real jogado",
     resumo:
-      "A Caixa destina 43,35% da arrecadação da Lotofácil a prêmios. O que acontece com os outros 56,65% — e o que isso significa na prática.",
+      "A Caixa destina 43,79% da arrecadação da Lotofácil a prêmios. O que acontece com os outros 56,21% — e o que isso significa na prática.",
     emoji: "📉",
     cor: "ochre",
   },

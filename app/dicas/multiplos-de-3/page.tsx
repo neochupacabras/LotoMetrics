@@ -108,18 +108,18 @@ export default function ArtigoMultiplosDe3Page() {
               </tr>
               <tr>
                 <td>7</td>
-                <td className="num">137.280</td>
-                <td className="num">4,20%</td>
+                <td className="num">194.480</td>
+                <td className="num">5,95%</td>
               </tr>
               <tr>
                 <td>2</td>
-                <td className="num">68.640</td>
-                <td className="num">2,10%</td>
+                <td className="num">66.640</td>
+                <td className="num">2,04%</td>
               </tr>
               <tr>
                 <td>8 (todos os múltiplos)</td>
-                <td className="num">6.188</td>
-                <td className="num">0,19%</td>
+                <td className="num">19.448</td>
+                <td className="num">0,59%</td>
               </tr>
             </tbody>
           </table>
@@ -127,7 +127,7 @@ export default function ArtigoMultiplosDe3Page() {
         <p>
           A média esperada é <strong>4,8 múltiplos de 3 por concurso</strong> (15 × 8 ÷
           25). Em mais de 80% dos sorteios, o resultado vai ter entre 4 e 6 múltiplos
-          de 3. Sorteios com todos os 8 múltiplos de 3 são muito raros — apenas 0,19%
+          de 3. Sorteios com todos os 8 múltiplos de 3 são muito raros — apenas 0,59%
           das combinações possíveis — mas matematicamente viáveis.
         </p>
 
