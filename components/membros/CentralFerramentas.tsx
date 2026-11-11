@@ -7,6 +7,7 @@ import {
   FERRAMENTAS,
   buscarFerramentas,
   disponivelEm,
+  extraPremiumEm,
   ferramentaPorId,
   hrefFerramenta,
   type CategoriaFerramenta,
@@ -269,6 +270,7 @@ function LinhaFerramenta({
 }) {
   const disponivel = disponivelEm(f, loteria);
   const bloqueada = f.exclusivaPremium && !isPremium;
+  const extra = extraPremiumEm(f, loteria);
 
   const conteudo = (
     <>
@@ -285,10 +287,10 @@ function LinhaFerramenta({
           ? f.descricao
           : `Indisponível ${preposicaoLoteria(loteria).em} ${LOTERIAS[loteria].nome}: a mecânica de aposta não se encaixa.`}
       </span>
-      {f.extraPremium && disponivel && (
+      {extra && disponivel && (
         <span className="m-ferramenta__extra">
           <IcSelo />
-          {isPremium ? `Incluído no seu plano: ${minuscula(f.extraPremium)}` : `Com Premium: ${minuscula(f.extraPremium)}`}
+          {isPremium ? `Incluído no seu plano: ${minuscula(extra)}` : `Com Premium: ${minuscula(extra)}`}
         </span>
       )}
     </>
