@@ -3,6 +3,8 @@ import Stripe from "stripe";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import pool from "@/lib/db";
 import { logToolEvent } from "@/lib/telemetry";
+import { calcularIsPremium } from "@/lib/plano";
+import { trialEndDoCheckout } from "@/lib/renovacao";
 
 export async function POST(request: Request) {
   // Instanciar dentro da função — evita erro no build quando a env não está disponível
@@ -39,7 +41,7 @@ export async function POST(request: Request) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("stripe_customer_id, display_name")
+    .select("stripe_customer_id, display_name, plan, plan_expires_at")
     .eq("id", user.id)
     .single();
 
@@ -76,6 +78,16 @@ export async function POST(request: Request) {
 
   const elegivelParaTrial = !assinaturaAnterior;
 
+  // Renovação antecipada sem perder dias (lib/renovacao.ts): quem ainda tem
+  // Premium válido (ex.: um Pix pago antes) não é cobrado agora. A
+  // assinatura começa em teste até o fim desse crédito e a primeira
+  // cobrança acontece só quando ele acaba.
+  const trialEnd = trialEndDoCheckout({
+    agora: new Date(),
+    creditoAte: calcularIsPremium(profile) ? profile?.plan_expires_at : null,
+    elegivelParaTrial,
+  });
+
   // Atribuição de conversão (seção 17 do audit): o Referer do próprio POST
   // pra /api/stripe/checkout sempre seria "/assinar" (único lugar de onde o
   // botão de checkout é chamado) — não diz nada sobre qual ferramenta levou
@@ -107,7 +119,11 @@ export async function POST(request: Request) {
     cancel_url: `${baseUrl}/assinar`,
     subscription_data: {
       metadata: { supabase_user_id: user.id },
-      ...(elegivelParaTrial ? { trial_period_days: 7 } : {}),
+      ...(trialEnd
+        ? { trial_end: trialEnd }
+        : elegivelParaTrial
+          ? { trial_period_days: 7 }
+          : {}),
     },
     allow_promotion_codes: true,
     locale: "pt-BR",

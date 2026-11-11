@@ -5,7 +5,7 @@ import Link from "next/link";
 import SeletorColunasSuperSete from "./SeletorColunasSuperSete";
 import dynamic from "next/dynamic";
 import { conferirJogoAction, calcularRetornoFinanceiroAction, ConferidorActionResult } from "@/lib/conferidor-actions";
-import { formatarData, formatarDezena } from "@/lib/format";
+import { formatarData, formatarDezena, qtdDezenasAposta } from "@/lib/format";
 import GraficoBarras from "./GraficoBarras";
 import InsightCallout from "./InsightCallout";
 import { LOTERIAS_COM_OCR } from "@/lib/ocr-suporte";
@@ -31,11 +31,12 @@ export default function ConferidorClient({
   // A foto do bilhete é conferida de novo no servidor (app/api/ocr).
   const { carregando, logado, isPremium } = usePlanoUsuario();
   const ehSuperSete = codigoLoteria === "supersete";
-  // OCR só conhece a faixa de dezenas de Lotofácil/Mega-Sena — nas demais
-  // (fora Super Sete, que já não tem essa aba por outro motivo: o acerto é
-  // por coluna, não por dezena) esconder a aba em vez de deixar o usuário
-  // fotografar um bilhete que seria lido com a faixa errada.
+  // Foto do bilhete: as 9 loterias (lib/ocr-suporte.ts). No Super Sete a
+  // leitura devolve um algarismo por coluna, na ordem.
   const temOcr = LOTERIAS_COM_OCR.has(codigoLoteria);
+  // Quantas dezenas a pessoa marca: 50 na Lotomania e 10 na Timemania, que
+  // sorteiam 20 e 7. O servidor (lib/conferidor-actions.ts) usa a mesma regra.
+  const qtdAposta = qtdDezenasAposta(codigoLoteria, qtdDezenasSorteadas);
   const [aba, setAba] = useState<"manual" | "foto">("manual");
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
   const [colunas, setColunas] = useState<number[]>([0, 0, 0, 0, 0, 0, 0]);
@@ -50,7 +51,12 @@ export default function ConferidorClient({
 
   // Callback chamado quando OCR detecta dezenas — preenche o seletor
   function handleDezenasDetectadas(dezenas: number[]) {
-    setSelecionadas(new Set(dezenas));
+    if (ehSuperSete) {
+      // Colunas que o OCR não leu ficam em 0 para a pessoa corrigir.
+      setColunas(Array.from({ length: 7 }, (_, i) => dezenas[i] ?? 0));
+    } else {
+      setSelecionadas(new Set(dezenas.slice(0, qtdAposta)));
+    }
     setAba("manual"); // volta para a aba manual para o usuário confirmar
     setResultado(null);
     setErro(null);
@@ -68,7 +74,7 @@ export default function ConferidorClient({
       const novo = new Set(prev);
       if (novo.has(d)) {
         novo.delete(d);
-      } else if (novo.size < qtdDezenasSorteadas) {
+      } else if (novo.size < qtdAposta) {
         novo.add(d);
       }
       return novo;
@@ -79,7 +85,7 @@ export default function ConferidorClient({
     const numeros = (textoColar.match(/\d+/g) ?? [])
       .map(Number)
       .filter((n) => n >= dezenaMin && n <= dezenaMax);
-    const unicos = Array.from(new Set(numeros)).slice(0, qtdDezenasSorteadas);
+    const unicos = Array.from(new Set(numeros)).slice(0, qtdAposta);
     setSelecionadas(new Set(unicos));
     setResultado(null);
     setErro(null);
@@ -109,8 +115,8 @@ export default function ConferidorClient({
     setErro(null);
     setResultado(null);
 
-    if (!ehSuperSete && selecionadas.size !== qtdDezenasSorteadas) {
-      setErro(`Selecione exatamente ${qtdDezenasSorteadas} dezenas.`);
+    if (!ehSuperSete && selecionadas.size !== qtdAposta) {
+      setErro(`Selecione exatamente ${qtdAposta} dezenas.`);
       return;
     }
     if (usaTrevos && trevosSelecionados.size !== 2) {
@@ -136,11 +142,8 @@ export default function ConferidorClient({
 
   return (
     <div>
-      {/* Toggle Manual / Foto — Super Sete não tem aba de foto (o OCR foi
-          treinado pra reconhecer dezenas de um volante comum, não colunas)
-          e as demais loterias fora de Lotofácil/Mega-Sena também não, até
-          o OCR aprender a faixa de dezenas de cada uma. */}
-      {!ehSuperSete && temOcr && (
+      {/* Toggle Manual / Foto */}
+      {temOcr && (
         <div className="modo-toggle" style={{ alignSelf: "flex-start", marginBottom: 20 }}>
           <button
             type="button"
@@ -163,10 +166,10 @@ export default function ConferidorClient({
       )}
 
       {/* Aba Foto */}
-      {!ehSuperSete && temOcr && aba === "foto" && (
+      {temOcr && aba === "foto" && (
         <ConferidorFoto
           codigoLoteria={codigoLoteria}
-          qtdDezenasSorteadas={qtdDezenasSorteadas}
+          qtdNumeros={qtdAposta}
           isPremium={isPremium}
           logado={logado}
           onDezenasDetectadas={handleDezenasDetectadas}
@@ -174,7 +177,7 @@ export default function ConferidorClient({
       )}
 
       {/* Aba Manual */}
-      {(ehSuperSete || aba === "manual") && (
+      {(!temOcr || aba === "manual") && (
       <>
       {ehSuperSete ? (
         <>
@@ -186,7 +189,7 @@ export default function ConferidorClient({
       ) : (
         <>
       <p className="bloco__nota">
-        Selecione as {qtdDezenasSorteadas} dezenas do seu jogo, ou cole abaixo (aceita
+        Selecione as {qtdAposta} dezenas do seu jogo, ou cole abaixo (aceita
         qualquer formato, inclusive o que o gerador de jogos copia).
       </p>
 
@@ -217,7 +220,7 @@ export default function ConferidorClient({
             type="button"
             className="dezena-selecionavel"
             data-selecionada={selecionadas.has(d)}
-            disabled={!selecionadas.has(d) && selecionadas.size >= qtdDezenasSorteadas}
+            disabled={!selecionadas.has(d) && selecionadas.size >= qtdAposta}
             onClick={() => toggleDezena(d)}
           >
             {formatarDezena(d)}
@@ -226,7 +229,7 @@ export default function ConferidorClient({
       </div>
 
       <p className="fechamento-resumo">
-        {selecionadas.size} de {qtdDezenasSorteadas} dezenas selecionadas
+        {selecionadas.size} de {qtdAposta} dezenas selecionadas
       </p>
         </>
       )}

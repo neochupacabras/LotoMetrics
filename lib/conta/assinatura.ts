@@ -16,7 +16,9 @@ const STATUS_VIGENTES = ["active", "trialing", "past_due"];
 
 const ROTULO_STATUS: Record<string, string> = {
   active: "Ativa",
-  trialing: "Em teste",
+  // "trialing" também é a assinatura com a cobrança adiada por um crédito
+  // Pix (lib/renovacao.ts), não só os 7 dias de teste: o rótulo vale nos dois.
+  trialing: "Ativa, sem cobrança até a renovação",
   past_due: "Pagamento pendente",
   canceled: "Cancelada",
   incomplete: "Incompleta",

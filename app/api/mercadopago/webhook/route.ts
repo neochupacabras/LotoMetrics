@@ -5,6 +5,8 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { logError, logToolEvent } from "@/lib/telemetry";
 import { calcularProAte, revogarProAte } from "@/lib/bolao-limites";
 import { revogarCreditoPix } from "@/lib/plano";
+import { inicioDoNovoPeriodo, somarDias } from "@/lib/renovacao";
+import { adiarProximaCobranca, buscarAssinaturaQueRenova, type AssinaturaQueRenova } from "@/lib/renovacao-stripe";
 
 export const runtime = "nodejs";
 
@@ -152,9 +154,28 @@ export async function POST(request: Request) {
         .single();
 
       const now = new Date();
-      const expiraAtual = profile?.plan_expires_at ? new Date(profile.plan_expires_at) : now;
-      const base = expiraAtual > now ? expiraAtual : now;
-      const novaExpiracao = new Date(base.getTime() + pixPayment.period_days * 24 * 60 * 60 * 1000);
+
+      // Assinatura no cartão que ainda vai cobrar sozinha: o Pix soma a
+      // partir do fim do período já pago nela, e a próxima cobrança é
+      // adiada para a nova data (lib/renovacao.ts). Se o Stripe falhar, o
+      // crédito do Pix entra do mesmo jeito e o erro vai pro /admin.
+      let assinatura: AssinaturaQueRenova | null = null;
+      try {
+        assinatura = await buscarAssinaturaQueRenova(supabase, pixPayment.user_id);
+      } catch (err) {
+        after(() =>
+          logError({
+            source: "mercadopago_webhook",
+            message: `Pix ${mpPaymentId}: não deu para consultar a assinatura Stripe de ${pixPayment.user_id} (${(err as Error).message}). Conferir se a próxima cobrança do cartão precisa ser adiada.`,
+            userId: pixPayment.user_id,
+          })
+        );
+      }
+
+      // O novo período só começa quando o atual termina (crédito Pix ou
+      // período do cartão, o que for mais tarde).
+      const base = inicioDoNovoPeriodo(now, profile?.plan_expires_at, assinatura?.fimDoPeriodo);
+      const novaExpiracao = somarDias(base, pixPayment.period_days);
 
       await supabase
         .from("profiles")
@@ -165,6 +186,20 @@ export async function POST(request: Request) {
         .from("pix_payments")
         .update({ status: "approved", applied_at: now.toISOString() })
         .eq("id", pixPayment.id);
+
+      if (assinatura) {
+        try {
+          await adiarProximaCobranca(assinatura.id, novaExpiracao);
+        } catch (err) {
+          after(() =>
+            logError({
+              source: "mercadopago_webhook",
+              message: `Pix ${mpPaymentId}: falhou adiar a cobrança da assinatura ${assinatura.id} para ${novaExpiracao.toISOString()} (${(err as Error).message}). Ajustar no Stripe para não cobrar os mesmos dias duas vezes.`,
+              userId: pixPayment.user_id,
+            })
+          );
+        }
+      }
 
       after(() =>
         logToolEvent({
@@ -213,7 +248,7 @@ export async function POST(request: Request) {
         after(() =>
           logError({
             source: "mercadopago_webhook",
-            message: `Crédito Premium revogado por reembolso (payment ${mpPaymentId}, usuário ${pagamento.user_id})`,
+            message: `Crédito Premium revogado por reembolso (payment ${mpPaymentId}, usuário ${pagamento.user_id}). Se a pessoa tiver assinatura no cartão, a próxima cobrança pode ter sido adiada por esse Pix: revisar o trial_end no Stripe.`,
           })
         );
       }

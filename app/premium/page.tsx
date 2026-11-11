@@ -86,12 +86,12 @@ const GRUPOS = [
   {
     titulo: "Conferidor por foto",
     descricao:
-      "Fotografe o bilhete e as dezenas são preenchidas automaticamente — hoje disponível para Lotofácil e Mega-Sena.",
+      "Fotografe o bilhete e as dezenas são preenchidas automaticamente, em todas as loterias.",
     itens: [
       {
         nome: "OCR de bilhetes via câmera",
         detalhe:
-          "Abra o conferidor da Lotofácil ou da Mega-Sena, toque em \"Foto do bilhete\" e aponte a câmera. O sistema lê as dezenas via Google Cloud Vision e preenche o conferidor automaticamente — sem digitar nada. As demais loterias ainda não têm essa opção.",
+          "Abra o conferidor de qualquer loteria, toque em \"Foto do bilhete\" e aponte a câmera. O sistema lê as dezenas via Google Cloud Vision e preenche o conferidor automaticamente — sem digitar nada. No Super Sete ele lê um número por coluna; na +Milionária, os trevos você marca à mão.",
         link: null,
       },
       {

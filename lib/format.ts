@@ -13,11 +13,17 @@ export const LOTERIAS: Record<CodigoLoteria, { nome: string; slug: CodigoLoteria
 };
 
 // Quantas dezenas o apostador marca num jogo simples. É igual à quantidade
-// sorteada em todas as loterias, menos a Lotomania: lá se marcam 50 dos 100
-// números e a Caixa sorteia 20 (prêmio para 20, 19, 18, 17, 16, 15 ou 0
-// acertos entre os 20 sorteados).
+// sorteada em quase todas as loterias. As exceções:
+// - Lotomania: marcam-se 50 dos 100 números e a Caixa sorteia 20 (prêmio
+//   para 20, 19, 18, 17, 16, 15 ou 0 acertos entre os 20 sorteados);
+// - Timemania: marcam-se 10 dos 80 e a Caixa sorteia 7 (prêmio para 7, 6,
+//   5, 4 ou 3 acertos).
+// A conferência é sempre a interseção entre o jogo e o sorteio, então a
+// matemática não muda; só a quantidade aceita na entrada.
+export const DEZENAS_APOSTA: Partial<Record<string, number>> = { lotomania: 50, timemania: 10 };
+
 export function qtdDezenasAposta(codigoLoteria: string, qtdDezenasSorteadas: number): number {
-  return codigoLoteria === "lotomania" ? 50 : qtdDezenasSorteadas;
+  return DEZENAS_APOSTA[codigoLoteria] ?? qtdDezenasSorteadas;
 }
 
 export function isCodigoLoteriaValido(valor: string): valor is CodigoLoteria {

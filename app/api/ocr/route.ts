@@ -2,7 +2,9 @@ import { NextResponse, after } from "next/server";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { calcularIsPremium } from "@/lib/plano";
 import { logToolEvent, logError } from "@/lib/telemetry";
-import { LOTERIAS_COM_OCR } from "@/lib/ocr-suporte";
+import { CONFIG_OCR, lerBilhete } from "@/lib/ocr-bilhete";
+import { isCodigoLoteriaValido } from "@/lib/format";
+import type { CodigoLoteria } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -11,33 +13,6 @@ export const maxDuration = 30;
 // para 100/mês -- o limite diário resetava rápido demais para quem tenta
 // conferir vários bilhetes de uma vez (ex.: bolão com vários jogos).
 const LIMITE_MENSAL = 100;
-
-const LIMITES_LOTERIA: Record<string, { min: number; max: number; qtd: number }> = {
-  lotofacil: { min: 1, max: 25, qtd: 15 },
-  megasena:  { min: 1, max: 60, qtd: 6  },
-};
-
-function extrairDezenas(
-  texto: string,
-  loteria: string
-): { dezenas: number[]; confianca: "alta" | "media" | "baixa" } {
-  // A UI (ConferidorClient) já esconde a aba de foto pra loterias fora de
-  // LOTERIAS_COM_OCR — este limite é defesa em profundidade, não o
-  // caminho normal.
-  const limites = LIMITES_LOTERIA[loteria];
-  if (!limites) {
-    throw new Error(`OCR sem faixa conhecida para a loteria "${loteria}"`);
-  }
-  const { min, max, qtd } = limites;
-  const numeros = (texto.match(/\b\d{1,2}\b/g) ?? [])
-    .map(Number)
-    .filter(n => n >= min && n <= max);
-  const unicos = [...new Set(numeros)];
-  const confianca =
-    unicos.length === qtd ? "alta" :
-    unicos.length >= qtd - 2 ? "media" : "baixa";
-  return { dezenas: unicos.slice(0, qtd).sort((a, b) => a - b), confianca };
-}
 
 // ── Rate limiting via coluna ocr_usage no profile ─────────────────────────────
 // Usa o service role: ocr_usage não é mais gravável pelo client autenticado
@@ -136,19 +111,18 @@ export async function POST(request: Request) {
 
   // ── Processar imagem ─────────────────────────────────────────────────────────
   let imageBase64: string;
-  let loteria: string;
+  let loteria: CodigoLoteria;
 
   try {
     const formData = await request.formData();
     const arquivo = formData.get("imagem") as File | null;
-    loteria = (formData.get("loteria") as string) ?? "lotofacil";
+    const loteriaEnviada = (formData.get("loteria") as string) ?? "lotofacil";
 
-    if (!LOTERIAS_COM_OCR.has(loteria)) {
-      return NextResponse.json(
-        { erro: "O conferidor por foto ainda só está disponível para Lotofácil e Mega-Sena." },
-        { status: 400 }
-      );
+    // As 9 loterias têm faixa e tamanho de jogo em lib/ocr-bilhete.ts.
+    if (!isCodigoLoteriaValido(loteriaEnviada)) {
+      return NextResponse.json({ erro: "Loteria inválida." }, { status: 400 });
     }
+    loteria = loteriaEnviada;
 
     if (!arquivo) {
       return NextResponse.json({ erro: "Nenhuma imagem enviada." }, { status: 400 });
@@ -212,7 +186,8 @@ export async function POST(request: Request) {
       });
     }
 
-    const { dezenas, confianca } = extrairDezenas(textoCompleto, loteria);
+    // Faixa e tamanho do jogo de cada loteria; ver lib/ocr-bilhete.ts.
+    const { dezenas, confianca } = lerBilhete(textoCompleto, CONFIG_OCR[loteria]);
 
     after(() =>
       logToolEvent({

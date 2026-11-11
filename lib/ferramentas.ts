@@ -212,7 +212,8 @@ export function disponivelEm(f: Ferramenta, loteria: CodigoLoteria): boolean {
 }
 
 // Extra do Premium para uma loteria específica. Hoje só o Conferidor varia:
-// a leitura por foto (OCR) existe apenas onde lib/ocr-suporte.ts permite.
+// a leitura por foto (OCR) existe onde lib/ocr-suporte.ts permite (as 9
+// loterias desde 11/11/2026).
 export function extraPremiumEm(f: Ferramenta, loteria: CodigoLoteria): string | undefined {
   if (f.id === "conferidor") {
     return LOTERIAS_COM_OCR.has(loteria) ? "Jogos ilimitados e conferência por foto do bilhete" : "Jogos ilimitados";

@@ -1,11 +1,9 @@
-// Loterias com faixa de dezenas conhecida pelo OCR do conferidor por foto
-// (app/api/ocr/route.ts). Compartilhado com o client (components/
-// ConferidorClient.tsx, components/ConferidorFoto.tsx) pra esconder a aba
-// "Foto do bilhete" em vez de deixar o usuário fotografar um bilhete que
-// seria lido com a faixa errada — antes, qualquer loteria fora de
-// Lotofácil/Mega-Sena caía silenciosamente na faixa da Lotofácil (1-25),
-// o que produzia dezenas erradas pra Quina, Lotomania, Dia de Sorte,
-// +Milionária, Timemania e Dupla Sena (achado #1.7 do plano de
-// implementação, 13/09/2026). Super Sete nunca teve essa aba — o acerto é
-// por coluna, não por dezena — e continua fora por esse outro motivo.
-export const LOTERIAS_COM_OCR = new Set(["lotofacil", "megasena"]);
+// Loterias com conferência por foto do bilhete (app/api/ocr/route.ts).
+// Compartilhado com a tela (components/ConferidorClient.tsx) e com os textos
+// do Premium (lib/ferramentas.ts). Desde 11/11/2026 vale para as 9: a faixa
+// e o tamanho do jogo de cada uma ficam em lib/ocr-bilhete.ts (Super Sete
+// lê um algarismo por coluna; na +Milionária os trevos são marcados à mão).
+// Antes só Lotofácil e Mega-Sena tinham faixa conhecida pelo OCR.
+import { CONFIG_OCR } from "./ocr-bilhete";
+
+export const LOTERIAS_COM_OCR: ReadonlySet<string> = new Set(Object.keys(CONFIG_OCR));
