@@ -11,6 +11,7 @@ import { PwaProvider } from "@/components/pwa/PwaProvider";
 import BottomNav from "@/components/pwa/BottomNav";
 import ConviteInstalacao from "@/components/pwa/ConviteInstalacao";
 import AvisosApp from "@/components/pwa/AvisosApp";
+import RegistroRecentes from "@/components/RegistroRecentes";
 import { SITE_URL, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import "./globals.css";
 // Depois do globals.css: estilos do app mobile (barra inferior, cabeçalho
@@ -103,6 +104,8 @@ export default function RootLayout({
               <ConviteInstalacao />
               <BottomNav />
               <AvisosApp />
+              {/* "Usadas recentemente" da Central de ferramentas (localStorage) */}
+              <RegistroRecentes />
               <Analytics />
               <SpeedInsights />
               <AdsenseGate />
