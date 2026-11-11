@@ -59,7 +59,7 @@ export default async function ConferidorPage({
         Veja como um jogo se saiu contra todo o histórico de concursos já sorteados —
         quantos pontos faria em cada um, e se já bateu alguma faixa premiada.
         <SoParaFree>
-          <span className="conferidor-aviso-free"> (Free: 1 jogo por sessão)</span>
+          <span className="conferidor-aviso-free"> (Free: 3 conferências por dia)</span>
         </SoParaFree>
       </p>
 
@@ -100,8 +100,8 @@ export default async function ConferidorPage({
           Versão Premium
         </h3>
         <p>
-          Usuários gratuitos podem conferir 1 jogo por sessão. Assinantes Premium podem
-          conferir múltiplos jogos simultaneamente e também fazer conferência por foto
+          Usuários gratuitos podem conferir 3 jogos a cada 24 horas. Assinantes Premium podem
+          conferir quantos jogos quiserem e também fazer conferência por foto
           do bilhete físico — útil para verificar rapidamente o resultado de apostas
           feitas na lotérica.
         </p>

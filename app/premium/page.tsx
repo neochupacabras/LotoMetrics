@@ -47,7 +47,7 @@ const GRUPOS = [
       {
         nome: "Conferidor ilimitado",
         detalhe:
-          "Confira quantos jogos quiser contra todo o histórico. O plano gratuito limita a 1 jogo por sessão.",
+          "Confira quantos jogos quiser contra todo o histórico. O plano gratuito confere 3 jogos a cada 24 horas.",
         link: null,
       },
     ],
@@ -140,7 +140,7 @@ const COMPARATIVO = [
   { feature: "13 tabelas estatísticas",            free: true,  premium: true  },
   { feature: "Gerador — modo simples",             free: true,  premium: true  },
   { feature: "Analisador de jogo (7 métricas)",    free: true,  premium: true  },
-  { feature: "Conferidor (1 jogo/sessão)",         free: true,  premium: true  },
+  { feature: "Conferidor (3 conferências por dia)",free: true,  premium: true  },
   { feature: "Heatmap — histórico completo",       free: true,  premium: true  },
   { feature: "Simulador — últimos 100 concursos",  free: true,  premium: true  },
   { feature: "Alertas de acúmulo",                 free: true,  premium: true  },

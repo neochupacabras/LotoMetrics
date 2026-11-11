@@ -1,7 +1,17 @@
 "use server";
 
 import { after } from "next/server";
+import { cookies } from "next/headers";
 import pool from "./db";
+import { getPlanoPremium } from "./plano";
+import {
+  COOKIE_CONFERENCIAS,
+  ERRO_LIMITE_CONFERIDOR,
+  MAX_AGE_COOKIE_CONFERENCIAS,
+  conferenciasRestantes,
+  lerConferencias,
+  registrarConferencia,
+} from "./conferidor-plano";
 import { logToolEvent } from "./telemetry";
 import {
   conferirJogo,
@@ -20,6 +30,22 @@ export interface ConferidorActionResult {
   erro?: string;
   dados?: ResultadoConferidor;
   trevos?: number[];
+  // Só para quem não é Premium (null = sem limite): conferências que ainda
+  // cabem na janela de 24 h, já contando esta.
+  restantes?: number | null;
+  limiteAtingido?: boolean;
+}
+
+// Segredo do HMAC do cookie de contagem. Sem ele não há como assinar, e
+// inventar um valor fixo deixaria qualquer um forjar o cookie: o limite
+// fica desligado (como era antes deste controle) e o erro aparece no log.
+function segredoCookieConferencias(): string | null {
+  const segredo = process.env.CONFERIDOR_COOKIE_SECRET;
+  if (!segredo) {
+    console.error("CONFERIDOR_COOKIE_SECRET não configurado: limite do conferidor Free desligado.");
+    return null;
+  }
+  return segredo;
 }
 
 export async function conferirJogoAction(
@@ -28,7 +54,7 @@ export async function conferirJogoAction(
   trevos?: number[]
 ): Promise<ConferidorActionResult> {
   const inicio = Date.now();
-  const resultado = await conferirJogoInterno(codigoLoteria, dezenas, trevos);
+  const resultado = await conferirComLimite(codigoLoteria, dezenas, trevos);
   after(() =>
     logToolEvent({
       eventName: resultado.ok ? "tool_completed" : "tool_failed",
@@ -36,9 +62,46 @@ export async function conferirJogoAction(
       lottery: codigoLoteria,
       success: resultado.ok,
       durationMs: Date.now() - inicio,
+      ...(resultado.limiteAtingido ? { metadata: { limiteAtingido: true } } : {}),
     })
   );
   return resultado;
+}
+
+// O limite do plano gratuito é decidido aqui, não na tela: a action pode
+// ser chamada direto do navegador, sem passar pelo ConferidorClient.
+// Premium não conta nem grava cookie. Só conferência que deu certo gasta
+// crédito (jogo inválido não).
+async function conferirComLimite(
+  codigoLoteria: string,
+  dezenas: number[],
+  trevos?: number[]
+): Promise<ConferidorActionResult> {
+  const { premium } = await getPlanoPremium();
+  const segredo = premium ? null : segredoCookieConferencias();
+  if (!segredo) {
+    const resultado = await conferirJogoInterno(codigoLoteria, dezenas, trevos);
+    return { ...resultado, restantes: null };
+  }
+
+  const loja = await cookies();
+  const agora = Date.now();
+  const usadas = lerConferencias(loja.get(COOKIE_CONFERENCIAS)?.value, segredo, agora);
+  if (conferenciasRestantes(usadas) === 0) {
+    return { ok: false, erro: ERRO_LIMITE_CONFERIDOR, restantes: 0, limiteAtingido: true };
+  }
+
+  const resultado = await conferirJogoInterno(codigoLoteria, dezenas, trevos);
+  if (!resultado.ok) return { ...resultado, restantes: conferenciasRestantes(usadas) };
+
+  loja.set(COOKIE_CONFERENCIAS, registrarConferencia(usadas, segredo, agora), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: MAX_AGE_COOKIE_CONFERENCIAS,
+  });
+  return { ...resultado, restantes: conferenciasRestantes(usadas) - 1 };
 }
 
 async function conferirJogoInterno(

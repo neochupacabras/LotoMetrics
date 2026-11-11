@@ -85,7 +85,7 @@ Quando "ausente", a página não dá 404 — mostra um aviso explicativo (decis�
 |---|---|---|
 | Gerador | Modo simples | + Modo avançado (10 filtros combináveis) |
 | Simulador | Últimos 100 concursos | Histórico completo |
-| Conferidor | 1 jogo por sessão | Múltiplos jogos + conferência por foto (OCR) |
+| Conferidor | 3 conferências a cada 24 h (limite no servidor) | Múltiplos jogos + conferência por foto (OCR) |
 | Heatmap | Só "todo o histórico" | 4 períodos (500/100/50/tudo) |
 | Exportação CSV de resultados | Bloqueado | Liberado |
 | Relatório PDF (sob demanda e mensal por e-mail) | Bloqueado | Liberado |
