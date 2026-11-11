@@ -17,6 +17,7 @@ import { metadataTextoTabela, tituloBuscaTabela } from "@/lib/seo-tabelas";
 import { compararTempoComMundoReal, estimarDiasCorridos } from "@/lib/insights";
 import { qtdSorteiosPorSemana } from "@/lib/calendario";
 import * as Estat from "@/lib/estatisticas";
+import { zonaDaDezena } from "@/lib/classificacao";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 
 // Essas tabelas recalculam distribuições estatísticas sobre todo o histórico
@@ -246,7 +247,15 @@ async function ConteudoCategoria({
     case "repetidas":
       return <ConteudoRepetidas loteriaId={loteriaId} />;
     case "moldura-centro":
-      return <ConteudoMolduraCentro loteriaId={loteriaId} />;
+      return (
+        <ConteudoMolduraCentro
+          loteriaId={loteriaId}
+          dezenaMin={dezenaMin}
+          dezenaMax={dezenaMax}
+          gridColunas={gridColunas}
+          qtdDezenasSorteadas={qtdDezenasSorteadas}
+        />
+      );
     case "linhas-colunas":
       return <ConteudoLinhasColunas loteriaId={loteriaId} />;
     case "duques-trincas":
@@ -492,7 +501,7 @@ async function ConteudoCiclos({ loteriaId }: { loteriaId: number }) {
         <h2 className="bloco__titulo">Últimos ciclos fechados</h2>
         {historico.length > 0 && (
           <p className="bloco__nota">
-            Em média, um ciclo leva{" "}
+            Nos {historico.length} últimos ciclos, em média, um ciclo levou{" "}
             <strong>
               {Math.round(historico.reduce((s, c) => s + c.qtdConcursos, 0) / historico.length)}
             </strong>{" "}
@@ -872,20 +881,74 @@ async function ConteudoRepetidas({ loteriaId }: { loteriaId: number }) {
 // ---------------------------------------------------------------
 // MOLDURA E CENTRO
 // ---------------------------------------------------------------
-async function ConteudoMolduraCentro({ loteriaId }: { loteriaId: number }) {
+// Compara a fatia da moldura nas dezenas sorteadas com a fatia que ela ocupa
+// no volante. Comparar moldura x centro direto ("a borda leva vantagem") era
+// enganoso: na Lotofácil a moldura tem 16 das 25 dezenas, então sair em ~64%
+// das vezes é exatamente o esperado (auditoria da Lotofácil, LF-35). A margem
+// usa 2 desvios-padrão da hipergeométrica somada sobre os concursos.
+function comparacaoMoldura(
+  freqMoldura: number,
+  freqCentro: number,
+  dezenaMin: number,
+  dezenaMax: number,
+  gridColunas: number,
+  qtdDezenasSorteadas: number
+) {
+  const universo = dezenaMax - dezenaMin + 1;
+  let casasMoldura = 0;
+  for (let d = dezenaMin; d <= dezenaMax; d++) {
+    if (zonaDaDezena(d, dezenaMax, gridColunas) === "moldura") casasMoldura++;
+  }
+  const p = casasMoldura / universo;
+  const totalSorteadas = freqMoldura + freqCentro;
+  const concursos = totalSorteadas / qtdDezenasSorteadas;
+  const m = qtdDezenasSorteadas;
+  const variancia = concursos * m * p * (1 - p) * ((universo - m) / (universo - 1));
+  const observado = (100 * freqMoldura) / totalSorteadas;
+  const esperado = 100 * p;
+  const margem = totalSorteadas > 0 ? (200 * Math.sqrt(variancia)) / totalSorteadas : 0;
+  const diferenca = observado - esperado;
+  return {
+    casasMoldura,
+    universo,
+    esperado,
+    situacao: Math.abs(diferenca) <= margem ? "dentro" : diferenca > 0 ? "acima" : "abaixo",
+  } as const;
+}
+
+async function ConteudoMolduraCentro({
+  loteriaId,
+  dezenaMin,
+  dezenaMax,
+  gridColunas,
+  qtdDezenasSorteadas,
+}: {
+  loteriaId: number;
+  dezenaMin: number;
+  dezenaMax: number;
+  gridColunas: number;
+  qtdDezenasSorteadas: number;
+}) {
   const { frequencia, distribuicao } = await Estat.getMolduraCentro(loteriaId);
   const moldura = frequencia.find((f) => f.categoria.toLowerCase() === "moldura");
   const centro = frequencia.find((f) => f.categoria.toLowerCase() === "centro");
+  const comparacao =
+    moldura && centro
+      ? comparacaoMoldura(moldura.frequencia, centro.frequencia, dezenaMin, dezenaMax, gridColunas, qtdDezenasSorteadas)
+      : null;
   return (
     <>
-      {moldura && centro && (
+      {moldura && centro && comparacao && (
         <InsightCallout kicker="Moldura vs. centro">
-          As dezenas da <strong>moldura</strong> (bordas do volante) saem em{" "}
-          <strong>{moldura.percentual}%</strong> das vezes, contra{" "}
-          <strong>{centro.percentual}%</strong> das dezenas do{" "}
-          <strong>centro</strong> — {moldura.percentual > centro.percentual
-            ? "a borda leva vantagem."
-            : "o miolo do volante leva vantagem."}
+          A <strong>moldura</strong> (bordas do volante) tem {comparacao.casasMoldura} das{" "}
+          {comparacao.universo} dezenas — por isso o esperado é que ela fique com cerca de{" "}
+          <strong>{comparacao.esperado.toFixed(1).replace(".", ",")}%</strong> das dezenas
+          sorteadas. No histórico, ficou com <strong>{String(moldura.percentual).replace(".", ",")}%</strong>
+          {comparacao.situacao === "dentro"
+            ? " — dentro da variação esperada: nem a borda nem o centro levam vantagem."
+            : comparacao.situacao === "acima"
+              ? " — ligeiramente acima do esperado. A diferença descreve o passado e não muda a chance de nenhuma dezena no próximo sorteio."
+              : " — ligeiramente abaixo do esperado. A diferença descreve o passado e não muda a chance de nenhuma dezena no próximo sorteio."}
         </InsightCallout>
       )}
       <div className="bloco">
@@ -1061,8 +1124,9 @@ async function ConteudoDuquesTrincas({
           saiu junta <strong>{duqueTop.ocorrencias} vezes</strong>. Pela pura
           matemática da chance, o esperado seria algo perto de{" "}
           {esperadoPorAcaso.toFixed(1)} vezes — ou seja, essa dupla apareceu
-          cerca de <strong>{vezesMais.toFixed(1)}x</strong> o esperado, o tipo de
-          desvio normal que a aleatoriedade produz em qualquer amostra grande.
+          cerca de <strong>{vezesMais.toFixed(1).replace(".", ",")}x</strong> o esperado. Com
+          tantas duplas possíveis, algumas sempre ficam acima da média e outras abaixo —
+          e o histórico de uma dupla não muda a chance dela no próximo sorteio.
         </InsightCallout>
       )}
       <div className="bloco">

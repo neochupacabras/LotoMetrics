@@ -148,7 +148,7 @@ export default function ArtigoFechamentoPage() {
               <tr>
                 <th>Grupo de dezenas</th>
                 <th className="num">Fechamento completo</th>
-                <th className="num">Fechamento reduzido típico</th>
+                <th className="num">Fechamento reduzido (gerado pelo site)</th>
                 <th className="num">Cobertura mínima garantida</th>
               </tr>
             </thead>
@@ -156,30 +156,36 @@ export default function ArtigoFechamentoPage() {
               <tr>
                 <td>16 dezenas</td>
                 <td className="num">16 jogos / R$56</td>
-                <td className="num">5–8 jogos</td>
+                <td className="num">15 jogos / R$52,50</td>
                 <td className="num">14 acertos</td>
               </tr>
               <tr>
                 <td>17 dezenas</td>
                 <td className="num">136 jogos / R$476</td>
-                <td className="num">15–20 jogos</td>
+                <td className="num">64 jogos / R$224</td>
                 <td className="num">14 acertos</td>
               </tr>
               <tr>
                 <td>18 dezenas</td>
                 <td className="num">816 jogos / R$2.856</td>
-                <td className="num">40–60 jogos</td>
+                <td className="num">258 jogos / R$903</td>
                 <td className="num">13 acertos</td>
               </tr>
               <tr>
                 <td>20 dezenas</td>
                 <td className="num">15.504 jogos / R$54.264</td>
-                <td className="num">150–200 jogos</td>
-                <td className="num">13 acertos</td>
+                <td className="num">1.490 jogos / R$5.215</td>
+                <td className="num">12 acertos</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p>
+          A economia existe, mas tem limite matemático: garantir 14 acertos com 16
+          dezenas exige no mínimo 15 jogos, e com 17 dezenas no mínimo 64 — nas duas
+          linhas o site já gera o menor número possível. Desconfie de tabelas que
+          prometem a mesma garantia com bem menos jogos.
+        </p>
 
         <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>
           E na vida real, na Lotofácil?

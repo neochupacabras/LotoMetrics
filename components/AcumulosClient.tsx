@@ -159,8 +159,8 @@ export default function AcumulosClient({ acumulos, nomeLoteria }: Props) {
       {stats && (
         <InsightCallout kicker="O recorde da casa">
           O acúmulo mais longo já registrado durou{" "}
-          <strong>{stats.recordeDuracao.duracao} sorteios</strong> — até o
-          concurso #{stats.recordeDuracao.concursoFim} — e pagou{" "}
+          <strong>{stats.recordeDuracao.duracao} sorteios</strong> (contando o que
+          finalmente teve ganhador) — até o concurso #{stats.recordeDuracao.concursoFim} — e pagou{" "}
           <strong>{formatarMilhoes(stats.recordeDuracao.premio)}</strong> quando
           finalmente saiu, {(stats.recordeDuracao.duracao / stats.mediaDuracao).toFixed(1)}x a
           duração média de {stats.mediaDuracao.toFixed(1)} sorteios.

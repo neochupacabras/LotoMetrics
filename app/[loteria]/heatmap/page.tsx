@@ -127,9 +127,9 @@ export default async function HeatmapPage({
             artigo sobre{" "}
             <a href={`/dicas/frequencia`} className="breadcrumb">
               frequência
-            </a>, a variação observada está dentro do intervalo esperado por pura
-            aleatoriedade — qualquer sorteio honesto produz esse tipo de distribuição
-            desigual naturalmente. O heatmap descreve o passado, não prevê o futuro.
+            </a>, mesmo um sorteio perfeitamente aleatório produz uma distribuição
+            desigual — e o quadro acima mostra quantas dezenas ficaram dentro da margem
+            que a teoria espera. O heatmap descreve o passado, não prevê o futuro.
           </p>
           <p>
             O recurso mais interessante do heatmap é comparar períodos diferentes:

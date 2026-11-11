@@ -99,8 +99,8 @@ export default function ArtigoSequenciasPage() {
               </tr>
               <tr>
                 <td>Sem sequências de 3 ou mais</td>
-                <td className="num">≈ 9.800</td>
-                <td className="num">0,30%</td>
+                <td className="num">9.042</td>
+                <td className="num">0,28%</td>
               </tr>
             </tbody>
           </table>

@@ -114,13 +114,13 @@ export default function ArtigoFibonacciPage() {
               </tr>
               <tr>
                 <td>2 Fibonacci</td>
-                <td className="num">101.640</td>
-                <td className="num">3,11%</td>
+                <td className="num">179.928</td>
+                <td className="num">5,50%</td>
               </tr>
               <tr>
                 <td>7 Fibonacci (todos)</td>
-                <td className="num">40.920</td>
-                <td className="num">1,25%</td>
+                <td className="num">43.758</td>
+                <td className="num">1,34%</td>
               </tr>
             </tbody>
           </table>

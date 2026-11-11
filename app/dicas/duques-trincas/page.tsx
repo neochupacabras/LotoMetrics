@@ -75,7 +75,7 @@ export default function ArtigoDuquesTrincasPage() {
           Em 3.720 concursos (o histórico completo até aqui), uma dupla específica de
           dezenas é esperada a sair junta cerca de <strong>1.302 vezes</strong>. Para
           trincas (três dezenas específicas saindo juntas), a chance por concurso cai
-          para 19,1%, resultando em cerca de 711 ocorrências esperadas ao longo do
+          para 19,8%, resultando em cerca de 736 ocorrências esperadas ao longo do
           histórico.
         </p>
 
@@ -104,10 +104,12 @@ export default function ArtigoDuquesTrincasPage() {
         </h2>
         <p>
           Se você ordenar as 300 duplas possíveis da Lotofácil por número de
-          aparições conjuntas e comparar a mais frequente com a média esperada (1.302),
-          a diferença raramente passa de 60 a 80 aparições a mais — menos de 6% acima
-          do esperado. Isso está completamente dentro do intervalo de variação normal
-          que a estatística prevê para 3.700 sorteios.
+          aparições conjuntas, a mais frequente fica acima da média esperada — com
+          300 duplas, é natural que algumas fiquem bem acima e outras bem abaixo. Em
+          novembro de 2026 (3.826 concursos, 1.339 aparições esperadas por dupla), a
+          mais frequente era 11 e 20, com 1.456 aparições, cerca de 9% acima do
+          esperado. A dupla mais frequente na tabela atual pode ser conferida na
+          página de duques e trincas.
         </p>
         <p>
           Em outras palavras: se você fizer a mesma análise em dados gerados
@@ -178,8 +180,8 @@ export default function ArtigoDuquesTrincasPage() {
         <p>
           Com trincas (três dezenas específicas saindo juntas), o fenômeno fica ainda
           mais pronunciado. Na Lotofácil, a chance de uma trinca específica sair em um
-          concurso é de aproximadamente 19,1%, o que dá cerca de 711 aparições
-          esperadas em 3.720 concursos. Existem C(25,3) = 2.300 trincas possíveis.
+          concurso é de aproximadamente 19,8% (15 × 14 × 13 ÷ (25 × 24 × 23)), o que dá
+          cerca de 736 aparições esperadas em 3.720 concursos. Existem C(25,3) = 2.300 trincas possíveis.
         </p>
         <p>
           Na Mega-Sena, a chance de uma trinca específica sair é de apenas 0,06% por

@@ -128,13 +128,13 @@ export default function ArtigoMolduraCentroPage() {
               </tr>
               <tr>
                 <td>12 moldura / 3 centro</td>
-                <td className="num">101.640</td>
-                <td className="num">3,11%</td>
+                <td className="num">152.880</td>
+                <td className="num">4,68%</td>
               </tr>
               <tr>
                 <td>7 moldura / 8 centro (maioria no centro)</td>
-                <td className="num">84.942</td>
-                <td className="num">2,60%</td>
+                <td className="num">102.960</td>
+                <td className="num">3,15%</td>
               </tr>
             </tbody>
           </table>

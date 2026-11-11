@@ -138,7 +138,7 @@ export default function ArtigoParImparPage() {
 
         <p>
           Repare: 7-8 e 8-7 juntos somam 57,2% de todas as 3.268.760 combinações
-          possíveis. Distribuições extremas como 0 pares/15 ímpares ou 12 pares/3
+          possíveis. Distribuições extremas como 2 pares/13 ímpares ou 12 pares/3
           ímpares somam, juntas, bem menos de 1%. É por isso que jogos montados
           aleatoriamente "tendem" a sair com distribuição próxima de 7-8: não porque
           a loteria prefira esse padrão, mas porque a maioria absoluta das combinações
