@@ -17,6 +17,7 @@ import {
   IcConta,
   IcDesempenho,
   IcFerramentas,
+  IcLoterias,
   IcFechar,
   IcJogos,
   IcPainel,
@@ -30,6 +31,7 @@ import {
 const ICONES: Record<IconeNav, ComponentType<{ className?: string }>> = {
   painel: IcPainel,
   ferramentas: IcFerramentas,
+  loterias: IcLoterias,
   jogos: IcJogos,
   bolao: IcBolao,
   desempenho: IcDesempenho,
@@ -276,7 +278,7 @@ function TopoCelular({ isPremium, abrirBusca }: { isPremium: boolean; abrirBusca
 
 // Barra inferior: 4 rotas de uso + a folha "Conta" (5 alvos, alcance do
 // polegar). Tudo que não cabe aqui fica na folha.
-const NA_BARRA = ["/conta", "/conta/ferramentas", "/conta/jogos", "/conta/boloes"];
+const NA_BARRA = ["/conta", "/conta/ferramentas", "/conta/loterias", "/conta/jogos"];
 const TODOS_ITENS = NAV_MEMBROS.flatMap((g) => g.itens);
 const ITENS_BARRA: ItemNav[] = NA_BARRA.map((href) => TODOS_ITENS.find((i) => i.href === href)!);
 const ITENS_FOLHA: ItemNav[] = TODOS_ITENS.filter((i) => !NA_BARRA.includes(i.href));

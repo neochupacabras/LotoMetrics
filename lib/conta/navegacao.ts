@@ -1,13 +1,13 @@
 // Mapa de navegação da área de membros — fonte única para a lombada
 // (desktop/tablet), a barra inferior e a folha "Conta" (celular).
 //
-// Só entram aqui rotas que EXISTEM. As seções planejadas na proposta
-// (docs/membros/REDESIGN_AREA_MEMBROS.md) — hoje só a Central de
-// loterias — entram quando forem entregues.
+// Só entram aqui rotas que EXISTEM (proposta em
+// docs/membros/REDESIGN_AREA_MEMBROS.md).
 
 export type IconeNav =
   | "painel"
   | "ferramentas"
+  | "loterias"
   | "jogos"
   | "bolao"
   | "desempenho"
@@ -37,6 +37,7 @@ export const NAV_MEMBROS: GrupoNav[] = [
     itens: [
       { href: "/conta", rotulo: "Painel", icone: "painel" },
       { href: "/conta/ferramentas", rotulo: "Ferramentas", icone: "ferramentas" },
+      { href: "/conta/loterias", rotulo: "Loterias", icone: "loterias" },
     ],
   },
   {

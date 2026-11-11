@@ -3,6 +3,7 @@ import {
   atalhosRapidos,
   diaBrasilia,
   linhaDoDia,
+  ordemLoteriasPainel,
   quandoSorteio,
   saudacaoPorHora,
 } from "./painel-regras";
@@ -94,5 +95,22 @@ describe("atalhosRapidos", () => {
   it("bolão cai na Mega-Sena onde não existe", () => {
     expect(atalhosRapidos("lotomania")[3].href).toBe("/megasena/bolao");
     expect(atalhosRapidos("supersete")[3].href).toBe("/megasena/bolao");
+  });
+});
+
+describe("ordemLoteriasPainel", () => {
+  it("sem nada do usuário, mostra as 3 de maior procura", () => {
+    expect(ordemLoteriasPainel([], [])).toEqual(["megasena", "lotofacil", "quina"]);
+  });
+
+  it("favoritas primeiro, depois as dos jogos, completando até 3 sem repetir", () => {
+    expect(ordemLoteriasPainel(["timemania"], ["lotofacil"])).toEqual(["timemania", "lotofacil", "megasena"]);
+  });
+
+  it("até 4 sem favoritas; todas as favoritas quando são mais", () => {
+    const jogos = ["lotofacil", "quina", "timemania", "duplasena", "supersete"] as const;
+    expect(ordemLoteriasPainel([], [...jogos])).toHaveLength(4);
+    const favs = ["lotofacil", "quina", "timemania", "duplasena", "supersete"] as const;
+    expect(ordemLoteriasPainel([...favs], [])).toEqual([...favs]);
   });
 });

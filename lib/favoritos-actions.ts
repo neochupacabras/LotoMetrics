@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { ferramentaPorId } from "@/lib/ferramentas";
+import { isCodigoLoteriaValido } from "@/lib/format";
 
 // Favoritar/desfavoritar uma ferramenta (Central de ferramentas). Lê a
 // lista atual, aplica a mudança e grava — com o client da sessão, na
@@ -37,4 +38,36 @@ export async function alternarFavoritoAction(
   revalidatePath("/conta/ferramentas");
   revalidatePath("/conta");
   return { ok: true, favoritos };
+}
+
+// Favoritar/desfavoritar uma loteria (Central de loterias). Mesma mecânica
+// do de ferramentas; o CHECK da migration só aceita os 9 códigos válidos.
+export async function alternarLoteriaFavoritaAction(
+  codigo: string,
+  favoritar: boolean
+): Promise<{ ok: true; favoritas: string[] } | { ok: false; erro: string }> {
+  if (!isCodigoLoteriaValido(codigo)) return { ok: false, erro: "Loteria desconhecida." };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, erro: "Sua sessão expirou. Entre de novo." };
+
+  const { data: perfil, error: erroLeitura } = await supabase
+    .from("profiles")
+    .select("loterias_favoritas")
+    .eq("id", user.id)
+    .single();
+  if (erroLeitura) return { ok: false, erro: "Favoritos indisponíveis no momento." };
+
+  const atuais = ((perfil?.loterias_favoritas as string[] | null) ?? []).filter(isCodigoLoteriaValido);
+  const favoritas = favoritar ? [...new Set([...atuais, codigo])] : atuais.filter((x) => x !== codigo);
+
+  const { error } = await supabase.from("profiles").update({ loterias_favoritas: favoritas }).eq("id", user.id);
+  if (error) return { ok: false, erro: "Não foi possível salvar agora. Tente de novo." };
+
+  revalidatePath("/conta/loterias", "layout");
+  revalidatePath("/conta");
+  return { ok: true, favoritas };
 }

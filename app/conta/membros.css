@@ -2392,3 +2392,245 @@ a.m-ferramenta__link:hover .m-ferramenta__seta {
   background: var(--m-seal-wash);
   color: var(--m-seal-text);
 }
+
+/* ============================================================
+   CENTRAL DE LOTERIAS (/conta/loterias e /conta/loterias/[loteria])
+   ============================================================ */
+
+.m-loteria__favorita {
+  display: inline-block;
+  margin-left: 6px;
+  vertical-align: 1px;
+  color: var(--m-seal);
+}
+
+.m-grupo-loterias {
+  margin-bottom: 32px;
+}
+
+.m-grupo-loterias .m-sobretitulo {
+  margin-bottom: 12px;
+}
+
+.m-grupo-loterias__dica {
+  margin: -4px 0 14px;
+  font-size: 0.86rem;
+  color: var(--m-ink-faint);
+}
+
+.m-cartoes-loteria {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@container conteudo (min-width: 560px) {
+  .m-cartoes-loteria {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container conteudo (min-width: 900px) {
+  .m-cartoes-loteria {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Cartão inteiro clicável (o link "estica" sobre o cartão), com a estrela
+   por cima — botão e link não podem ficar um dentro do outro. */
+.m-cartao-loteria {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 8px;
+  padding: 16px 8px 18px 18px;
+  border: 1px solid var(--m-line);
+  background: var(--m-surface);
+  transition: border-color 0.15s ease, transform 0.15s var(--m-ease);
+}
+
+.m-cartao-loteria:hover {
+  border-color: var(--m-ink);
+}
+
+.m-cartao-loteria:has(.m-favorito__estrela[aria-pressed="true"]) {
+  border-top: 2px solid var(--m-seal);
+}
+
+.m-cartao-loteria__link {
+  color: inherit;
+  text-decoration: none;
+  align-self: center;
+}
+
+.m-cartao-loteria__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.m-cartao-loteria__link:focus-visible {
+  outline: none;
+}
+
+.m-cartao-loteria:has(.m-cartao-loteria__link:focus-visible) {
+  outline: 2px solid var(--m-action);
+  outline-offset: 2px;
+}
+
+.m-cartao-loteria__nome {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  line-height: 1.1;
+}
+
+.m-cartao-loteria .m-favorito {
+  position: relative;
+  z-index: 1;
+}
+
+.m-cartao-loteria__meta {
+  grid-column: 1 / -1;
+  font-size: 0.8rem;
+  color: var(--m-ink-faint);
+}
+
+.m-cartao-loteria__dados {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-top: 10px;
+  padding-right: 10px;
+}
+
+.m-cartao-loteria__dados > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.9rem;
+}
+
+.m-cartao-loteria__premio {
+  font-size: 1.15rem;
+}
+
+/* Botão de favorito */
+.m-favorito {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.m-favorito__estrela {
+  height: 40px;
+}
+
+.m-favorito__botao svg {
+  color: var(--m-seal);
+}
+
+.m-favorito__erro {
+  font-size: 0.78rem;
+  color: var(--m-negative);
+}
+
+/* Página da loteria */
+.m-painel-grade.m-painel-grade--loteria {
+  grid-template-areas:
+    "resultado"
+    "proximo"
+    "seus-jogos"
+    "seus-boloes";
+  margin-bottom: 40px;
+}
+
+@container conteudo (min-width: 860px) {
+  .m-painel-grade.m-painel-grade--loteria {
+    grid-template-areas:
+      "resultado proximo"
+      "seus-jogos seus-boloes";
+  }
+}
+
+.m-modulo--resultado { grid-area: resultado; }
+.m-modulo--proximo { grid-area: proximo; }
+.m-modulo--seus-jogos { grid-area: seus-jogos; }
+.m-modulo--seus-boloes { grid-area: seus-boloes; }
+
+.m-resultado {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.m-resultado .dezenas {
+  margin: 0;
+}
+
+.m-resultado__colunas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.m-resultado__colunas li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.m-resultado__coluna {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--m-ink-faint);
+}
+
+.m-resultado__extra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--m-line);
+}
+
+.m-resultado__rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--m-ink-faint);
+}
+
+.m-resultado__situacao {
+  margin: 14px 0 0;
+  font-size: 0.86rem;
+  color: var(--m-ink-soft);
+}
+
+.m-ferramentas-loteria__titulo {
+  margin: 0 0 8px;
+  font-size: 1.9rem;
+}
+
+.m-categoria__titulo--menor {
+  font-size: 1.2rem;
+}
+
+.m-ferramentas-loteria .m-categoria {
+  margin-bottom: 18px;
+}
+
+/* Favorito no cabeçalho: no celular, ocupa a largura toda como as outras ações. */
+.m-cabecalho__acoes .m-favorito {
+  align-items: stretch;
+}

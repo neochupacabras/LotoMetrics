@@ -90,7 +90,7 @@ function ModuloLoterias({ dados }: { dados: DadosPainel }) {
       <CabecalhoModulo
         id="painel-loterias"
         titulo="Próximos sorteios"
-        link={{ href: "/calendario", rotulo: "Calendário" }}
+        link={{ href: "/conta/loterias", rotulo: "Todas" }}
       />
       {dados.loterias.length === 0 ? (
         <p className="m-vazio">Os resultados ainda não foram carregados. Tente de novo em instantes.</p>
@@ -98,9 +98,13 @@ function ModuloLoterias({ dados }: { dados: DadosPainel }) {
         <ul className="m-lista">
           {dados.loterias.map((l) => (
             <li key={l.codigo}>
-              <Link href={`/${l.codigo}/resultados`} className="m-loteria">
+              <Link href={`/conta/loterias/${l.codigo}`} className="m-loteria">
                 <span className="m-loteria__nome">
-                  {l.nome}
+                  <span>
+                    {l.nome}
+                    {l.favorita && <span className="m-sr"> (favorita)</span>}
+                    {l.favorita && <IcSelo className="m-loteria__favorita" />}
+                  </span>
                   <span className="m-loteria__meta">
                     Concurso {l.concurso} · {dataCurtaConcurso(l.dataSorteio)}
                     {l.jogosSalvos > 0 && ` · ${l.jogosSalvos} ${l.jogosSalvos === 1 ? "jogo salvo" : "jogos salvos"}`}
