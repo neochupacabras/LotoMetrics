@@ -1,8 +1,18 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useId, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import BotaoCopiar from "@/components/BotaoCopiar";
 import { criarApiKeyAction, revogarApiKeyAction } from "@/lib/api-key-actions";
+
+// Chaves da API (/conta/api), nos padrões da área de membros. Mudanças de
+// comportamento em relação à versão antiga:
+// - depois de criar ou revogar, a lista vem de novo do servidor
+//   (router.refresh) — antes a chave nova só aparecia ao recarregar, e a
+//   tela podia oferecer "criar" mesmo já com 3 chaves;
+// - revogar só tira a chave da tela se o servidor confirmar.
+
+const MAX_CHAVES = 3;
 
 interface ApiKey {
   id: string;
@@ -14,156 +24,146 @@ interface ApiKey {
   ultimoUso: string | null;
 }
 
-function KeyCard({ k, onRevogar }: { k: ApiKey; onRevogar: (id: string) => void }) {
-  const [pending, startTransition] = useTransition();
-  const pctUso = (k.requestsMes / k.limiteMes) * 100;
-
-  function handleRevogar() {
-    if (!confirm(`Revogar a chave "${k.label}"? Essa ação não pode ser desfeita.`)) return;
-    startTransition(async () => {
-      await revogarApiKeyAction(k.id);
-      onRevogar(k.id);
-    });
-  }
+function Chave({ k }: { k: ApiKey }) {
+  const router = useRouter();
+  const [erro, setErro] = useState<string | null>(null);
+  const [pendente, iniciar] = useTransition();
+  const uso = k.limiteMes > 0 ? Math.min(100, (k.requestsMes / k.limiteMes) * 100) : 0;
 
   return (
-    <div className="api-key-card">
-      <div className="api-key-card__header">
-        <div>
-          <p className="api-key-card__label">{k.label}</p>
-          <p className="api-key-card__prefixo">{k.prefixo}••••••••••••••••••••••••••••••••••••••••••••••••••••••••</p>
-        </div>
+    <li className="m-chave">
+      <div className="m-chave__topo">
+        <span className="m-chave__textos">
+          <span className="m-chave__nome">{k.label}</span>
+          <code className="m-chave__prefixo">{k.prefixo}…</code>
+        </span>
         <button
           type="button"
-          className="botao-copiar"
-          onClick={handleRevogar}
-          disabled={pending}
-          style={{ color: "var(--rust)", borderColor: "var(--rust)", whiteSpace: "nowrap" }}
+          className="m-link-botao m-link-botao--perigo"
+          disabled={pendente}
+          aria-label={`Revogar a chave ${k.label}`}
+          onClick={() => {
+            if (!confirm(`Revogar a chave "${k.label}"? Quem usa essa chave perde o acesso na hora.`)) return;
+            setErro(null);
+            iniciar(async () => {
+              const r = await revogarApiKeyAction(k.id);
+              if (r.ok) router.refresh();
+              else setErro(r.erro ?? "Não foi possível revogar agora.");
+            });
+          }}
         >
-          {pending ? (<><span className="spinner-inline" aria-hidden /> Revogando…</>) : "Revogar chave"}
+          {pendente ? "Revogando…" : "Revogar"}
         </button>
       </div>
 
-      <div className="api-key-card__uso">
-        <div className="api-key-card__uso-barra">
-          <div
-            className="api-key-card__uso-fill"
-            style={{
-              width: `${Math.min(pctUso, 100)}%`,
-              background: pctUso > 80 ? "var(--rust)" : "var(--pine)",
-            }}
-          />
-        </div>
-        <span className="api-key-card__uso-label">
-          {k.requestsMes.toLocaleString("pt-BR")} / {k.limiteMes.toLocaleString("pt-BR")} req este mês
-        </span>
+      <div
+        className="m-teto__barra"
+        role="meter"
+        aria-label={`Uso da chave ${k.label} neste mês`}
+        aria-valuemin={0}
+        aria-valuemax={k.limiteMes}
+        aria-valuenow={Math.min(k.requestsMes, k.limiteMes)}
+      >
+        <div className="m-teto__preenchida" data-passou={uso >= 80} style={{ width: `${uso}%` }} />
       </div>
-
-      <div className="api-key-card__meta">
-        <span>Criada em {k.criadaEm}</span>
-        {k.ultimoUso && <span>Último uso: {k.ultimoUso}</span>}
-      </div>
-    </div>
+      <p className="m-chave__meta">
+        <span className="m-numero">
+          {k.requestsMes.toLocaleString("pt-BR")} de {k.limiteMes.toLocaleString("pt-BR")}
+        </span>{" "}
+        requisições este mês · criada em {k.criadaEm}
+        {k.ultimoUso && ` · último uso em ${k.ultimoUso}`}
+      </p>
+      {erro && (
+        <p className="m-form__msg" data-tipo="erro" role="alert">
+          {erro}
+        </p>
+      )}
+    </li>
   );
 }
 
-export default function ApiKeysClient({ keys: keysInicial }: { keys: ApiKey[] }) {
-  const [keys, setKeys] = useState(keysInicial);
+export default function ApiKeysClient({ keys }: { keys: ApiKey[] }) {
+  const id = useId();
+  const router = useRouter();
   const [label, setLabel] = useState("");
   const [novaChave, setNovaChave] = useState<string | null>(null);
   const [erro, setErro] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
-
-  function handleCriar() {
-    if (!label.trim()) { setErro("Dê um nome para identificar a chave."); return; }
-    setErro(null);
-    startTransition(async () => {
-      const res = await criarApiKeyAction(label);
-      if (res.ok && res.key) {
-        setNovaChave(res.key);
-        setLabel("");
-      } else {
-        setErro(res.erro ?? "Erro ao criar a chave.");
-      }
-    });
-  }
-
-  function handleRevogar(id: string) {
-    setKeys(prev => prev.filter(k => k.id !== id));
-  }
+  const [pendente, iniciar] = useTransition();
 
   return (
-    <div className="api-keys-wrapper">
-      {/* Chave recém-criada — exibida UMA VEZ */}
+    <div className="m-chaves">
+      {/* Chave recém-criada: exibida UMA vez. */}
       {novaChave && (
-        <div className="api-nova-chave">
-          <p className="api-nova-chave__titulo">
-            ✓ Chave criada — copie agora, ela não será exibida novamente
+        <div className="m-aviso m-chaves__nova" data-tipo="ok" role="status">
+          <p>
+            <strong>Chave criada.</strong> Copie agora: por segurança, ela não aparece de novo.
           </p>
-          <div className="api-nova-chave__valor">
-            <code className="api-nova-chave__code">{novaChave}</code>
-            <BotaoCopiar
-              texto={novaChave}
-              className="botao-copiar api-nova-chave__copiar"
-              labelCopiado="Copiado ✓"
-            />
+          <div className="m-chaves__valor">
+            <code>{novaChave}</code>
+            <BotaoCopiar texto={novaChave} className="m-botao m-botao--secundario" labelCopiado="Copiada" />
           </div>
-          <button
-            type="button"
-            className="api-nova-chave__fechar"
-            onClick={() => setNovaChave(null)}
-          >
-            Já copiei, fechar →
+          <button type="button" className="m-link-botao" onClick={() => setNovaChave(null)}>
+            Já copiei
           </button>
         </div>
       )}
 
-      {/* Lista de chaves */}
       {keys.length > 0 ? (
-        <div className="api-keys-lista">
-          {keys.map(k => (
-            <KeyCard key={k.id} k={k} onRevogar={handleRevogar} />
+        <ul className="m-lista">
+          {keys.map((k) => (
+            <Chave key={k.id} k={k} />
           ))}
-        </div>
+        </ul>
       ) : (
-        !novaChave && (
-          <p className="conta-alertas-desc">
-            Nenhuma chave ativa. Crie uma abaixo para começar.
-          </p>
-        )
+        !novaChave && <p className="m-vazio">Nenhuma chave ativa ainda.</p>
       )}
 
-      {/* Criar nova chave */}
-      {keys.length < 3 && !novaChave && (
-        <div className="api-criar-chave">
-          <h3 className="api-criar-chave__titulo">
-            {keys.length === 0 ? "Criar primeira chave" : "Criar nova chave"}
-          </h3>
-          <div className="api-criar-chave__form">
+      {keys.length < MAX_CHAVES && !novaChave && (
+        <form
+          className="m-form m-chaves__form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!label.trim()) {
+              setErro("Dê um nome para identificar a chave.");
+              return;
+            }
+            setErro(null);
+            iniciar(async () => {
+              const r = await criarApiKeyAction(label);
+              if (r.ok && r.key) {
+                setNovaChave(r.key);
+                setLabel("");
+                router.refresh();
+              } else {
+                setErro(r.erro ?? "Não foi possível criar a chave.");
+              }
+            });
+          }}
+        >
+          <label className="m-campo" htmlFor={`${id}-nome`}>
+            <span className="m-campo__rotulo">{keys.length === 0 ? "Nome da primeira chave" : "Nome da nova chave"}</span>
             <input
+              id={`${id}-nome`}
               type="text"
+              className="m-campo__entrada"
               value={label}
-              onChange={e => setLabel(e.target.value)}
-              placeholder="Ex: Meu app, Script Python, Dashboard..."
-              aria-label="Nome da chave"
-              className="auth-input"
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="ex.: meu app, script Python, dashboard"
               maxLength={40}
-              style={{ maxWidth: 340 }}
             />
-            <button
-              type="button"
-              className="botao-gerar"
-              onClick={handleCriar}
-              disabled={pending}
-            >
-              {pending ? (<><span className="spinner-inline" aria-hidden /> Criando…</>) : "Criar chave →"}
+          </label>
+          <div className="m-form__rodape">
+            <button type="submit" className="m-botao" disabled={pendente}>
+              {pendente ? "Criando…" : "Criar chave"}
             </button>
+            <p className="m-form__msg" data-tipo={erro ? "erro" : undefined} role="status" aria-live="polite">
+              {erro}
+            </p>
           </div>
-          {erro && <p className="simulador-erro">{erro}</p>}
-          <p style={{ fontSize:"0.78rem", color:"var(--ink-faint)", marginTop:8 }}>
-            Máximo de 3 chaves ativas. A chave é exibida uma única vez ao ser criada.
+          <p className="m-secao__texto">
+            Até {MAX_CHAVES} chaves ativas. Cada chave aparece uma única vez, na criação.
           </p>
-        </div>
+        </form>
       )}
     </div>
   );

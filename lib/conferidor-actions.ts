@@ -158,7 +158,7 @@ async function conferirJogoInterno(
     );
 
     const trevosPorConcurso = new Map<number, number[]>(
-      rows.map((r: any) => [r.numero, r.trevos as number[]])
+      rows.map((r: { numero: number; trevos: number[] }) => [r.numero, r.trevos])
     );
 
     // Recalcular faixas considerando acertos de trevos

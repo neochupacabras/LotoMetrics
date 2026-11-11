@@ -2973,95 +2973,6 @@ a.m-ferramenta__link:hover .m-ferramenta__seta {
 
 /* ---------- Jogos salvos ---------- */
 
-.m-conteudo .jogos-grupo {
-  margin-bottom: 28px;
-}
-
-.m-conteudo .jogos-grupo__titulo {
-  margin: 0 0 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--m-ink);
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.45rem;
-}
-
-.m-conteudo .jogos-grade {
-  gap: 12px;
-}
-
-.m-conteudo .jogo-card {
-  border: 1px solid var(--m-line);
-  border-radius: 0;
-  background: var(--m-surface);
-  transition: border-color 0.15s ease;
-}
-
-.m-conteudo .jogo-card:hover {
-  border-color: var(--m-line-strong);
-}
-
-.m-conteudo .jogo-card--inativo {
-  background: var(--m-canvas);
-}
-
-.m-conteudo .jogo-card__loteria {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--m-ink-soft);
-}
-
-/* Status do rastreamento: estado positivo, não a cor de ação. */
-.m-conteudo .jogo-card__toggle {
-  border-radius: 0;
-  border-color: color-mix(in srgb, var(--m-positive) 45%, transparent);
-  background: color-mix(in srgb, var(--m-positive) 10%, transparent);
-  color: var(--m-positive);
-  font-family: var(--font-mono);
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.m-conteudo .jogo-card__toggle--off {
-  border-color: var(--m-line-strong);
-  background: transparent;
-  color: var(--m-ink-faint);
-}
-
-.m-conteudo .jogo-card__btn-remover {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  color: var(--m-ink-faint);
-}
-
-.m-conteudo .jogo-card__btn-remover:hover {
-  color: var(--m-negative);
-}
-
-.m-conteudo .jogo-card__dezena {
-  border-radius: 0;
-  border-color: var(--m-line-strong);
-  background: var(--m-canvas);
-  font-variant-numeric: tabular-nums;
-}
-
-.m-conteudo .jogo-card__footer {
-  border-top-color: var(--m-line);
-}
-
-.m-conteudo .jogo-card__label-btn {
-  color: var(--m-ink-soft);
-  font-style: italic;
-}
-
-.m-conteudo .jogo-card__label-btn:hover {
-  color: var(--m-action);
-}
 
 /* Botões de relatório: lado a lado, sem se espalhar pela linha. */
 .m-acoes-linha {
@@ -3078,16 +2989,6 @@ a.m-ferramenta__link:hover .m-ferramenta__seta {
 
 /* ---------- Desempenho ---------- */
 
-.m-conteudo .teto-gasto {
-  border: 1px solid var(--m-line);
-  border-radius: 0;
-  background: var(--m-surface);
-}
-
-.m-conteudo .teto-gasto__barra {
-  border-radius: 0;
-  background: var(--m-sunken);
-}
 
 .m-conteudo .retrospectiva-destaques {
   gap: 12px;
@@ -3246,4 +3147,407 @@ a.m-ferramenta__link:hover .m-ferramenta__seta {
     gap: 20px;
     min-width: 0;
   }
+}
+
+/* ============================================================
+   COMPONENTES REESCRITOS NOS PADRÕES DA ÁREA (jogos, teto, alertas, API)
+   ============================================================ */
+
+.m-link-botao {
+  padding: 4px 0;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 0.86rem;
+  color: var(--m-action);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.m-link-botao:hover {
+  text-decoration-color: currentColor;
+}
+
+.m-link-botao--perigo {
+  color: var(--m-negative);
+}
+
+.m-icone-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid transparent;
+  color: var(--m-ink-faint);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.m-icone-botao:hover {
+  color: var(--m-negative);
+  border-color: var(--m-line);
+}
+
+/* Jogos salvos */
+.m-lista-jogos {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.m-grupo-jogos__titulo {
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--m-ink);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.45rem;
+}
+
+.m-jogos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@container conteudo (min-width: 760px) {
+  .m-jogos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.m-jogo-cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 16px 14px 18px;
+  border: 1px solid var(--m-line);
+  background: var(--m-surface);
+  transition: border-color 0.15s ease;
+}
+
+.m-jogo-cartao:hover {
+  border-color: var(--m-line-strong);
+}
+
+.m-jogo-cartao[data-ativo="false"] {
+  background: var(--m-canvas);
+}
+
+.m-jogo-cartao__topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.m-jogo-cartao__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.m-jogo-cartao__data {
+  font-size: 0.78rem;
+  color: var(--m-ink-faint);
+}
+
+.m-jogo-cartao__acoes {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.m-jogo-cartao__status {
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--m-positive) 45%, transparent);
+  background: color-mix(in srgb, var(--m-positive) 10%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--m-positive);
+  cursor: pointer;
+}
+
+.m-jogo-cartao__status[aria-pressed="false"] {
+  border-color: var(--m-line-strong);
+  background: transparent;
+  color: var(--m-ink-faint);
+}
+
+.m-jogo-cartao__colunas {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.m-jogo-cartao__rodape {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--m-line);
+}
+
+.m-jogo-cartao__rodape .m-link-botao {
+  align-self: flex-start;
+  color: var(--m-ink-soft);
+}
+
+.m-jogo-cartao__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.m-jogo-cartao__form .m-campo__entrada {
+  flex: 1 1 180px;
+  min-height: 38px;
+}
+
+.m-jogo-cartao__form .m-botao {
+  min-height: 38px;
+}
+
+/* Teto de gasto e barras de uso */
+.m-teto {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.m-teto__linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.m-teto__valor {
+  font-size: 1.35rem;
+}
+
+.m-teto__barra {
+  height: 6px;
+  background: var(--m-sunken);
+  overflow: hidden;
+}
+
+.m-teto__preenchida {
+  height: 100%;
+  background: var(--m-ink-soft);
+  transition: width 0.4s var(--m-ease);
+}
+
+.m-teto__preenchida[data-passou="true"] {
+  background: var(--m-negative);
+}
+
+.m-teto__nota {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--m-ink-soft);
+}
+
+.m-teto__nota[data-passou="true"] {
+  color: var(--m-negative);
+  font-weight: 500;
+}
+
+.m-teto__form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.m-teto__form-linha {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.m-teto__form-linha .m-campo__entrada {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Alertas */
+.m-alertas {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.m-alerta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.m-alerta__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.m-alerta__loteria {
+  font-weight: 600;
+}
+
+.m-alerta__criterio {
+  font-size: 0.86rem;
+  color: var(--m-ink-soft);
+}
+
+.m-alertas__form .m-sobretitulo {
+  margin-bottom: 0;
+}
+
+/* Chaves da API */
+.m-chaves {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.m-chave {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 0;
+}
+
+.m-chave__topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.m-chave__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.m-chave__nome {
+  font-weight: 600;
+}
+
+.m-chave__prefixo {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--m-ink-faint);
+}
+
+.m-chave__meta {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--m-ink-soft);
+}
+
+.m-chaves__nova {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.m-chaves__valor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.m-chaves__valor code {
+  flex: 1 1 280px;
+  min-width: 0;
+  padding: 10px 12px;
+  background: var(--m-spine);
+  color: var(--m-spine-ink);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+/* Editor de bolão (/conta/boloes/[id]) */
+.m-bolao__etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 0;
+}
+
+.m-bolao__link {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.m-bolao__link .m-campo__entrada {
+  flex: 1 1 260px;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.m-bolao__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.m-bolao__form .m-campo {
+  flex: 1 1 200px;
+}
+
+.m-bolao__form .m-bolao__cotas {
+  flex: 0 1 120px;
+}
+
+.m-bolao__pago {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--m-positive);
+}
+
+.m-bolao__pro {
+  max-width: none;
+}
+
+.m-bolao__jogo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.m-bolao__numero {
+  flex-shrink: 0;
+  width: 36px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--m-ink-faint);
+}
+
+.m-bolao__jogo .dezenas {
+  margin: 0;
 }

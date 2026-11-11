@@ -1,7 +1,16 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useId, useState, useTransition } from "react";
+import Dezenas from "@/components/Dezenas";
+import { IcFechar } from "@/components/membros/Icones";
 import { removerJogoAction, atualizarLabelAction, toggleAtivoAction } from "@/lib/jogo-actions";
+import { LOTERIAS, isCodigoLoteriaValido } from "@/lib/format";
+
+// Lista de jogos salvos (/conta/jogos), nos padrões da área de membros
+// (app/conta/membros.css, classes .m-*). A lógica é a mesma de antes —
+// remover com confirmação, nomear, pausar a conferência por e-mail
+// (Premium) —, agora com o erro do servidor mostrado e o status desfeito
+// quando a ação falha.
 
 interface Jogo {
   id: string;
@@ -12,173 +21,173 @@ interface Jogo {
   criadoEm: string;
 }
 
-function formatarDezena(n: number) {
-  return String(n).padStart(2, "0");
-}
-
-const NOMES_LOTERIA: Record<string, string> = {
-  lotofacil:     "Lotofácil",
-  megasena:      "Mega-Sena",
-  quina:         "Quina",
-  lotomania:     "Lotomania",
-  diadesorte:    "Dia de Sorte",
-  maismilionaria:"+Milionária",
-  timemania:     "Timemania",
-  duplasena:     "Dupla Sena",
-  supersete:     "Super Sete",
-};
 function nomeLoteria(codigo: string) {
-  return NOMES_LOTERIA[codigo] ?? codigo;
+  return isCodigoLoteriaValido(codigo) ? LOTERIAS[codigo].nome : codigo;
 }
 
-function JogoCard({ jogo, isPremium }: { jogo: Jogo; isPremium: boolean }) {
+function CartaoJogo({ jogo, isPremium }: { jogo: Jogo; isPremium: boolean }) {
+  const idNome = useId();
   const [editando, setEditando] = useState(false);
   const [label, setLabel] = useState(jogo.label ?? "");
+  const [labelSalvo, setLabelSalvo] = useState(jogo.label ?? "");
   const [ativo, setAtivo] = useState(jogo.ativo);
   const [removido, setRemovido] = useState(false);
-  const [pending, startTransition] = useTransition();
+  const [erro, setErro] = useState<string | null>(null);
+  const [pendente, iniciar] = useTransition();
 
   if (removido) return null;
+  const nome = nomeLoteria(jogo.loteria);
 
-  function handleToggle() {
-    const novoAtivo = !ativo;
-    setAtivo(novoAtivo);
-    startTransition(async () => {
-      await toggleAtivoAction(jogo.id, novoAtivo);
+  function alternarAtivo() {
+    const novo = !ativo;
+    setAtivo(novo);
+    setErro(null);
+    iniciar(async () => {
+      const r = await toggleAtivoAction(jogo.id, novo);
+      if (!r.ok) {
+        setAtivo(!novo);
+        setErro(r.erro ?? "Não foi possível mudar agora.");
+      }
     });
   }
 
-  function handleSalvarLabel() {
-    startTransition(async () => {
-      await atualizarLabelAction(jogo.id, label);
-      setEditando(false);
+  function salvarNome() {
+    setErro(null);
+    iniciar(async () => {
+      const r = await atualizarLabelAction(jogo.id, label);
+      if (r.ok) {
+        setLabelSalvo(label.trim());
+        setEditando(false);
+      } else {
+        setErro(r.erro ?? "Não foi possível salvar o nome.");
+      }
     });
   }
 
-  function handleRemover() {
+  function remover() {
     if (!confirm("Remover este jogo? Esta ação não pode ser desfeita.")) return;
-    startTransition(async () => {
-      const res = await removerJogoAction(jogo.id);
-      if (res.ok) setRemovido(true);
+    setErro(null);
+    iniciar(async () => {
+      const r = await removerJogoAction(jogo.id);
+      if (r.ok) setRemovido(true);
+      else setErro(r.erro ?? "Não foi possível remover agora.");
     });
   }
 
   return (
-    <div className={`jogo-card ${!ativo ? "jogo-card--inativo" : ""}`}>
-      <div className="jogo-card__header">
-        <div className="jogo-card__meta">
-          <span className="jogo-card__loteria">{nomeLoteria(jogo.loteria)}</span>
-          <span className="jogo-card__data">{jogo.criadoEm}</span>
-        </div>
-        <div className="jogo-card__acoes">
+    <li className="m-jogo-cartao" data-ativo={ativo}>
+      <div className="m-jogo-cartao__topo">
+        <span className="m-jogo-cartao__meta">
+          <span className="m-jogo__loteria">{nome}</span>
+          <span className="m-jogo-cartao__data">salvo em {jogo.criadoEm}</span>
+        </span>
+        <span className="m-jogo-cartao__acoes">
           {isPremium && (
             <button
               type="button"
-              className={`jogo-card__toggle ${ativo ? "" : "jogo-card__toggle--off"}`}
-              onClick={handleToggle}
-              disabled={pending}
+              className="m-jogo-cartao__status"
+              onClick={alternarAtivo}
+              disabled={pendente}
               aria-pressed={ativo}
               aria-label={ativo ? "Conferência por e-mail ativa — pausar" : "Conferência por e-mail pausada — ativar"}
-              title={ativo ? "Desativar rastreamento" : "Ativar rastreamento"}
+              title={ativo ? "Pausar a conferência por e-mail" : "Retomar a conferência por e-mail"}
             >
               {ativo ? "Ativo" : "Pausado"}
             </button>
           )}
           <button
             type="button"
-            className="jogo-card__btn-remover"
-            onClick={handleRemover}
-            disabled={pending}
+            className="m-icone-botao"
+            onClick={remover}
+            disabled={pendente}
             title="Remover jogo"
-            aria-label={`Remover jogo${label ? ` “${label}”` : ""} da ${nomeLoteria(jogo.loteria)}`}
+            aria-label={`Remover jogo${labelSalvo ? ` “${labelSalvo}”` : ""} da ${nome}`}
           >
-            <span aria-hidden>✕</span>
+            <IcFechar />
           </button>
-        </div>
+        </span>
       </div>
 
-      <div className="jogo-card__dezenas">
-        {/* key por posição: no Super Sete os dígitos se repetem entre colunas */}
-        {jogo.dezenas.map((d, i) => (
-          <span key={i} className="jogo-card__dezena">{jogo.loteria === "supersete" ? d : formatarDezena(d)}</span>
-        ))}
-      </div>
+      {jogo.loteria === "supersete" ? (
+        <p className="m-numero m-jogo-cartao__colunas">{jogo.dezenas.join(" · ")}</p>
+      ) : (
+        <Dezenas dezenas={jogo.dezenas} tamanho="pequena" />
+      )}
 
-      <div className="jogo-card__footer">
+      <div className="m-jogo-cartao__rodape">
         {editando ? (
-          <div className="jogo-card__editar-label">
+          <form
+            className="m-jogo-cartao__form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              salvarNome();
+            }}
+          >
+            <label htmlFor={idNome} className="m-sr">
+              Nome do jogo
+            </label>
             <input
-              type="text"
+              id={idNome}
+              className="m-campo__entrada"
               value={label}
-              onChange={e => setLabel(e.target.value)}
-              placeholder="Nome do jogo (ex: Jogo da família)"
-              className="auth-input jogo-card__label-input"
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="Ex.: jogo da família"
               maxLength={60}
               autoFocus
             />
-            <button
-              type="button"
-              className="botao-copiar"
-              onClick={handleSalvarLabel}
-              disabled={pending}
-            >
+            <button type="submit" className="m-botao m-botao--secundario" disabled={pendente}>
               Salvar
             </button>
             <button
               type="button"
-              className="botao-copiar"
-              onClick={() => { setLabel(jogo.label ?? ""); setEditando(false); }}
+              className="m-link-botao"
+              onClick={() => {
+                setLabel(labelSalvo);
+                setEditando(false);
+              }}
             >
               Cancelar
             </button>
-          </div>
+          </form>
         ) : (
-          <button
-            type="button"
-            className="jogo-card__label-btn"
-            onClick={() => setEditando(true)}
-          >
-            {label ? `“${label}”` : "Adicionar nome"}
+          <button type="button" className="m-link-botao" onClick={() => setEditando(true)}>
+            {labelSalvo ? `“${labelSalvo}” · editar nome` : "Dar um nome a este jogo"}
           </button>
         )}
+        {erro && (
+          <p className="m-form__msg" data-tipo="erro" role="alert">
+            {erro}
+          </p>
+        )}
       </div>
-    </div>
+    </li>
   );
 }
 
-// Fora do componente pai: declarado dentro, ele era recriado a cada render
-// e remontava todos os cartões (perdendo o estado de edição do nome).
 function Grupo({ titulo, lista, isPremium }: { titulo: string; lista: Jogo[]; isPremium: boolean }) {
   if (lista.length === 0) return null;
   return (
-    <section className="jogos-grupo">
-      <h2 className="jogos-grupo__titulo">{titulo}</h2>
-      <div className="jogos-grade">
-        {lista.map(j => (
-          <JogoCard key={j.id} jogo={j} isPremium={isPremium} />
+    <section className="m-grupo-jogos" aria-label={titulo}>
+      <h2 className="m-grupo-jogos__titulo">{titulo}</h2>
+      <ul className="m-jogos">
+        {lista.map((j) => (
+          <CartaoJogo key={j.id} jogo={j} isPremium={isPremium} />
         ))}
-      </div>
+      </ul>
     </section>
   );
 }
 
-export default function JogosListaClient({
-  jogos,
-  isPremium,
-}: {
-  jogos: Jogo[];
-  isPremium: boolean;
-}) {
-  // Agrupar jogos por loteria dinamicamente
-  const loteriasCodigos = [...new Set(jogos.map(j => j.loteria))];
-
+export default function JogosListaClient({ jogos, isPremium }: { jogos: Jogo[]; isPremium: boolean }) {
+  // Agrupa por loteria, na ordem em que aparecem (mais recentes primeiro).
+  const codigos = [...new Set(jogos.map((j) => j.loteria))];
   return (
-    <div className="jogos-lista">
-      {loteriasCodigos.map(codigo => (
+    <div className="m-lista-jogos">
+      {codigos.map((codigo) => (
         <Grupo
           key={codigo}
           titulo={nomeLoteria(codigo)}
-          lista={jogos.filter(j => j.loteria === codigo)}
+          lista={jogos.filter((j) => j.loteria === codigo)}
           isPremium={isPremium}
         />
       ))}

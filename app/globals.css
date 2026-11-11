@@ -332,7 +332,6 @@ main {
 }
 
 
-
 .secao + .secao {
   border-top: 1px solid var(--line);
 }
@@ -640,89 +639,6 @@ h1.titulo-edicao {
 
 /* ---------- Teto de gasto mensal (Carteira) ---------- */
 
-.teto-gasto {
-  background: var(--paper-raised);
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
-  padding: 18px 20px;
-  margin-top: 20px;
-}
-
-.teto-gasto__header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.teto-gasto__titulo {
-  font-size: 0.85rem;
-  font-family: var(--font-mono);
-  color: var(--ink-soft);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.teto-gasto__valor {
-  font-family: var(--font-mono);
-  font-size: 1.3rem;
-  color: var(--ink);
-}
-
-.teto-gasto__barra {
-  margin-top: 12px;
-  height: 8px;
-  background: var(--line);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.teto-gasto__barra-preenchida {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.2s ease;
-}
-
-.teto-gasto__nota {
-  margin-top: 8px;
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-}
-
-.teto-gasto__nota--alerta {
-  color: var(--rust);
-}
-
-.teto-gasto__editar {
-  margin-top: 10px;
-  background: none;
-  border: none;
-  padding: 0;
-  font-size: 0.85rem;
-  font-family: var(--font-mono);
-  color: var(--pine);
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.teto-gasto__form {
-  margin-top: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.teto-gasto__form-linha {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.teto-gasto__form-linha .auth-input {
-  flex: 1;
-  min-width: 140px;
-}
 
 /* ---------- Meu ano na loteria (retrospectiva anual) ---------- */
 
@@ -4316,130 +4232,6 @@ footer.rodape {
   max-width: 680px;
 }
 
-.jogos-lista { display: flex; flex-direction: column; gap: 32px; }
-
-.jogos-grupo__titulo {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  color: var(--ink-soft);
-  margin: 0 0 14px;
-  font-weight: 400;
-}
-
-.jogos-grade {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-}
-
-.jogo-card {
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
-  padding: 16px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  transition: opacity 0.2s;
-}
-
-.jogo-card--inativo { opacity: 0.55; }
-
-.jogo-card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.jogo-card__meta {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.jogo-card__loteria {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--pine);
-}
-
-.jogo-card__data {
-  font-size: 0.75rem;
-  color: var(--ink-faint);
-}
-
-.jogo-card__acoes {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.jogo-card__toggle {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  padding: 3px 9px;
-  border-radius: 3px;
-  border: 1px solid var(--pine);
-  background: var(--pine);
-  color: var(--paper);
-  cursor: pointer;
-}
-
-.jogo-card__toggle--off {
-  background: transparent;
-  color: var(--ink-soft);
-  border-color: var(--line-strong);
-}
-
-.jogo-card__btn-remover {
-  font-size: 0.78rem;
-  color: var(--ink-faint);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 3px;
-}
-.jogo-card__btn-remover:hover { color: var(--rust); background: #fef2f2; }
-
-.jogo-card__dezenas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.jogo-card__dezena {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  background: var(--paper);
-  border: 1px solid var(--line-strong);
-  border-radius: 3px;
-  padding: 2px 6px;
-  color: var(--ink);
-}
-
-.jogo-card__footer { border-top: 1px solid var(--line); padding-top: 10px; }
-
-.jogo-card__label-btn {
-  background: none;
-  border: none;
-  font-size: 0.78rem;
-  color: var(--ink-soft);
-  cursor: pointer;
-  padding: 0;
-  font-style: italic;
-}
-.jogo-card__label-btn:hover { color: var(--pine); }
-
-.jogo-card__editar-label {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.jogo-card__label-input { font-size: 0.85rem !important; padding: 6px 10px !important; }
 
 /* ── Assinatura ──────────────────────────────────────────── */
 .assinatura-card {
@@ -4490,103 +4282,7 @@ footer.rodape {
 }
 
 /* ── Alertas form ────────────────────────────────────────── */
-.alertas-form { max-width: 620px; }
 
-.alertas-ativos {
-  background: #f0fdf4;
-  border: 1px solid #86efac;
-  border-radius: 4px;
-  padding: 12px 16px;
-  margin-bottom: 16px;
-  font-size: 0.85rem;
-}
-
-.alertas-ativos__titulo {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--ink-soft);
-  margin: 0 0 8px;
-}
-
-.alertas-ativos__item {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  color: var(--ink-soft);
-  padding: 4px 0;
-}
-
-.alertas-ativos__info {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.alertas-ativos__loteria {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  background: var(--pine);
-  color: var(--paper);
-  padding: 2px 7px;
-  border-radius: 3px;
-}
-
-.alertas-form__campos {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.alertas-form__linha {
-  display: flex;
-  gap: 16px;
-  align-items: flex-end;
-  flex-wrap: wrap;
-}
-
-.alertas-form__linha .auth-campo { flex: 1; min-width: 180px; }
-
-.alertas-form__separador {
-  font-size: 0.85rem;
-  color: var(--ink-faint);
-  padding-bottom: 10px;
-  flex-shrink: 0;
-}
-
-.alertas-form__input-prefixo {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--line-strong);
-  border-radius: 4px;
-  background: #fff;
-  overflow: hidden;
-}
-
-.alertas-form__prefixo {
-  padding: 10px 10px;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-  background: var(--paper);
-  border-right: 1px solid var(--line-strong);
-}
-
-.alertas-form__input-prefixo .auth-input {
-  border: none !important;
-  border-radius: 0 !important;
-  flex: 1;
-}
-
-@media (max-width: 640px) {
-  .jogos-grade { grid-template-columns: 1fr; }
-  .alertas-form__linha { flex-direction: column; }
-  .alertas-form__separador { display: none; }
-}
 
 /* ==========================================================
    ANÚNCIOS — Google AdSense (só para usuários free)
@@ -5030,56 +4726,7 @@ footer.rodape {
 }
 
 /* ── Chave nova ─────────────────────────────────────── */
-.api-nova-chave {
-  background: #f0fdf4;
-  border: 1px solid #86efac;
-  border-radius: 6px;
-  padding: 20px 24px;
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
 
-.api-nova-chave__titulo {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  color: #166534;
-  font-weight: 700;
-  margin: 0;
-}
-
-.api-nova-chave__valor {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.api-nova-chave__code {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  background: #fff;
-  border: 1px solid #86efac;
-  border-radius: 3px;
-  padding: 8px 12px;
-  word-break: break-all;
-  flex: 1;
-  color: #166534;
-}
-
-.api-nova-chave__copiar { flex-shrink: 0; }
-
-.api-nova-chave__fechar {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: #166534;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  text-align: left;
-}
 
 /* ── Lista de chaves ─────────────────────────────── */
 .api-keys-wrapper {
@@ -5095,95 +4742,9 @@ footer.rodape {
   gap: 14px;
 }
 
-.api-key-card {
-  border: 1px solid var(--line-strong);
-  border-radius: 6px;
-  padding: 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.api-key-card__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.api-key-card__label {
-  font-weight: 600;
-  color: var(--ink);
-  margin: 0 0 4px;
-  font-size: 0.92rem;
-}
-
-.api-key-card__prefixo {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--ink-soft);
-  margin: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 360px;
-}
-
-.api-key-card__uso {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.api-key-card__uso-barra {
-  flex: 1;
-  height: 6px;
-  background: var(--line);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.api-key-card__uso-fill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width 0.3s ease;
-}
-
-.api-key-card__uso-label {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--ink-soft);
-  white-space: nowrap;
-}
-
-.api-key-card__meta {
-  display: flex;
-  gap: 20px;
-  font-size: 0.75rem;
-  color: var(--ink-faint);
-}
 
 /* ── Criar chave ─────────────────────────────────── */
-.api-criar-chave {
-  border-top: 1px solid var(--line);
-  padding-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
 
-.api-criar-chave__titulo {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  color: var(--ink);
-  margin: 0;
-}
-
-.api-criar-chave__form {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
 
 /* ==========================================================
    PÁGINA DE APRESENTAÇÃO DA API
@@ -9237,4 +8798,52 @@ footer.rodape {
 @media (max-width: 640px) {
   .excluir-conta__painel { padding: 16px; }
   .excluir-conta__acoes button { flex: 1 1 100%; }
+}
+
+/* ---------- Chip "Área do assinante" (components/auth/ChipAreaMembro.tsx) ----------
+   Entrada para a área de membros no topo do site público: um pedaço da
+   lombada escura de /conta (mesma tinta, mesmo losango ocre). */
+.chip-area-membro {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 0 13px;
+  background: #141416;
+  color: #ebe8de;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  border-left: 2px solid transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.chip-area-membro[data-premium="true"] {
+  border-left-color: #d4a24c;
+}
+
+.chip-area-membro__selo {
+  color: #d4a24c;
+  flex-shrink: 0;
+}
+
+.chip-area-membro:hover {
+  background: #1f1f23;
+  color: #fff;
+}
+
+.chip-area-membro:focus-visible {
+  outline: 2px solid var(--pine);
+  outline-offset: 2px;
+}
+
+.chip-area-membro[data-compacto="true"] {
+  /* Alvo de toque confortável no celular. */
+  min-height: 40px;
+  padding: 0 11px;
+  font-size: 0.7rem;
 }

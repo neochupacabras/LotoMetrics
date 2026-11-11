@@ -1,7 +1,13 @@
 "use client";
 
 import { useId, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { salvarAlertaDiretoAction, desativarAlertaAction } from "@/lib/jogo-actions";
+import { LOTERIAS, isCodigoLoteriaValido } from "@/lib/format";
+
+// Alertas de acúmulo (/conta/alertas), nos padrões da área de membros.
+// Mesmas actions de antes; agora a lista de alertas ativos atualiza depois
+// de salvar (router.refresh) e o erro ao desativar aparece.
 
 interface Alerta {
   loteria: string;
@@ -10,185 +16,163 @@ interface Alerta {
   ativo: boolean;
 }
 
-const NOMES_LOTERIA: Record<string, string> = {
-  lotofacil:      "Lotofácil",
-  megasena:       "Mega-Sena",
-  quina:          "Quina",
-  lotomania:      "Lotomania",
-  diadesorte:     "Dia de Sorte",
-  maismilionaria: "+Milionária",
-  timemania:      "Timemania",
-  duplasena:      "Dupla Sena",
-  supersete:      "Super Sete",
-};
-
-// Loterias que suportam alertas de acúmulo (têm prêmio acumulado)
-const LOTERIAS_ALERTA = [
-  { codigo: "lotofacil",      nome: "Lotofácil"   },
-  { codigo: "megasena",       nome: "Mega-Sena"   },
-  { codigo: "quina",          nome: "Quina"        },
-  { codigo: "lotomania",      nome: "Lotomania"    },
-  { codigo: "diadesorte",     nome: "Dia de Sorte" },
-  { codigo: "maismilionaria", nome: "+Milionária"  },
-  { codigo: "timemania",      nome: "Timemania"    },
-  { codigo: "duplasena",      nome: "Dupla Sena"   },
-  { codigo: "supersete",      nome: "Super Sete"   },
-];
-
 function nomeLoteria(codigo: string) {
-  return NOMES_LOTERIA[codigo] ?? codigo;
+  return isCodigoLoteriaValido(codigo) ? LOTERIAS[codigo].nome : codigo;
 }
 
-function AlertaAtivoCard({ alerta }: { alerta: Alerta }) {
-  const [removido, setRemovido] = useState(false);
-  const [pending, startTransition] = useTransition();
+function moeda(v: number) {
+  return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+}
 
-  if (removido) return null;
+function AlertaAtivo({ alerta }: { alerta: Alerta }) {
+  const router = useRouter();
+  const [erro, setErro] = useState<string | null>(null);
+  const [pendente, iniciar] = useTransition();
+  const nome = nomeLoteria(alerta.loteria);
 
-  function handleDesativar() {
-    if (!confirm(`Desativar alerta de ${nomeLoteria(alerta.loteria)}?`)) return;
-    startTransition(async () => {
-      const res = await desativarAlertaAction(alerta.loteria);
-      if (res.ok) setRemovido(true);
-    });
-  }
+  const criterios = [
+    alerta.threshold_brl ? `prêmio acima de ${moeda(alerta.threshold_brl)}` : null,
+    alerta.sorteios_sem_ganhador ? `${alerta.sorteios_sem_ganhador} sorteios seguidos sem ganhador` : null,
+  ].filter(Boolean);
 
   return (
-    <div className="alertas-ativos__item">
-      <div className="alertas-ativos__info">
-        <span className="alertas-ativos__loteria">
-          {nomeLoteria(alerta.loteria)}
-        </span>
-        {alerta.threshold_brl && (
-          <span>Prêmio acima de R${alerta.threshold_brl.toLocaleString("pt-BR")}</span>
+    <li className="m-alerta">
+      <span className="m-alerta__textos">
+        <span className="m-alerta__loteria">{nome}</span>
+        <span className="m-alerta__criterio">Avisar quando houver {criterios.join(" ou ")}.</span>
+        {erro && (
+          <span className="m-form__msg" data-tipo="erro" role="alert">
+            {erro}
+          </span>
         )}
-        {alerta.sorteios_sem_ganhador && (
-          <span>{alerta.sorteios_sem_ganhador}+ sorteios sem ganhador</span>
-        )}
-      </div>
+      </span>
       <button
         type="button"
-        className="botao-copiar"
-        onClick={handleDesativar}
-        disabled={pending}
-        style={{ color: "var(--rust)", borderColor: "var(--rust)", fontSize: "0.78rem" }}
+        className="m-link-botao m-link-botao--perigo"
+        disabled={pendente}
+        aria-label={`Desativar o alerta da ${nome}`}
+        onClick={() => {
+          if (!confirm(`Desativar o alerta da ${nome}?`)) return;
+          setErro(null);
+          iniciar(async () => {
+            const r = await desativarAlertaAction(alerta.loteria);
+            if (r.ok) router.refresh();
+            else setErro(r.erro ?? "Não foi possível desativar agora.");
+          });
+        }}
       >
-        {pending ? (<><span className="spinner-inline" aria-hidden /> Desativando…</>) : "Desativar"}
+        {pendente ? "Desativando…" : "Desativar"}
       </button>
-    </div>
+    </li>
   );
 }
 
-export default function AlertasForm({
-  alertasExistentes,
-}: {
-  alertasExistentes: Alerta[];
-}) {
-  // Rótulos associados aos campos (antes eram <label> soltos, sem htmlFor:
-  // o leitor de tela anunciava só "caixa de combinação"/"campo numérico").
+export default function AlertasForm({ alertasExistentes }: { alertasExistentes: Alerta[] }) {
+  // Rótulos associados aos campos com ids únicos por instância (o Next
+  // mantém a página anterior oculta no DOM; id fixo se repetiria).
   const id = useId();
+  const router = useRouter();
   const [loteria, setLoteria] = useState("megasena");
-  const [thresholdBrl, setThresholdBrl] = useState("");
-  const [sorteiosSemGanhador, setSorteiosSemGanhador] = useState("");
-  const [sucesso, setSucesso] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
+  const [valor, setValor] = useState("");
+  const [sorteios, setSorteios] = useState("");
+  const [mensagem, setMensagem] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
+  const [pendente, iniciar] = useTransition();
 
-  const alertasAtivos = alertasExistentes.filter(a => a.ativo);
-
-  function handleSalvar() {
-    const threshold = thresholdBrl ? parseFloat(thresholdBrl) : null;
-    const sorteios = sorteiosSemGanhador ? parseInt(sorteiosSemGanhador, 10) : null;
-
-    if (!threshold && !sorteios) {
-      setErro("Configure pelo menos um critério de alerta.");
-      return;
-    }
-    setErro(null);
-    startTransition(async () => {
-      const res = await salvarAlertaDiretoAction(loteria, threshold, sorteios);
-      if (res.ok) {
-        setSucesso(true);
-        setTimeout(() => setSucesso(false), 3000);
-      } else {
-        setErro(res.erro ?? "Erro ao salvar alerta.");
-      }
-    });
-  }
+  const ativos = alertasExistentes.filter((a) => a.ativo);
 
   return (
-    <div className="alertas-form">
-      {alertasAtivos.length > 0 && (
-        <div className="alertas-ativos">
-          <p className="alertas-ativos__titulo">Alertas ativos:</p>
-          {alertasAtivos.map(a => (
-            <AlertaAtivoCard key={a.loteria} alerta={a} />
-          ))}
+    <div className="m-alertas">
+      {ativos.length > 0 && (
+        <div>
+          <p className="m-sobretitulo">Alertas ativos</p>
+          <ul className="m-lista">
+            {ativos.map((a) => (
+              <AlertaAtivo key={a.loteria} alerta={a} />
+            ))}
+          </ul>
         </div>
       )}
 
-      <div className="alertas-configurar">
-        <p className="alertas-configurar__titulo">Configurar novo alerta</p>
+      <form
+        className="m-form m-alertas__form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          const limite = valor ? parseFloat(valor) : null;
+          const qtd = sorteios ? parseInt(sorteios, 10) : null;
+          if (!limite && !qtd) {
+            setMensagem({ tipo: "erro", texto: "Preencha pelo menos um critério: valor do prêmio ou sorteios sem ganhador." });
+            return;
+          }
+          setMensagem(null);
+          iniciar(async () => {
+            const r = await salvarAlertaDiretoAction(loteria, limite, qtd);
+            if (r.ok) {
+              setMensagem({ tipo: "ok", texto: `Alerta da ${nomeLoteria(loteria)} salvo.` });
+              setValor("");
+              setSorteios("");
+              router.refresh();
+            } else {
+              setMensagem({ tipo: "erro", texto: r.erro ?? "Não foi possível salvar o alerta." });
+            }
+          });
+        }}
+      >
+        <p className="m-sobretitulo">{ativos.length > 0 ? "Novo alerta" : "Configurar um alerta"}</p>
 
-        {/* Seletor de loteria */}
-        <div className="auth-campo">
-          <label htmlFor={`${id}-loteria`} className="auth-label">Loteria</label>
+        <label className="m-campo" htmlFor={`${id}-loteria`}>
+          <span className="m-campo__rotulo">Loteria</span>
           <select
             id={`${id}-loteria`}
-            className="auth-input"
+            className="m-campo__entrada"
             value={loteria}
-            onChange={e => setLoteria(e.target.value)}
+            onChange={(e) => setLoteria(e.target.value)}
           >
-            {LOTERIAS_ALERTA.map(l => (
-              <option key={l.codigo} value={l.codigo}>{l.nome}</option>
+            {Object.values(LOTERIAS).map((l) => (
+              <option key={l.slug} value={l.slug}>
+                {l.nome}
+              </option>
             ))}
           </select>
-        </div>
+        </label>
 
-        <div className="auth-campo">
-          <label htmlFor={`${id}-valor`} className="auth-label">Alertar quando o prêmio estimado superar (R$)</label>
+        <label className="m-campo" htmlFor={`${id}-valor`}>
+          <span className="m-campo__rotulo">Avisar quando o prêmio estimado passar de (R$)</span>
           <input
             id={`${id}-valor`}
             type="number"
-            className="auth-input"
-            placeholder="ex: 5000000"
-            value={thresholdBrl}
-            onChange={e => setThresholdBrl(e.target.value)}
+            inputMode="numeric"
+            className="m-campo__entrada"
+            placeholder="ex.: 5000000"
+            value={valor}
+            onChange={(e) => setValor(e.target.value)}
             min={0}
           />
-        </div>
+        </label>
 
-        <div className="auth-campo">
-          <label htmlFor={`${id}-sorteios`} className="auth-label">Alertar após N sorteios consecutivos sem ganhador</label>
+        <label className="m-campo" htmlFor={`${id}-sorteios`}>
+          <span className="m-campo__rotulo">ou depois de quantos sorteios seguidos sem ganhador</span>
           <input
             id={`${id}-sorteios`}
             type="number"
-            className="auth-input"
-            placeholder="ex: 5"
-            value={sorteiosSemGanhador}
-            onChange={e => setSorteiosSemGanhador(e.target.value)}
+            inputMode="numeric"
+            className="m-campo__entrada"
+            placeholder="ex.: 5"
+            value={sorteios}
+            onChange={(e) => setSorteios(e.target.value)}
             min={1}
             max={50}
           />
-        </div>
+        </label>
 
-        {erro && <p className="simulador-erro">{erro}</p>}
-        {sucesso && (
-          <p style={{ color: "var(--pine)", fontSize: "0.85rem", marginTop: 8 }}>
-            ✓ Alerta salvo com sucesso.
+        <div className="m-form__rodape">
+          <button type="submit" className="m-botao" disabled={pendente}>
+            {pendente ? "Salvando…" : "Salvar alerta"}
+          </button>
+          <p className="m-form__msg" data-tipo={mensagem?.tipo} role="status" aria-live="polite">
+            {mensagem?.texto}
           </p>
-        )}
-
-        <button
-          type="button"
-          className="botao-gerar"
-          disabled={pending}
-          onClick={handleSalvar}
-          style={{ marginTop: 16 }}
-        >
-          {pending ? (<><span className="spinner-inline" aria-hidden /> Salvando…</>) : "Salvar alerta"}
-        </button>
-      </div>
+        </div>
+      </form>
     </div>
   );
 }
