@@ -3937,7 +3937,7 @@ footer.rodape {
   vertical-align: middle;
 }
 
-/* ── Conferidor — CTA premium após 1 jogo ─────────────────── */
+/* ── Conferidor — CTA premium ao atingir o limite Free ─────────────────── */
 .conferidor-aviso-free {
   color: var(--ink-soft);
   font-style: italic;

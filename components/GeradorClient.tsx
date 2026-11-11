@@ -53,6 +53,17 @@ export default function GeradorClient({
   // O plano é lido no navegador para a página poder sair do cache (ISR):
   // aqui ele só decide o que aparece na tela, os dados do gerador são os
   // mesmos para todo mundo. Enquanto carrega, nem cadeado nem overlay.
+  //
+  // A trava do modo avançado é só de interface, de propósito. A geração
+  // (lib/gerar-jogo.ts) roda inteira no navegador sobre dados públicos
+  // (frequências e atrasos que a própria página já mostra), então quem
+  // contornar a trava não leva nada privado. Travar no servidor exigiria
+  // mover a geração para uma server action: uma chamada por clique em
+  // "Gerar", latência a mais e o gerador deixando de funcionar offline no
+  // PWA, para proteger filtros que qualquer um pode aplicar à mão. Recursos
+  // Premium que entregam dado ou cálculo do servidor (simulador, conferidor,
+  // OCR) são travados no servidor; ver lib/simulador-plano.ts e
+  // lib/conferidor-plano.ts.
   const { carregando, logado, isPremium: modoAvancadoLiberado } = usePlanoUsuario();
   const ehSuperSete = codigoLoteria === "supersete";
   const [modo, setModo] = useState<"simples" | "avancado">("simples");

@@ -26,10 +26,10 @@ export default function ConferidorClient({
   qtdDezenasSorteadas: number;
 }) {
   // Plano lido no navegador, para a página poder sair do cache (ISR). O
-  // limite "1 jogo por sessão" do Free sempre foi só da tela; a foto do
-  // bilhete é conferida de novo no servidor (app/api/ocr).
+  // limite de conferências do Free é decidido pela action
+  // (lib/conferidor-plano.ts); a tela só reflete o que o servidor responde.
+  // A foto do bilhete é conferida de novo no servidor (app/api/ocr).
   const { carregando, logado, isPremium } = usePlanoUsuario();
-  const jogoUnico = !isPremium;
   const ehSuperSete = codigoLoteria === "supersete";
   // OCR só conhece a faixa de dezenas de Lotofácil/Mega-Sena — nas demais
   // (fora Super Sete, que já não tem essa aba por outro motivo: o acerto é
@@ -44,7 +44,9 @@ export default function ConferidorClient({
   const [resultado, setResultado] = useState<ConferidorActionResult | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
-  const [jogoUsado, setJogoUsado] = useState(false); // controle do limite free
+  // Resposta do servidor sobre o limite do Free (null = sem limite).
+  const [restantes, setRestantes] = useState<number | null>(null);
+  const [limiteAtingido, setLimiteAtingido] = useState(false);
 
   // Callback chamado quando OCR detecta dezenas — preenche o seletor
   function handleDezenasDetectadas(dezenas: number[]) {
@@ -122,11 +124,12 @@ export default function ConferidorClient({
         ehSuperSete ? colunas : Array.from(selecionadas),
         usaTrevos ? Array.from(trevosSelecionados) : undefined
       );
+      setRestantes(r.restantes ?? null);
+      setLimiteAtingido(r.limiteAtingido === true);
       if (!r.ok) {
         setErro(r.erro ?? "Não foi possível conferir esse jogo.");
       } else {
         setResultado(r);
-        if (jogoUnico) setJogoUsado(true);
       }
     });
   }
@@ -254,7 +257,7 @@ export default function ConferidorClient({
       )}
 
       <div style={{ display: "flex", gap: "10px" }}>
-        <button type="button" className="botao-gerar" onClick={handleConferir} disabled={pending || (jogoUnico && jogoUsado)}>
+        <button type="button" className="botao-gerar" onClick={handleConferir} disabled={pending || limiteAtingido}>
           {pending ? (<><span className="spinner-inline" aria-hidden /> Conferindo...</>) : "Conferir contra todo o histórico"}
         </button>
         <button type="button" className="botao-copiar" onClick={limpar}>
@@ -271,10 +274,19 @@ export default function ConferidorClient({
       </>
       )}
 
-      {jogoUnico && jogoUsado && (
+      {!isPremium && restantes !== null && !limiteAtingido && (
+        <p className="bloco__nota">
+          {restantes === 0
+            ? "Essa foi sua última conferência grátis nas últimas 24 horas."
+            : `Restam ${restantes} ${restantes === 1 ? "conferência grátis" : "conferências grátis"} nas próximas 24 horas.`}
+        </p>
+      )}
+
+      {!isPremium && (limiteAtingido || restantes === 0) && (
         <div className="conferidor-premium-cta">
           <p className="conferidor-premium-cta__texto">
-            Quer conferir outro jogo? Assine o Premium para conferir quantos jogos quiser.
+            Quer conferir mais jogos? O plano gratuito confere 3 jogos a cada 24 horas; com o
+            Premium, quantos quiser.
           </p>
           <a href="/assinar" className="botao-gerar">
             Assinar Premium →
