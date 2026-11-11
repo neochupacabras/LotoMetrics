@@ -3,234 +3,293 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import AlertasForm from "@/components/conta/AlertasForm";
-import ExcluirContaForm from "@/components/conta/ExcluirContaForm";
-import { createClient } from "@/lib/supabase/server";
-import { formatarDataLonga, getContaContexto } from "@/lib/conta/contexto";
-import { CabecalhoPagina } from "@/components/membros/MembrosShell";
+import Dezenas from "@/components/Dezenas";
+import { IcSelo } from "@/components/membros/Icones";
+import { formatarDataCurta, formatarDataLonga, getContaContexto } from "@/lib/conta/contexto";
+import { carregarPainel, type DadosPainel } from "@/lib/conta/painel";
+import { atalhosRapidos, quandoSorteio } from "@/lib/conta/painel-regras";
+import { carregarResumoAssinatura, type ResumoAssinatura } from "@/lib/conta/assinatura";
+import { NOVIDADES } from "@/lib/conta/novidades";
+import { formatarMoedaCompacta } from "@/lib/resumo-concurso";
+import { formatarMoeda, LOTERIAS } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "Minha conta — LotoAnalítica",
+  title: "Painel — LotoAnalítica",
   robots: { index: false, follow: false },
 };
 
-const ABREV_LOTERIA: Record<string, string> = {
-  lotofacil: "LF",
-  megasena: "MS",
-  quina: "QN",
-  lotomania: "LM",
-  diadesorte: "DS",
-  maismilionaria: "+M",
-  timemania: "TM",
-  duplasena: "DP",
-  supersete: "S7",
-};
-
-function formatarDezena(n: number) {
-  return String(n).padStart(2, "0");
-}
-
-export default async function ContaPage({
+// Painel da área de membros: centro de controle pessoal. Cada módulo usa só
+// dado real (ver lib/conta/painel.ts); sem dado, estado vazio útil.
+export default async function PainelPage({
   searchParams,
 }: {
   searchParams: Promise<{ checkout?: string }>;
 }) {
   const contexto = await getContaContexto();
   if (!contexto) redirect("/entrar?next=/conta");
-  const { userId, isPremium, premiumAte } = contexto;
-
-  const supabase = await createClient();
-
   const { checkout } = await searchParams;
 
-  const [jogosRes, alertasRes, assinaturaRes] = await Promise.all([
-    supabase.from("user_games").select("id, loteria, dezenas, label, ativo").eq("user_id", userId).eq("ativo", true).order("created_at", { ascending: false }).limit(3),
-    supabase.from("alert_preferences").select("loteria, threshold_brl, sorteios_sem_ganhador, ativo").eq("user_id", userId),
-    supabase.from("subscriptions").select("id").eq("user_id", userId).in("status", ["active", "trialing", "past_due"]).limit(1),
+  const [dados, assinatura] = await Promise.all([
+    carregarPainel(contexto.userId),
+    carregarResumoAssinatura(contexto.userId, contexto.isPremium, contexto.premiumAte),
   ]);
 
-  const jogos = jogosRes.data ?? [];
-  const alertas = alertasRes.data ?? [];
-  const temAssinaturaStripe = (assinaturaRes.data?.length ?? 0) > 0;
-  const expiresAt = premiumAte ? formatarDataLonga(premiumAte) : null;
+  const primeiroNome = contexto.nome.split(" ")[0];
 
   return (
     <>
-        {checkout === "sucesso" && (
-          <div className="conta-checkout-sucesso">
-            ✦ Assinatura confirmada! Bem-vindo ao Premium.
-          </div>
-        )}
+      {checkout === "sucesso" && (
+        <p className="m-aviso" data-tipo="ok" role="status">
+          Assinatura confirmada. Bem-vindo ao Premium — todos os recursos já estão liberados.
+        </p>
+      )}
 
-        <CabecalhoPagina titulo={`Olá, ${contexto.nome}`} descricao={contexto.email} />
+      <header className="m-saudacao">
+        <p className="m-sobretitulo">{dados.dataHoje}</p>
+        <h1 className="m-saudacao__titulo">
+          {dados.saudacao}, {primeiroNome}
+        </h1>
+        {dados.linhaDoDia && <p className="m-saudacao__linha">{dados.linhaDoDia}</p>}
+      </header>
 
-        {/* ── Plano ──────────────────────────────────────────────────── */}
-        <section className="conta-secao">
-          <h2 className="conta-secao-titulo">Seu plano</h2>
-          <div className={`conta-plano-card ${isPremium ? "conta-plano-card--premium" : ""}`}>
-            <div>
-              <p className="conta-plano-nome">{isPremium ? "✦ Premium" : "Gratuito"}</p>
-              {isPremium && expiresAt && <p className="conta-plano-validade">Válido até {expiresAt}</p>}
-              {!isPremium && <p className="conta-plano-desc">Salve jogos e receba alertas — sempre grátis.</p>}
-            </div>
-            {!isPremium && <Link href="/assinar" className="botao-gerar conta-upgrade-btn">Assinar Premium →</Link>}
-            {isPremium && <Link href="/conta/assinatura" className="conta-link-gerenciar">Gerenciar assinatura →</Link>}
-          </div>
-        </section>
-
-        {/* ── API de dados ─────────────────────────────────────────── */}
-        {isPremium && (
-          <section className="conta-secao">
-            <div className="conta-secao-header">
-              <h2 className="conta-secao-titulo">API de dados</h2>
-              <Link href="/conta/api" className="conta-link-acao">
-                Gerenciar chaves →
-              </Link>
-            </div>
-            <p className="conta-alertas-desc">
-              Acesse resultados e estatísticas processadas via REST API com autenticação por chave.
-              1.000 requisições/mês incluídas no plano Premium.
-            </p>
-          </section>
-        )}
-
-        {/* ── App e notificações (PWA) ─────────────────────────────── */}
-        <section className="conta-secao">
-          <div className="conta-secao-header">
-            <h2 className="conta-secao-titulo">App e notificações</h2>
-            <Link href="/notificacoes" className="conta-link-acao">
-              Notificações →
-            </Link>
-          </div>
-          <p className="conta-alertas-desc">
-            Receba resultados, acúmulos e a conferência dos seus jogos direto no celular.{" "}
-            <Link href="/aplicativo">Instalar o aplicativo</Link>.
-          </p>
-        </section>
-
-        {/* ── Bolões ────────────────────────────────────────────────── */}
-        <section className="conta-secao">
-          <div className="conta-secao-header">
-            <h2 className="conta-secao-titulo">Meus bolões</h2>
-            <Link href="/conta/boloes" className="conta-link-acao">
-              Ver todos →
-            </Link>
-          </div>
-          <p className="conta-alertas-desc">
-            Organize o bolão do grupo: link para compartilhar, controle de quem pagou e conferência automática.
-          </p>
-        </section>
-
-        {/* ── Jogos salvos ──────────────────────────────────────────── */}
-        <section className="conta-secao">
-          <div className="conta-secao-header">
-            <h2 className="conta-secao-titulo">Jogos salvos</h2>
-            <Link href="/conta/jogos" className="conta-link-acao">
-              Ver todos →
-            </Link>
-          </div>
-
-          {jogos.length === 0 ? (
-            <div className="conta-jogos-vazio">
-              <p>Você ainda não tem jogos salvos.</p>
-              <p className="conta-jogos-dica">
-                {isPremium
-                  ? "Salve seus jogos fixos e receba o resultado por e-mail após cada sorteio."
-                  : "Salve seus jogos fixos para acompanhar o desempenho histórico."}
-              </p>
-              <Link href="/conta/jogos/novo" className="botao-gerar">
-                Salvar meu primeiro jogo →
-              </Link>
-            </div>
-          ) : (
-            <>
-              <div className="conta-jogos-preview">
-                {jogos.map(j => (
-                  <div key={j.id} className="conta-jogo-preview">
-                    <span className="conta-jogo-preview__loteria">
-                      {ABREV_LOTERIA[j.loteria] ?? j.loteria.slice(0, 2).toUpperCase()}
-                    </span>
-                    <span className="conta-jogo-preview__dezenas">
-                      {(j.dezenas as number[]).map(d => formatarDezena(d)).join(" · ")}
-                    </span>
-                    {j.label && <span className="conta-jogo-preview__label">“{j.label}”</span>}
-                  </div>
-                ))}
-              </div>
-              <Link href="/conta/jogos" className="conta-link-acao" style={{ marginTop: 12, display: "inline-block" }}>
-                Gerenciar todos os jogos →
-              </Link>
-            </>
-          )}
-        </section>
-
-        {/* ── Carteira do apostador ────────────────────────────────── */}
-        {jogos.length > 0 && (
-          <section className="conta-secao">
-            <div className="conta-secao-header">
-              <h2 className="conta-secao-titulo">
-                Carteira do apostador{!isPremium && <span className="usermenu-badge-inline" aria-label="Premium">✦</span>}
-              </h2>
-              <Link href="/conta/carteira" className="conta-link-acao">
-                {isPremium ? "Ver saldo →" : "Assinar para ver →"}
-              </Link>
-            </div>
-            <p className="conta-alertas-desc">
-              Quanto você teria gasto e ganho com cada jogo salvo, desde que o salvou.
-            </p>
-          </section>
-        )}
-
-        {/* ── Meu ano na loteria ───────────────────────────────────── */}
-        {jogos.length > 0 && (
-          <section className="conta-secao">
-            <div className="conta-secao-header">
-              <h2 className="conta-secao-titulo">
-                Meu ano na loteria{!isPremium && <span className="usermenu-badge-inline" aria-label="Premium">✦</span>}
-              </h2>
-              <Link href="/conta/meu-ano" className="conta-link-acao">
-                {isPremium ? "Ver retrospectiva →" : "Assinar para ver →"}
-              </Link>
-            </div>
-            <p className="conta-alertas-desc">
-              O resumo do seu ano: total gasto e ganho, sua loteria favorita e o maior prêmio simulado.
-            </p>
-          </section>
-        )}
-
-        {/* ── Alertas de acúmulo ────────────────────────────────────── */}
-        <section className="conta-secao">
-          <h2 className="conta-secao-titulo">Alertas de acúmulo</h2>
-          <p className="conta-alertas-desc">
-            Receba um e-mail quando o prêmio acumulado ultrapassar o valor que você definir.
-          </p>
-          <AlertasForm alertasExistentes={alertas} />
-        </section>
-
-        {/* ── Premium teaser ────────────────────────────────────────── */}
-        {!isPremium && (
-          <section className="conta-secao conta-secao--premium-teaser">
-            <h2 className="conta-secao-titulo">Com o Premium você também tem</h2>
-            <ul className="conta-premium-lista">
-              <li>Rastreamento automático — resultado de cada jogo por e-mail após todo sorteio</li>
-              <li>Heatmap com todos os períodos comparáveis</li>
-              <li>Gerador avançado com todos os filtros combinados</li>
-              <li>Conferidor ilimitado</li>
-              <li>Simulador no histórico completo + comparador de dois jogos</li>
-              <li>Sem anúncios em nenhuma página</li>
-            </ul>
-            <Link href="/assinar" className="botao-gerar">Ver planos e assinar →</Link>
-          </section>
-        )}
-
-        {/* ── Excluir conta ─────────────────────────────────────────── */}
-        <section className="conta-secao excluir-conta" aria-labelledby="excluir-conta-secao">
-          <h2 id="excluir-conta-secao" className="conta-secao-titulo">Excluir conta</h2>
-          <p className="conta-alertas-desc">
-            Apaga sua conta e todos os dados associados a ela. Esta ação não pode ser desfeita.
-          </p>
-          <ExcluirContaForm isPremium={isPremium} temAssinaturaStripe={temAssinaturaStripe} />
-        </section>
+      <div className="m-painel-grade">
+        <ModuloLoterias dados={dados} />
+        <ModuloAcessoRapido loteria={dados.loteriaContexto} />
+        <ModuloJogos dados={dados} />
+        <ModuloAssinatura resumo={assinatura} />
+        <ModuloNovidades />
+        <ModuloAtividade dados={dados} />
+      </div>
     </>
+  );
+}
+
+function CabecalhoModulo({ id, titulo, link }: { id: string; titulo: string; link?: { href: string; rotulo: string } }) {
+  return (
+    <div className="m-modulo__cabecalho">
+      <h2 id={id} className="m-modulo__titulo">
+        {titulo}
+      </h2>
+      {link && (
+        <Link href={link.href} className="m-modulo__link">
+          {link.rotulo} <span aria-hidden>→</span>
+        </Link>
+      )}
+    </div>
+  );
+}
+
+function dataCurtaConcurso(dataSql: string): string {
+  const [ano, mes, dia] = dataSql.slice(0, 10).split("-");
+  return ano && mes && dia ? `${dia}/${mes}` : "";
+}
+
+function ModuloLoterias({ dados }: { dados: DadosPainel }) {
+  return (
+    <section className="m-modulo m-modulo--loterias" aria-labelledby="painel-loterias">
+      <CabecalhoModulo
+        id="painel-loterias"
+        titulo="Próximos sorteios"
+        link={{ href: "/calendario", rotulo: "Calendário" }}
+      />
+      {dados.loterias.length === 0 ? (
+        <p className="m-vazio">Os resultados ainda não foram carregados. Tente de novo em instantes.</p>
+      ) : (
+        <ul className="m-lista">
+          {dados.loterias.map((l) => (
+            <li key={l.codigo}>
+              <Link href={`/${l.codigo}/resultados`} className="m-loteria">
+                <span className="m-loteria__nome">
+                  {l.nome}
+                  <span className="m-loteria__meta">
+                    Concurso {l.concurso} · {dataCurtaConcurso(l.dataSorteio)}
+                    {l.jogosSalvos > 0 && ` · ${l.jogosSalvos} ${l.jogosSalvos === 1 ? "jogo salvo" : "jogos salvos"}`}
+                  </span>
+                </span>
+                <span className="m-loteria__premio">
+                  <span className="m-loteria__rotulo">{l.acumulou ? "Acumulou · próximo prêmio" : "Próximo prêmio"}</span>
+                  <span className="m-numero">{l.premioEstimado ? formatarMoedaCompacta(l.premioEstimado) : "—"}</span>
+                </span>
+                <span className="m-loteria__sorteio">
+                  <span className="m-loteria__rotulo">Sorteio</span>
+                  <span>{quandoSorteio(new Date(l.proximoSorteioIso), new Date())}</span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function ModuloAcessoRapido({ loteria }: { loteria: DadosPainel["loteriaContexto"] }) {
+  return (
+    <section className="m-modulo m-modulo--rapido" aria-labelledby="painel-rapido">
+      <CabecalhoModulo id="painel-rapido" titulo="Acesso rápido" />
+      <p className="m-modulo__contexto">{LOTERIAS[loteria].nome}</p>
+      <ul className="m-atalhos">
+        {atalhosRapidos(loteria).map((a) => (
+          <li key={a.href}>
+            <Link href={a.href} className="m-atalho">
+              <span className="m-atalho__titulo">{a.titulo}</span>
+              <span className="m-atalho__descricao">{a.descricao}</span>
+              <span className="m-atalho__seta" aria-hidden>
+                →
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function ModuloJogos({ dados }: { dados: DadosPainel }) {
+  return (
+    <section className="m-modulo m-modulo--jogos" aria-labelledby="painel-jogos">
+      <CabecalhoModulo
+        id="painel-jogos"
+        titulo="Seus jogos no último sorteio"
+        link={dados.totalJogos > 0 ? { href: "/conta/jogos", rotulo: `Todos (${dados.totalJogos})` } : undefined}
+      />
+      {dados.jogos.length === 0 ? (
+        <div className="m-vazio m-vazio--acao">
+          <p>
+            Salve os números que você costuma jogar: a cada sorteio, mostramos aqui quantos acertos eles
+            fizeram.
+          </p>
+          <Link href="/conta/jogos/novo" className="m-botao m-botao--secundario">
+            Salvar meu primeiro jogo
+          </Link>
+        </div>
+      ) : (
+        <ul className="m-lista">
+          {dados.jogos.map((j) => (
+            <li key={j.id} className="m-jogo">
+              <div className="m-jogo__cabecalho">
+                <span className="m-jogo__loteria">{j.nome}</span>
+                {j.label && <span className="m-jogo__label">{j.label}</span>}
+              </div>
+              <Dezenas dezenas={j.dezenas} tamanho="pequena" />
+              {j.conferencia ? (
+                <p className="m-jogo__resultado" data-premiado={j.conferencia.premiado}>
+                  <span className="m-numero">
+                    {j.conferencia.acertos} {j.conferencia.acertos === 1 ? "acerto" : "acertos"}
+                  </span>{" "}
+                  no concurso {j.conferencia.concurso}
+                  {j.conferencia.sorteio && ` (${j.conferencia.sorteio})`}
+                  {j.conferencia.premiado &&
+                    (j.conferencia.premioReais
+                      ? ` · premiado: ${formatarMoeda(j.conferencia.premioReais)}`
+                      : " · faixa premiada")}
+                  {j.conferencia.confirmarTrevos && " · confira os trevos no volante"}
+                </p>
+              ) : (
+                <p className="m-jogo__resultado">Sem concurso recente para conferir.</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function ModuloAssinatura({ resumo }: { resumo: ResumoAssinatura }) {
+  if (!resumo.origem) {
+    return (
+      <section className="m-modulo m-modulo--assinatura" aria-labelledby="painel-assinatura">
+        <CabecalhoModulo id="painel-assinatura" titulo="Seu plano" />
+        <p className="m-plano__nome">Gratuito</p>
+        <p className="m-plano__texto">
+          Jogos salvos, alertas de acúmulo e bolões estão incluídos. O Premium acrescenta a conferência
+          automática por e-mail, a Carteira, o histórico completo do simulador e navegação sem anúncios.
+        </p>
+        <Link href="/premium" className="m-modulo__link">
+          Conhecer o Premium <span aria-hidden>→</span>
+        </Link>
+      </section>
+    );
+  }
+
+  return (
+    <section className="m-modulo m-modulo--assinatura" data-premium="true" aria-labelledby="painel-assinatura">
+      <CabecalhoModulo id="painel-assinatura" titulo="Seu plano" />
+      <p className="m-plano__nome m-plano__nome--premium">
+        <IcSelo /> Premium
+      </p>
+      <dl className="m-dados m-dados--compacto">
+        <div>
+          <dt>Pagamento</dt>
+          <dd>{resumo.origem === "stripe" ? "Cartão, renovação automática" : "Pix, crédito avulso"}</dd>
+        </div>
+        {resumo.dataIso && resumo.rotuloData && (
+          <div>
+            <dt>{resumo.rotuloData}</dt>
+            <dd title={formatarDataLonga(resumo.dataIso)}>{formatarDataCurta(resumo.dataIso)}</dd>
+          </div>
+        )}
+      </dl>
+      {resumo.pendente && (
+        <p className="m-estado" data-tipo="bloqueado">
+          O último pagamento do cartão não foi aprovado. Atualize a forma de pagamento para não perder o acesso.
+        </p>
+      )}
+      <Link href="/conta/assinatura" className="m-modulo__link">
+        Gerenciar assinatura <span aria-hidden>→</span>
+      </Link>
+    </section>
+  );
+}
+
+function dataCurtaNovidade(iso: string): string {
+  const [, mes, dia] = iso.split("-");
+  const meses = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+  return `${Number(dia)} ${meses[Number(mes) - 1]}`;
+}
+
+function ModuloNovidades() {
+  return (
+    <section className="m-modulo m-modulo--novidades" aria-labelledby="painel-novidades">
+      <CabecalhoModulo id="painel-novidades" titulo="Novidades" />
+      <ul className="m-lista">
+        {NOVIDADES.slice(0, 4).map((n) => (
+          <li key={n.titulo}>
+            <Link href={n.href} className="m-novidade">
+              <span className="m-novidade__data">{dataCurtaNovidade(n.data)}</span>
+              <span className="m-novidade__textos">
+                <span className="m-novidade__titulo">{n.titulo}</span>
+                <span className="m-novidade__descricao">{n.descricao}</span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function ModuloAtividade({ dados }: { dados: DadosPainel }) {
+  return (
+    <section className="m-modulo m-modulo--atividade" aria-labelledby="painel-atividade">
+      <CabecalhoModulo id="painel-atividade" titulo="Atividade recente" />
+      {dados.atividade.length === 0 ? (
+        <p className="m-vazio">Seus jogos salvos e bolões criados aparecem aqui.</p>
+      ) : (
+        <ol className="m-linha-tempo">
+          {dados.atividade.map((a) => (
+            <li key={`${a.tipo}-${a.quando}-${a.texto}`}>
+              <time dateTime={a.quando} className="m-linha-tempo__data">
+                {formatarDataCurta(a.quando)}
+              </time>
+              <Link href={a.href} className="m-linha-tempo__texto">
+                {a.texto}
+              </Link>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
   );
 }

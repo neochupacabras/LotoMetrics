@@ -31,6 +31,8 @@ const ICONES: Record<IconeNav, ComponentType<{ className?: string }>> = {
   desempenho: IcDesempenho,
   assinatura: IcAssinatura,
   api: IcApi,
+  alertas: IcSino,
+  perfil: IcConta,
 };
 
 const CHAVE_RECOLHIDA = "la:lombada-recolhida";
@@ -242,10 +244,15 @@ function TopoCelular({ isPremium }: { isPremium: boolean }) {
   );
 }
 
-// Itens da barra inferior: as rotas de uso + a folha "Conta" no fim.
+// Barra inferior: 4 rotas de uso + a folha "Conta" (5 alvos, alcance do
+// polegar). Tudo que não cabe aqui fica na folha.
 const ITENS_BARRA: ItemNav[] = [
   NAV_MEMBROS[0].itens[0],
-  ...NAV_MEMBROS[1].itens,
+  ...NAV_MEMBROS[1].itens.filter((i) => i.href !== "/conta/alertas"),
+];
+const ITENS_FOLHA: ItemNav[] = [
+  ...NAV_MEMBROS[1].itens.filter((i) => i.href === "/conta/alertas"),
+  ...NAV_MEMBROS[2].itens,
 ];
 
 function BarraInferior({
@@ -278,7 +285,7 @@ function BarraInferior({
     };
   }, []);
 
-  const contaAtiva = ["/conta/assinatura", "/conta/api"].some((p) => pathname.startsWith(p));
+  const contaAtiva = ITENS_FOLHA.some((item) => itemAtivo(item, pathname));
 
   return (
     <nav className="m-barra" aria-label="Navegação da conta" data-oculta={tecladoAberto}>
@@ -373,17 +380,11 @@ function FolhaConta({
         <SeloPlano isPremium={isPremium} validade={validade} />
 
         <ul className="m-folha__lista">
-          {NAV_MEMBROS[2].itens.map((item) => (
+          {ITENS_FOLHA.map((item) => (
             <li key={item.href}>
               <LinkNav item={item} pathname={pathname} isPremium={isPremium} className="m-folha__item" />
             </li>
           ))}
-          <li>
-            <Link href="/notificacoes" className="m-folha__item">
-              <IcSino className="m-nav__icone" />
-              <span className="m-nav__rotulo">Notificações</span>
-            </Link>
-          </li>
           <li>
             <Link href="/perguntas-frequentes" className="m-folha__item">
               <IcAjuda className="m-nav__icone" />

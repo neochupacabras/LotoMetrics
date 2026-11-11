@@ -57,6 +57,15 @@ body:has(.m-shell) footer.rodape {
   display: none;
 }
 
+/* globals.css põe overflow-x: hidden em html e body (rede contra rolagem
+   lateral). Com os dois definidos, o body vira contêiner de rolagem e o
+   position: sticky da lombada para de funcionar. "clip" corta o
+   transbordo do mesmo jeito sem criar contêiner de rolagem. */
+html:has(.m-shell),
+body:has(.m-shell) {
+  overflow-x: clip;
+}
+
 .m-sr {
   position: absolute;
   width: 1px;
@@ -1199,4 +1208,700 @@ body:has(.m-shell) footer.rodape {
 .m-folha__item--sair {
   border-bottom: none;
   color: var(--ink-soft);
+}
+
+/* ============================================================
+   PAINEL (/conta)
+   ============================================================ */
+
+/* A largura que manda nos layouts internos é a do conteúdo (container
+   query), não a da janela: lombada expandida ou recolhida muda o espaço. */
+.m-conteudo {
+  container-type: inline-size;
+  container-name: conteudo;
+}
+
+.m-sobretitulo {
+  margin: 0 0 10px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--m-ink-faint);
+}
+
+.m-saudacao {
+  margin-bottom: 36px;
+}
+
+.m-saudacao__titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 2.75rem;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+
+.m-saudacao__linha {
+  margin: 12px 0 0;
+  max-width: 60ch;
+  font-size: 1rem;
+  color: var(--m-ink-soft);
+}
+
+.m-numero {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+/* Grade: uma coluna até o conteúdo ter 860px; depois 2fr + 1fr. No
+   celular, o acesso rápido vem primeiro (é o que se usa com uma mão). */
+.m-painel-grade {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "rapido"
+    "loterias"
+    "jogos"
+    "assinatura"
+    "atividade"
+    "novidades";
+}
+
+@container conteudo (min-width: 860px) {
+  .m-painel-grade {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-areas:
+      "loterias rapido"
+      "jogos assinatura"
+      "novidades atividade";
+    align-items: start;
+  }
+}
+
+.m-modulo--loterias { grid-area: loterias; }
+.m-modulo--rapido { grid-area: rapido; }
+.m-modulo--jogos { grid-area: jogos; }
+.m-modulo--assinatura { grid-area: assinatura; }
+.m-modulo--atividade { grid-area: atividade; }
+.m-modulo--novidades { grid-area: novidades; }
+
+.m-modulo {
+  min-width: 0;
+  padding: 22px 24px 24px;
+  background: var(--m-surface);
+  border: 1px solid var(--m-line);
+}
+
+.m-modulo--assinatura[data-premium="true"] {
+  border-top: 2px solid var(--m-seal);
+}
+
+.m-modulo__cabecalho {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.m-modulo__titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  line-height: 1.15;
+}
+
+.m-modulo__link {
+  display: inline-flex;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+  color: var(--m-action);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.m-modulo__link span {
+  transition: transform 0.18s var(--m-ease);
+}
+
+.m-modulo__link:hover span {
+  transform: translateX(3px);
+}
+
+.m-modulo__contexto {
+  margin: -8px 0 14px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--m-ink-faint);
+}
+
+.m-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.m-lista > li + li {
+  border-top: 1px solid var(--m-line);
+}
+
+.m-vazio {
+  margin: 0;
+  padding: 18px 0 4px;
+  color: var(--m-ink-soft);
+  font-size: 0.92rem;
+}
+
+.m-vazio--acao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.m-vazio--acao p {
+  margin: 0;
+  max-width: 52ch;
+}
+
+/* Linha de loteria */
+.m-loteria {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 0.9fr);
+  align-items: center;
+  gap: 16px;
+  padding: 14px 8px;
+  margin: 0 -8px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.m-loteria:hover {
+  background: var(--m-canvas);
+}
+
+.m-loteria__nome {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-weight: 600;
+}
+
+.m-loteria__meta {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--m-ink-faint);
+}
+
+.m-loteria__premio,
+.m-loteria__sorteio {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.9rem;
+}
+
+.m-loteria__premio .m-numero {
+  font-size: 1.1rem;
+}
+
+.m-loteria__rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--m-ink-faint);
+}
+
+@container conteudo (max-width: 520px) {
+  .m-loteria {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 8px;
+  }
+
+  .m-loteria__nome {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Acesso rápido: lista quando o módulo é estreito (coluna lateral do
+   desktop), grade 2×2 quando há espaço (tablet, celular largo). */
+.m-modulo--rapido {
+  container-type: inline-size;
+  container-name: rapido;
+}
+
+.m-atalhos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+@container rapido (min-width: 440px) {
+  .m-atalhos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .m-atalho {
+    min-height: 92px;
+  }
+}
+
+.m-atalho {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  height: 100%;
+  padding: 12px 36px 12px 14px;
+  border: 1px solid var(--m-line);
+  background: var(--m-canvas);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.15s ease, transform 0.15s var(--m-ease);
+}
+
+.m-atalho:hover {
+  border-color: var(--m-ink);
+}
+
+.m-atalho:active {
+  transform: scale(0.98);
+}
+
+.m-atalho__titulo {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.m-atalho__descricao {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--m-ink-faint);
+}
+
+.m-atalho__seta {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  color: var(--m-ink-faint);
+  transition: color 0.15s ease, transform 0.18s var(--m-ease);
+}
+
+.m-atalho:hover .m-atalho__seta {
+  color: var(--m-action);
+  transform: translateX(2px);
+}
+
+/* Jogo */
+.m-jogo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 0;
+}
+
+.m-jogo:first-child {
+  padding-top: 4px;
+}
+
+.m-jogo__cabecalho {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.m-jogo__loteria {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--m-ink-soft);
+}
+
+.m-jogo__label {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--m-ink-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.m-jogo__resultado {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--m-ink-soft);
+}
+
+.m-jogo__resultado[data-premiado="true"],
+.m-jogo__resultado[data-premiado="true"] .m-numero {
+  color: var(--m-positive);
+}
+
+/* Plano */
+.m-plano__nome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.m-plano__nome--premium {
+  color: var(--m-seal-text);
+}
+
+.m-plano__nome--premium svg {
+  color: var(--m-seal);
+}
+
+.m-plano__texto {
+  margin: 0 0 16px;
+  font-size: 0.88rem;
+  color: var(--m-ink-soft);
+}
+
+.m-dados {
+  margin: 0 0 16px;
+}
+
+.m-dados > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--m-line);
+  font-size: 0.88rem;
+}
+
+.m-dados > div:first-child {
+  border-top: 1px solid var(--m-line);
+}
+
+.m-dados dt {
+  color: var(--m-ink-faint);
+}
+
+.m-dados dd {
+  margin: 0;
+  text-align: right;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Novidades */
+.m-novidade {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 8px;
+  margin: 0 -8px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.m-novidade:hover {
+  background: var(--m-canvas);
+}
+
+.m-novidade__data {
+  padding-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--m-ink-faint);
+  white-space: nowrap;
+}
+
+.m-novidade__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.m-novidade__titulo {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.m-novidade__descricao {
+  font-size: 0.84rem;
+  color: var(--m-ink-soft);
+}
+
+/* Atividade */
+.m-linha-tempo {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.m-linha-tempo li {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid var(--m-line);
+  font-size: 0.86rem;
+}
+
+.m-linha-tempo li:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.m-linha-tempo__data {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--m-ink-faint);
+  padding-top: 2px;
+}
+
+.m-linha-tempo__texto {
+  color: var(--m-ink);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.m-linha-tempo__texto:hover {
+  color: var(--m-action);
+  text-decoration: underline;
+}
+
+/* ============================================================
+   AVISOS, ESTADOS, SEÇÕES E FORMULÁRIOS
+   ============================================================ */
+
+.m-aviso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin: 0 0 28px;
+  padding: 14px 18px;
+  border: 1px solid var(--m-line);
+  border-left: 2px solid var(--m-ink-soft);
+  background: var(--m-surface);
+  font-size: 0.92rem;
+}
+
+.m-aviso p {
+  margin: 0;
+  flex: 1 1 320px;
+}
+
+.m-aviso[data-tipo="ok"] {
+  border-left-color: var(--m-positive);
+}
+
+.m-aviso[data-tipo="atencao"] {
+  border-left-color: var(--m-seal);
+}
+
+.m-aviso__acao {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--m-negative);
+}
+
+.m-estado {
+  margin: 0;
+  padding: 12px 14px;
+  border-left: 2px solid var(--m-line-strong);
+  background: var(--m-canvas);
+  font-size: 0.9rem;
+  color: var(--m-ink-soft);
+}
+
+.m-estado[data-tipo="ok"] {
+  border-left-color: var(--m-positive);
+}
+
+.m-estado[data-tipo="bloqueado"] {
+  border-left-color: var(--m-seal);
+}
+
+.m-estado strong {
+  color: var(--m-ink);
+}
+
+.m-estado a,
+.m-link {
+  color: var(--m-action);
+}
+
+.m-secoes {
+  display: flex;
+  flex-direction: column;
+}
+
+.m-secao {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--m-line);
+}
+
+.m-secao:first-child {
+  padding-top: 0;
+}
+
+.m-secao:last-child {
+  border-bottom: none;
+}
+
+@container conteudo (min-width: 760px) {
+  .m-secao {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 40px;
+  }
+}
+
+.m-secao__titulo {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.4rem;
+  line-height: 1.15;
+}
+
+.m-secao__texto {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--m-ink-soft);
+}
+
+.m-secao__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+.m-secao__corpo--acoes {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+}
+
+.m-secao--perigo .m-secao__titulo {
+  color: var(--m-negative);
+}
+
+.m-painel {
+  padding: 24px;
+  background: var(--m-surface);
+  border: 1px solid var(--m-line);
+}
+
+.m-painel--estreito {
+  max-width: 480px;
+}
+
+.m-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 420px;
+}
+
+.m-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.m-campo__rotulo {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--m-ink-soft);
+}
+
+.m-campo__entrada {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--m-line-strong);
+  border-radius: 0;
+  background: #fff;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--m-ink);
+  transition: border-color 0.15s ease;
+}
+
+.m-campo__entrada:hover {
+  border-color: var(--m-ink-soft);
+}
+
+.m-campo__entrada:focus-visible {
+  outline: 2px solid var(--m-action);
+  outline-offset: 0;
+  border-color: var(--m-action);
+}
+
+.m-form__rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+
+.m-form__msg {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--m-ink-soft);
+}
+
+.m-form__msg:empty {
+  display: none;
+}
+
+.m-form__msg[data-tipo="ok"] {
+  color: var(--m-positive);
+}
+
+.m-form__msg[data-tipo="erro"] {
+  color: var(--m-negative);
+}
+
+.m-botao:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .m-saudacao__titulo {
+    font-size: 2.1rem;
+  }
+
+  .m-modulo {
+    padding: 18px 16px 20px;
+  }
 }
