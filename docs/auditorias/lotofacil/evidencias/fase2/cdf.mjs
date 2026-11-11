@@ -1,5 +1,5 @@
 import fs from 'fs';
-const src=fs.readFileSync('C:/Users/Micro/Loterias/loterias-web/lib/analisador.ts','utf8');
+const src=fs.readFileSync(new URL('../../../../../lib/analisador.ts', import.meta.url),'utf8');
 const code=JSON.parse(src.match(/CDF_SOMA_LF: number\[\] = (\[[^\]]*\])/)[1]);
 const ref=JSON.parse(fs.readFileSync('ref_enum.json','utf8'));
 console.log('len code',code.length,'len ref',ref.cdf.length);

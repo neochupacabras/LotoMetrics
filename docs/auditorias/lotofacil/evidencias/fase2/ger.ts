@@ -1,6 +1,6 @@
 import fs from "fs";
-import { gerarJogo, amostrarSubconjunto, gerarJogoDaData } from "C:/Users/Micro/Loterias/loterias-web/lib/gerar-jogo";
-const F = JSON.parse(fs.readFileSync("C:/Users/Micro/AppData/Local/Temp/claude/485aef2293cb201b/590abb80-d7cc-4d84-9116-d67cdc1886d7/scratchpad/lf_fns.json","utf8")).rows[0].r;
+import { gerarJogo, amostrarSubconjunto, gerarJogoDaData } from "../../../../../lib/gerar-jogo";
+const F = JSON.parse(fs.readFileSync("lf_fns.json","utf8")).rows[0].r;
 const atr = [...F.atraso].sort((a:any,b:any)=>b.atraso-a.atraso||a.dezena-b.dezena).slice(0,10).map((r:any)=>r.dezena);
 const freq = F.freq.slice(0,10).map((r:any)=>r.dezena);
 const pi = [...F.parimpar].sort((a:any,b:any)=>b.ocorrencias-a.ocorrencias)[0];

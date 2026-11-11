@@ -1,6 +1,6 @@
-import { gerarFechamentoReduzido, gerarFechamentoCompleto } from "C:/Users/Micro/Loterias/loterias-web/lib/fechamento";
-import { OPCOES_BOLAO } from "C:/Users/Micro/Loterias/loterias-web/lib/bolao-opcoes";
-import { probabilidadeAoMenosK, calcularProbabilidades } from "C:/Users/Micro/Loterias/loterias-web/lib/probabilidades";
+import { gerarFechamentoReduzido, gerarFechamentoCompleto } from "../../../../../lib/fechamento";
+import { OPCOES_BOLAO } from "../../../../../lib/bolao-opcoes";
+import { probabilidadeAoMenosK, calcularProbabilidades } from "../../../../../lib/probabilidades";
 // verificador independente: para cada k-subconjunto do pool (por enumeração própria em bitmask), existe ticket que o contém?
 function verifica(pool: number[], tickets: number[][], k: number): boolean {
   const idx = new Map(pool.map((d, i) => [d, i]));
