@@ -2,10 +2,11 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import Masthead from "@/components/Masthead";
 import Dezenas from "@/components/Dezenas";
 import { createClient } from "@/lib/supabase/server";
-import { calcularIsPremium } from "@/lib/plano";
+import { getContaContexto } from "@/lib/conta/contexto";
+import { ABAS_DESEMPENHO } from "@/lib/conta/navegacao";
+import { AbasPagina, CabecalhoPagina, RecursoBloqueado } from "@/components/membros/MembrosShell";
 import { calcularCarteira } from "@/lib/carteira";
 import { intervaloDoAno, loteriaMaisJogada, maiorPremioIndividual } from "@/lib/retrospectiva";
 
@@ -19,21 +20,15 @@ function formatarMoeda(v: number): string {
 }
 
 export default async function MeuAnoPage() {
+  const contexto = await getContaContexto();
+  if (!contexto) redirect("/entrar?next=/conta/meu-ano");
+  const { isPremium, userId } = contexto;
+
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/entrar?next=/conta/meu-ano");
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("plan, plan_expires_at")
-    .eq("id", user.id)
-    .single();
-  const isPremium = calcularIsPremium(profile);
-
   const { data: jogosRaw } = await supabase
     .from("user_games")
     .select("id, loteria, dezenas, label, ativo, created_at")
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .order("created_at", { ascending: false });
 
   const jogos = jogosRaw ?? [];
@@ -41,26 +36,17 @@ export default async function MeuAnoPage() {
 
   return (
     <>
-      <Masthead />
-      <main className="conta-page container">
-        <div className="conta-header">
-          <div>
-            <Link href="/conta" className="conta-voltar">← Minha conta</Link>
-            <h1 className="conta-titulo">Meu ano na loteria — {ano}</h1>
-            <p className="conta-email">
-              Um resumo do que você teria gasto e ganho em {ano}, com os jogos que salvou.
-            </p>
-          </div>
-        </div>
+        <CabecalhoPagina
+          titulo="Desempenho"
+          descricao={`Um resumo do que você teria gasto e ganho em ${ano}, com os jogos que salvou.`}
+        />
+        <AbasPagina rotulo="Desempenho" abas={ABAS_DESEMPENHO} ativa="/conta/meu-ano" />
 
         {!isPremium ? (
-          <div className="conta-alerta-free">
-            <p>
-              O Meu ano na loteria é um recurso{" "}
-              <Link href="/assinar" className="conta-alerta-free__link">Premium</Link>.
-              Assine para ver a sua retrospectiva do ano.
-            </p>
-          </div>
+          <RecursoBloqueado titulo={`Meu ano na loteria — ${ano}`}>
+            A retrospectiva do seu ano: total gasto e ganho, a loteria que você mais jogou e o maior
+            prêmio que seus jogos salvos teriam levado.
+          </RecursoBloqueado>
         ) : jogos.length === 0 ? (
           <div className="conta-jogos-vazio">
             <p>Você ainda não tem jogos salvos.</p>
@@ -81,7 +67,6 @@ export default async function MeuAnoPage() {
             createdAt: j.created_at as string,
           }))} ano={ano} />
         )}
-      </main>
     </>
   );
 }

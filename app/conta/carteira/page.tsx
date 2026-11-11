@@ -2,10 +2,11 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import Masthead from "@/components/Masthead";
 import Dezenas from "@/components/Dezenas";
+import { AbasPagina, CabecalhoPagina, RecursoBloqueado } from "@/components/membros/MembrosShell";
 import { createClient } from "@/lib/supabase/server";
-import { calcularIsPremium } from "@/lib/plano";
+import { getContaContexto } from "@/lib/conta/contexto";
+import { ABAS_DESEMPENHO } from "@/lib/conta/navegacao";
 import { calcularCarteira } from "@/lib/carteira";
 import TetoGastoForm from "@/components/conta/TetoGastoForm";
 
@@ -19,47 +20,35 @@ function formatarMoeda(v: number): string {
 }
 
 export default async function CarteiraPage() {
+  const contexto = await getContaContexto();
+  if (!contexto) redirect("/entrar?next=/conta/carteira");
+  const { isPremium, userId } = contexto;
+
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/entrar?next=/conta/carteira");
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("plan, plan_expires_at, teto_gasto_mensal")
-    .eq("id", user.id)
-    .single();
-  const isPremium = calcularIsPremium(profile);
-
-  const { data: jogosRaw } = await supabase
-    .from("user_games")
-    .select("id, loteria, dezenas, label, ativo, created_at")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+  const [{ data: profile }, { data: jogosRaw }] = await Promise.all([
+    supabase.from("profiles").select("teto_gasto_mensal").eq("id", userId).single(),
+    supabase
+      .from("user_games")
+      .select("id, loteria, dezenas, label, ativo, created_at")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false }),
+  ]);
 
   const jogos = jogosRaw ?? [];
 
   return (
     <>
-      <Masthead />
-      <main className="conta-page container">
-        <div className="conta-header">
-          <div>
-            <Link href="/conta" className="conta-voltar">← Minha conta</Link>
-            <h1 className="conta-titulo">Carteira do apostador</h1>
-            <p className="conta-email">
-              Quanto você teria gasto e ganho com seus jogos salvos, desde que salvou cada um.
-            </p>
-          </div>
-        </div>
+        <CabecalhoPagina
+          titulo="Desempenho"
+          descricao="Quanto você teria gasto e ganho com seus jogos salvos, desde que salvou cada um."
+        />
+        <AbasPagina rotulo="Desempenho" abas={ABAS_DESEMPENHO} ativa="/conta/carteira" />
 
         {!isPremium ? (
-          <div className="conta-alerta-free">
-            <p>
-              A Carteira do apostador é um recurso{" "}
-              <Link href="/assinar" className="conta-alerta-free__link">Premium</Link>.
-              Assine para ver o saldo real dos seus jogos salvos.
-            </p>
-          </div>
+          <RecursoBloqueado titulo="Carteira do apostador">
+            O saldo real dos seus jogos salvos — gasto, prêmios e saldo de cada combinação desde que
+            você a salvou, com os rateios históricos oficiais.
+          </RecursoBloqueado>
         ) : jogos.length === 0 ? (
           <div className="conta-jogos-vazio">
             <p>Você ainda não tem jogos salvos.</p>
@@ -83,7 +72,6 @@ export default async function CarteiraPage() {
             tetoAtual={profile?.teto_gasto_mensal ?? null}
           />
         )}
-      </main>
     </>
   );
 }

@@ -2,7 +2,8 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import Masthead from "@/components/Masthead";
+import { CabecalhoPagina } from "@/components/membros/MembrosShell";
+import { getContaContexto } from "@/lib/conta/contexto";
 import { createClient } from "@/lib/supabase/server";
 import { NOME_LOTERIA } from "@/lib/seo";
 
@@ -18,30 +19,23 @@ const ROTULO_STATUS: Record<string, string> = {
 };
 
 export default async function ContaBoloesPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/entrar?next=/conta/boloes");
+  const contexto = await getContaContexto();
+  if (!contexto) redirect("/entrar?next=/conta/boloes");
 
+  const supabase = await createClient();
   const { data: boloes } = await supabase
     .from("boloes")
     .select("id, titulo, loteria, concurso_alvo, alvo, status, qtd_cotas, criado_em")
-    .eq("owner_id", user.id)
+    .eq("owner_id", contexto.userId)
     .order("criado_em", { ascending: false });
 
   return (
     <>
-      <Masthead />
-      <main className="conta-page container">
-        <div className="conta-header">
-          <div>
-            <Link href="/conta" className="conta-voltar">← Minha conta</Link>
-            <h1 className="conta-titulo">Meus bolões</h1>
-            <p className="conta-email">
-              {boloes?.length ?? 0} bolão{boloes?.length !== 1 ? "s" : ""}
-            </p>
-          </div>
-          <Link href="/megasena/bolao" className="botao-gerar">+ Novo bolão</Link>
-        </div>
+        <CabecalhoPagina
+          titulo="Bolões"
+          descricao={`${boloes?.length ?? 0} ${boloes?.length === 1 ? "bolão organizado" : "bolões organizados"} por você.`}
+          acoes={<Link href="/megasena/bolao" className="m-botao">+ Novo bolão</Link>}
+        />
 
         {(boloes?.length ?? 0) === 0 ? (
           <div className="conta-jogos-vazio">
@@ -72,7 +66,6 @@ export default async function ContaBoloesPage() {
             ))}
           </ul>
         )}
-      </main>
     </>
   );
 }

@@ -3,13 +3,11 @@ export const dynamic = "force-dynamic";
 
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import Masthead from "@/components/Masthead";
 import AlertasForm from "@/components/conta/AlertasForm";
-import FormSair from "@/components/pwa/FormSair";
 import ExcluirContaForm from "@/components/conta/ExcluirContaForm";
 import { createClient } from "@/lib/supabase/server";
-import { signOut } from "@/lib/auth-actions";
-import { calcularIsPremium } from "@/lib/plano";
+import { formatarDataLonga, getContaContexto } from "@/lib/conta/contexto";
+import { CabecalhoPagina } from "@/components/membros/MembrosShell";
 
 export const metadata: Metadata = {
   title: "Minha conta — LotoAnalítica",
@@ -37,50 +35,34 @@ export default async function ContaPage({
 }: {
   searchParams: Promise<{ checkout?: string }>;
 }) {
+  const contexto = await getContaContexto();
+  if (!contexto) redirect("/entrar?next=/conta");
+  const { userId, isPremium, premiumAte } = contexto;
+
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/entrar?next=/conta");
 
   const { checkout } = await searchParams;
 
-  const [profileRes, jogosRes, alertasRes, assinaturaRes] = await Promise.all([
-    supabase.from("profiles").select("display_name, plan, plan_expires_at, stripe_customer_id").eq("id", user.id).single(),
-    supabase.from("user_games").select("id, loteria, dezenas, label, ativo").eq("user_id", user.id).eq("ativo", true).order("created_at", { ascending: false }).limit(3),
-    supabase.from("alert_preferences").select("loteria, threshold_brl, sorteios_sem_ganhador, ativo").eq("user_id", user.id),
-    supabase.from("subscriptions").select("id").eq("user_id", user.id).in("status", ["active", "trialing", "past_due"]).limit(1),
+  const [jogosRes, alertasRes, assinaturaRes] = await Promise.all([
+    supabase.from("user_games").select("id, loteria, dezenas, label, ativo").eq("user_id", userId).eq("ativo", true).order("created_at", { ascending: false }).limit(3),
+    supabase.from("alert_preferences").select("loteria, threshold_brl, sorteios_sem_ganhador, ativo").eq("user_id", userId),
+    supabase.from("subscriptions").select("id").eq("user_id", userId).in("status", ["active", "trialing", "past_due"]).limit(1),
   ]);
 
-  const profile = profileRes.data;
   const jogos = jogosRes.data ?? [];
   const alertas = alertasRes.data ?? [];
-
-  const isPremium = calcularIsPremium(profile);
   const temAssinaturaStripe = (assinaturaRes.data?.length ?? 0) > 0;
-
-  const expiresAt = profile?.plan_expires_at
-    ? new Date(profile.plan_expires_at).toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" })
-    : null;
+  const expiresAt = premiumAte ? formatarDataLonga(premiumAte) : null;
 
   return (
     <>
-      <Masthead />
-      <main className="conta-page container">
-
         {checkout === "sucesso" && (
           <div className="conta-checkout-sucesso">
             ✦ Assinatura confirmada! Bem-vindo ao Premium.
           </div>
         )}
 
-        <div className="conta-header">
-          <div>
-            <h1 className="conta-titulo">
-              Olá, {profile?.display_name ?? user.email?.split("@")[0]}
-            </h1>
-            <p className="conta-email">{user.email}</p>
-          </div>
-          <FormSair action={signOut} className="conta-sair-btn" />
-        </div>
+        <CabecalhoPagina titulo={`Olá, ${contexto.nome}`} descricao={contexto.email} />
 
         {/* ── Plano ──────────────────────────────────────────────────── */}
         <section className="conta-secao">
@@ -171,7 +153,7 @@ export default async function ContaPage({
                     <span className="conta-jogo-preview__dezenas">
                       {(j.dezenas as number[]).map(d => formatarDezena(d)).join(" · ")}
                     </span>
-                    {j.label && <span className="conta-jogo-preview__label">"{j.label}"</span>}
+                    {j.label && <span className="conta-jogo-preview__label">“{j.label}”</span>}
                   </div>
                 ))}
               </div>
@@ -249,7 +231,6 @@ export default async function ContaPage({
           </p>
           <ExcluirContaForm isPremium={isPremium} temAssinaturaStripe={temAssinaturaStripe} />
         </section>
-      </main>
     </>
   );
 }

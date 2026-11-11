@@ -2,12 +2,11 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import Masthead from "@/components/Masthead";
 import JogosListaClient from "@/components/conta/JogosListaClient";
 import BotaoRelatorio from "@/components/conta/BotaoRelatorio";
 import { createClient } from "@/lib/supabase/server";
-import { formatarDezena } from "@/lib/format";
-import { calcularIsPremium } from "@/lib/plano";
+import { getContaContexto } from "@/lib/conta/contexto";
+import { CabecalhoPagina } from "@/components/membros/MembrosShell";
 
 export const metadata: Metadata = {
   title: "Meus jogos — LotoAnalítica",
@@ -15,40 +14,28 @@ export const metadata: Metadata = {
 };
 
 export default async function ContaJogosPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/entrar?next=/conta/jogos");
+  const contexto = await getContaContexto();
+  if (!contexto) redirect("/entrar?next=/conta/jogos");
+  const { isPremium, userId } = contexto;
 
+  const supabase = await createClient();
   const { data: jogos } = await supabase
     .from("user_games")
     .select("id, loteria, dezenas, label, ativo, created_at")
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .order("created_at", { ascending: false });
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("plan, plan_expires_at")
-    .eq("id", user.id)
-    .single();
-
-  const isPremium = calcularIsPremium(profile);
 
   return (
     <>
-      <Masthead />
-      <main className="conta-page container">
-        <div className="conta-header">
-          <div>
-            <Link href="/conta" className="conta-voltar">← Minha conta</Link>
-            <h1 className="conta-titulo">Meus jogos</h1>
-            <p className="conta-email">
-              {jogos?.length ?? 0} jogo{jogos?.length !== 1 ? "s" : ""} salvos
-            </p>
-          </div>
-          <Link href="/conta/jogos/novo" className="botao-gerar">
-            + Adicionar jogo
-          </Link>
-        </div>
+        <CabecalhoPagina
+          titulo="Jogos salvos"
+          descricao={`${jogos?.length ?? 0} jogo${jogos?.length !== 1 ? "s" : ""} salvo${jogos?.length !== 1 ? "s" : ""} na sua conta.`}
+          acoes={
+            <Link href="/conta/jogos/novo" className="m-botao">
+              + Adicionar jogo
+            </Link>
+          }
+        />
 
         {!isPremium && (jogos?.length ?? 0) > 0 && (
           <div className="conta-alerta-free">
@@ -95,7 +82,6 @@ export default async function ContaJogosPage() {
             <RelatorioBotoes />
           </section>
         )}
-      </main>
     </>
   );
 }
