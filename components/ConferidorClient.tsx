@@ -277,8 +277,10 @@ export default function ConferidorClient({
       {!isPremium && restantes !== null && !limiteAtingido && (
         <p className="bloco__nota">
           {restantes === 0
-            ? "Essa foi sua última conferência grátis nas últimas 24 horas."
-            : `Restam ${restantes} ${restantes === 1 ? "conferência grátis" : "conferências grátis"} nas próximas 24 horas.`}
+            ? "Essa foi sua última conferência grátis por enquanto. Uma nova libera 24 horas depois da mais antiga."
+            : restantes === 1
+              ? "Resta 1 conferência grátis nas próximas 24 horas."
+              : `Restam ${restantes} conferências grátis nas próximas 24 horas.`}
         </p>
       )}
 

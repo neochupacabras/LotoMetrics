@@ -52,13 +52,21 @@ export default async function PainelPage({
         {dados.linhaDoDia && <p className="m-saudacao__linha">{dados.linhaDoDia}</p>}
       </header>
 
-      <div className="m-painel-grade">
-        <ModuloLoterias dados={dados} />
-        <ModuloAcessoRapido loteria={dados.loteriaContexto} />
-        <ModuloJogos dados={dados} />
-        <ModuloAssinatura resumo={assinatura} />
-        <ModuloNovidades />
-        <ModuloAtividade dados={dados} />
+      {/* Duas colunas independentes no desktop (cada uma empilha os seus
+          módulos, sem buracos quando um lado é mais alto); no celular as
+          colunas "somem" (display: contents) e a ordem vem de `order`, com o
+          acesso rápido primeiro. */}
+      <div className="m-painel-colunas">
+        <div className="m-painel-coluna">
+          <ModuloLoterias dados={dados} />
+          <ModuloJogos dados={dados} />
+          <ModuloNovidades />
+        </div>
+        <div className="m-painel-coluna">
+          <ModuloAcessoRapido loteria={dados.loteriaContexto} />
+          <ModuloAssinatura resumo={assinatura} />
+          <ModuloAtividade dados={dados} />
+        </div>
       </div>
     </>
   );

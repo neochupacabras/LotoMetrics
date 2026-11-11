@@ -3209,3 +3209,41 @@ a.m-ferramenta__link:hover .m-ferramenta__seta {
 .m-conteudo .conta-jogos-vazio .botao-gerar {
   margin-top: 8px;
 }
+
+/* ---------- Painel em duas colunas independentes ----------
+   A grade de áreas alinhava as linhas dos dois lados: quando o Acesso
+   rápido era mais alto que Próximos sorteios, sobrava um buraco embaixo
+   do módulo mais curto (visto em produção em 11/11/2026). Agora cada
+   coluna empilha os seus módulos. No celular as colunas viram
+   display: contents e a ordem de leitura vem de `order`. */
+.m-painel-colunas {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.m-painel-coluna {
+  display: contents;
+}
+
+.m-painel-colunas .m-modulo--rapido { order: 1; }
+.m-painel-colunas .m-modulo--loterias { order: 2; }
+.m-painel-colunas .m-modulo--jogos { order: 3; }
+.m-painel-colunas .m-modulo--assinatura { order: 4; }
+.m-painel-colunas .m-modulo--atividade { order: 5; }
+.m-painel-colunas .m-modulo--novidades { order: 6; }
+
+@container conteudo (min-width: 860px) {
+  .m-painel-colunas {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .m-painel-coluna {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+  }
+}

@@ -65,7 +65,10 @@ export default async function ContaJogosPage() {
               dezenas: j.dezenas as number[],
               label: j.label ?? null,
               ativo: j.ativo,
+              // Fuso de Brasília: no servidor (UTC), um jogo salvo à noite
+              // aparecia com a data do dia seguinte.
               criadoEm: new Date(j.created_at).toLocaleDateString("pt-BR", {
+                timeZone: "America/Sao_Paulo",
                 day: "numeric", month: "short", year: "numeric",
               }),
             }))}
