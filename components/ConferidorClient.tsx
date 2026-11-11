@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import Dezenas from "./Dezenas";
+import Link from "next/link";
 import SeletorColunasSuperSete from "./SeletorColunasSuperSete";
 import dynamic from "next/dynamic";
 import { conferirJogoAction, calcularRetornoFinanceiroAction, ConferidorActionResult } from "@/lib/conferidor-actions";
@@ -290,13 +290,13 @@ export default function ConferidorClient({
             Quer conferir mais jogos? O plano gratuito confere 3 jogos a cada 24 horas; com o
             Premium, quantos quiser.
           </p>
-          <a href="/assinar" className="botao-gerar">
+          <Link href="/assinar" className="botao-gerar">
             Assinar Premium →
-          </a>
+          </Link>
           {!logado && (
-            <a href="/entrar" className="conferidor-premium-cta__entrar">
+            <Link href={`/entrar?next=/${codigoLoteria}/conferidor`} className="conferidor-premium-cta__entrar">
               Já tenho uma conta
-            </a>
+            </Link>
           )}
         </div>
       )}

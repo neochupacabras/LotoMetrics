@@ -216,9 +216,9 @@ Landmarks (`nav` com `aria-label`, `main`, `aria-current="page"`), foco visível
 
 ## Decisões (aprovadas em 10/11/2026)
 
-- **A. Voltar da ferramenta:** aprovada a opção do chip, mas **não foi feita como chip separado**. Quem está logado volta pelo link "Minha conta" que já existe no masthead público (com o selo ✦ para o assinante) e pelo ícone de perfil no celular. O chip continua sendo uma melhoria possível.
+- **A. Voltar da ferramenta:** feito em 11/11/2026 (`components/auth/ChipAreaMembro.tsx`). No masthead público, quem está logado vê um chip escuro com o losango ocre ("pedaço da lombada"): "Área do assinante" para Premium e "Minha área" para o plano gratuito. No celular aparece compacto ("Área" / "Conta"). É decidido no cliente, então preserva o ISR.
 - **B. Favoritos e recentes:** feito como recomendado. Os favoritos ficam no banco (migration `20261111000100_favoritos_membros.sql`, aplicada em produção em 10/11/2026), e os recentes no `localStorage`.
-- **C. Trava do conferidor e do gerador só no cliente:** **ainda pendente**, num PR separado (fora do redesign).
+- **C. Trava do conferidor e do gerador só no cliente:** resolvida na #66. O conferidor gratuito tem 3 conferências por 24 h, controladas no servidor com cookie HMAC. O gerador avançado está documentado como trava só de interface, porque roda no navegador sobre dados públicos.
 
 ---
 
@@ -240,3 +240,16 @@ Notas de 1 a 5. A coluna "O que falta" é a parte importante.
 | Integridade | 4 | Nenhuma regra de negócio ou cálculo alterado. As páginas continuam verificando a sessão no servidor. 434 testes (eram 409) e build limpos. URLs antigas mantidas. Correções no caminho: redefinição de senha (404), validade do Pix, promessa de OCR, bolão fixo na Mega-Sena e chaves duplicadas do Super Sete. | Não verificado no navegador: conta gratuita, histórico Pix, as 7 loterias que não existem no banco local e a redefinição de senha de ponta a ponta. |
 
 **Resumo:** a área de membros virou um produto com estrutura e identidade próprias e passa nos critérios básicos de acessibilidade e responsividade. Para chegar a 5 faltam três coisas, nesta ordem: (1) não "sair" da área ao abrir uma ferramenta; (2) reescrever os componentes antigos nos padrões novos, em vez de só ajustá-los por CSS; (3) testar com contas gratuita e de Pix, leitor de tela e aparelho físico.
+
+
+### Atualização de 11/11/2026 (pendências da Parte 4)
+
+- **Ferramentas fora da moldura (percepção e navegação):** o chip "Área do assinante" cria o caminho de volta destacado em todas as páginas públicas.
+- **Consistência:** `JogosListaClient`, `TetoGastoForm`, `AlertasForm`, `ApiKeysClient` e `BolaoEditorClient` foram **reescritos** nos padrões `.m-*`. As 67 regras antigas que só eles usavam saíram do `globals.css`. Na reescrita, o comportamento melhorou em quatro pontos:
+  - **Jogos salvos:** o status volta atrás e mostra o erro quando o servidor recusa.
+  - **Alertas:** a lista atualiza depois de salvar.
+  - **Chaves da API:** a chave nova aparece na hora, a tela não oferece "criar" além de 3 chaves e revogar só some se o servidor confirmar.
+  - **Teto de gasto:** a barra é neutra e só fica vermelha ao passar do teto.
+- **Clareza:** a `/premium` não cita mais dias de sorteio (estavam desatualizados) e diz que a conferência por e-mail cobre as 9 loterias.
+- **Lint:** sem erros no conferidor (`<Link>` no lugar de `<a>`, sem `any`).
+- **Ainda não verificado no navegador:** o editor de bolão reescrito, porque a conta de teste não tem bolão.

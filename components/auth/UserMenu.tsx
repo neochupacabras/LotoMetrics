@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePlanoUsuario } from "@/components/auth/PlanoUsuarioProvider";
+import ChipAreaMembro from "@/components/auth/ChipAreaMembro";
 
 export default function UserMenu() {
   const { carregando, logado, isPremium } = usePlanoUsuario();
@@ -30,12 +31,7 @@ export default function UserMenu() {
           ✦ Premium
         </Link>
       )}
-      <Link href="/conta" className="usermenu-conta">
-        Minha conta
-        {isPremium && (
-          <span className="usermenu-badge-inline" aria-label="Premium">✦</span>
-        )}
-      </Link>
+      <ChipAreaMembro isPremium={isPremium} />
     </div>
   );
 }

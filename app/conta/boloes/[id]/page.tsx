@@ -1,6 +1,5 @@
 export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import BolaoEditorClient from "@/components/conta/BolaoEditorClient";
 import { createClient } from "@/lib/supabase/server";
@@ -45,9 +44,6 @@ export default async function ContaBolaoPage({ params }: { params: Promise<{ id:
 
   return (
     <>
-        <Link href="/conta/boloes" className="m-cabecalho__voltar">
-          <span aria-hidden>←</span> Bolões
-        </Link>
         <BolaoEditorClient
           bolao={{
             id: bolao.id,

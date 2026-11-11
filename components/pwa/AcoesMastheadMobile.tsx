@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePlanoUsuario } from "@/components/auth/PlanoUsuarioProvider";
 import { IconePerfil, IconeSino } from "@/components/pwa/Icones";
+import ChipAreaMembro from "@/components/auth/ChipAreaMembro";
 
 // Ações compactas do cabeçalho no celular (substituem visualmente o
 // UserMenu, que fica escondido abaixo de 640px — ver app/pwa.css):
@@ -15,15 +16,19 @@ export default function AcoesMastheadMobile() {
       <Link href="/notificacoes" className="masthead-mobile__botao" aria-label="Notificações">
         <IconeSino />
       </Link>
-      <Link
-        href={logado ? "/conta" : "/entrar"}
-        className="masthead-mobile__botao masthead-mobile__perfil"
-        aria-label={carregando ? "Conta" : logado ? "Minha conta" : "Entrar"}
-        data-logado={logado}
-      >
-        <IconePerfil />
-        {isPremium && <span className="masthead-mobile__selo" aria-label="Premium">✦</span>}
-      </Link>
+      {logado ? (
+        // Logado: o mesmo chip do desktop, compacto ("Área" / "Conta").
+        <ChipAreaMembro isPremium={isPremium} compacto />
+      ) : (
+        <Link
+          href="/entrar"
+          className="masthead-mobile__botao masthead-mobile__perfil"
+          aria-label={carregando ? "Conta" : "Entrar"}
+          data-logado={false}
+        >
+          <IconePerfil />
+        </Link>
+      )}
     </div>
   );
 }

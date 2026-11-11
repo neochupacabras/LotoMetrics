@@ -60,7 +60,7 @@ const GRUPOS = [
       {
         nome: "Rastreador de jogos pessoais",
         detalhe:
-          "Cadastre suas combinações fixas. Após cada sorteio da Lotofácil (todos os dias, exceto domingo) e Mega-Sena (terça, quinta e sábado), você recebe um e-mail com quantos pontos cada jogo fez e se houve prêmio.",
+          "Cadastre suas combinações fixas, de qualquer uma das 9 loterias. Depois de cada sorteio de uma loteria em que você tem jogos salvos, você recebe um e-mail com quantos pontos cada jogo fez e se houve prêmio.",
         link: null,
       },
       {
