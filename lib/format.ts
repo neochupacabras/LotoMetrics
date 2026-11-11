@@ -67,3 +67,23 @@ export function formatarMoeda(valor: number | null): string {
 export function formatarDezena(dezena: number): string {
   return dezena.toString().padStart(2, "0");
 }
+
+// "1 em N" de uma probabilidade: abaixo de 10, uma casa decimal ("1 em 4,2",
+// como a tabela da Caixa); acima, inteiro com separador de milhar.
+// Auditoria da Lotofácil, LF-09.
+export function formatarUmEm(probabilidade: number): string {
+  if (!(probabilidade > 0)) return "—";
+  const n = 1 / probabilidade;
+  if (n < 10) return `1 em ${n.toFixed(1).replace(".", ",")}`;
+  return `1 em ${Math.round(n).toLocaleString("pt-BR")}`;
+}
+
+// Probabilidade em %, com vírgula; nunca mostra "100,0%" para algo que não é
+// certo (auditoria da Lotofácil, LF-15).
+export function formatarProbabilidadePct(p: number): string {
+  if (p >= 1) return "100%";
+  if (p >= 0.999) return "> 99,9%";
+  if (p >= 0.01) return `${(p * 100).toFixed(1).replace(".", ",")}%`;
+  if (p >= 0.001) return `${(p * 100).toFixed(2).replace(".", ",")}%`;
+  return "< 0,1%";
+}

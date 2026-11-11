@@ -4,6 +4,7 @@ import { useState } from "react";
 import { calcularProbabilidades, FaixaProbabilidade } from "@/lib/probabilidades";
 import { qtdSorteiosPorSemana } from "@/lib/calendario";
 import InsightCallout from "./InsightCallout";
+import { formatarUmEm } from "@/lib/format";
 
 const QTD_EXTRA_DEZENAS_MAX = 5;
 
@@ -57,7 +58,7 @@ export default function ProbabilidadesClient({
           <strong>
             {anosParaEsperarAcerto >= 1000
               ? `${Math.round(anosParaEsperarAcerto).toLocaleString("pt-BR")} anos`
-              : `${anosParaEsperarAcerto.toFixed(1)} anos`}
+              : `${anosParaEsperarAcerto.toFixed(1).replace(".", ",")} anos`}
           </strong>{" "}
           pra esperar acertar a faixa principal uma única vez.
         </InsightCallout>
@@ -102,7 +103,7 @@ export default function ProbabilidadesClient({
                 </td>
                 <td className="num">{f.combinacoesFavoraveis.toLocaleString("pt-BR")}</td>
                 <td className="num">{f.totalCombinacoes.toLocaleString("pt-BR")}</td>
-                <td className="num">1 em {f.umEm.toLocaleString("pt-BR")}</td>
+                <td className="num">{formatarUmEm(f.probabilidade)}</td>
               </tr>
             ))}
         </tbody>

@@ -45,8 +45,9 @@ const LINKS_ARTIGOS: Record<string, string> = {
 // não uma tabulação — o número exato continua disponível no detalhe.
 function fraseFrequencia(pct: number): string {
   if (pct >= 50) return "Mais da metade dos jogos possíveis têm esse mesmo padrão";
-  if (pct >= 25) return "Cerca de 1 em cada 4 jogos tem esse padrão";
-  if (pct >= 10) return "Cerca de 1 em cada 10 jogos tem esse padrão";
+  // "1 em cada N" calculado do próprio %: as faixas fixas antigas diziam
+  // "1 em cada 10" para 21% (auditoria da Lotofácil, apresentação).
+  if (pct >= 10) return `Cerca de 1 em cada ${Math.round(100 / pct)} jogos tem esse padrão`;
   if (pct >= 3) return "Só uma fatia pequena dos jogos tem esse padrão";
   return "Isso é raro — poucos jogos têm exatamente esse padrão";
 }
@@ -78,7 +79,7 @@ function badgeClass(l: LabelTipicidade) {
 
 function BarraFrequencia({ pct }: { pct: number }) {
   return (
-    <div className="analisador-barra-fundo" title={`${pct.toFixed(1)}% das combinações possíveis`}>
+    <div className="analisador-barra-fundo" title={`${pct.toFixed(1).replace(".", ",")}% das combinações possíveis`}>
       <div className="analisador-barra-fill" style={{ width: `${Math.max(2, pct)}%` }} />
     </div>
   );
@@ -103,7 +104,7 @@ function MetricaCard({ titulo, valor, contextoExtra, pct, label, link }: Metrica
       <div className="analisador-card__valor">{valor}</div>
       <BarraFrequencia pct={pct} />
       <div className="analisador-card__detalhe">
-        {fraseFrequencia(pct)} ({pct.toFixed(1)}%){contextoExtra ? ` — ${contextoExtra}` : ""}{" "}
+        {fraseFrequencia(pct)} ({pct.toFixed(1).replace(".", ",")}%){contextoExtra ? ` — ${contextoExtra}` : ""}{" "}
         <Link href={link} className="analisador-card__link">
           Saiba mais ↗
         </Link>
@@ -117,6 +118,7 @@ export default function AnalisadorClient({
   nomeLoteria,
   dezenaMin,
   dezenaMax,
+  gridColunas,
   qtdDezenasSorteadas,
 }: Props) {
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
@@ -131,7 +133,9 @@ export default function AnalisadorClient({
       const next = new Set(prev);
       if (next.has(d)) {
         next.delete(d);
-      } else {
+      } else if (next.size < qtdDezenasSorteadas) {
+        // As distribuições descrevem sorteios de exatamente
+        // qtdDezenasSorteadas dezenas: não dá pra analisar um jogo maior.
         next.add(d);
       }
       return next;
@@ -141,8 +145,11 @@ export default function AnalisadorClient({
   const dezenas = useMemo(() => [...selecionadas].sort((a, b) => a - b), [selecionadas]);
 
   const resultado: ResultadoAnalisador | null = useMemo(
-    () => (dezenas.length > 0 ? analisar(dezenas, codigoLoteria) : null),
-    [dezenas, codigoLoteria]
+    // Só analisa o jogo completo (auditoria da Lotofácil, LF-17): com menos
+    // dezenas, a comparação com distribuições de sorteios completos não faz
+    // sentido. Passa a faixa e a grade da loteria — antes ia o padrão 1–25.
+    () => analisar(dezenas, codigoLoteria, dezenaMin, dezenaMax, gridColunas, qtdDezenasSorteadas),
+    [dezenas, codigoLoteria, dezenaMin, dezenaMax, gridColunas, qtdDezenasSorteadas]
   );
 
   const pctCompleto = (selecionadas.size / qtdDezenasSorteadas) * 100;
@@ -153,7 +160,7 @@ export default function AnalisadorClient({
       {/* ── Grade de seleção ─────────────────────────────── */}
       <div className="bloco">
         <p className="analisador-instrucao">
-          Selecione as dezenas do seu jogo — a análise atualiza em tempo real.
+          Selecione as {qtdDezenasSorteadas} dezenas do seu jogo para ver a análise.
         </p>
 
         <div className="grade-dezenas">
@@ -205,7 +212,6 @@ export default function AnalisadorClient({
             <span className="analisador-resumo__numero">{resultado.tipicas}</span>
             <span className="analisador-resumo__texto">
               de 7 — esse jogo {fraseVeredito(resultado.tipicas)}
-              {!completo && ` (${selecionadas.size}/${qtdDezenasSorteadas} dezenas)`}
             </span>
           </div>
 
@@ -214,7 +220,17 @@ export default function AnalisadorClient({
             <MetricaCard
               titulo="Soma das dezenas"
               valor={String(resultado.soma.valor)}
-              contextoExtra={`percentil ${resultado.soma.percentil.toFixed(0)}%, faixa típica ${FAIXA_TIPICA_SOMA[codigoLoteria] ?? "—"}`}
+              contextoExtra={
+                resultado.soma.faixaInicio !== undefined
+                  ? `somas de ${resultado.soma.faixaInicio} a ${resultado.soma.faixaFim}; ${
+                      resultado.soma.percentil < 1
+                        ? "menos de 1%"
+                        : resultado.soma.percentil > 99
+                          ? "mais de 99%"
+                          : `${resultado.soma.percentil.toFixed(0)}%`
+                    } das combinações têm soma igual ou menor; faixa típica ${FAIXA_TIPICA_SOMA[codigoLoteria] ?? "—"}`
+                  : `percentil ${resultado.soma.percentil.toFixed(0)}%, faixa típica ${FAIXA_TIPICA_SOMA[codigoLoteria] ?? "—"}`
+              }
               pct={resultado.soma.pct}
               label={resultado.soma.label}
               link={LINKS_ARTIGOS.soma}
@@ -280,9 +296,13 @@ export default function AnalisadorClient({
         </>
       )}
 
-      {selecionadas.size === 0 && (
+      {!completo && (
         <p className="analisador-vazio">
-          Selecione pelo menos uma dezena para começar.
+          {selecionadas.size === 0
+            ? `Selecione as ${qtdDezenasSorteadas} dezenas do jogo para ver a análise.`
+            : qtdDezenasSorteadas - selecionadas.size === 1
+              ? "Falta 1 dezena — a análise aparece com o jogo completo."
+              : `Faltam ${qtdDezenasSorteadas - selecionadas.size} dezenas — a análise aparece com o jogo completo.`}
         </p>
       )}
     </div>

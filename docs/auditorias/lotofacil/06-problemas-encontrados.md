@@ -1,8 +1,8 @@
 # 06 — Registro de problemas (Lotofácil)
 
 Versão final (Fase 6, 11/11/2026; Fase 3 parcial). Atualizada com a Etapa 1 do
-plano de correção (textos), feita em 11/11/2026 no branch `fix/lotofacil-textos`
-e ainda não publicada. Gravidades revisadas na
+plano de correção (textos), publicada em 11/11/2026 (PR #70), e com a Etapa 2
+(cálculos) no branch `fix/lotofacil-calculos`. Gravidades revisadas na
 Fase 6: LF-39 subiu para CRÍTICO e LF-40 para ALTO. "Comprovado" = há demonstração reproduzível
 (`03-auditoria-matematica.md` e `evidencias/fase2/`); "suspeita" = falta
 demonstrar; "descartado" = verificado e não é problema.
@@ -12,28 +12,28 @@ implementação · **A** apresentação · **C** componente compartilhado.
 
 | ID | Grav. | Status | Origem | Ferramenta | Resumo |
 |---|---|---|---|---|---|
-| LF-04 | ALTO | Comprovado | P/A | Simulador histórico | Custo a R$ 3,50 em todo o histórico; retorno médio mostrado 25% x 40% real (preço da época); a página afirma usar o preço de cada concurso |
+| LF-04 | ALTO | Corrigido (Etapa 2) | P/A | Simulador histórico | Custo a R$ 3,50 em todo o histórico; retorno médio mostrado 25% x 40% real (preço da época); a página afirma usar o preço de cada concurso |
 | LF-01 | ALTO | Corrigido (Etapa 1) | D/A | Textos | Prêmios fixos R$ 5/10/25; vigentes R$ 7/14/35 |
 | LF-02 | ALTO | Corrigido (Etapa 1) | D/A | Textos | 43,35% x 43,79% oficial (43,35% valeu até o concurso 3257, 30/11/2024; texto desatualizado) |
-| LF-16 | ALTO | Comprovado | A | Analisador | Centralidade da soma apresentada como "% dos jogos possíveis com esse padrão" (soma 195: diz 97,8%, real 2,2%) |
-| LF-29 | MÉDIO | Comprovado | R/A | Calc. valor esperado | Exemplo da Lotofácil ignora prêmios fixos e 14 acertos: mostra 13% de retorno (real ~44%) |
+| LF-16 | ALTO | Corrigido (Etapa 2) | A | Analisador | Centralidade da soma apresentada como "% dos jogos possíveis com esse padrão" (soma 195: diz 97,8%, real 2,2%) |
+| LF-29 | MÉDIO | Corrigido (Etapa 2) | R/A | Calc. valor esperado | Exemplo da Lotofácil ignora prêmios fixos e 14 acertos: mostra 13% de retorno (real ~44%) |
 | LF-07 | MÉDIO | Comprovado | R/P | Projeção de acúmulo | Modelo superestima chance de ganhador (87,8% x 75,3%; 1.007 x 871 ganhadores); fator +20% sem calibração (real +70%); ignora final 0 e Independência |
 | LF-27 | MÉDIO | Comprovado | R | Equilíbrio | 93,7% das combinações são "típico", 31,6% nota 100; classes não discriminam |
 | LF-08 | MÉDIO | Comprovado | R | Equilíbrio | Pesos e teto de 12% sem fundamento; soma por faixa de 10 dita "este valor" |
 | LF-21 | MÉDIO | Comprovado | R/A | Destaques | Critério marca 85,6% dos concursos como "resultado incomum" |
 | LF-19 | MÉDIO | Corrigido (Etapa 1) | A | Heatmap | Texto fixo "exatamente o esperado (±2 dp)"; 5 de 25 dezenas fora de 2 dp |
-| LF-25 | MÉDIO | Comprovado | I | Gerador (modo simples) | Dezena obrigatória (atrasada) e excluída (mais frequente) ao mesmo tempo: entra em 28% dos jogos marcados como "atendeu todos os filtros" |
-| LF-03 | MÉDIO | Comprovado | P | Analisador | Caudas erradas nas tabelas fixas de primos, moldura, Fibonacci e múltiplos de 3 |
-| LF-17 | MÉDIO | Comprovado | I/A | Analisador | Analisa jogos incompletos (1–14 dezenas) com distribuições de 15 |
-| LF-05 | MÉDIO | Comprovado | I/A | Simulador | 15 acertos em concurso acumulado (493 concursos) vale R$ 0 e some do resultado, sem aviso |
+| LF-25 | MÉDIO | Corrigido (Etapa 2) | I | Gerador (modo simples) | Dezena obrigatória (atrasada) e excluída (mais frequente) ao mesmo tempo: entra em 28% dos jogos marcados como "atendeu todos os filtros" |
+| LF-03 | MÉDIO | Corrigido (Etapa 2) | P | Analisador | Caudas erradas nas tabelas fixas de primos, moldura, Fibonacci e múltiplos de 3 |
+| LF-17 | MÉDIO | Corrigido (Etapa 2) | I/A | Analisador | Analisa jogos incompletos (1–14 dezenas) com distribuições de 15 |
+| LF-05 | MÉDIO | Corrigido (Etapa 2) | I/A | Simulador | 15 acertos em concurso acumulado (493 concursos) vale R$ 0 e some do resultado, sem aviso |
 | LF-18 | INFORMATIVO | Comprovado (estatística) | D? | Tabelas / textos | Histórico rejeita uniformidade das dezenas (χ² 56,6, 24 gl; Monte Carlo p = 0,0005), concentrado em 2003–09 e 2020–21; Fase 3 deve descartar erro de dados |
 | LF-20 | BAIXO | Texto corrigido; comparação com viés de seleção mantida | R/A | Simulador de frequência | Compara extremos reais com as mesmas dezenas simuladas (viés de seleção); conclusão escrita não demonstrada |
-| LF-15 | BAIXO | Comprovado | A | Projeção | Probabilidade ≥ 0,9995 aparece como "100,0%" |
+| LF-15 | BAIXO | Corrigido (Etapa 2) | A | Projeção | Probabilidade ≥ 0,9995 aparece como "100,0%" |
 | LF-23 | BAIXO | Comprovado | A | Fechamentos | "Completo … garante o prêmio máximo" sem condição nem probabilidade (pool 18: 1 em 4.006) |
-| LF-28 | BAIXO | Comprovado | P | Calc. probabilidade | Aceita até 25 dezenas (máximo oficial 20) |
-| LF-26 | BAIXO | Comprovado | I | Gerador | Sem solução, devolve a 1ª tentativa (não a melhor) como "parcialmente atendidos"; biblioteca aceita obrigatória duplicada (14 dezenas) |
+| LF-28 | BAIXO | Corrigido (Etapa 2) | P | Calc. probabilidade | Aceita até 25 dezenas (máximo oficial 20) |
+| LF-26 | BAIXO | Corrigido (Etapa 2) | I | Gerador | Sem solução, devolve a 1ª tentativa (não a melhor) como "parcialmente atendidos"; biblioteca aceita obrigatória duplicada (14 dezenas) |
 | LF-22 | BAIXO | Comprovado | P/C | Acúmulos | Filtro "≥ 7 sorteios" e escala herdados de outra loteria; na Lotofácil o máximo é 4 |
-| LF-09 | BAIXO | Comprovado | A | Probabilidades | "1 em N" arredondado para inteiro (4,22 → 4) |
+| LF-09 | BAIXO | Corrigido (Etapa 2) | A | Probabilidades | "1 em N" arredondado para inteiro (4,22 → 4) |
 | LF-10 | BAIXO | Comprovado (latente) | R | Atraso, Destaques, Recordes | "Maior atraso" ignora trecho inicial e atraso corrente; hoje sem efeito nos números |
 | LF-24 | BAIXO | Comprovado | I/A | Bolão | Divisão por cota arredonda para baixo e os centavos restantes não aparecem |
 | LF-11 | INFORMATIVO | Comprovado | — | Conferidor | Só confere apostas de 15 dezenas |
@@ -58,6 +58,7 @@ implementação · **A** apresentação · **C** componente compartilhado.
 | LF-45 | BAIXO | Corrigido (Etapa 1) | A | Artigos e tabela de ciclos | 6–9 pares "98%" (88,93%); sem 3+ seguidas "≈9.800, 0,30%" (9.042, 0,28%); média de ciclo só dos 15 últimos |
 | LF-37 | BAIXO | Corrigido (Etapa 1) | P/A | Gerador, par/ímpar, Data da sorte | Textos genéricos impossíveis na Lotofácil: "0-15 ou 15-0" pares, "aniversários concentram 1 a 31" |
 | LF-46 | BAIXO | Comprovado | A | Várias telas | Decimais com ponto em cartões/gráficos ("20.62%", "195.14", "R$14.3M") e vírgula nos textos; "Nao Primo" sem acento |
+| LF-48 | ALTO (outras loterias) | Comprovado | C | Analisador (Quina, Lotomania, Dia de Sorte, +Milionária, Timemania, Dupla Sena, Super Sete) | Tabelas guardadas em fração (0,15) e lidas como % (0,15%): todo jogo sai "Raro" em tudo e "0 de 7" típicas (ex.: Quina, 2 pares = 0,15% em vez de 32%). Fora do escopo da Lotofácil; não corrigido |
 | LF-06 | — | Descartado | — | Simulador | Todos os 3.826 concursos têm as 5 faixas; o JOIN interno não perde concursos |
 
 ---

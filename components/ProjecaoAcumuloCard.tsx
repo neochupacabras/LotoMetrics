@@ -1,5 +1,6 @@
 import type { ProjecaoAcumulo } from "@/lib/probabilidades";
 import Link from "next/link";
+import { formatarProbabilidadePct } from "@/lib/format";
 
 interface Props {
   projecao: ProjecaoAcumulo;
@@ -16,11 +17,7 @@ function formatarReais(v: number): string {
   return `R$ ${v.toFixed(2).replace(".", ",")}`;
 }
 
-function formatarPct(p: number): string {
-  if (p >= 0.01)  return `${(p * 100).toFixed(1)}%`;
-  if (p >= 0.001) return `${(p * 100).toFixed(2)}%`;
-  return `< 0,1%`;
-}
+const formatarPct = formatarProbabilidadePct;
 
 function formatarData(iso: string | null): string {
   if (!iso) return "";
@@ -105,7 +102,7 @@ export default function ProjecaoAcumuloCard({
           Chance de haver ganhador no próximo concurso
         </p>
         <p className="projecao-card__tickets-nota">
-          Baseado em ~{(projecao.ticketsEstimados / 1_000_000).toFixed(1)} milhões de apostas estimadas
+          Baseado em ~{(projecao.ticketsEstimados / 1_000_000).toFixed(1).replace(".", ",")} milhões de apostas estimadas
         </p>
 
         <div className="projecao-barras">

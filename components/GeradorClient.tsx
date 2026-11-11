@@ -101,21 +101,27 @@ export default function GeradorClient({
   const quenteDisponivel = tipoQuente === "duque" ? duquesDisponiveis : trincasDisponiveis;
 
   function gerarUmSimples(): ResultadoGeracao {
+    // As obrigatórias saem só entre as dezenas que o preset não exclui: uma
+    // dezena pode estar entre as atrasadas e entre as mais frequentes ao mesmo
+    // tempo, e antes entrava no jogo apesar da exclusão (auditoria, LF-25).
+    const excluidas = dados.maisFrequentes.slice(0, PRESET_MODO_SIMPLES.qtdExcluirFrequentes);
     const obrigatorias = new Set<number>();
-    amostrarSubconjunto(dados.maisAtrasadas, PRESET_MODO_SIMPLES.qtdAtrasadas).forEach((d) =>
+    amostrarSubconjunto(dados.maisAtrasadas, PRESET_MODO_SIMPLES.qtdAtrasadas, excluidas).forEach((d) =>
       obrigatorias.add(d)
     );
     if (cicloDisponivel) {
-      amostrarSubconjunto(dados.dezenasFaltantesCiclo, PRESET_MODO_SIMPLES.qtdCiclo).forEach((d) =>
-        obrigatorias.add(d)
-      );
+      amostrarSubconjunto(
+        dados.dezenasFaltantesCiclo,
+        PRESET_MODO_SIMPLES.qtdCiclo,
+        [...excluidas, ...obrigatorias]
+      ).forEach((d) => obrigatorias.add(d));
     }
     const resultado = gerarJogo({
       dezenaMin,
       dezenaMax,
       qtdDezenas: qtdDezenasPadrao,
       dezenasObrigatorias: Array.from(obrigatorias),
-      dezenasExcluidas: dados.maisFrequentes.slice(0, PRESET_MODO_SIMPLES.qtdExcluirFrequentes),
+      dezenasExcluidas: excluidas,
       somaFaixa: dados.somaFaixaComum,
       parImparAlvo: dados.parImparComum,
       primosAlvo: dados.primosComuns,
@@ -125,21 +131,32 @@ export default function GeradorClient({
   }
 
   function gerarUmAvancado(): ResultadoGeracao {
-    const obrigatorias = new Set<number>();
-    if (usarAtrasadas) {
-      amostrarSubconjunto(dados.maisAtrasadas, qtdAtrasadas).forEach((d) => obrigatorias.add(d));
-    }
-    if (usarCiclo && cicloDisponivel) {
-      amostrarSubconjunto(dados.dezenasFaltantesCiclo, qtdCiclo).forEach((d) => obrigatorias.add(d));
-    }
-    if (usarQuente && quenteDisponivel) {
-      const pool = tipoQuente === "duque" ? dados.duquesQuentes : dados.trincasQuentes;
-      const combo = pool[Math.floor(Math.random() * pool.length)];
-      combo.forEach((d) => obrigatorias.add(d));
-    }
+    // Exclusões primeiro: as obrigatórias (atrasadas, ciclo, duque/trinca)
+    // são escolhidas só entre as dezenas permitidas (auditoria, LF-25).
     const dezenasExcluidas = usarExcluirFrequentes
       ? dados.maisFrequentes.slice(0, qtdExcluirFrequentes)
       : [];
+    const obrigatorias = new Set<number>();
+    if (usarAtrasadas) {
+      amostrarSubconjunto(dados.maisAtrasadas, qtdAtrasadas, dezenasExcluidas).forEach((d) => obrigatorias.add(d));
+    }
+    if (usarCiclo && cicloDisponivel) {
+      amostrarSubconjunto(dados.dezenasFaltantesCiclo, qtdCiclo, [...dezenasExcluidas, ...obrigatorias]).forEach((d) =>
+        obrigatorias.add(d)
+      );
+    }
+    if (usarQuente && quenteDisponivel) {
+      const pool = (tipoQuente === "duque" ? dados.duquesQuentes : dados.trincasQuentes).filter(
+        (combo) => !combo.some((d) => dezenasExcluidas.includes(d))
+      );
+      if (pool.length === 0) {
+        throw new Error(
+          "Todos os duques/trincas quentes têm alguma dezena entre as excluídas. Desmarque um dos dois filtros."
+        );
+      }
+      const combo = pool[Math.floor(Math.random() * pool.length)];
+      combo.forEach((d) => obrigatorias.add(d));
+    }
 
     const resultado = gerarJogo({
       dezenaMin,
@@ -504,7 +521,9 @@ export default function GeradorClient({
           </div>
           <div className="lista-jogos-gerados">
             {jogos.map((jogo, i) => {
-              const leitura = analisar(jogo.dezenas, codigoLoteria, dezenaMin, dezenaMax, gridColunas);
+              // Jogos com mais dezenas que o sorteio (16 a 20 na Lotofácil) não têm
+              // leitura: as distribuições são de sorteios de qtdDezenasPadrao dezenas.
+              const leitura = analisar(jogo.dezenas, codigoLoteria, dezenaMin, dezenaMax, gridColunas, qtdDezenasPadrao);
               return (
                 <div key={i} className="jogo-gerado">
                   <Dezenas dezenas={jogo.dezenas} />
@@ -524,7 +543,18 @@ export default function GeradorClient({
                       {jogo.pares} pares / {jogo.impares} ímpares
                     </span>
                     {!jogo.atendeuTodosFiltros && (
-                      <span className="badge badge--acumulou">Filtros parcialmente atendidos</span>
+                      <span
+                        className="badge badge--acumulou"
+                        title={
+                          jogo.filtrosNaoAtendidos && jogo.filtrosNaoAtendidos.length > 0
+                            ? `Não atendeu: ${jogo.filtrosNaoAtendidos.join(", ")}`
+                            : undefined
+                        }
+                      >
+                        {jogo.filtrosNaoAtendidos && jogo.filtrosNaoAtendidos.length > 0
+                          ? `Não atendeu: ${jogo.filtrosNaoAtendidos.join(", ")}`
+                          : "Filtros parcialmente atendidos"}
+                      </span>
                     )}
                     <BotaoCopiar
                       texto={

@@ -74,16 +74,17 @@ Plano em `07-plano-de-correcao.md`; parecer em `08-relatorio-final.md`:
 
 ## Etapa 1 do plano — textos (11/11/2026)
 
-Feita e verificada no servidor local, commitada no branch `fix/lotofacil-textos`
-(ainda não publicada):
+Feita, verificada no servidor local e publicada (PR #70, mesclado em 11/11/2026):
 15 problemas resolvidos (LF-01, LF-02, LF-19, LF-35 a LF-45, LF-47). Detalhes em
 `07-plano-de-correcao.md`; testes em `lib/auditoria/lotofacil/textos.test.ts`.
 
 ## Próximos passos (dependem de autorização)
 
-1. Revisar e publicar o branch `fix/lotofacil-textos` (PR).
-2. Preço por época no simulador (LF-04) após confirmar a tabela oficial.
+1. Etapa 2 do plano (cálculos) — feita no branch `fix/lotofacil-calculos`
+   (11 problemas resolvidos; ver `07-plano-de-correcao.md`).
+2. Etapa 3 — decisões de produto: Equilíbrio, Destaques, Projeção.
 3. Concluir a Fase 3 (`evidencias/fase3/baixar.mjs` é retomável).
+4. LF-48: Analisador quebrado nas outras 7 loterias (auditoria delas).
 
 ## Como rodar consultas de produção
 

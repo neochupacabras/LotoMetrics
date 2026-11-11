@@ -22,7 +22,7 @@ import {
   classificarJogo,
 } from "@/lib/classificacao";
 import { pontuarJogo, type FaixaConcurso } from "@/lib/conferencia";
-import { qtdDezenasAposta } from "@/lib/format";
+import { qtdDezenasAposta, formatarUmEm, formatarProbabilidadePct } from "@/lib/format";
 import * as R from "./referencia";
 
 describe("referência (sanidade da própria implementação independente)", () => {
@@ -101,10 +101,24 @@ describe("calcularProbabilidades() — Lotofácil, apostas de 15 a 20 dezenas", 
     expect(umEm).toEqual([3268760, 21792, 692, 60, 11]);
   });
 
-  // LF-09: o "1 em N" é arredondado para inteiro; a Caixa mostra 1 casa
-  // quando N < 10 (4,2 / 2,6 / 3,2 / 2,9 / 3,9). Decisão de apresentação
-  // pendente — documentado aqui, sem afirmar o formato certo.
-  it.todo("LF-09: exibir 1 casa decimal quando N < 10 (20 dezenas, 13 acertos = 1 em 4,2)");
+  // LF-09 (corrigido): "1 em N" era arredondado para inteiro; agora usa 1
+  // casa quando N < 10, como a tabela da Caixa.
+  // A Caixa não é uniforme (mostra "1 em 6" para 5,94 e "1 em 4,2" para
+  // 4,22); o site usa sempre 1 casa abaixo de 10 e inteiro acima.
+  it("LF-09: formatarUmEm usa 1 casa abaixo de 10 e fica a no máximo 0,5 da Caixa", () => {
+    for (const k of R.FAIXAS) {
+      for (let b = 15; b <= 20; b++) {
+        const caixa = R.TABELA_CAIXA_1_EM[k][b - 15];
+        const p = calcularProbabilidades(25, 15, b, [k])[0].probabilidade;
+        const n = 1 / R.probAcertos(b, k);
+        const esperado = n < 10
+          ? `1 em ${n.toFixed(1).replace(".", ",")}`
+          : `1 em ${Math.round(n).toLocaleString("pt-BR")}`;
+        expect(formatarUmEm(p), `${k} acertos, ${b} dezenas`).toBe(esperado);
+        expect(Math.abs(n - caixa)).toBeLessThanOrEqual(0.5); // ex.: 204.297,5 → 204.298
+      }
+    }
+  });
 });
 
 describe("probabilidadeAoMenosK() — pré-condição do fechamento", () => {
@@ -138,6 +152,15 @@ describe("projeção de acúmulo — propriedades do modelo", () => {
       anterior = v;
     }
   });
+  // LF-15 (corrigido): probabilidade < 1 nunca aparece como "100,0%".
+  it("LF-15: formatarProbabilidadePct não arredonda para certeza", () => {
+    expect(formatarProbabilidadePct(0.9996)).toBe("> 99,9%");
+    expect(formatarProbabilidadePct(1 - 1e-9)).toBe("> 99,9%");
+    expect(formatarProbabilidadePct(1)).toBe("100%");
+    expect(formatarProbabilidadePct(0.831)).toBe("83,1%");
+    expect(formatarProbabilidadePct(0.0004)).toBe("< 0,1%");
+  });
+
   // LF-07: o modelo supõe apostas uniformes e superestima a chance de
   // ganhador (backtest 08/2025–11/2026: 87,8% previsto x 75,3% real). Depende
   // de dados de produção — o backtest está em evidencias/fase2/proj.mjs.

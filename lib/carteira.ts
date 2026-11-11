@@ -1,5 +1,6 @@
 import { getLoteriaPorCodigo, getDrawsParaSimulacao, getMapaFaixasPorAcertos } from "@/lib/queries";
-import { PARAMS_LOTERIA, FAIXAS_DUPLASENA_POR_SORTEIO } from "@/lib/probabilidades";
+import { FAIXAS_DUPLASENA_POR_SORTEIO } from "@/lib/probabilidades";
+import { precoApostaNoConcurso } from "@/lib/precos-loteria";
 import { LOTERIAS } from "@/lib/format";
 import { contarColunasAcertadas } from "@/lib/classificacao";
 
@@ -31,10 +32,6 @@ export interface ResumoCarteira {
   gastoMesAtual: number;
 }
 
-function precoAposta(codigoLoteria: string): number {
-  const params = (PARAMS_LOTERIA as Record<string, { precoAposta: number }>)[codigoLoteria];
-  return params?.precoAposta ?? 3.5;
-}
 
 // +Milionária: o jogo salvo só guarda as 6 dezenas, nunca os trevos (ver
 // components/conta/NovoJogoClient.tsx — mesma simplificação já usada pelo
@@ -80,7 +77,6 @@ export async function calcularCarteira(
     const naoCalculavel = LOTERIAS_SEM_CALCULO_FINANCEIRO.has(codigoLoteria);
     const ehSuperSete = codigoLoteria === "supersete";
     const ehDuplaSena = codigoLoteria === "duplasena";
-    const preco = precoAposta(codigoLoteria);
 
     // Busca só a partir do jogo salvo mais antigo dessa loteria — cobre
     // todos os jogos dela numa única query; o filtro por jogo individual
@@ -134,13 +130,15 @@ export async function calcularCarteira(
         ...jogo,
         nomeLoteria,
         concursosAcompanhados: draws.length,
-        gasto: Math.round(draws.length * preco * 100) / 100,
+        // Preço da época de cada concurso (auditoria da Lotofácil, LF-04).
+        gasto: Math.round(draws.reduce((s, d) => s + precoApostaNoConcurso(codigoLoteria, d.numero), 0) * 100) / 100,
         ganho: naoCalculavel ? null : Math.round(ganho * 100) / 100,
       });
       if (naoCalculavel) temJogoNaoCalculavel = true;
 
-      const drawsNoMesAtual = draws.filter((d) => d.dataSorteio >= inicioMesAtual).length;
-      gastoMesAtual += drawsNoMesAtual * preco;
+      gastoMesAtual += draws
+        .filter((d) => d.dataSorteio >= inicioMesAtual)
+        .reduce((s, d) => s + precoApostaNoConcurso(codigoLoteria, d.numero), 0);
     }
   }
 

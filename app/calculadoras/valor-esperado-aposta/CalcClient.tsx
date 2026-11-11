@@ -7,7 +7,7 @@ function fmtBRL(v: number): string {
 
 const EXEMPLOS = [
   { label: "Mega-Sena (sena)", custo: 6, premio: 50_000_000, umEm: 50_063_860 },
-  { label: "Lotofácil (15 pontos)", custo: 3.5, premio: 1_500_000, umEm: 3_268_760 },
+  { label: "Lotofácil (só 15 pontos)", custo: 3.5, premio: 1_500_000, umEm: 3_268_760 },
   { label: "Aposta com amigo 50/50", custo: 20, premio: 40, umEm: 2 },
 ];
 
@@ -58,6 +58,14 @@ export function CalcValorEsperado() {
             </button>
           ))}
         </div>
+        {/* A calculadora considera um único prêmio. Na Lotofácil, os prêmios de
+            11 a 14 acertos pesam muito no retorno: só a faixa de 15 dá ~13%,
+            o total é ~43,79% (auditoria da Lotofácil, LF-29). */}
+        <p className="calc-info" style={{ marginTop: 12, fontSize: "0.82rem" }}>
+          Os exemplos consideram só a faixa principal. Na Lotofácil, somando as faixas de
+          11 a 14 acertos, a Caixa devolve em média 43,79% do valor apostado — cerca de
+          R$ 1,53 a cada aposta de R$ 3,50.
+        </p>
       </div>
 
       <div className="calc-painel__resultado calc-painel__resultado--ochre">

@@ -1,5 +1,5 @@
 // Auditoria Lotofácil — gerador de jogos (lib/gerar-jogo.ts).
-// `it.fails` = problema comprovado na auditoria; troque por `it` ao corrigir.
+// LF-25 e LF-26 foram corrigidos na Etapa 2 do plano; os testes viraram regressão.
 import { describe, expect, it } from "vitest";
 import { gerarJogo, gerarJogoDaData, amostrarSubconjunto } from "@/lib/gerar-jogo";
 import { ehPrimo, ehFibonacci, ehMultiploDe3 } from "@/lib/classificacao";
@@ -65,24 +65,48 @@ describe("gerarJogo — validade", () => {
     expect(() => gerarJogo({ ...BASE, qtdDezenas: 15, dezenasObrigatorias: R.UNIVERSO.slice(0, 16) })).toThrow();
   });
 
-  // LF-25: no modo simples, uma dezena pode ser obrigatória (atrasada) e
-  // excluída (mais frequente) ao mesmo tempo; ela entra e o jogo sai como
-  // "atendeu todos os filtros".
-  it.fails("LF-25: dezena obrigatória E excluída nunca resulta em jogo 'atendeu todos os filtros' com a excluída", () => {
-    const r = gerarJogo({ ...BASE, qtdDezenas: 15, dezenasObrigatorias: [20], dezenasExcluidas: [20, 25] });
-    expect(r.atendeuTodosFiltros && r.dezenas.includes(20)).toBe(false);
+  // LF-25 (corrigido): uma dezena obrigatória e excluída ao mesmo tempo
+  // entrava no jogo marcado como "atendeu todos os filtros".
+  it("LF-25: obrigatória e excluída ao mesmo tempo é recusada com erro claro", () => {
+    expect(() =>
+      gerarJogo({ ...BASE, qtdDezenas: 15, dezenasObrigatorias: [20], dezenasExcluidas: [20, 25] })
+    ).toThrow(/20/);
   });
 
-  // LF-26: obrigatória duplicada gera jogo com 14 dezenas distintas.
-  it.fails("LF-26: obrigatória duplicada é rejeitada ou deduplicada (sempre 15 distintas)", () => {
-    let valido: boolean;
-    try {
-      const r = gerarJogo({ ...BASE, qtdDezenas: 15, dezenasObrigatorias: [5, 5, 7] });
-      valido = R.jogoValido(r.dezenas);
-    } catch {
-      valido = true;
+  it("LF-25: o sorteio de obrigatórias do preset nunca escolhe uma dezena excluída", () => {
+    // Cenário real de 11/11/2026: a dezena 20 era atrasada E a mais frequente.
+    const atrasadas = [16, 11, 4, 6, 7, 10, 14, 17, 20, 23];
+    const excluidas = [20, 25];
+    for (let t = 0; t < 5000; t++) {
+      const obrig = amostrarSubconjunto(atrasadas, 2, excluidas);
+      expect(obrig.some((d) => excluidas.includes(d))).toBe(false);
+      const r = gerarJogo({ ...BASE, qtdDezenas: 15, dezenasObrigatorias: obrig, dezenasExcluidas: excluidas });
+      expect(r.dezenas.some((d) => excluidas.includes(d))).toBe(false);
     }
-    expect(valido).toBe(true);
+  });
+
+  // LF-26 (corrigido): obrigatória duplicada gerava jogo com 14 dezenas.
+  it("LF-26: obrigatória duplicada é deduplicada (sempre 15 distintas)", () => {
+    const r = gerarJogo({ ...BASE, qtdDezenas: 15, dezenasObrigatorias: [5, 5, 7] });
+    expect(R.jogoValido(r.dezenas)).toBe(true);
+    expect(r.dezenas).toContain(5);
+    expect(r.dezenas).toContain(7);
+  });
+
+  it("LF-26: sem solução, devolve a melhor tentativa e diz quais filtros faltaram", () => {
+    const r = gerarJogo({
+      ...BASE,
+      qtdDezenas: 15,
+      somaFaixa: { min: 120, max: 125 },
+      parImparAlvo: { pares: 12, impares: 3 },
+    });
+    expect(r.atendeuTodosFiltros).toBe(false);
+    expect(r.filtrosNaoAtendidos?.length).toBeGreaterThan(0);
+    // A soma 120–125 só admite jogos quase iguais a 1..15 (7 pares): os dois
+    // filtros juntos são impossíveis, mas um deles sozinho é atingível.
+    expect(r.filtrosNaoAtendidos!.length).toBeLessThanOrEqual(2);
+    const ok = gerarJogo({ ...BASE, qtdDezenas: 15, parImparAlvo: { pares: 7, impares: 8 } });
+    expect(ok.filtrosNaoAtendidos).toEqual([]);
   });
 });
 

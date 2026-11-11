@@ -16,6 +16,7 @@ import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 import FaqItem from "@/components/FaqItem";
 import { SoParaFree, TextoPorPlano } from "@/components/PorPlano";
 import { LIMITE_HISTORICO_FREE } from "@/lib/simulador-plano";
+import { ERAS_PRECO } from "@/lib/precos-loteria";
 
 // Jogo e trevos do link compartilhado (?jogo=05-12-23-34-41-60&t=1-4): só
 // dígitos e separadores; o campo do simulador e a rota do card validam o resto.
@@ -199,7 +200,11 @@ export default async function SimuladorPage({
           O simulador responde à pergunta: "e se eu tivesse jogado esse jogo todo
           concurso desde o início?" Você escolhe qualquer combinação de dezenas e o
           simulador calcula, para cada concurso do histórico {de} {loteria.nome}, quanto
-          teria gasto (o preço do bilhete em cada concurso), quais prêmios teria ganho
+          teria gasto (
+          {ERAS_PRECO[codigoLoteria]
+            ? "o preço do bilhete na época de cada concurso"
+            : "o preço atual do bilhete, aplicado a todos os concursos"}
+          ), quais prêmios teria ganho
           (usando os valores históricos reais de cada faixa em cada concurso) e o saldo
           acumulado ao longo do tempo.
         </p>

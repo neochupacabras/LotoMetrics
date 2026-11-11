@@ -1,9 +1,8 @@
 // Auditoria Lotofácil — Analisador (lib/analisador.ts).
 // As tabelas fixas do Analisador dizem ser "combinatória exata"; aqui elas são
 // comparadas com a hipergeométrica e com a enumeração das 3.268.760
-// combinações (./referencia.ts). Testes marcados `it.fails` documentam
-// problemas comprovados na auditoria: passam enquanto o problema existir e
-// FALHAM quando ele for corrigido — nessa hora, troque `it.fails` por `it`.
+// combinações (./referencia.ts). LF-03, LF-16 e LF-17 foram corrigidos na
+// Etapa 2 do plano; os testes viraram regressão.
 import { beforeAll, describe, expect, it } from "vitest";
 import { analisar, type ResultadoAnalisador } from "@/lib/analisador";
 import * as R from "./referencia";
@@ -49,9 +48,9 @@ describe("Analisador — tabelas de categorias (Lotofácil)", () => {
     }
   });
 
-  // LF-03: caudas erradas (primos 1/2/9, moldura 6/13/14, Fibonacci 0/1,
-  // múltiplos de 3 1/8).
-  it.fails("LF-03: caudas (< 1%) também batem com a hipergeométrica", () => {
+  // LF-03 (corrigido): as caudas estavam erradas nas constantes antigas
+  // (primos 1/2/9, moldura 6/13/14, Fibonacci 0/1, múltiplos de 3 1/8).
+  it("LF-03: caudas (< 1%) também batem com a hipergeométrica", () => {
     for (const l of linhas.filter((l) => l.exato < 1)) {
       expect(Math.abs(l.codigo - l.exato), `${l.nome} = ${l.x}`).toBeLessThan(TOL_CATEGORIA);
     }
@@ -108,12 +107,21 @@ describe("Analisador — soma e sequência contra a enumeração completa", () =
     }
   });
 
-  // LF-16: a tela apresenta `soma.pct` como "% das combinações possíveis"
-  // (components/AnalisadorClient.tsx), mas o valor é uma centralidade.
-  it.fails("LF-16: soma.pct = % de combinações com a mesma soma (soma 195)", () => {
-    const r = analisar(jogoComSoma(195), "lotofacil", 1, 25, 5)!;
-    const ref = (100 * (enumeracao.soma.get(195) ?? 0)) / enumeracao.total; // ≈ 2,2%
-    expect(Math.abs(r.soma.pct - ref)).toBeLessThan(0.1);
+  // LF-16 (corrigido): `soma.pct` era uma centralidade exibida como "% das
+  // combinações". Agora é o % exato de combinações com soma na mesma faixa
+  // de 10 (a faixa das tabelas de soma do site).
+  it("LF-16: soma.pct = % de combinações com soma na mesma faixa de 10", () => {
+    for (let s = 120; s <= 270; s++) {
+      const r = analisar(jogoComSoma(s), "lotofacil", 1, 25, 5)!;
+      const ini = Math.floor(s / 10) * 10;
+      let naFaixa = 0;
+      for (let x = ini; x <= ini + 9; x++) naFaixa += enumeracao.soma.get(x) ?? 0;
+      const ref = (100 * naFaixa) / enumeracao.total;
+      expect(r.soma.faixaInicio).toBe(ini);
+      expect(Math.abs(r.soma.pct - ref), `soma ${s}`).toBeLessThan(1e-9);
+      const esperado = ref >= 20 ? "Muito comum" : ref >= 10 ? "Comum" : ref >= 3 ? "Incomum" : "Raro";
+      expect(r.soma.label).toBe(esperado);
+    }
   });
 });
 
@@ -121,10 +129,15 @@ describe("Analisador — entrada", () => {
   it("jogo vazio devolve null", () => {
     expect(analisar([], "lotofacil", 1, 25, 5)).toBeNull();
   });
-  // LF-17: com 1 a 14 dezenas o Analisador compara com distribuições de 15
-  // e devolve rótulos ("Raro"...) sem sentido. O comportamento correto
-  // (esconder, normalizar ou avisar) é decisão de produto.
-  it.todo("LF-17: jogo incompleto não recebe rótulos de tipicidade de 15 dezenas");
+  // LF-17 (corrigido): com o tamanho do sorteio informado, jogos incompletos
+  // ou maiores não são analisados (a tela pede o jogo completo).
+  it("LF-17: jogo com 14 ou 16 dezenas não é analisado contra distribuições de 15", () => {
+    const quatorze = R.UNIVERSO.slice(0, 14);
+    const dezesseis = R.UNIVERSO.slice(0, 16);
+    expect(analisar(quatorze, "lotofacil", 1, 25, 5, 15)).toBeNull();
+    expect(analisar(dezesseis, "lotofacil", 1, 25, 5, 15)).toBeNull();
+    expect(analisar(R.UNIVERSO.slice(0, 15), "lotofacil", 1, 25, 5, 15)).not.toBeNull();
+  });
 });
 
 // ---- auxiliares --------------------------------------------------------

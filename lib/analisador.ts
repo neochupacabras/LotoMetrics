@@ -1,6 +1,8 @@
 // Módulo de análise estatística de combinações para o analisador interativo.
-// Todas as distribuições são pre-computadas por combinatória exata (Lotofácil)
-// ou amostragem de 1M combinações (Mega-Sena sequências), sem dados históricos.
+// Lotofácil: distribuições calculadas aqui mesmo pela fórmula exata
+// (hipergeométrica e contagem de somas), não mais digitadas à mão — as
+// constantes antigas tinham as pontas erradas (auditoria da Lotofácil, LF-03).
+// Mega-Sena: tabelas por combinatória; demais loterias: amostragem.
 
 // ─── Definições de grupos numéricos ─────────────────────────────────────────
 
@@ -19,21 +21,68 @@ const CENTRO_MS  = new Set([8,9,10,11,14,15,16,17,20,21,22,23,26,27,28,29,32,33,
 // ─── CDF da soma: índice = soma - offset ────────────────────────────────────
 // Valor = percentual acumulado de combinações com soma ≤ índice+offset
 
-const CDF_SOMA_LF_OFFSET = 120;
-const CDF_SOMA_LF: number[] = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.1,0.1,0.1,0.1,0.1,0.2,0.2,0.3,0.3,0.4,0.5,0.6,0.7,0.8,1.0,1.1,1.3,1.5,1.8,2.1,2.4,2.7,3.1,3.5,4.0,4.5,5.1,5.8,6.4,7.2,8.0,8.9,9.8,10.8,11.9,13.0,14.3,15.6,16.9,18.3,19.8,21.4,23.1,24.8,26.5,28.4,30.2,32.2,34.1,36.2,38.2,40.3,42.4,44.6,46.7,48.9,51.1,53.3,55.4,57.6,59.7,61.8,63.8,65.9,67.8,69.8,71.6,73.5,75.2,76.9,78.6,80.2,81.7,83.1,84.4,85.7,87.0,88.1,89.2,90.2,91.1,92.0,92.8,93.6,94.2,94.9,95.5,96.0,96.5,96.9,97.3,97.6,97.9,98.2,98.5,98.7,98.9,99.0,99.2,99.3,99.4,99.5,99.6,99.7,99.7,99.8,99.8,99.9,99.9,99.9,99.9,99.9,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0];
 
 const CDF_SOMA_MS_OFFSET = 21;
 const CDF_SOMA_MS: number[] = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.2,0.2,0.2,0.2,0.2,0.3,0.3,0.3,0.3,0.4,0.4,0.4,0.5,0.5,0.6,0.6,0.7,0.7,0.8,0.8,0.9,1.0,1.1,1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.9,2.0,2.1,2.3,2.4,2.6,2.7,2.9,3.1,3.3,3.5,3.7,3.9,4.1,4.4,4.6,4.9,5.1,5.4,5.7,6.0,6.3,6.6,6.9,7.3,7.6,8.0,8.4,8.8,9.2,9.6,10.1,10.5,11.0,11.4,11.9,12.4,13.0,13.5,14.0,14.6,15.2,15.7,16.3,17.0,17.6,18.2,18.9,19.6,20.2,20.9,21.6,22.4,23.1,23.8,24.6,25.4,26.2,27.0,27.8,28.6,29.4,30.2,31.1,32.0,32.8,33.7,34.6,35.5,36.4,37.3,38.2,39.1,40.0,41.0,41.9,42.9,43.8,44.7,45.7,46.7,47.6,48.6,49.5,50.5,51.4,52.4,53.3,54.3,55.3,56.2,57.1,58.1,59.0,60.0,60.9,61.8,62.7,63.6,64.5,65.4,66.3,67.2,68.0,68.9,69.8,70.6,71.4,72.2,73.0,73.8,74.6,75.4,76.2,76.9,77.6,78.4,79.1,79.8,80.4,81.1,81.8,82.4,83.0,83.7,84.3,84.8,85.4,86.0,86.5,87.0,87.6,88.1,88.6,89.0,89.5,89.9,90.4,90.8,91.2,91.6,92.0,92.4,92.7,93.1,93.4,93.7,94.0,94.3,94.6,94.9,95.1,95.4,95.6,95.9,96.1,96.3,96.5,96.7,96.9,97.1,97.3,97.4,97.6,97.7,97.9,98.0,98.1,98.3,98.4,98.5,98.6,98.7,98.8,98.9,98.9,99.0,99.1,99.2,99.2,99.3,99.3,99.4,99.4,99.5,99.5,99.6,99.6,99.6,99.7,99.7,99.7,99.7,99.8,99.8,99.8,99.8,99.8,99.9,99.9,99.9,99.9,99.9,99.9,99.9,99.9,99.9,99.9,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0,100.0];
 
 // ─── Distribuições por categoria: chave = valor observado, valor = % ────────
 
-// Lotofácil (N=25, K=15, total=3.268.760)
-const DIST_PI_LF:  Record<number, number> = {2:0.0,3:0.09,4:1.18,5:6.93,6:20.21,7:31.18,8:25.99,9:11.55,10:2.6,11:0.26,12:0.01}; // k = pares
-const DIST_SEQ_LF: Record<number, number> = {2:0.28,3:12.31,4:30.29,5:26.52,6:15.9,7:8.16,8:3.85,9:1.68,10:0.67,11:0.24,12:0.07,13:0.02}; // maior seq
-const DIST_MC_LF:  Record<number, number> = {7:3.15,8:14.17,9:29.4,10:30.87,11:16.84,12:4.68,13:0.86,14:0.01}; // k = moldura
-const DIST_PR_LF:  Record<number, number> = {1:0.01,2:0.26,3:4.68,4:16.84,5:30.87,6:29.4,7:14.17,8:3.15,9:0.09}; // k = primos
-const DIST_FIB_LF: Record<number, number> = {0:0.18,1:0.48,2:5.5,3:19.88,4:34.08,5:28.11,6:10.41,7:1.34}; // k = fibonacci
-const DIST_M3_LF:  Record<number, number> = {1:0.09,2:2.04,3:10.6,4:26.5,5:33.32,6:20.82,7:5.95,8:0.67}; // k = múltiplos de 3
+// Lotofácil (N=25, 15 sorteadas, total=3.268.760) — calculadas pela fórmula.
+function combinacoes(n: number, k: number): number {
+  if (k < 0 || k > n) return 0;
+  const kk = Math.min(k, n - k);
+  let r = 1;
+  for (let i = 0; i < kk; i++) r = (r * (n - i)) / (i + 1);
+  return Math.round(r);
+}
+
+// % de combinações com exatamente x elementos de uma categoria de K dezenas.
+function distHipergeometrica(universo: number, tamanhoCategoria: number, sorteadas: number): Record<number, number> {
+  const total = combinacoes(universo, sorteadas);
+  const dist: Record<number, number> = {};
+  for (let x = 0; x <= sorteadas; x++) {
+    const c = combinacoes(tamanhoCategoria, x) * combinacoes(universo - tamanhoCategoria, sorteadas - x);
+    if (c > 0) dist[x] = (100 * c) / total;
+  }
+  return dist;
+}
+
+// Quantas combinações de `sorteadas` dezenas entre min e max têm cada soma
+// (programação dinâmica: exato e instantâneo para a Lotofácil).
+function contagemPorSoma(min: number, max: number, sorteadas: number): Map<number, number> {
+  const somaMax = Array.from({ length: sorteadas }, (_, i) => max - i).reduce((a, b) => a + b, 0);
+  const tabela: number[][] = Array.from({ length: sorteadas + 1 }, () => new Array(somaMax + 1).fill(0));
+  tabela[0][0] = 1;
+  for (let d = min; d <= max; d++) {
+    for (let k = sorteadas; k >= 1; k--) {
+      for (let s = somaMax; s >= d; s--) tabela[k][s] += tabela[k - 1][s - d];
+    }
+  }
+  const resultado = new Map<number, number>();
+  tabela[sorteadas].forEach((c, s) => { if (c > 0) resultado.set(s, c); });
+  return resultado;
+}
+
+const TOTAL_LF = combinacoes(25, 15);
+const SOMAS_LF = contagemPorSoma(1, 25, 15);
+const CDF_SOMA_LF_OFFSET = 120;
+const CDF_SOMA_LF: number[] = (() => {
+  const cdf: number[] = [];
+  let acumulado = 0;
+  for (let s = 120; s <= 270; s++) {
+    acumulado += SOMAS_LF.get(s) ?? 0;
+    cdf.push((100 * acumulado) / TOTAL_LF);
+  }
+  return cdf;
+})();
+
+const DIST_PI_LF  = distHipergeometrica(25, 12, 15); // k = pares
+// Maior sequência: conferida contra a enumeração das 3.268.760 combinações.
+const DIST_SEQ_LF: Record<number, number> = {2:0.277,3:12.307,4:30.29,5:26.52,6:15.899,7:8.162,8:3.85,9:1.684,10:0.674,11:0.241,12:0.074,13:0.019,14:0.003,15:0.00003}; // maior seq
+const DIST_MC_LF  = distHipergeometrica(25, 16, 15); // k = moldura
+const DIST_PR_LF  = distHipergeometrica(25, 9, 15);  // k = primos
+const DIST_FIB_LF = distHipergeometrica(25, 7, 15);  // k = fibonacci
+const DIST_M3_LF  = distHipergeometrica(25, 8, 15);  // k = múltiplos de 3
 
 // Mega-Sena (N=60, K=6, total=50.063.860)
 const DIST_PI_MS:  Record<number, number> = {0:1.19,1:8.54,2:23.81,3:32.93,4:23.81,5:8.54,6:1.19}; // k = pares
@@ -54,7 +103,9 @@ export interface MetricaAnalisador {
 
 export interface ResultadoAnalisador {
   temDistribuicaoCalibrada: boolean;
-  soma: { valor: number; percentil: number } & MetricaAnalisador;
+  // Lotofácil: pct = % das combinações com soma na mesma faixa de 10
+  // (faixaInicio–faixaFim), a mesma faixa das tabelas de soma do site.
+  soma: { valor: number; percentil: number; faixaInicio?: number; faixaFim?: number } & MetricaAnalisador;
   parImpar: { pares: number; impares: number } & MetricaAnalisador;
   sequencias: { maior: number } & MetricaAnalisador;
   molduraCentro: { moldura: number; centro: number } & MetricaAnalisador;
@@ -210,14 +261,19 @@ const DIST_M3_SUPE  = {0: 0.008244, 1: 0.174396, 2: 0.525004, 3: 0.292356};
 const CDF_SOMA_SUPE_OFFSET = 21;
 const CDF_SOMA_SUPE = [0.008308,0.016616,0.0333,0.058148,0.09112,0.133096,0.191422,0.25852,0.333596,0.416442,0.499346,0.582486,0.665674,0.74094,0.808326,0.866726,0.908526,0.942092,0.966962,0.983484,0.991764,1.0];
 
+// `qtdDezenasSorteadas`: quando informado, só analisa jogos desse tamanho —
+// as distribuições descrevem sorteios de exatamente essa quantidade, então
+// um jogo incompleto ou maior não pode ser comparado com elas (LF-17).
 export function analisar(
   dezenas: number[],
   codigoLoteria: string,
   dezenaMin = 1,
   dezenaMax = 25,
-  gridColunas = 5
+  gridColunas = 5,
+  qtdDezenasSorteadas?: number
 ): ResultadoAnalisador | null {
   if (dezenas.length === 0) return null;
+  if (qtdDezenasSorteadas !== undefined && dezenas.length !== qtdDezenasSorteadas) return null;
   const isLF   = codigoLoteria === "lotofacil";
   const isMS   = codigoLoteria === "megasena";
   const isQU   = codigoLoteria === "quina";
@@ -257,11 +313,27 @@ export function analisar(
   const qtdM3 = dezenas.filter(d => mult3_set.has(d)).length;
 
   const percentil = percentilSoma(soma, cdf_soma, cdf_off);
-  // proximidade do centro: 0% nas extremidades, 100% na mediana
-  const centrality = 100 - Math.abs(50 - percentil) * 2;
-  const somaLabel: LabelTipicidade =
-    centrality >= 60 ? "Muito comum" : centrality >= 40 ? "Comum" : centrality >= 20 ? "Incomum" : "Raro";
-  const somaPct = Math.max(0.1, Math.min(99.9, centrality));
+  let somaLabel: LabelTipicidade;
+  let somaPct: number;
+  let faixaInicio: number | undefined;
+  let faixaFim: number | undefined;
+  if (isLF && dezenas.length === 15) {
+    // % exato de combinações com soma na mesma faixa de 10. Antes, este campo
+    // era uma "centralidade" exibida como se fosse % de combinações — soma 195
+    // aparecia como 97,8% (auditoria da Lotofácil, LF-16).
+    faixaInicio = Math.floor(soma / 10) * 10;
+    faixaFim = faixaInicio + 9;
+    let naFaixa = 0;
+    for (let s = faixaInicio; s <= faixaFim; s++) naFaixa += SOMAS_LF.get(s) ?? 0;
+    somaPct = (100 * naFaixa) / TOTAL_LF;
+    somaLabel = label(somaPct);
+  } else {
+    // proximidade do centro: 0% nas extremidades, 100% na mediana
+    const centrality = 100 - Math.abs(50 - percentil) * 2;
+    somaLabel =
+      centrality >= 60 ? "Muito comum" : centrality >= 40 ? "Comum" : centrality >= 20 ? "Incomum" : "Raro";
+    somaPct = Math.max(0.1, Math.min(99.9, centrality));
+  }
 
   const metricas = [
     { pct: somaPct, label: somaLabel },
@@ -275,7 +347,7 @@ export function analisar(
   const tipicas = metricas.filter(m => m.label === "Muito comum" || m.label === "Comum").length;
 
   return {
-    soma: { valor: soma, percentil, pct: somaPct, label: somaLabel },
+    soma: { valor: soma, percentil, pct: somaPct, label: somaLabel, faixaInicio, faixaFim },
     parImpar: { pares, impares, pct: pctDist(dist_pi, pares), label: label(pctDist(dist_pi, pares)) },
     sequencias: { maior, pct: pctDist(dist_seq, maior), label: label(pctDist(dist_seq, maior)) },
     molduraCentro: { moldura: qtdMoldura, centro: qtdCentro, pct: pctDist(dist_mc, qtdMoldura), label: label(pctDist(dist_mc, qtdMoldura)) },
