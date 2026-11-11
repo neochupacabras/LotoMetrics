@@ -80,6 +80,20 @@ export function quandoSorteio(instante: Date, agora: Date): string {
   return `${semana} ${alvo.getUTCDate()}/${alvo.getUTCMonth() + 1}, ${hora}`;
 }
 
+// Ordem do módulo "Próximos sorteios": favoritas, depois as dos jogos
+// salvos (mais jogadas primeiro), completando com as de maior procura até
+// 3 — sem repetir e no máximo 4 (ou todas as favoritas, se forem mais).
+const PADRAO: CodigoLoteria[] = ["megasena", "lotofacil", "quina"];
+const MIN_LOTERIAS = 3;
+const MAX_LOTERIAS = 4;
+
+export function ordemLoteriasPainel(favoritas: CodigoLoteria[], doUsuario: CodigoLoteria[]): CodigoLoteria[] {
+  const unicas = [...new Set([...favoritas, ...doUsuario, ...PADRAO])];
+  const proprias = new Set([...favoritas, ...doUsuario]).size;
+  const limite = Math.max(MIN_LOTERIAS, Math.min(proprias, Math.max(MAX_LOTERIAS, favoritas.length)));
+  return unicas.slice(0, limite);
+}
+
 // Atalhos do módulo "Acesso rápido". Bolão não existe para Lotomania e
 // Super Sete (lib/abas-loteria.ts) — nesse caso aponta para a Mega-Sena.
 export function atalhosRapidos(loteria: CodigoLoteria) {

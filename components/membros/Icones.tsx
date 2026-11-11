@@ -180,3 +180,14 @@ export function IcEstrela({ className, cheia }: Props & { cheia?: boolean }) {
     </svg>
   );
 }
+
+// Bolas de sorteio (Central de loterias).
+export function IcLoterias({ className }: Props) {
+  return (
+    <svg {...base} className={className}>
+      <circle cx="8" cy="8" r="4.5" />
+      <circle cx="16.5" cy="10" r="3.5" />
+      <circle cx="10.5" cy="17" r="3.5" />
+    </svg>
+  );
+}

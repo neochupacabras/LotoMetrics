@@ -137,7 +137,7 @@ export const FERRAMENTAS: Ferramenta[] = [
     tipo: "loteria", id: "bolao", aba: "bolao", nome: "Bolão", categoria: "montar",
     descricao: "Diga o orçamento do grupo e receba os bilhetes, o link e a conferência.",
     termos: ["bolão", "grupo", "cotas", "amigos"],
-    extraPremium: "Bolão Pro, com até 100 cotas",
+    extraPremium: "O Bolão Pro, com até 100 cotas",
   },
 
   // ── Testar e conferir ───────────────────────────────────────────────────

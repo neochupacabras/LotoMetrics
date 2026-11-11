@@ -1,25 +1,24 @@
 import { createClient } from "@/lib/supabase/server";
-import { getLoteriaPorCodigo, getUltimosConcursos } from "@/lib/queries";
-import { agoraBrasilia, dataHoraProximoSorteio } from "@/lib/calendario";
-import { pontuarJogo } from "@/lib/conferencia";
+import { agoraBrasilia } from "@/lib/calendario";
 import { LOTERIAS, isCodigoLoteriaValido, preposicaoLoteria } from "@/lib/format";
-import { linhaDoDia, saudacaoPorHora } from "@/lib/conta/painel-regras";
-import type { CodigoLoteria, Concurso } from "@/lib/types";
+import { linhaDoDia, ordemLoteriasPainel, saudacaoPorHora } from "@/lib/conta/painel-regras";
+import {
+  TODAS_LOTERIAS,
+  carregarLoteriasFavoritas,
+  carregarResumoLoterias,
+  conferirJogoSalvo,
+  type ConferenciaJogo,
+} from "@/lib/conta/loterias";
+import type { CodigoLoteria } from "@/lib/types";
 
 // Dados do Painel (/conta). Regra da proposta: só dado real — se não há
 // informação confiável para um módulo, ele mostra um estado vazio útil em
 // vez de um número inventado.
 //
-// Custo: 2 consultas ao Supabase (jogos, bolões; a da assinatura fica na
-// página) + concursos via getLoteriaPorCodigo/getUltimosConcursos, ambos em
-// unstable_cache e o segundo em LOTE (uma query para as 9 loterias — ver
-// [[project_n1_queries_loterias]] na memória: nada de laço por loteria).
+// Custo: 3 consultas ao Supabase (jogos, bolões, favoritas; a da
+// assinatura fica na página) + os concursos de lib/conta/loterias.ts, em
+// lote e em cache.
 
-const TODAS: CodigoLoteria[] = Object.keys(LOTERIAS) as CodigoLoteria[];
-// Sem jogos salvos, o módulo de loterias mostra as de maior procura.
-const PADRAO: CodigoLoteria[] = ["megasena", "lotofacil", "quina"];
-const MIN_LOTERIAS = 3;
-const MAX_LOTERIAS = 4;
 const MAX_JOGOS = 3;
 const MAX_ATIVIDADE = 5;
 
@@ -32,6 +31,7 @@ export interface LoteriaPainel {
   premioEstimado: number | null;
   proximoSorteioIso: string;
   jogosSalvos: number;
+  favorita: boolean;
 }
 
 export interface JogoPainel {
@@ -41,16 +41,7 @@ export interface JogoPainel {
   dezenas: number[];
   label: string | null;
   // Conferência contra o último concurso da loteria (null se não há concurso).
-  conferencia: {
-    concurso: number;
-    acertos: number;
-    // "1º sorteio" / "2º sorteio" (Dupla Sena: vale o melhor dos dois).
-    sorteio: string | null;
-    premiado: boolean;
-    premioReais: number | null;
-    // +Milionária: a faixa depende dos trevos, que o jogo salvo não guarda.
-    confirmarTrevos: boolean;
-  } | null;
+  conferencia: ConferenciaJogo | null;
 }
 
 export interface AtividadePainel {
@@ -75,42 +66,12 @@ function preposicao(codigo: CodigoLoteria): string {
   return preposicaoLoteria(codigo).de;
 }
 
-function conferir(codigo: CodigoLoteria, dezenas: number[], concurso: Concurso | undefined): JogoPainel["conferencia"] {
-  if (!concurso) return null;
-  const faixas = concurso.premiacoes.map((p) => ({
-    faixa: p.faixa,
-    descricaoFaixa: p.descricaoFaixa ?? "",
-    valorPremio: p.valorPremio,
-    qtdGanhadores: p.qtdGanhadores,
-  }));
-  const resultados = pontuarJogo(
-    codigo,
-    dezenas,
-    { numero: concurso.numero, dezenas: concurso.dezenas, dezenasSegundoSorteio: concurso.dezenasSegundoSorteio },
-    faixas
-  );
-  // Dupla Sena devolve um resultado por sorteio: mostra o melhor.
-  const melhor = [...resultados].sort((a, b) => {
-    const pa = a.faixa ? 1 : 0;
-    const pb = b.faixa ? 1 : 0;
-    return pb - pa || b.acertos - a.acertos;
-  })[0];
-  return {
-    concurso: concurso.numero,
-    acertos: melhor.acertos,
-    sorteio: resultados.length > 1 && melhor.sorteio ? `${melhor.sorteio}º sorteio` : null,
-    premiado: !!melhor.faixa,
-    premioReais: melhor.premioReais,
-    confirmarTrevos: !!melhor.faixaIndeterminada,
-  };
-}
-
 export async function carregarPainel(userId: string): Promise<DadosPainel> {
   const supabase = await createClient();
   const agora = new Date();
   const refBrasilia = agoraBrasilia();
 
-  const [{ data: jogosRaw }, { data: boloesRaw }, loterias] = await Promise.all([
+  const [{ data: jogosRaw }, { data: boloesRaw }, resumos, { favoritas }] = await Promise.all([
     supabase
       .from("user_games")
       .select("id, loteria, dezenas, label, created_at")
@@ -123,57 +84,35 @@ export async function carregarPainel(userId: string): Promise<DadosPainel> {
       .eq("owner_id", userId)
       .order("criado_em", { ascending: false })
       .limit(MAX_ATIVIDADE),
-    Promise.all(TODAS.map((c) => getLoteriaPorCodigo(c))),
+    carregarResumoLoterias(),
+    carregarLoteriasFavoritas(userId),
   ]);
 
   const jogos = (jogosRaw ?? []).filter((j) => isCodigoLoteriaValido(j.loteria));
   const boloes = boloesRaw ?? [];
 
-  const idPorCodigo = new Map<CodigoLoteria, number>();
-  loterias.forEach((l, i) => {
-    if (l) idPorCodigo.set(TODAS[i], l.id);
-  });
-  const ultimos = await getUltimosConcursos([...idPorCodigo.values()]);
-  const concursoDe = (c: CodigoLoteria) => {
-    const id = idPorCodigo.get(c);
-    return id === undefined ? undefined : ultimos[id];
-  };
-
-  // Loterias do usuário, das mais jogadas para as menos.
+  // Loterias dos jogos salvos, das mais jogadas para as menos.
   const contagem = new Map<CodigoLoteria, number>();
   for (const j of jogos) {
     const c = j.loteria as CodigoLoteria;
     contagem.set(c, (contagem.get(c) ?? 0) + 1);
   }
   const doUsuario = [...contagem.entries()].sort((a, b) => b[1] - a[1]).map(([c]) => c);
-  // Completa com as de maior procura até 3 linhas, para o módulo não ficar
-  // com uma linha só (as do usuário vêm primeiro e mostram "N jogos salvos").
-  const foco = [...doUsuario, ...PADRAO.filter((c) => !doUsuario.includes(c))].slice(
-    0,
-    Math.max(MIN_LOTERIAS, Math.min(doUsuario.length, MAX_LOTERIAS))
-  );
 
-  const proximos = TODAS.flatMap((codigo) => {
-    const c = concursoDe(codigo);
-    if (!c) return [];
-    return [{ codigo, instante: dataHoraProximoSorteio(codigo, refBrasilia, c.dataProximoConcurso) }];
-  });
-  const proximoDe = new Map(proximos.map((p) => [p.codigo, p.instante]));
-
-  const loteriasPainel: LoteriaPainel[] = foco.flatMap((codigo) => {
-    const c = concursoDe(codigo);
-    const proximo = proximoDe.get(codigo);
-    if (!c || !proximo) return [];
+  const loteriasPainel: LoteriaPainel[] = ordemLoteriasPainel(favoritas, doUsuario).flatMap((codigo) => {
+    const r = resumos.get(codigo);
+    if (!r) return [];
     return [
       {
         codigo,
-        nome: LOTERIAS[codigo].nome,
-        concurso: c.numero,
-        dataSorteio: c.dataSorteio,
-        acumulou: c.acumulado,
-        premioEstimado: c.valorEstimadoProximo,
-        proximoSorteioIso: proximo.toISOString(),
+        nome: r.nome,
+        concurso: r.concurso.numero,
+        dataSorteio: r.concurso.dataSorteio,
+        acumulou: r.concurso.acumulado,
+        premioEstimado: r.concurso.valorEstimadoProximo,
+        proximoSorteioIso: r.proximoSorteioIso,
         jogosSalvos: contagem.get(codigo) ?? 0,
+        favorita: favoritas.includes(codigo),
       },
     ];
   });
@@ -187,7 +126,7 @@ export async function carregarPainel(userId: string): Promise<DadosPainel> {
       nome: LOTERIAS[codigo].nome,
       dezenas,
       label: j.label ?? null,
-      conferencia: conferir(codigo, dezenas, concursoDe(codigo)),
+      conferencia: conferirJogoSalvo(codigo, dezenas, resumos.get(codigo)?.concurso),
     };
   });
 
@@ -208,8 +147,13 @@ export async function carregarPainel(userId: string): Promise<DadosPainel> {
     .sort((a, b) => b.quando.localeCompare(a.quando))
     .slice(0, MAX_ATIVIDADE);
 
-  // Contexto dos atalhos: a loteria mais jogada (ou a Mega-Sena).
-  const loteriaContexto = doUsuario[0] ?? "megasena";
+  // Contexto dos atalhos: primeira favorita, senão a mais jogada, senão Mega-Sena.
+  const loteriaContexto = favoritas[0] ?? doUsuario[0] ?? "megasena";
+
+  const proximos = TODAS_LOTERIAS.flatMap((codigo) => {
+    const r = resumos.get(codigo);
+    return r ? [{ codigo, instante: new Date(r.proximoSorteioIso) }] : [];
+  });
 
   const dataHoje = refBrasilia.toLocaleDateString("pt-BR", {
     weekday: "long",
