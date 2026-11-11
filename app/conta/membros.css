@@ -2798,3 +2798,414 @@ a.m-ferramenta__link:hover .m-ferramenta__seta {
   background: color-mix(in srgb, var(--m-positive) 12%, transparent);
   color: var(--m-positive);
 }
+
+/* ============================================================
+   ACABAMENTO — componentes antigos dentro da moldura (PR 6)
+   Os componentes de /conta nasceram com as classes do site público
+   (.botao-gerar, .jogo-card, .teto-gasto, .tabela-dados…), que também são
+   usadas fora da área de membros. Em vez de reescrevê-los, a régua nova
+   é aplicada aqui, sempre sob .m-conteudo — nada disto alcança o site
+   público.
+   ============================================================ */
+
+/* ---------- Indicadores (Carteira, Meu ano) ---------- */
+
+.m-indicadores {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 24px 0 0;
+  border-top: 1px solid var(--m-ink);
+  border-bottom: 1px solid var(--m-line);
+}
+
+.m-indicador {
+  padding: 16px 16px 18px 0;
+  min-width: 0;
+}
+
+.m-indicador + .m-indicador {
+  padding-left: 16px;
+  border-left: 1px solid var(--m-line);
+}
+
+.m-indicador__rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--m-ink-faint);
+}
+
+.m-indicador__valor {
+  margin: 6px 0 0;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.55rem;
+  font-weight: 500;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+[data-sinal="positivo"] {
+  color: var(--m-positive);
+}
+
+[data-sinal="negativo"] {
+  color: var(--m-negative);
+}
+
+@container conteudo (max-width: 520px) {
+  .m-indicadores {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .m-indicador + .m-indicador {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid var(--m-line);
+  }
+
+  .m-indicador {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .m-indicador__valor {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+}
+
+/* Tabela da Carteira */
+.m-tabela__dezenas {
+  display: block;
+  max-width: 24ch;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
+.m-tabela__sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+  font-size: 0.78rem;
+  color: var(--m-ink-faint);
+}
+
+.m-tabela__sub:empty {
+  display: none;
+}
+
+.m-tabela--carteira td {
+  white-space: nowrap;
+}
+
+.m-tabela--carteira td:first-child {
+  white-space: normal;
+}
+
+/* ---------- Botões antigos ---------- */
+
+.m-conteudo .botao-gerar {
+  min-height: 42px;
+  margin-top: 0;
+  padding: 0 18px;
+  background: var(--m-action);
+  border: 1px solid var(--m-action);
+  font-weight: 600;
+  transition: background-color 0.15s ease;
+}
+
+.m-conteudo .botao-gerar:hover {
+  background: var(--m-action-deep);
+  border-color: var(--m-action-deep);
+}
+
+.m-conteudo .botao-copiar,
+.m-conteudo .relatorio-btn {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--m-line-strong);
+  background: var(--m-surface);
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--m-ink);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.m-conteudo .botao-copiar:hover,
+.m-conteudo .relatorio-btn:hover {
+  border-color: var(--m-ink);
+}
+
+.m-conteudo button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* ---------- Campos antigos (auth-input, teto de gasto, alertas) ---------- */
+
+.m-conteudo .auth-input,
+.m-conteudo select.auth-input {
+  min-height: 44px;
+  border-color: var(--m-line-strong);
+  background: #fff;
+}
+
+.m-conteudo .auth-input:focus-visible {
+  outline: 2px solid var(--m-action);
+  outline-offset: 0;
+  border-color: var(--m-action);
+}
+
+.m-conteudo .auth-label {
+  font-size: 0.8rem;
+  color: var(--m-ink-soft);
+}
+
+/* ---------- Jogos salvos ---------- */
+
+.m-conteudo .jogos-grupo {
+  margin-bottom: 28px;
+}
+
+.m-conteudo .jogos-grupo__titulo {
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--m-ink);
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.45rem;
+}
+
+.m-conteudo .jogos-grade {
+  gap: 12px;
+}
+
+.m-conteudo .jogo-card {
+  border: 1px solid var(--m-line);
+  border-radius: 0;
+  background: var(--m-surface);
+  transition: border-color 0.15s ease;
+}
+
+.m-conteudo .jogo-card:hover {
+  border-color: var(--m-line-strong);
+}
+
+.m-conteudo .jogo-card--inativo {
+  background: var(--m-canvas);
+}
+
+.m-conteudo .jogo-card__loteria {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--m-ink-soft);
+}
+
+/* Status do rastreamento: estado positivo, não a cor de ação. */
+.m-conteudo .jogo-card__toggle {
+  border-radius: 0;
+  border-color: color-mix(in srgb, var(--m-positive) 45%, transparent);
+  background: color-mix(in srgb, var(--m-positive) 10%, transparent);
+  color: var(--m-positive);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.m-conteudo .jogo-card__toggle--off {
+  border-color: var(--m-line-strong);
+  background: transparent;
+  color: var(--m-ink-faint);
+}
+
+.m-conteudo .jogo-card__btn-remover {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--m-ink-faint);
+}
+
+.m-conteudo .jogo-card__btn-remover:hover {
+  color: var(--m-negative);
+}
+
+.m-conteudo .jogo-card__dezena {
+  border-radius: 0;
+  border-color: var(--m-line-strong);
+  background: var(--m-canvas);
+  font-variant-numeric: tabular-nums;
+}
+
+.m-conteudo .jogo-card__footer {
+  border-top-color: var(--m-line);
+}
+
+.m-conteudo .jogo-card__label-btn {
+  color: var(--m-ink-soft);
+  font-style: italic;
+}
+
+.m-conteudo .jogo-card__label-btn:hover {
+  color: var(--m-action);
+}
+
+/* Botões de relatório: lado a lado, sem se espalhar pela linha. */
+.m-acoes-linha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.m-conteudo .m-acoes-linha .relatorio-btn {
+  flex: none;
+  width: auto;
+  margin: 0;
+}
+
+/* ---------- Desempenho ---------- */
+
+.m-conteudo .teto-gasto {
+  border: 1px solid var(--m-line);
+  border-radius: 0;
+  background: var(--m-surface);
+}
+
+.m-conteudo .teto-gasto__barra {
+  border-radius: 0;
+  background: var(--m-sunken);
+}
+
+.m-conteudo .retrospectiva-destaques {
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.m-conteudo .retrospectiva-card {
+  border: 1px solid var(--m-line);
+  border-radius: 0;
+  background: var(--m-surface);
+}
+
+.m-conteudo .retrospectiva-card__rotulo {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--m-ink-faint);
+}
+
+.m-conteudo .retrospectiva-card__valor {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+}
+
+.m-conteudo .retrospectiva-card__valor[data-sinal] {
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.m-conteudo .aviso-legal {
+  border: none;
+  border-left: 2px solid var(--m-line-strong);
+  border-radius: 0;
+  background: transparent;
+  padding: 4px 0 4px 16px;
+  color: var(--m-ink-soft);
+}
+
+.m-conteudo .aviso-legal a {
+  color: var(--m-action);
+}
+
+.m-conteudo .bloco__nota {
+  font-size: 0.86rem;
+  color: var(--m-ink-soft);
+}
+
+/* ---------- Bolões ---------- */
+
+.m-conteudo .bolao-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--m-ink);
+}
+
+.m-conteudo .bolao-lista__item {
+  border-bottom: 1px solid var(--m-line);
+}
+
+.m-conteudo .bolao-lista__link {
+  padding: 14px 8px;
+  margin: 0 -8px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  transition: background-color 0.15s ease;
+}
+
+.m-conteudo .bolao-lista__link:hover {
+  background: var(--m-surface);
+}
+
+.m-conteudo .bolao-lista__titulo {
+  font-weight: 600;
+}
+
+.m-conteudo .bolao-lista .chip {
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---------- API ---------- */
+
+.m-conteudo .api-instrucoes {
+  max-width: 760px;
+}
+
+.m-conteudo .api-code-block {
+  overflow-x: auto;
+  border-left: 2px solid var(--m-seal-on-dark);
+  background: var(--m-spine);
+  color: var(--m-spine-ink);
+}
+
+/* ---------- Estados vazios antigos ---------- */
+
+.m-conteudo .conta-jogos-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 24px;
+  border: 1px solid var(--m-line);
+  background: var(--m-surface);
+  text-align: left;
+  color: var(--m-ink-soft);
+}
+
+.m-conteudo .conta-jogos-vazio p:first-child {
+  font-weight: 600;
+  color: var(--m-ink);
+}
+
+.m-conteudo .conta-jogos-vazio .botao-gerar {
+  margin-top: 8px;
+}

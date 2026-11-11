@@ -1,6 +1,6 @@
 # Área de membros — auditoria e proposta de redesign
 
-Data: 10/11/2026 · Status: **proposta, aguardando aprovação** (nenhum código alterado)
+Data: 10/11/2026 · Status: **implementado em 6 PRs (#59, #60, #62, #63, #64 e o PR 6), mais a correção avulsa #61** · avaliação na Parte 4
 
 ---
 
@@ -214,8 +214,29 @@ Landmarks (`nav` com `aria-label`, `main`, `aria-current="page"`), foco visível
 5. **Perfil/segurança + Alertas + Assinatura refeita** (corrige o vencimento do Pix e o bolão fixo na Mega-Sena).
 6. **Restyle** de Jogos, Bolões, Desempenho e API + refinamento visual + testes (build, vitest, navegação logado/deslogado/free/premium, 375/768/1280px, console).
 
-## Decisões pendentes
+## Decisões (aprovadas em 10/11/2026)
 
-- **A. Voltar da ferramenta:** (recomendado) um chip discreto "Área do assinante" no masthead público para quem está logado, decidido no cliente e compatível com ISR. Alternativa: nenhum, só o link "Minha conta" atual.
-- **B. Favoritos e recentes:** (recomendado) favoritos no banco (migração pequena com 2 colunas `text[]` em `profiles` + grant de update, sincronizados entre celular e desktop) e recentes no `localStorage` (por aparelho). Alternativa: tudo em `localStorage`, sem migração.
-- **C. Trava do conferidor/gerador só no cliente:** corrigir num PR separado (recomendado) ou incluir no redesign.
+- **A. Voltar da ferramenta:** aprovada a opção do chip, mas **não foi feita como chip separado**. Quem está logado volta pelo link "Minha conta" que já existe no masthead público (com o selo ✦ para o assinante) e pelo ícone de perfil no celular. O chip continua sendo uma melhoria possível.
+- **B. Favoritos e recentes:** feito como recomendado. Os favoritos ficam no banco (migration `20261111000100_favoritos_membros.sql`, aplicada em produção em 10/11/2026), e os recentes no `localStorage`.
+- **C. Trava do conferidor e do gerador só no cliente:** **ainda pendente**, num PR separado (fora do redesign).
+
+---
+
+## Parte 4 — Avaliação crítica (11/11/2026)
+
+Notas de 1 a 5. A coluna "O que falta" é a parte importante.
+
+| Critério | Nota | Por quê | O que falta |
+|---|---|---|---|
+| Percepção premium | 4 | Moldura própria (lombada, papel e selo ocre), tipografia editorial coerente, nada de gradiente ou brilho. A área tem identidade própria em relação ao site público. | As **ferramentas** continuam nas páginas públicas (por SEO e ISR, de propósito): ao abrir uma, o usuário sai da moldura. Esse é o maior salto de experiência que sobrou. |
+| Organização | 4,5 | Painel, Ferramentas, Loterias, Meu jogo e Conta. Configuração, uso e zona de perigo separados. Uma fonte única de ferramentas (`lib/ferramentas.ts`). | `Subnav` e `MaisSheet` do site público ainda mantêm listas próprias, que não usam o registro. |
+| Navegação | 4 | Lombada recolhível, barra própria no celular, busca Ctrl+K, links de volta entre páginas, favoritas no topo. | O mesmo ponto da percepção: não há caminho de volta destacado dentro das ferramentas públicas (decisão A não implementada como chip). |
+| Clareza | 4 | Descrições das ferramentas tiradas das próprias páginas, extras do Premium só onde existem (incluindo a correção da foto do bilhete) e "onde usar" em cada benefício. | A página pública `/premium` ainda tem texto desatualizado: cita o sorteio de sábado da Mega-Sena, que passou para domingo. |
+| Personalização | 3,5 | Saudação pela hora, linha do dia com os sorteios reais, favoritas, recentes, loteria de contexto, acertos dos seus jogos, assinante desde. | Os recentes valem só por aparelho. Não há histórico de uso de ferramentas por usuário no servidor (os eventos de telemetria não guardam `user_id` vindo do cliente). |
+| Consistência | 3,5 | Todas as páginas de `/conta` usam a mesma moldura, tokens, cabeçalho e botões. | Os componentes antigos (`JogosListaClient`, `BolaoEditorClient`, `TetoGastoForm`, `ApiKeysClient`, `AlertasForm`) foram **ajustados por CSS**, não reescritos. O editor de bolão (425 linhas) não foi revisto visualmente, porque a conta de teste não tem bolões. |
+| Responsividade | 4 | As 14 rotas foram medidas a 375px sem rolagem horizontal, com um `h1` visível cada. Trilho no tablet, barra de 5 alvos no celular e folha "Conta". | Não foi testado em aparelho físico. As grades de dezenas longas (Lotomania, com 50 números) não foram vistas no celular. |
+| Acessibilidade | 4 | Contraste AA medido em todos os pares de texto da paleta. Link "Pular para o conteúdo", foco visível na lombada escura, `aria-current`, `aria-pressed`, combobox ARIA no Ctrl+K, `prefers-reduced-motion`. Rótulos de campos corrigidos (Alertas, API) e `useId` onde o id fixo podia se repetir. | Não foi testado com leitor de tela real (NVDA ou VoiceOver). Os blocos `<section>` usam ids fixos em `aria-labelledby`, que podem se repetir com a página anterior que o Next mantém oculta. |
+| Desempenho | 4 | Nenhuma biblioteca nova. Animações só em CSS. Concursos das 9 loterias numa consulta em lote e em cache. O CSS da área (44 KB, 8,2 KB com gzip) só carrega em `/conta`. | Lighthouse não foi medido. O componente `RegistroRecentes` roda em todas as páginas (é mínimo, mas é global). |
+| Integridade | 4 | Nenhuma regra de negócio ou cálculo alterado. As páginas continuam verificando a sessão no servidor. 434 testes (eram 409) e build limpos. URLs antigas mantidas. Correções no caminho: redefinição de senha (404), validade do Pix, promessa de OCR, bolão fixo na Mega-Sena e chaves duplicadas do Super Sete. | Não verificado no navegador: conta gratuita, histórico Pix, as 7 loterias que não existem no banco local e a redefinição de senha de ponta a ponta. |
+
+**Resumo:** a área de membros virou um produto com estrutura e identidade próprias e passa nos critérios básicos de acessibilidade e responsividade. Para chegar a 5 faltam três coisas, nesta ordem: (1) não "sair" da área ao abrir uma ferramenta; (2) reescrever os componentes antigos nos padrões novos, em vez de só ajustá-los por CSS; (3) testar com contas gratuita e de Pix, leitor de tela e aparelho físico.

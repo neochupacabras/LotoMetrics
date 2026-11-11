@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import Dezenas from "@/components/Dezenas";
+import { formatarDezena } from "@/lib/format";
 import { AbasPagina, CabecalhoPagina, RecursoBloqueado } from "@/components/membros/MembrosShell";
 import { createClient } from "@/lib/supabase/server";
 import { getContaContexto } from "@/lib/conta/contexto";
@@ -14,6 +14,11 @@ export const metadata: Metadata = {
   title: "Carteira do apostador — LotoAnalítica",
   robots: { index: false, follow: false },
 };
+
+// "positivo" | "negativo" | "zero" — a cor do saldo (zero fica neutro).
+function sinal(v: number): "positivo" | "negativo" | "zero" {
+  return v > 0 ? "positivo" : v < 0 ? "negativo" : "zero";
+}
 
 function formatarMoeda(v: number): string {
   return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -89,29 +94,25 @@ async function CarteiraConteudo({
     <>
       <TetoGastoForm tetoAtual={tetoAtual} gastoMesAtual={carteira.gastoMesAtual} />
 
-      <div className="transicao-resumo" style={{ marginTop: 20 }}>
-        <div className="transicao-resumo__item">
-          <p className="analise-cartao__rotulo">Total gasto</p>
-          <p className="transicao-resumo__valor" style={{ color: "var(--rust)" }}>
-            {formatarMoeda(carteira.totalGasto)}
-          </p>
+      {/* Cor só para o saldo (positivo/negativo); gasto e ganho em tinta
+          — antes os três usavam a terracota/ferrugem do site público, e um
+          saldo zero aparecia em vermelho. */}
+      <dl className="m-indicadores">
+        <div className="m-indicador">
+          <dt className="m-indicador__rotulo">Total gasto</dt>
+          <dd className="m-indicador__valor">{formatarMoeda(carteira.totalGasto)}</dd>
         </div>
-        <div className="transicao-resumo__item">
-          <p className="analise-cartao__rotulo">Total ganho</p>
-          <p className="transicao-resumo__valor" style={{ color: "var(--pine)" }}>
-            {formatarMoeda(carteira.totalGanho)}
-          </p>
+        <div className="m-indicador">
+          <dt className="m-indicador__rotulo">Total ganho</dt>
+          <dd className="m-indicador__valor">{formatarMoeda(carteira.totalGanho)}</dd>
         </div>
-        <div className="transicao-resumo__item">
-          <p className="analise-cartao__rotulo">Saldo</p>
-          <p
-            className="transicao-resumo__valor"
-            style={{ color: carteira.saldoGeral >= 0 ? "var(--pine)" : "var(--rust)" }}
-          >
+        <div className="m-indicador">
+          <dt className="m-indicador__rotulo">Saldo</dt>
+          <dd className="m-indicador__valor" data-sinal={sinal(carteira.saldoGeral)}>
             {formatarMoeda(carteira.saldoGeral)}
-          </p>
+          </dd>
         </div>
-      </div>
+      </dl>
 
       {carteira.temJogoNaoCalculavel && (
         <p className="bloco__nota" style={{ marginTop: 12 }}>
@@ -120,9 +121,9 @@ async function CarteiraConteudo({
         </p>
       )}
 
-      <h2 className="bloco__titulo" style={{ marginTop: 32 }}>Por jogo</h2>
+      <h2 className="m-secao__titulo" style={{ marginTop: 36 }}>Por jogo</h2>
       <div className="tabela-scroll">
-        <table className="tabela-dados">
+        <table className="m-tabela m-tabela--carteira">
           <thead>
             <tr>
               <th>Jogo</th>
@@ -139,25 +140,19 @@ async function CarteiraConteudo({
               return (
                 <tr key={j.id}>
                   <td>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <Dezenas dezenas={j.dezenas} tamanho="pequena" />
-                      {!j.ativo && <span className="badge">pausado</span>}
-                    </div>
-                    {j.label && <div style={{ fontSize: "0.78rem", color: "var(--ink-faint)" }}>{j.label}</div>}
+                    <span className="m-tabela__dezenas">
+                      {j.dezenas.map((d) => (j.loteria === "supersete" ? String(d) : formatarDezena(d))).join(" ")}
+                    </span>
+                    <span className="m-tabela__sub">
+                      {j.label ?? ""}
+                      {!j.ativo && <span className="m-etiqueta">pausado</span>}
+                    </span>
                   </td>
                   <td>{j.nomeLoteria}</td>
-                  <td className="num" style={{ fontFamily: "var(--font-mono)" }}>{j.concursosAcompanhados}</td>
-                  <td className="num" style={{ fontFamily: "var(--font-mono)" }}>{formatarMoeda(j.gasto)}</td>
-                  <td className="num" style={{ fontFamily: "var(--font-mono)" }}>
-                    {j.ganho === null ? "—" : formatarMoeda(j.ganho)}
-                  </td>
-                  <td
-                    className="num"
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      color: saldo === null ? "var(--ink-faint)" : saldo >= 0 ? "var(--pine)" : "var(--rust)",
-                    }}
-                  >
+                  <td className="num m-numero">{j.concursosAcompanhados}</td>
+                  <td className="num m-numero">{formatarMoeda(j.gasto)}</td>
+                  <td className="num m-numero">{j.ganho === null ? "—" : formatarMoeda(j.ganho)}</td>
+                  <td className="num m-numero" data-sinal={saldo === null ? undefined : sinal(saldo)}>
                     {saldo === null ? "—" : formatarMoeda(saldo)}
                   </td>
                 </tr>
@@ -167,7 +162,7 @@ async function CarteiraConteudo({
         </table>
       </div>
 
-      <div className="aviso-legal" style={{ marginTop: 24 }}>
+      <div className="aviso-legal" style={{ marginTop: 28 }}>
         Esses valores mostram o que teria acontecido se você tivesse jogado cada combinação em
         todo concurso desde que a salvou, usando os prêmios históricos reais. Isso não muda a
         chance de ganhar no próximo sorteio — cada concurso é independente dos anteriores.

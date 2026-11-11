@@ -11,9 +11,11 @@ export default function Dezenas({
 }) {
   return (
     <div className={wrapperClassName}>
+      {/* key com a posição: no Super Sete o mesmo dígito aparece em
+          colunas diferentes, e key={d} gerava chaves duplicadas. */}
       {dezenas.map((d, i) => (
         <span
-          key={d}
+          key={`${i}-${d}`}
           className={tamanho === "pequena" ? "dezena-bola dezena-bola--pequena" : "dezena-bola"}
           style={{ animationDelay: `${Math.min(i, 12) * 45}ms` }}
         >

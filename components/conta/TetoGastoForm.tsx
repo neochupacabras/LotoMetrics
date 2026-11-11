@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useId, useState, useTransition } from "react";
 import { salvarTetoGastoAction } from "@/lib/carteira-actions";
 
 interface Props {
@@ -17,6 +17,9 @@ function formatarMoeda(v: number): string {
 // dos jogos salvos no mês corrente. Nunca bloqueia nada — o site não
 // processa apostas reais, então isso é só uma ferramenta de reflexão.
 export default function TetoGastoForm({ tetoAtual, gastoMesAtual }: Props) {
+  // id único por instância: o Next 16 mantém a página anterior oculta no
+  // DOM, e um id fixo repetido faz o <label for> apontar para a cópia oculta.
+  const idCampo = useId();
   const [editando, setEditando] = useState(tetoAtual === null);
   const [valorTexto, setValorTexto] = useState(tetoAtual !== null ? String(tetoAtual).replace(".", ",") : "");
   const [erro, setErro] = useState<string | null>(null);
@@ -75,12 +78,12 @@ export default function TetoGastoForm({ tetoAtual, gastoMesAtual }: Props) {
 
       {editando && (
         <form onSubmit={handleSalvar} className="teto-gasto__form">
-          <label htmlFor="teto-gasto-valor" className="auth-label">
+          <label htmlFor={idCampo} className="auth-label">
             Teto de gasto mensal (R$) — opcional
           </label>
           <div className="teto-gasto__form-linha">
             <input
-              id="teto-gasto-valor"
+              id={idCampo}
               type="text"
               inputMode="decimal"
               placeholder="ex: 100,00"

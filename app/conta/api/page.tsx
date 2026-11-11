@@ -60,14 +60,14 @@ curl -H "Authorization: Bearer la_suachave" \\
 curl -H "Authorization: Bearer la_suachave" \\
   "https://lotoanalitica.com.br/api/v1/estatisticas?loteria=megasena&tipo=frequencia"`}
                 </pre>
-                <p style={{ fontSize:"0.82rem", color:"var(--ink-soft)" }}>
+                <p className="m-secao__texto">
                   Limite: 1.000 requisições/mês. Renova no primeiro dia de cada mês.
                   Veja todos os endpoints em{" "}
                   <a href="/api/v1/docs" target="_blank" className="conta-link-gerenciar">
                     /api/v1/docs
                   </a>.
                 </p>
-                <p style={{ fontSize:"0.82rem", color:"var(--ink-soft)", marginTop: 8 }}>
+                <p className="m-secao__texto" style={{ marginTop: 8 }}>
                   Precisa de mais requisições para um bot ou painel robusto?{" "}
                   <a
                     href={`mailto:contato@lotoanalitica.com.br?subject=${encodeURIComponent("API — Volume maior")}&body=${encodeURIComponent("Olá, preciso de um volume maior de requisições na API. Meu uso estimado é de ______ requisições/mês.")}`}

@@ -77,6 +77,8 @@ function JogoCard({ jogo, isPremium }: { jogo: Jogo; isPremium: boolean }) {
               className={`jogo-card__toggle ${ativo ? "" : "jogo-card__toggle--off"}`}
               onClick={handleToggle}
               disabled={pending}
+              aria-pressed={ativo}
+              aria-label={ativo ? "Conferência por e-mail ativa — pausar" : "Conferência por e-mail pausada — ativar"}
               title={ativo ? "Desativar rastreamento" : "Ativar rastreamento"}
             >
               {ativo ? "Ativo" : "Pausado"}
@@ -88,15 +90,17 @@ function JogoCard({ jogo, isPremium }: { jogo: Jogo; isPremium: boolean }) {
             onClick={handleRemover}
             disabled={pending}
             title="Remover jogo"
+            aria-label={`Remover jogo${label ? ` “${label}”` : ""} da ${nomeLoteria(jogo.loteria)}`}
           >
-            ✕
+            <span aria-hidden>✕</span>
           </button>
         </div>
       </div>
 
       <div className="jogo-card__dezenas">
-        {jogo.dezenas.map(d => (
-          <span key={d} className="jogo-card__dezena">{formatarDezena(d)}</span>
+        {/* key por posição: no Super Sete os dígitos se repetem entre colunas */}
+        {jogo.dezenas.map((d, i) => (
+          <span key={i} className="jogo-card__dezena">{jogo.loteria === "supersete" ? d : formatarDezena(d)}</span>
         ))}
       </div>
 
@@ -134,11 +138,27 @@ function JogoCard({ jogo, isPremium }: { jogo: Jogo; isPremium: boolean }) {
             className="jogo-card__label-btn"
             onClick={() => setEditando(true)}
           >
-            {label ? `"${label}"` : "Adicionar nome →"}
+            {label ? `“${label}”` : "Adicionar nome"}
           </button>
         )}
       </div>
     </div>
+  );
+}
+
+// Fora do componente pai: declarado dentro, ele era recriado a cada render
+// e remontava todos os cartões (perdendo o estado de edição do nome).
+function Grupo({ titulo, lista, isPremium }: { titulo: string; lista: Jogo[]; isPremium: boolean }) {
+  if (lista.length === 0) return null;
+  return (
+    <section className="jogos-grupo">
+      <h2 className="jogos-grupo__titulo">{titulo}</h2>
+      <div className="jogos-grade">
+        {lista.map(j => (
+          <JogoCard key={j.id} jogo={j} isPremium={isPremium} />
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -152,20 +172,6 @@ export default function JogosListaClient({
   // Agrupar jogos por loteria dinamicamente
   const loteriasCodigos = [...new Set(jogos.map(j => j.loteria))];
 
-  function Grupo({ titulo, lista }: { titulo: string; lista: Jogo[] }) {
-    if (lista.length === 0) return null;
-    return (
-      <div className="jogos-grupo">
-        <h2 className="jogos-grupo__titulo">{titulo}</h2>
-        <div className="jogos-grade">
-          {lista.map(j => (
-            <JogoCard key={j.id} jogo={j} isPremium={isPremium} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="jogos-lista">
       {loteriasCodigos.map(codigo => (
@@ -173,6 +179,7 @@ export default function JogosListaClient({
           key={codigo}
           titulo={nomeLoteria(codigo)}
           lista={jogos.filter(j => j.loteria === codigo)}
+          isPremium={isPremium}
         />
       ))}
     </div>
