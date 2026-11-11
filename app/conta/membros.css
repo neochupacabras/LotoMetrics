@@ -2634,3 +2634,167 @@ a.m-ferramenta__link:hover .m-ferramenta__seta {
 .m-cabecalho__acoes .m-favorito {
   align-items: stretch;
 }
+
+/* ============================================================
+   ASSINATURA E BENEFÍCIOS (/conta/assinatura)
+   ============================================================ */
+
+.m-plano-cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 720px;
+  margin-bottom: 44px;
+  padding: 26px 28px 28px;
+  border: 1px solid var(--m-line);
+  background: var(--m-surface);
+}
+
+.m-plano-cartao[data-premium="true"] {
+  border-top: 2px solid var(--m-seal);
+}
+
+.m-plano-cartao__topo .m-plano__nome {
+  margin-bottom: 6px;
+}
+
+.m-plano-cartao__titulo {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.9rem;
+  line-height: 1.12;
+}
+
+.m-plano-cartao .m-dados {
+  margin: 0;
+}
+
+.m-plano-cartao__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* O botão do portal Stripe é um componente antigo (.botao-gerar): dentro
+   do cartão, segue a régua dos botões da área. */
+.m-plano-cartao__acoes .botao-gerar {
+  margin: 0;
+  min-height: 42px;
+}
+
+.m-plano-cartao__nota {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 0.86rem;
+  color: var(--m-ink-soft);
+}
+
+.m-beneficios {
+  margin-bottom: 44px;
+}
+
+.m-beneficios > .m-secao__texto {
+  margin-bottom: 20px;
+}
+
+.m-beneficios__grupos {
+  display: grid;
+  gap: 28px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@container conteudo (min-width: 900px) {
+  .m-beneficios__grupos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+  }
+}
+
+.m-beneficios__grupo .m-sobretitulo {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--m-ink);
+  margin-bottom: 0;
+}
+
+.m-beneficio {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.m-beneficio__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.m-beneficio__nome {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.m-beneficio__detalhe {
+  font-size: 0.84rem;
+  color: var(--m-ink-soft);
+}
+
+.m-beneficio__usar,
+.m-beneficio__auto {
+  flex-shrink: 0;
+}
+
+.m-beneficio__auto {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--m-ink-faint);
+}
+
+.m-historico {
+  max-width: 720px;
+}
+
+.m-historico > .m-secao__texto {
+  margin-bottom: 14px;
+}
+
+.m-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.m-tabela th {
+  padding: 8px 10px 8px 0;
+  border-bottom: 1px solid var(--m-ink);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--m-ink-faint);
+}
+
+.m-tabela td {
+  padding: 11px 10px 11px 0;
+  border-bottom: 1px solid var(--m-line);
+  vertical-align: baseline;
+}
+
+.m-tabela .num {
+  text-align: right;
+}
+
+.m-etiqueta[data-aprovado] {
+  background: var(--m-sunken);
+  color: var(--m-ink-soft);
+}
+
+.m-etiqueta[data-aprovado="true"] {
+  background: color-mix(in srgb, var(--m-positive) 12%, transparent);
+  color: var(--m-positive);
+}

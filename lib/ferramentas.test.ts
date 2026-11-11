@@ -6,6 +6,7 @@ import {
   FERRAMENTAS,
   buscarFerramentas,
   disponivelEm,
+  extraPremiumEm,
   ferramentaDaUrl,
   hrefFerramenta,
   normalizar,
@@ -81,5 +82,20 @@ describe("ferramentaDaUrl", () => {
     expect(ferramentaDaUrl("/dicas/atraso")).toBeNull();
     expect(ferramentaDaUrl("/lotomania/bolao")).toBeNull(); // não existe para a Lotomania
     expect(ferramentaDaUrl("/")).toBeNull();
+  });
+});
+
+describe("extraPremiumEm", () => {
+  const conferidor = FERRAMENTAS.find((f) => f.id === "conferidor")!;
+  const gerador = FERRAMENTAS.find((f) => f.id === "gerador")!;
+
+  it("só promete foto do bilhete onde há OCR", () => {
+    expect(extraPremiumEm(conferidor, "megasena")).toMatch(/foto/);
+    expect(extraPremiumEm(conferidor, "lotofacil")).toMatch(/foto/);
+    expect(extraPremiumEm(conferidor, "quina")).toBe("Jogos ilimitados");
+  });
+
+  it("nas demais, o extra é o do registro", () => {
+    expect(extraPremiumEm(gerador, "quina")).toBe(gerador.extraPremium);
   });
 });

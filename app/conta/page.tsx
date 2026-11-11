@@ -221,7 +221,7 @@ function ModuloAssinatura({ resumo }: { resumo: ResumoAssinatura }) {
     <section className="m-modulo m-modulo--assinatura" data-premium="true" aria-labelledby="painel-assinatura">
       <CabecalhoModulo id="painel-assinatura" titulo="Seu plano" />
       <p className="m-plano__nome m-plano__nome--premium">
-        <IcSelo /> Premium
+        <IcSelo /> Premium{resumo.periodicidade ? ` · ${resumo.periodicidade}` : ""}
       </p>
       <dl className="m-dados m-dados--compacto">
         <div>

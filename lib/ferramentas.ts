@@ -13,6 +13,7 @@
 
 import { abaAplicavel } from "@/lib/abas-loteria";
 import { isCodigoLoteriaValido } from "@/lib/format";
+import { LOTERIAS_COM_OCR } from "@/lib/ocr-suporte";
 import type { CodigoLoteria } from "@/lib/types";
 
 export type CategoriaFerramenta =
@@ -145,7 +146,8 @@ export const FERRAMENTAS: Ferramenta[] = [
     tipo: "loteria", id: "conferidor", aba: "conferidor", nome: "Conferidor", categoria: "conferir",
     descricao: "Quantos pontos uma combinação fez em cada concurso do histórico.",
     termos: ["conferir", "acertos", "bilhete", "foto"],
-    extraPremium: "Jogos ilimitados e conferência por foto do bilhete",
+    // Texto genérico (busca/listas sem loteria); por loteria, ver extraPremiumEm.
+    extraPremium: "Jogos ilimitados e foto do bilhete na Lotofácil e na Mega-Sena",
   },
   {
     tipo: "loteria", id: "simulador", aba: "simulador", nome: "Simulador", categoria: "conferir",
@@ -207,6 +209,15 @@ export const FERRAMENTAS: Ferramenta[] = [
 // algumas — lib/abas-loteria.ts, a mesma regra do Subnav e do sitemap.)
 export function disponivelEm(f: Ferramenta, loteria: CodigoLoteria): boolean {
   return f.tipo === "global" || abaAplicavel(loteria, f.aba);
+}
+
+// Extra do Premium para uma loteria específica. Hoje só o Conferidor varia:
+// a leitura por foto (OCR) existe apenas onde lib/ocr-suporte.ts permite.
+export function extraPremiumEm(f: Ferramenta, loteria: CodigoLoteria): string | undefined {
+  if (f.id === "conferidor") {
+    return LOTERIAS_COM_OCR.has(loteria) ? "Jogos ilimitados e conferência por foto do bilhete" : "Jogos ilimitados";
+  }
+  return f.extraPremium;
 }
 
 export function hrefFerramenta(f: Ferramenta, loteria: CodigoLoteria): string {

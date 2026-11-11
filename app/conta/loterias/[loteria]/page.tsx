@@ -10,7 +10,7 @@ import { IcSelo } from "@/components/membros/Icones";
 import { getContaContexto } from "@/lib/conta/contexto";
 import { carregarLoteriasFavoritas, carregarResumoLoterias, conferirJogoSalvo } from "@/lib/conta/loterias";
 import { quandoSorteio } from "@/lib/conta/painel-regras";
-import { CATEGORIAS, FERRAMENTAS, disponivelEm, type FerramentaLoteria } from "@/lib/ferramentas";
+import { CATEGORIAS, FERRAMENTAS, disponivelEm, extraPremiumEm, type FerramentaLoteria } from "@/lib/ferramentas";
 import { formatarData, formatarMoeda, isCodigoLoteriaValido, LOTERIAS, preposicaoLoteria } from "@/lib/format";
 import { formatarMoedaCompacta } from "@/lib/resumo-concurso";
 import { createClient } from "@/lib/supabase/server";
@@ -226,16 +226,18 @@ export default async function LoteriaMembroPage({ params }: { params: Promise<{ 
                 <h3 className="m-categoria__titulo m-categoria__titulo--menor">{c.nome}</h3>
               </header>
               <ul className="m-lista">
-                {daCategoria.map((f) => (
+                {daCategoria.map((f) => {
+                  const extra = extraPremiumEm(f, loteria);
+                  return (
                   <li key={f.id} className="m-ferramenta">
                     <Link href={`/${loteria}/${f.aba}`} className="m-ferramenta__link">
                       <span className="m-ferramenta__nome">{f.nome}</span>
                       <span className="m-ferramenta__descricao">{f.descricao}</span>
-                      {f.extraPremium && (
+                      {extra && (
                         <span className="m-ferramenta__extra">
                           <IcSelo />
                           {contexto.isPremium ? "Incluído no seu plano: " : "Com Premium: "}
-                          {f.extraPremium.charAt(0).toLowerCase() + f.extraPremium.slice(1)}
+                          {extra.charAt(0).toLowerCase() + extra.slice(1)}
                         </span>
                       )}
                       <span className="m-ferramenta__seta" aria-hidden>
@@ -243,7 +245,8 @@ export default async function LoteriaMembroPage({ params }: { params: Promise<{ 
                       </span>
                     </Link>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             </div>
           );
