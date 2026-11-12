@@ -21,15 +21,37 @@ export default function AnuncioDisplay({
   const iniciado = useRef(false);
 
   useEffect(() => {
-    if (iniciado.current) return;
-    iniciado.current = true;
+    const el = ref.current;
+    if (!el || iniciado.current) return;
 
-    try {
-      // @ts-expect-error — adsbygoogle é injetado pelo script externo
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      // Silencia erros de ad blocker
+    const iniciar = () => {
+      if (iniciado.current) return;
+      iniciado.current = true;
+      try {
+        // @ts-expect-error — adsbygoogle é injetado pelo script externo
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch {
+        // Silencia erros de ad blocker
+      }
+    };
+
+    // O AdSense lança "No slot size for availableWidth=0" (assíncrono, fora
+    // deste try/catch) se o bloco ainda não tem largura no momento do push —
+    // aba em segundo plano, layout ainda não calculado (LOTOANALITICA-8).
+    // Só inicia quando o <ins> tiver largura de fato.
+    if (el.offsetWidth > 0) {
+      iniciar();
+      return;
     }
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => {
+      if (el.offsetWidth > 0) {
+        observer.disconnect();
+        iniciar();
+      }
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   return (

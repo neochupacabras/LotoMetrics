@@ -1,5 +1,5 @@
 import pool from "@/lib/db";
-import { getConcursoPorNumero, getLoteriaPorCodigo } from "@/lib/queries";
+import { buscarConcursoPorNumero, getLoteriaPorCodigo } from "@/lib/queries";
 import { NOME_LOTERIA } from "@/lib/seo";
 import { logJobRun } from "@/lib/telemetry";
 import { chaveTelegram, montarMensagemTelegram } from "@/lib/telegram-mensagem";
@@ -80,7 +80,7 @@ export async function publicarResultadosNoCanal(
       continue;
     }
     const info = await getLoteriaPorCodigo(loteria);
-    const concurso = info ? await getConcursoPorNumero(info.id, numero) : null;
+    const concurso = info ? await buscarConcursoPorNumero(info.id, numero) : null;
     if (!info || !concurso) continue;
 
     const texto = montarMensagemTelegram({
