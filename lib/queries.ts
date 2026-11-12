@@ -59,15 +59,6 @@ function mapConcursoRow(r: any): Omit<Concurso, "premiacoes"> {
   };
 }
 
-async function getPremiacoes(concursoId: number): Promise<PremiacaoFaixa[]> {
-  const { rows } = await pool.query(
-    `SELECT faixa, descricao_faixa, qtd_ganhadores, valor_premio
-     FROM premiacao_faixa WHERE concurso_id = $1 ORDER BY faixa`,
-    [concursoId]
-  );
-  return rows.map(mapPremiacaoRow);
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapPremiacaoRow(r: any): PremiacaoFaixa {
   return {
@@ -245,16 +236,62 @@ export async function getNumerosConcursosPorLoterias(
   return mapa;
 }
 
+// Concurso + premiações numa única ida ao banco (json_agg), sem cache.
+// Para quem precisa do dado fresco logo após a importação (canal do
+// Telegram), já que revalidateTag("concursos", "max") serve a versão velha
+// na primeira leitura.
+export async function buscarConcursoPorNumero(
+  loteriaId: number,
+  numero: number
+): Promise<Concurso | null> {
+  const { rows } = await pool.query(
+    `SELECT c.*,
+       COALESCE(
+         (SELECT json_agg(
+             json_build_object(
+               'faixa', pf.faixa,
+               'descricao_faixa', pf.descricao_faixa,
+               'qtd_ganhadores', pf.qtd_ganhadores,
+               'valor_premio', pf.valor_premio
+             ) ORDER BY pf.faixa)
+          FROM premiacao_faixa pf WHERE pf.concurso_id = c.id),
+         '[]'::json
+       ) AS premiacoes
+     FROM concurso c
+     WHERE c.loteria_id = $1 AND c.numero = $2`,
+    [loteriaId, numero]
+  );
+  if (rows.length === 0) return null;
+  return { ...mapConcursoRow(rows[0]), premiacoes: mapPremiacoesJson(rows[0].premiacoes) };
+}
+
+// unstable_cache não guarda exceções: lançar quando o concurso não existe
+// evita cachear um "null" que esconderia por 24h um concurso importado
+// depois (ex.: alguém abre /resultados/N+1 antes do sorteio).
+class ConcursoNaoEncontrado extends Error {}
+
+const getConcursoPorNumeroCacheado = unstable_cache(
+  async (loteriaId: number, numero: number): Promise<Concurso> => {
+    const concurso = await buscarConcursoPorNumero(loteriaId, numero);
+    if (!concurso) throw new ConcursoNaoEncontrado();
+    return concurso;
+  },
+  ["concurso-por-numero"],
+  { tags: ["concursos"], revalidate: 86400 }
+);
+
+// Antes eram duas consultas em sequência (concurso, depois premiacao_faixa)
+// e sem cache entre requisições. Com o pool de 1 conexão por instância, as
+// consultas paralelas da página (concurso N, N-1, contexto) faziam fila e a
+// de premiações chegava a 2,3s na revalidação ISR (LOTOANALITICA-6/7).
 export const getConcursoPorNumero = cache(
   async (loteriaId: number, numero: number): Promise<Concurso | null> => {
-    const { rows } = await pool.query(
-      `SELECT * FROM concurso WHERE loteria_id = $1 AND numero = $2`,
-      [loteriaId, numero]
-    );
-    if (rows.length === 0) return null;
-    const concurso = mapConcursoRow(rows[0]);
-    const premiacoes = await getPremiacoes(rows[0].id);
-    return { ...concurso, premiacoes };
+    try {
+      return await getConcursoPorNumeroCacheado(loteriaId, numero);
+    } catch (err) {
+      if (err instanceof ConcursoNaoEncontrado) return null;
+      throw err;
+    }
   }
 );
 

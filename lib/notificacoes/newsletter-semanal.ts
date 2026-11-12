@@ -1,6 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/server";
 import pool from "@/lib/db";
-import { getLoteriaPorCodigo, getUltimoConcurso } from "@/lib/queries";
+import { getLoteriaPorCodigo, getUltimosConcursos } from "@/lib/queries";
 import { LOTERIAS } from "@/lib/format";
 import { gerarDestaques } from "@/lib/destaques";
 import { chaveNewsletterSemanal, escolherLoteriaDestaqueSemana, type CandidatoAcumulado } from "@/lib/notificacoes/regras";
@@ -40,9 +40,15 @@ async function montarConteudo(): Promise<{
   const resultados: ResultadoSemanaEmail[] = [];
   const candidatosAcumulado: CandidatoAcumulado[] = [];
 
+  // Uma consulta para todas as loterias: getUltimoConcurso dentro do laço
+  // era um N+1 detectado pelo Sentry no cron das segundas (LOTOANALITICA-4).
+  const ultimos = await getUltimosConcursos(
+    loterias.filter((l): l is NonNullable<typeof l> => l !== null).map((l) => l.id)
+  );
+
   for (const loteria of loterias) {
     if (!loteria) continue;
-    const ultimo = await getUltimoConcurso(loteria.id);
+    const ultimo = ultimos[loteria.id];
     if (!ultimo) continue;
 
     const nomeLoteria = LOTERIAS[loteria.codigo as keyof typeof LOTERIAS]?.nome ?? loteria.nome;
