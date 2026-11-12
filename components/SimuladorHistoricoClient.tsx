@@ -161,7 +161,9 @@ function CardsResumo({ r, cor }: { r: ResultadoSimulacao; cor?: string }) {
           {formatarReaisSimples(r.totalGasto)}
         </span>
         <span className="simulador-hist-card-detalhe">
-          {r.totalConcursos.toLocaleString("pt-BR")} concursos × {formatarReaisSimples(r.precoAposta)}
+          {r.precoMinimo !== r.precoMaximo
+            ? `${r.totalConcursos.toLocaleString("pt-BR")} concursos, ao preço de cada época (${formatarReaisSimples(r.precoMinimo)} a ${formatarReaisSimples(r.precoMaximo)})`
+            : `${r.totalConcursos.toLocaleString("pt-BR")} concursos × ${formatarReaisSimples(r.precoMaximo)}`}
         </span>
       </div>
       <div className="simulador-hist-card cartao-elevado">
@@ -661,7 +663,7 @@ export default function SimuladorHistoricoClient({
               <span className="simulador-drawdown-valor">{resultado.drawdown.maiorSeca} concursos</span>
               <span className="simulador-drawdown-detalhe">
                 {resultado.drawdown.maiorSeca > 0 && resultado.drawdown.concursoInicioSeca
-                  ? `do #${resultado.drawdown.concursoInicioSeca} ao #${resultado.drawdown.concursoFimSeca} — ${formatarReaisSimples(resultado.drawdown.maiorSeca * resultado.precoAposta)} gastos sem retorno`
+                  ? `do #${resultado.drawdown.concursoInicioSeca} ao #${resultado.drawdown.concursoFimSeca} — ${formatarReaisSimples(resultado.drawdown.custoMaiorSeca)} gastos sem retorno`
                   : "sem seca registrada"}
               </span>
             </div>
@@ -740,6 +742,21 @@ export default function SimuladorHistoricoClient({
                   </tbody>
                 </table>
               </div>
+            </div>
+          )}
+
+          {resultado.acertosEmFaixaAcumulada.length > 0 && (
+            <div className="bloco__nota" style={{ marginTop: 16 }}>
+              <strong>Atenção:</strong> em{" "}
+              {resultado.acertosEmFaixaAcumulada.length === 1 ? "1 concurso" : `${resultado.acertosEmFaixaAcumulada.length} concursos`}{" "}
+              (
+              {resultado.acertosEmFaixaAcumulada
+                .slice(0, 5)
+                .map((a) => `#${a.numero}, ${a.descricao}`)
+                .join("; ")}
+              {resultado.acertosEmFaixaAcumulada.length > 5 ? "; …" : ""}) esse jogo teria acertado uma faixa
+              que ficou sem ganhador e acumulou. Como ninguém ganhou, a Caixa não divulgou valor para ela —
+              esse prêmio não entra no total ganho acima, que fica menor do que seria.
             </div>
           )}
 

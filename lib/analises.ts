@@ -1290,10 +1290,10 @@ export const ANALISES: Analise[] = [
       <h2>O que o resultado típico mostra</h2>
       <p>
         Para um jogo de 15 dezenas conferido contra todo o histórico (cerca de 3.800
-        concursos), o custo total fica perto de R$13.400 — o simulador usa o preço
-        atual, R$3,50, em todos os concursos, embora a aposta já tenha custado de
-        R$1,00 a R$3,00 no passado. Em média, os prêmios recebidos somam cerca de
-        R$3.300, e o saldo final fica negativo em torno de R$10.000.
+        concursos), o custo total fica perto de R$8.300 — o simulador cobra o preço
+        de cada época, que foi de R$1,00 em 2003 até os R$3,50 atuais. Em média, os
+        prêmios recebidos somam cerca de R$3.300 (perto de 40% do gasto), e o saldo
+        final fica negativo em torno de R$5.000.
       </p>
       <p>
         Em média, isso inclui cerca de 336 concursos com 11 acertos, 64 com 12

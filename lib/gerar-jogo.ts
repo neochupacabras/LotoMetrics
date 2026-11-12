@@ -23,6 +23,8 @@ export interface ResultadoGeracao {
   pares: number;
   impares: number;
   atendeuTodosFiltros: boolean;
+  // Filtros que o jogo devolvido não cumpre (vazio quando atendeu todos).
+  filtrosNaoAtendidos?: string[];
   trevos?: number[]; // +Milionária: 2 trevos de 1 a 6, sorteados à parte das dezenas
 }
 
@@ -35,7 +37,6 @@ export function gerarJogo(params: ParametrosGeracao): ResultadoGeracao {
     dezenaMin,
     dezenaMax,
     qtdDezenas,
-    dezenasObrigatorias = [],
     dezenasExcluidas = [],
     somaFaixa,
     parImparAlvo,
@@ -44,6 +45,17 @@ export function gerarJogo(params: ParametrosGeracao): ResultadoGeracao {
     multiplos3Alvo,
     maxTentativas = 500,
   } = params;
+
+  // Obrigatórias repetidas viravam jogo com dezenas a menos (LF-26).
+  const dezenasObrigatorias = Array.from(new Set(params.dezenasObrigatorias ?? []));
+  // Uma dezena não pode ser obrigatória e excluída ao mesmo tempo — antes ela
+  // entrava no jogo marcado como "atendeu todos os filtros" (LF-25).
+  const conflito = dezenasObrigatorias.filter((d) => dezenasExcluidas.includes(d));
+  if (conflito.length > 0) {
+    throw new Error(
+      `A dezena ${conflito.join(", ")} está ao mesmo tempo entre as obrigatórias e as excluídas.`
+    );
+  }
 
   if (qtdDezenas < dezenasObrigatorias.length) {
     throw new Error("Número de dezenas obrigatórias maior que o tamanho do jogo.");
@@ -61,7 +73,11 @@ export function gerarJogo(params: ParametrosGeracao): ResultadoGeracao {
     throw new Error("Não há dezenas suficientes disponíveis após as exclusões.");
   }
 
+  // Sem combinação que atenda tudo, devolve a tentativa que atendeu mais
+  // filtros, dizendo quais faltaram (antes: a 1ª tentativa, qualquer que
+  // fosse — LF-26).
   let melhorTentativa: number[] | null = null;
+  let melhorFalhas: string[] = [];
 
   for (let tentativa = 0; tentativa < maxTentativas; tentativa++) {
     const candidato = [...dezenasObrigatorias, ...amostrarAleatorio(poolBase, qtdRestante)].sort(
@@ -79,17 +95,28 @@ export function gerarJogo(params: ParametrosGeracao): ResultadoGeracao {
     const passaMultiplos3 =
       !multiplos3Alvo || multiplos3Alvo.includes(contar(candidato, ehMultiploDe3));
 
-    if (passaSoma && passaParImpar && passaPrimos && passaFibonacci && passaMultiplos3) {
+    const falhas: string[] = [];
+    if (!passaSoma) falhas.push("soma");
+    if (!passaParImpar) falhas.push("pares e ímpares");
+    if (!passaPrimos) falhas.push("primos");
+    if (!passaFibonacci) falhas.push("Fibonacci");
+    if (!passaMultiplos3) falhas.push("múltiplos de 3");
+
+    if (falhas.length === 0) {
       return {
         dezenas: candidato,
         soma,
         pares,
         impares: candidato.length - pares,
         atendeuTodosFiltros: true,
+        filtrosNaoAtendidos: [],
       };
     }
 
-    if (!melhorTentativa) melhorTentativa = candidato;
+    if (!melhorTentativa || falhas.length < melhorFalhas.length) {
+      melhorTentativa = candidato;
+      melhorFalhas = falhas;
+    }
   }
 
   const dezenas = melhorTentativa as number[];
@@ -101,6 +128,7 @@ export function gerarJogo(params: ParametrosGeracao): ResultadoGeracao {
     pares,
     impares: dezenas.length - pares,
     atendeuTodosFiltros: false,
+    filtrosNaoAtendidos: melhorFalhas,
   };
 }
 
@@ -117,9 +145,12 @@ function amostrarAleatorio(pool: number[], qtd: number): number[] {
 
 // Sorteia `qtd` dezenas distintas de dentro de um pool maior — usado para
 // escolher, a cada jogo gerado, um subconjunto diferente das dezenas mais
-// atrasadas (em vez de forçar sempre as mesmas).
-export function amostrarSubconjunto(pool: number[], qtd: number): number[] {
-  return amostrarAleatorio(pool, Math.min(qtd, pool.length));
+// atrasadas (em vez de forçar sempre as mesmas). `excluir` tira do pool as
+// dezenas que o jogo não pode ter (ex.: as mais frequentes excluídas no
+// mesmo preset), evitando o conflito de LF-25.
+export function amostrarSubconjunto(pool: number[], qtd: number, excluir: number[] = []): number[] {
+  const disponiveis = Array.from(new Set(pool)).filter((d) => !excluir.includes(d));
+  return amostrarAleatorio(disponiveis, Math.min(qtd, disponiveis.length));
 }
 
 // PRNG determinístico (mulberry32) — mesma seed sempre produz a mesma

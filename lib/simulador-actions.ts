@@ -4,8 +4,8 @@ import { after } from "next/server";
 import { cookies } from "next/headers";
 import { getLoteriaPorCodigo, getDrawsParaSimulacao, getMapaFaixasPorAcertos, ConcessaoSimulacao } from "@/lib/queries";
 import { isCodigoLoteriaValido, qtdDezenasAposta } from "@/lib/format";
-import { PARAMS_LOTERIA, FAIXAS_MILIONARIA, FAIXAS_DUPLASENA_POR_SORTEIO, faixaLotomania } from "@/lib/probabilidades";
-import { contarColunasAcertadas } from "@/lib/classificacao";
+import { pontuarDraw } from "@/lib/simulador-pontuacao";
+import { precoAtual, precoApostaNoConcurso } from "@/lib/precos-loteria";
 import { logToolEvent } from "@/lib/telemetry";
 import { getPlanoPremium } from "@/lib/plano";
 import { limiteHistoricoPorPlano, recortarHistorico, ERRO_COMPARADOR_PREMIUM, LIMITE_HISTORICO_FREE } from "@/lib/simulador-plano";
@@ -13,7 +13,11 @@ import { limiteHistoricoPorPlano, recortarHistorico, ERRO_COMPARADOR_PREMIUM, LI
 export interface ResultadoSimulacao {
   nomeLoteria: string;
   totalConcursos: number;
-  precoAposta: number;
+  precoAposta: number; // preço atual da aposta simples
+  // Menor e maior preço cobrado no período simulado: o custo de cada
+  // concurso usa o preço da época (lib/precos-loteria.ts), não o atual.
+  precoMinimo: number;
+  precoMaximo: number;
   totalGasto: number;
   totalGanho: number;
   saldoFinal: number;
@@ -21,6 +25,7 @@ export interface ResultadoSimulacao {
   // Drawdown: pior sequência sem prêmio
   drawdown: {
     maiorSeca: number;
+    custoMaiorSeca: number; // soma dos preços pagos durante a maior seca
     maiorDrawdown: number;
     concursoInicioSeca: number | null;
     concursoFimSeca: number | null;
@@ -36,104 +41,11 @@ export interface ResultadoSimulacao {
     acertos: number;
     premio: number;
   }[];
+  // Concursos em que o jogo teria acertado uma faixa que ficou sem ganhador
+  // (acumulou): o valor não é conhecido, então não entra no saldo — mas o
+  // acerto aparece, em vez de sumir (auditoria da Lotofácil, LF-05).
+  acertosEmFaixaAcumulada: { numero: number; acertos: number; descricao: string }[];
   grafico: { numero: number; saldo: number }[];
-}
-
-// ── Pontuação de um concurso contra um jogo ────────────────────────────────────
-// Isolado numa função pura pra não duplicar essa lógica entre simularHistorico
-// e compararJogos (foi exatamente essa duplicação, com a tabela de faixas
-// incompleta, que deixou a ferramenta quebrada pra 7 das 9 loterias).
-
-interface Pontuacao {
-  faixa: number;
-  premio: number;
-  acertosExibicao: number; // valor mostrado na UI (acertos de dezenas)
-  descricao: string;
-}
-
-// `jogo` é sempre o array original (não um Set): a Super Sete precisa da
-// ordem (índice = coluna), então converter cedo demais pra Set perderia
-// exatamente a informação que decide o acerto.
-//
-// Retorna uma lista (não um valor único) porque a Dupla Sena confere o
-// MESMO jogo duas vezes por concurso — 1º e 2º sorteio, cada um podendo
-// bater uma faixa premiada de forma independente. Pra todas as outras
-// loterias a lista tem no máximo 1 item.
-function pontuarDraw(
-  draw: ConcessaoSimulacao,
-  jogo: number[],
-  contexto:
-    | { tipo: "padrao"; mapaFaixas: Record<number, number> }
-    | { tipo: "milionaria"; trevosSet: Set<number> }
-    | { tipo: "supersete"; mapaFaixas: Record<number, number> }
-    | { tipo: "duplasena" }
-    | { tipo: "lotomania" }
-): Pontuacao[] {
-  if (contexto.tipo === "lotomania") {
-    const jogoSet = new Set(jogo);
-    const acertos = draw.dezenas.filter((d) => jogoSet.has(d)).length;
-    const faixa = faixaLotomania(acertos, draw.premios[7] !== undefined);
-    const premio = faixa !== undefined ? (draw.premios[faixa] ?? 0) : 0;
-    return faixa !== undefined && premio > 0
-      ? [{ faixa, premio, acertosExibicao: acertos, descricao: `${acertos} acertos` }]
-      : [];
-  }
-  if (contexto.tipo === "supersete") {
-    const acertos = contarColunasAcertadas(jogo, draw.dezenas);
-    const faixa = contexto.mapaFaixas[acertos];
-    const premio = faixa !== undefined ? (draw.premios[faixa] ?? 0) : 0;
-    return premio > 0
-      ? [{ faixa, premio, acertosExibicao: acertos, descricao: `${acertos} colunas certas` }]
-      : [];
-  }
-
-  if (contexto.tipo === "duplasena") {
-    const jogoSet = new Set(jogo);
-    const acertos1 = draw.dezenas.filter((d) => jogoSet.has(d)).length;
-    const acertos2 = (draw.dezenasSegundoSorteio ?? []).filter((d) => jogoSet.has(d)).length;
-    const hits: Pontuacao[] = [];
-    const faixa1 = FAIXAS_DUPLASENA_POR_SORTEIO[1][acertos1];
-    if (faixa1 !== undefined) {
-      const premio = draw.premios[faixa1] ?? 0;
-      if (premio > 0) {
-        hits.push({ faixa: faixa1, premio, acertosExibicao: acertos1, descricao: `${acertos1} acertos (1º sorteio)` });
-      }
-    }
-    const faixa2 = FAIXAS_DUPLASENA_POR_SORTEIO[2][acertos2];
-    if (faixa2 !== undefined) {
-      const premio = draw.premios[faixa2] ?? 0;
-      if (premio > 0) {
-        hits.push({ faixa: faixa2, premio, acertosExibicao: acertos2, descricao: `${acertos2} acertos (2º sorteio)` });
-      }
-    }
-    return hits;
-  }
-
-  const dezenasSet = new Set(jogo);
-  const acertos = draw.dezenas.filter((d) => dezenasSet.has(d)).length;
-
-  if (contexto.tipo === "milionaria") {
-    const acertosTrevos = (draw.trevos ?? []).filter((t) => contexto.trevosSet.has(t)).length;
-    const faixa = FAIXAS_MILIONARIA[`${acertos},${acertosTrevos}`];
-    const premio = faixa !== undefined ? (draw.premios[faixa] ?? 0) : 0;
-    return premio > 0
-      ? [{
-          faixa,
-          premio,
-          acertosExibicao: acertos,
-          descricao: `${acertos} acertos + ${acertosTrevos} trevo${acertosTrevos !== 1 ? "s" : ""}`,
-        }]
-      : [];
-  }
-
-  const faixa = contexto.mapaFaixas[acertos];
-  const premio = faixa !== undefined ? (draw.premios[faixa] ?? 0) : 0;
-  return premio > 0 ? [{ faixa, premio, acertosExibicao: acertos, descricao: `${acertos} acertos` }] : [];
-}
-
-function precoAposta(codigoLoteria: string): number {
-  const params = (PARAMS_LOTERIA as Record<string, { precoAposta: number }>)[codigoLoteria];
-  return params?.precoAposta ?? 3.5;
 }
 
 async function contextoPontuacao(
@@ -260,15 +172,20 @@ async function simularHistoricoInterno(
   const todosDraws = await getDrawsParaSimulacao(loteria.id);
   // Aplica limite: free usa últimos N concursos, premium usa todos
   const draws = recortarHistorico(todosDraws, limiteHistorico);
-  const preco = precoAposta(codigoLoteria);
 
   let saldoCumulativo = 0;
+  let totalGasto = 0;
+  let precoMinimo = Infinity;
+  let precoMaximo = 0;
+  const acertosEmFaixaAcumulada: { numero: number; acertos: number; descricao: string }[] = [];
   const porFaixaMap = new Map<number, { descricao: string; qtd: number; ganhoTotal: number }>();
   const melhores: { numero: number; acertos: number; premio: number }[] = [];
   const grafico: { numero: number; saldo: number }[] = [];
 
   // Drawdown tracking
   let secaAtual = 0;
+  let custoSecaAtual = 0;
+  let custoMaiorSeca = 0;
   let maiorSeca = 0;
   let inicioSecaAtual = 0;
   let inicioMaiorSeca: number | null = null;
@@ -278,9 +195,20 @@ async function simularHistoricoInterno(
   let totalGanho = 0;
 
   for (const draw of draws) {
+    // Preço da época de cada concurso (LF-04), não o preço atual.
+    const preco = precoApostaNoConcurso(codigoLoteria, draw.numero);
     saldoCumulativo -= preco;
+    totalGasto += preco;
+    precoMinimo = Math.min(precoMinimo, preco);
+    precoMaximo = Math.max(precoMaximo, preco);
 
-    const hits = pontuarDraw(draw, dezenas, contexto);
+    const pontuacoes = pontuarDraw(draw, dezenas, contexto);
+    for (const p of pontuacoes) {
+      if (p.acumulado) {
+        acertosEmFaixaAcumulada.push({ numero: draw.numero, acertos: p.acertosExibicao, descricao: p.descricao });
+      }
+    }
+    const hits = pontuacoes.filter((p) => !p.acumulado);
 
     for (const { faixa, premio, acertosExibicao, descricao } of hits) {
       saldoCumulativo += premio;
@@ -295,14 +223,17 @@ async function simularHistoricoInterno(
     // Drawdown: rastrear seca (concursos sem prêmio)
     if (hits.length === 0) {
       secaAtual++;
+      custoSecaAtual += preco;
       if (secaAtual === 1) inicioSecaAtual = draw.numero;
       if (secaAtual > maiorSeca) {
         maiorSeca = secaAtual;
+        custoMaiorSeca = custoSecaAtual;
         inicioMaiorSeca = inicioSecaAtual;
         fimMaiorSeca = draw.numero;
       }
     } else {
       secaAtual = 0;
+      custoSecaAtual = 0;
     }
 
     // Drawdown: maior queda do pico
@@ -313,7 +244,7 @@ async function simularHistoricoInterno(
     grafico.push({ numero: draw.numero, saldo: Math.round(saldoCumulativo * 100) / 100 });
   }
 
-  const totalGasto = draws.length * preco;
+  totalGasto = Math.round(totalGasto * 100) / 100;
 
   const porFaixa = Array.from(porFaixaMap.entries())
     .sort((a, b) => a[0] - b[0])
@@ -326,19 +257,23 @@ async function simularHistoricoInterno(
   return {
     nomeLoteria: loteria.nome,
     totalConcursos: draws.length,
-    precoAposta: preco,
+    precoAposta: precoAtual(codigoLoteria),
+    precoMinimo: draws.length > 0 ? precoMinimo : precoAtual(codigoLoteria),
+    precoMaximo: draws.length > 0 ? precoMaximo : precoAtual(codigoLoteria),
     totalGasto,
     totalGanho,
     saldoFinal: saldoCumulativo,
     retornoPct: totalGasto > 0 ? (totalGanho / totalGasto) * 100 : 0,
     drawdown: {
       maiorSeca,
+      custoMaiorSeca: Math.round(custoMaiorSeca * 100) / 100,
       maiorDrawdown: Math.round(maiorDrawdown * 100) / 100,
       concursoInicioSeca: inicioMaiorSeca,
       concursoFimSeca: fimMaiorSeca,
     },
     porFaixa,
     melhores: melhoresOrdenados,
+    acertosEmFaixaAcumulada,
     grafico,
   };
 }
@@ -403,7 +338,11 @@ async function compararJogosInterno(
   const todosDraws = await getDrawsParaSimulacao(loteria.id);
   const draws = recortarHistorico(todosDraws, limiteHistorico);
 
-  const preco = precoAposta(codigoLoteria);
+  let totalGasto = 0;
+  let precoMinimo = Infinity;
+  let precoMaximo = 0;
+  const acumuladosA: { numero: number; acertos: number; descricao: string }[] = [];
+  const acumuladosB: { numero: number; acertos: number; descricao: string }[] = [];
 
   let saldoA = 0, saldoB = 0;
   let ganhoA = 0, ganhoB = 0;
@@ -414,10 +353,18 @@ async function compararJogosInterno(
   const graficoComparado: { numero: number; saldoA: number; saldoB: number }[] = [];
 
   for (const draw of draws) {
+    const preco = precoApostaNoConcurso(codigoLoteria, draw.numero);
+    totalGasto += preco;
+    precoMinimo = Math.min(precoMinimo, preco);
+    precoMaximo = Math.max(precoMaximo, preco);
     saldoA -= preco;
     saldoB -= preco;
 
     for (const pA of pontuarDraw(draw, dezenasA, contextoA)) {
+      if (pA.acumulado) {
+        acumuladosA.push({ numero: draw.numero, acertos: pA.acertosExibicao, descricao: pA.descricao });
+        continue;
+      }
       saldoA += pA.premio; ganhoA += pA.premio;
       const entry = faixaMapA.get(pA.faixa) ?? { descricao: pA.descricao, qtd: 0, ganhoTotal: 0 };
       entry.qtd++; entry.ganhoTotal += pA.premio;
@@ -426,6 +373,10 @@ async function compararJogosInterno(
     }
 
     for (const pB of pontuarDraw(draw, dezenasB, contextoB)) {
+      if (pB.acumulado) {
+        acumuladosB.push({ numero: draw.numero, acertos: pB.acertosExibicao, descricao: pB.descricao });
+        continue;
+      }
       saldoB += pB.premio; ganhoB += pB.premio;
       const entry = faixaMapB.get(pB.faixa) ?? { descricao: pB.descricao, qtd: 0, ganhoTotal: 0 };
       entry.qtd++; entry.ganhoTotal += pB.premio;
@@ -440,20 +391,23 @@ async function compararJogosInterno(
     });
   }
 
-  const totalGasto = draws.length * preco;
+  totalGasto = Math.round(totalGasto * 100) / 100;
 
   function montarResultado(
     dezenas: number[],
     ganho: number,
     saldoFinal: number,
     faixaMap: Map<number, { descricao: string; qtd: number; ganhoTotal: number }>,
-    melhores: { numero: number; acertos: number; premio: number }[]
+    melhores: { numero: number; acertos: number; premio: number }[],
+    acertosEmFaixaAcumulada: { numero: number; acertos: number; descricao: string }[]
   ): ResultadoSimulacao & { dezenas: number[] } {
     return {
       dezenas,
       nomeLoteria: loteria!.nome,
       totalConcursos: draws.length,
-      precoAposta: preco,
+      precoAposta: precoAtual(codigoLoteria),
+      precoMinimo: draws.length > 0 ? precoMinimo : precoAtual(codigoLoteria),
+      precoMaximo: draws.length > 0 ? precoMaximo : precoAtual(codigoLoteria),
       totalGasto,
       totalGanho: ganho,
       saldoFinal,
@@ -462,10 +416,12 @@ async function compararJogosInterno(
         .sort((a, b) => a[0] - b[0])
         .map(([faixa, { descricao, qtd, ganhoTotal }]) => ({ faixa, descricao, qtd, ganhoTotal })),
       melhores: melhores.sort((a, b) => b.premio - a.premio).slice(0, 5),
+      acertosEmFaixaAcumulada,
       grafico: [],
       // O comparador não calcula drawdown individual — campo vazio
       drawdown: {
         maiorSeca: 0,
+        custoMaiorSeca: 0,
         maiorDrawdown: 0,
         concursoInicioSeca: null,
         concursoFimSeca: null,
@@ -474,8 +430,8 @@ async function compararJogosInterno(
   }
 
   return {
-    jogoA: montarResultado(dezenasA, ganhoA, saldoA, faixaMapA, melhoresA),
-    jogoB: montarResultado(dezenasB, ganhoB, saldoB, faixaMapB, melhoresB),
+    jogoA: montarResultado(dezenasA, ganhoA, saldoA, faixaMapA, melhoresA, acumuladosA),
+    jogoB: montarResultado(dezenasB, ganhoB, saldoB, faixaMapB, melhoresB, acumuladosB),
     graficoComparado,
   };
 }

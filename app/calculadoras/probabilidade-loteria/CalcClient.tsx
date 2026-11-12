@@ -2,7 +2,9 @@
 import { useState, useMemo } from "react";
 
 const LOTERIAS = [
-  { codigo: "lotofacil",      nome: "Lotofácil",    n: 25, m: 15, k: 15, faixas: [15,14,13,12,11] },
+  // max: maior aposta permitida pela regra oficial (Lotofácil: 15 a 20 dezenas;
+  // auditoria da Lotofácil, LF-28). Sem max, o campo aceita até o universo inteiro.
+  { codigo: "lotofacil",      nome: "Lotofácil",    n: 25, m: 15, k: 15, max: 20, faixas: [15,14,13,12,11] },
   { codigo: "megasena",       nome: "Mega-Sena",    n: 60, m: 6, k: 6,  faixas: [6,5,4] },
   { codigo: "quina",          nome: "Quina",        n: 80, m: 5, k: 5,  faixas: [5,4,3,2] },
   { codigo: "lotomania",      nome: "Lotomania",    n: 100,m: 20,k: 20, faixas: [20,19,18,17,16,15] },
@@ -39,6 +41,9 @@ function probAcertar(n: number, m: number, k: number, acertos: number): number {
 function formatProb(p: number): string {
   if (p <= 0) return "Impossível";
   if (p >= 1) return "100%";
+  // Abaixo de 10, uma casa decimal (como a Caixa: "1 em 4,2"); arredondar para
+  // inteiro distorcia a chance (auditoria da Lotofácil, LF-09).
+  if (1 / p < 10) return `1 em ${(1 / p).toFixed(1).replace(".", ",")}`;
   const inv = Math.round(1 / p);
   if (inv >= 1e9) return `1 em ${(inv / 1e9).toFixed(1)} bilhões`;
   if (inv >= 1e6) return `1 em ${(inv / 1e6).toFixed(1)} milhões`;
@@ -51,7 +56,8 @@ export function CalcProbLoteria() {
   const [qtdDezenas, setQtdDezenas] = useState(LOTERIAS[0].k.toString());
 
   const lot = LOTERIAS[lotIdx];
-  const qd = Math.max(lot.k, Math.min(lot.n, parseInt(qtdDezenas) || lot.k));
+  const maxAposta = "max" in lot && typeof lot.max === "number" ? lot.max : lot.n;
+  const qd = Math.max(lot.k, Math.min(maxAposta, parseInt(qtdDezenas) || lot.k));
 
   const tabela = useMemo(() => {
     return lot.faixas.map(acertos => {
@@ -78,9 +84,9 @@ export function CalcProbLoteria() {
             </select>
           </div>
           <div className="calc-campo">
-            <label>Dezenas apostadas ({lot.k} a {lot.n})</label>
+            <label>Dezenas apostadas ({lot.k} a {maxAposta})</label>
             <input className="calc-input calc-input--destaque" type="number"
-              min={lot.k} max={lot.n} value={qtdDezenas}
+              min={lot.k} max={maxAposta} value={qtdDezenas}
               onChange={e => setQtdDezenas(e.target.value)} />
           </div>
         </div>
@@ -112,7 +118,7 @@ export function CalcProbLoteria() {
                   {frase}
                 </td>
                 <td className="num" style={{ fontFamily: "var(--font-mono)", color: "var(--ink-faint)" }}>
-                  {(prob * 100).toFixed(prob < 0.001 ? 8 : prob < 0.01 ? 6 : 4)}%
+                  {(prob * 100).toFixed(prob < 0.001 ? 8 : prob < 0.01 ? 6 : 4).replace(".", ",")}%
                 </td>
               </tr>
             ))}

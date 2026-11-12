@@ -41,7 +41,7 @@ Só conteúdo; nenhuma fórmula muda. Pode ser um único PR.
 todas. Nos itens 1.1–1.3, 1.5–1.7 e 1.10, conferir a frase resultante em
 pelo menos Mega-Sena e Lotomania.
 
-### Situação da Etapa 1 (11/11/2026 — feita no branch `fix/lotofacil-textos`, não publicada)
+### Situação da Etapa 1 (11/11/2026 — publicada, PR #70)
 
 Feitos: 1.1 a 1.9, 1.11 e a parte de texto de 1.10. Itens resolvidos: LF-01, LF-02,
 LF-19, LF-35 a LF-45 e LF-47 (ver o status em `06-problemas-encontrados.md`).
@@ -74,6 +74,41 @@ LF-19, LF-35 a LF-45 e LF-47 (ver o status em `06-problemas-encontrados.md`).
 | 2.5 | **LF-29** | Valor esperado: exemplo da Lotofácil com todas as faixas (fixos + 14 + 15) ou com o retorno total (43,79%) | `it.todo` LF-29 | Só o exemplo |
 | 2.6 | **LF-28** | Calculadora de probabilidade: limitar a 15–20 | `it.todo` LF-28 | Conferir os limites das outras na auditoria delas |
 | 2.7 | **LF-15**, **LF-09** | Nunca exibir "100,0%" para p < 1; "1 em N" com 1 casa quando N < 10 | `it.todo` | Componentes compartilhados |
+
+### Situação da Etapa 2 (11/11/2026 — branch `fix/lotofacil-calculos`)
+
+Feitos 2.1 a 2.7. Itens resolvidos: LF-03, LF-04, LF-05, LF-09, LF-15, LF-16,
+LF-17, LF-25, LF-26, LF-28, LF-29.
+
+- **Preços por época (LF-04):** novo `lib/precos-loteria.ts`. As eras da
+  Lotofácil saem da série de prêmios fixos (prêmio de 11 acertos = 2 × preço).
+  Os reajustes de 2015 (R$ 2,00, concurso 1213), 2019 (R$ 2,50, 1889), 2023
+  (R$ 3,00, 2801) e 2025 (R$ 3,50, 3439) foram confirmados por notícias da
+  época; os três primeiros (R$ 1,00 / 1,25 / 1,50) seguem só deduzidos.
+  Simulador, comparador e Carteira usam o preço de cada concurso; as outras
+  loterias continuam com o preço atual (a página diz isso).
+- **Acertos em faixa acumulada (LF-05):** o simulador lista os concursos em
+  que o jogo teria batido uma faixa sem ganhador, em vez de omiti-los.
+  `pontuarDraw` foi para `lib/simulador-pontuacao.ts` para ser testável.
+- **Analisador (LF-03, LF-16, LF-17):** tabelas da Lotofácil calculadas pela
+  fórmula; a soma mostra o % de combinações na mesma faixa de 10; só analisa
+  o jogo completo (e não deixa marcar mais dezenas que o sorteio). A tela
+  passou a enviar a faixa e a grade da loteria (antes usava 1–25 para todas).
+  Frase "1 em cada N jogos" calculada do próprio % (dizia "1 em cada 10" para
+  21%).
+- **Gerador (LF-25, LF-26):** obrigatórias sorteadas só entre as dezenas
+  permitidas; conflito explícito vira erro claro; obrigatórias deduplicadas;
+  sem solução, devolve a melhor tentativa e diz quais filtros faltaram.
+- **Formatação (LF-09, LF-15):** `formatarUmEm` (1 casa abaixo de 10) e
+  `formatarProbabilidadePct` (nunca "100,0%" para p < 1), em `lib/format.ts`.
+- **Calculadoras (LF-28, LF-29):** Lotofácil limitada a 15–20 dezenas; o
+  exemplo de valor esperado diz que considera só os 15 pontos e informa o
+  retorno total de 43,79%.
+- **Achado em componente compartilhado (LF-48):** o Analisador está quebrado
+  nas outras 7 loterias (tabelas em fração lidas como %). Registrado, não
+  corrigido (fora do escopo desta auditoria).
+- Testes: 443 de `lib` passando; os 4 `it.fails` viraram regressão;
+  `simulador.test.ts` novo. Telas conferidas no servidor local (worktree).
 
 ## Etapa 3 — Ferramentas que precisam de decisão de produto
 
