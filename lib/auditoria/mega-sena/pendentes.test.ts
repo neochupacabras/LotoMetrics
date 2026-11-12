@@ -6,8 +6,7 @@ import { describe, it } from "vitest";
 describe("pendentes (ver docs/auditorias/mega-sena/06-problemas-encontrados.md)", () => {
   // Constante LOTERIAS de app/calculadoras/probabilidade-loteria/CalcClient.tsx
   it.todo("MS-07: calculadora de probabilidade limita a Mega-Sena a 6–20 dezenas (hoje 6–60)");
-  // app/calculadoras/valor-esperado-aposta/CalcClient.tsx
-  it.todo("MS-08: exemplo da Mega-Sena avisa que Quina e Quadra ficam fora do cálculo");
+  // MS-08 virou teste em textos.test.ts (Etapa 1).
   // lib/queries.ts getAcumulos + components/AcumulosClient.tsx
   it.todo("MS-21: Viradas não aparecem como fim de série de acúmulo paga pelo acumulado");
   // lib/insights.ts estimarDiasCorridos

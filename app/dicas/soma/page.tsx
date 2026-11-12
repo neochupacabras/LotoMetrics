@@ -160,15 +160,17 @@ export default function ArtigoSomaPage() {
         <p>
           Na Mega-Sena, 6 dezenas são sorteadas de um universo de 60 (números de 1 a
           60). A soma mínima possível é 21 (1+2+3+4+5+6) e a máxima é 345
-          (55+56+57+58+59+60). A soma média esperada é 183,5 — e, da mesma forma que
+          (55+56+57+58+59+60). A soma média esperada é 183 — e, da mesma forma que
           na Lotofácil, a distribuição de somas forma uma curva em sino centrada nesse
-          valor.
+          valor. A própria soma 183 é a mais comum, mas responde por menos de 1% das
+          combinações.
         </p>
         <p>
-          A faixa de soma mais frequente na Mega-Sena fica entre 152 e 215,
-          concentrando aproximadamente 80% de todas as 50.063.860 combinações possíveis.
-          Somas abaixo de 100 ou acima de 270 são extremamente raras — cada uma delas
-          representa menos de 0,1% das combinações existentes.
+          Como a curva da Mega-Sena é bem mais larga, é preciso uma faixa grande
+          para juntar a maioria das combinações: metade das 50.063.860 combinações
+          possíveis soma entre 155 e 211, e 8 em cada 10 somam entre 130 e 236. As
+          caudas são pequenas, mas não desprezíveis: 1,87% das combinações somam
+          menos de 100, e outros 1,87% somam mais de 266.
         </p>
 
         <div className="tabela-scroll">
@@ -176,21 +178,25 @@ export default function ArtigoSomaPage() {
             <thead>
               <tr>
                 <th>Faixa de soma — Mega-Sena</th>
-                <th className="num">% aproximada de combinações</th>
+                <th className="num">% de combinações (cálculo exato)</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>163–204 (raio de 21 ao redor da média)</td>
-                <td className="num">≈ 50%</td>
+                <td>155–211</td>
+                <td className="num">50,8%</td>
               </tr>
               <tr>
-                <td>152–215</td>
-                <td className="num">≈ 80%</td>
+                <td>130–236</td>
+                <td className="num">80,7%</td>
               </tr>
               <tr>
-                <td>Abaixo de 100 ou acima de 270</td>
-                <td className="num">&lt; 0,1%</td>
+                <td>Abaixo de 100</td>
+                <td className="num">1,87%</td>
+              </tr>
+              <tr>
+                <td>Acima de 266</td>
+                <td className="num">1,87%</td>
               </tr>
             </tbody>
           </table>

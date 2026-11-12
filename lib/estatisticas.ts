@@ -58,17 +58,27 @@ export interface CicloAtual {
 
 export async function getCiclos(
   loteriaId: number
-): Promise<{ atual: CicloAtual | null; historico: CicloHistorico[] }> {
-  const [{ rows: atualRows }, { rows: historicoRows }] = await Promise.all([
+): Promise<{
+  atual: CicloAtual | null;
+  historico: CicloHistorico[];
+  // Média e quantidade de todos os ciclos fechados, não só dos 15 exibidos
+  // (auditoria da Mega-Sena, MS-25).
+  resumoHistorico: { totalCiclos: number; mediaConcursos: number } | null;
+}> {
+  const [{ rows: atualRows }, { rows: todosRows }] = await Promise.all([
     pool.query(
       `SELECT concurso_inicio, concursos_no_ciclo, dezenas_sorteadas, dezenas_faltantes FROM fn_ciclo_atual($1)`,
       [loteriaId]
     ),
     pool.query(
-      `SELECT ciclo, concurso_inicio, concurso_fim, qtd_concursos FROM fn_ciclos_historico($1) ORDER BY ciclo DESC LIMIT 15`,
+      // Todos os ciclos numa só chamada (a função calcula o histórico inteiro
+      // de qualquer forma): os 15 mais recentes vão para a tabela e o total
+      // entra na média do histórico.
+      `SELECT ciclo, concurso_inicio, concurso_fim, qtd_concursos FROM fn_ciclos_historico($1) ORDER BY ciclo DESC`,
       [loteriaId]
     ),
   ]);
+  const historicoRows = todosRows.slice(0, 15);
   const atual = atualRows[0]
     ? {
         concursoInicio: atualRows[0].concurso_inicio,
@@ -85,6 +95,15 @@ export async function getCiclos(
       concursoFim: r.concurso_fim,
       qtdConcursos: r.qtd_concursos,
     })),
+    resumoHistorico:
+      todosRows.length > 0
+        ? {
+            totalCiclos: todosRows.length,
+            mediaConcursos:
+              todosRows.reduce((s: number, r: { qtd_concursos: number }) => s + Number(r.qtd_concursos), 0) /
+              todosRows.length,
+          }
+        : null,
   };
 }
 

@@ -64,7 +64,9 @@ export function CalcValorEsperado() {
         <p className="calc-info" style={{ marginTop: 12, fontSize: "0.82rem" }}>
           Os exemplos consideram só a faixa principal. Na Lotofácil, somando as faixas de
           11 a 14 acertos, a Caixa devolve em média 43,79% do valor apostado — cerca de
-          R$ 1,53 a cada aposta de R$ 3,50.
+          R$ 1,53 a cada aposta de R$ 3,50. Na Mega-Sena, a quina e a quadra
+          ficam de fora do exemplo: recebem 10% do prêmio bruto cada, o equivalente
+          a 8,76% da arrecadação somadas.
         </p>
       </div>
 

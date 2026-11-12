@@ -1,7 +1,7 @@
 # 07 — Plano de correção (Mega-Sena)
 
-12/11/2026. **Nenhuma correção foi feita.** Este plano depende de
-autorização. A ordem considera gravidade, risco da mudança, dependências e
+12/11/2026. **Etapa 1 concluída** (ver `09-correcoes-etapa1.md`); as
+demais dependem de autorização. A ordem considera gravidade, risco da mudança, dependências e
 impacto nas outras loterias. Cada item diz como provar que ficou certo: os
 testes de `lib/auditoria/mega-sena/` já cobrem vários (trocar `it.fails`
 por `it` ou implementar o `it.todo`).

@@ -7,7 +7,7 @@ import TelemetriaBeacon from "@/components/TelemetriaBeacon";
 import { getLoteriaPorCodigo } from "@/lib/queries";
 import { isCodigoLoteriaValido } from "@/lib/format";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
-import { temOpcoesBolao } from "@/lib/bolao-opcoes";
+import { exemploBolao, temOpcoesBolao } from "@/lib/bolao-opcoes";
 
 export async function generateMetadata({
   params,
@@ -37,6 +37,7 @@ export default async function BolaoPage({
   if (!loteria) notFound();
 
   const disponivel = temOpcoesBolao(codigoLoteria);
+  const exemplo = exemploBolao(codigoLoteria);
 
   return (
     <>
@@ -104,8 +105,8 @@ export default async function BolaoPage({
             <h2 className="bloco__titulo">Como montar um bolão com fechamento</h2>
             <p>
               Um bolão com fechamento funciona assim: o grupo escolhe um conjunto maior de
-              dezenas ("o pool") — por exemplo, 18 dezenas que o grupo acredita serem boas
-              candidatas para o próximo sorteio. O sistema então gera um conjunto de bilhetes
+              dezenas ("o pool") — por exemplo, {exemplo?.tamanhoPool ?? "algumas"} dezenas
+              que o grupo acredita serem boas candidatas para o próximo sorteio. O sistema então gera um conjunto de bilhetes
               que cobre esse pool de forma sistemática, garantindo que se as dezenas sorteadas
               estiverem dentro do pool, pelo menos um bilhete vai capturar uma boa pontuação.
             </p>
@@ -113,9 +114,17 @@ export default async function BolaoPage({
               A vantagem em relação a jogar bilhetes avulsos é a cobertura: ao invés de
               vários bilhetes com dezenas sobrepostas por acaso, o fechamento distribui as
               combinações de forma a não deixar "buracos" na cobertura do pool. Cada plano
-              garante uma pontuação mínima, sempre abaixo do prêmio máximo: com garantia de
-              13, por exemplo, se pelo menos 13 dezenas sorteadas estiverem no pool, pelo
-              menos um bilhete faz 13 pontos. O prêmio máximo só fica garantido com o
+              garante uma pontuação mínima, sempre abaixo do prêmio máximo
+              {exemplo && (
+                <>
+                  : com {exemplo.tamanhoPool} dezenas no pool e garantia de{" "}
+                  {exemplo.garantia}, se pelo menos {exemplo.garantia} das{" "}
+                  {loteria.qtdDezenasSorteadas} dezenas sorteadas estiverem no pool, pelo
+                  menos um bilhete faz {exemplo.garantia} pontos — e esse plano tem{" "}
+                  {exemplo.totalJogos} jogos
+                </>
+              )}
+              . O prêmio máximo só fica garantido com o
               fechamento completo (todas as combinações do pool), que o otimizador não
               oferece por ser caro demais.
             </p>

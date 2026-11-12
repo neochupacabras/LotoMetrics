@@ -213,8 +213,13 @@ export default async function SimuladorPage({
           artigo sobre{" "}
           <a href="/dicas/retorno-ao-apostador" className="breadcrumb">
             retorno ao apostador
-          </a>, a Caixa destina aproximadamente 43% da arrecadação a prêmios, o que
-          significa que o apostador espera perder ~57% do que aposta no longo prazo.
+          </a>, a Caixa destina 43,79% da arrecadação a prêmios, e parte desse valor
+          vai para reservas de concursos especiais: mais da metade de cada real
+          apostado não volta como prêmio. O retorno de um jogo específico pode ficar
+          bem abaixo disso
+          {codigoLoteria === "megasena"
+            ? " — na Mega-Sena, a sena acumula em cerca de 4 de cada 5 concursos e o prêmio fica concentrado em poucos ganhadores."
+            : "."}
           O simulador transforma esse número abstrato em um resultado concreto com dados
           reais do histórico.
         </p>

@@ -82,7 +82,7 @@ export const ANALISES: Analise[] = [
     slug: "megasena-acumulos-longos-historico",
     titulo: "Mega-Sena: os acúmulos mais longos da história e o que eles têm em comum",
     resumo:
-      "Em mais de 3.000 concursos, a Mega-Sena já teve sequências de acúmulo de 30, 40 e até mais concursos. O que os dados históricos revelam — e o que eles não provam.",
+      "Em mais de 3.000 concursos, a Mega-Sena chegou a ficar 17 concursos seguidos sem ganhador. O que os dados históricos revelam — e o que eles não provam.",
     data: "2026-06-24",
     categoria: "megasena",
     tempoLeitura: 6,
@@ -94,35 +94,37 @@ export const ANALISES: Analise[] = [
         dados reais.
       </p>
 
-      <h2>A distribuição esperada de acúmulos</h2>
+      <h2>Com que frequência a Mega-Sena acumula</h2>
       <p>
-        A chance de nenhum apostador acertar a sena em um único concurso depende do
-        volume de apostas. Em concursos normais (sem acúmulo), com aproximadamente
-        80 milhões de apostas, a probabilidade de zero ganhadores fica em torno de 20%.
-        Isso significa que, em média, 1 em cada 5 concursos acumula — e sequências
-        de 5, 10 ou 15 concursos sem ganhador são eventos esperados no longo prazo.
+        Acumular é o resultado mais comum. Dos 3.084 concursos até novembro de
+        2026, só 664 (21,5%) tiveram ganhador da sena; nos outros 78,5%, o prêmio
+        acumulou. Um concurso comum recebe bem menos apostas do que há
+        combinações: de 2023 a 2026, a arrecadação mediana por concurso foi de
+        R$ 53 milhões, da ordem de 10 milhões de apostas simples, contra 50.063.860
+        combinações possíveis — e muitos apostadores ainda repetem as mesmas.
       </p>
       <p>
-        Os maiores acúmulos da história da Mega-Sena ultrapassaram os 20 concursos
-        consecutivos sem ganhador. Esses eventos são raros mas não surpreendentes:
-        a probabilidade de uma sequência de 20 acúmulos consecutivos, dado que cada
-        concurso tem ~20% de chance de acumular, é de aproximadamente 1,1% — ou seja,
-        em 3.000+ concursos, esperaríamos que isso acontecesse algumas vezes.
+        Com quatro em cada cinco concursos acumulando, sequências longas são
+        esperadas. O recorde é de <strong>17 concursos seguidos sem ganhador</strong>
+        (concursos 3060 a 3076, entre setembro e outubro de 2026); o prêmio saiu
+        no 3077. Em segundo lugar vêm 16 concursos sem ganhador (2221 a 2236, no
+        início de 2020). Até novembro de 2026, 60 sequências tiveram 10 ou mais
+        concursos, contando o que pagou o prêmio.
       </p>
 
       <h2>O que os acúmulos longos têm em comum</h2>
       <p>
-        Analisando os dados históricos disponíveis na
-        <a href="/megasena/acumulos">linha do tempo de acúmulos</a>, os maiores acúmulos
-        em número de concursos ocorreram predominantemente em períodos com menor volume
-        de apostas — especialmente nas primeiras décadas da Mega-Sena, antes da
-        popularização das apostas online. Com menos apostas por concurso, a probabilidade
-        de nenhum bilhete acertar as 6 dezenas é maior.
+        Os dados da <a href="/megasena/acumulos">linha do tempo de acúmulos</a>
+        contrariam uma ideia comum: os acúmulos mais longos não ficaram no passado.
+        Os seis maiores aconteceram de 2019 para cá, e a fração de concursos com
+        ganhador da sena foi menor de 2016 a 2026 (18,2%) do que de 1996 a 2005
+        (20,6%) ou de 2006 a 2015 (26,4%).
       </p>
       <p>
-        Nos últimos anos, com o volume de apostas digitais crescendo significativamente,
-        a frequência de acúmulos muito longos diminuiu — não porque os sorteios mudaram,
-        mas porque mais apostas por concurso reduzem a chance de zero ganhadores.
+        Isso não quer dizer que o sorteio mudou. A chance de alguém acertar depende
+        de quantas apostas o concurso recebe e de quantas combinações diferentes
+        elas cobrem — e isso varia com o tamanho do prêmio, o número de sorteios por
+        semana e o preço da aposta.
       </p>
 
       <h2>Acúmulo longo significa que "vai sair logo"?</h2>
@@ -140,11 +142,13 @@ export const ANALISES: Analise[] = [
 
       <h2>Os prêmios pagos ao final dos maiores acúmulos</h2>
       <p>
-        Prêmios recordes da Mega-Sena foram quase sempre pagos no final de sequências
-        longas de acúmulo — não surpreendentemente, já que cada concurso sem ganhador
-        adiciona ao fundo. O maior prêmio pago em concurso regular ultrapassou R$500
-        milhões, resultado de uma sequência de acúmulos combinada com alta arrecadação
-        por ser período de forte publicidade.
+        Nos concursos regulares, os maiores prêmios vêm no fim de acúmulos longos,
+        porque cada concurso sem ganhador soma ao valor. O maior prêmio de um
+        concurso regular foi de cerca de R$ 336 milhões (concurso 3010, maio de
+        2026); o do fim do recorde de 17 concursos, cerca de R$ 325 milhões. Os
+        prêmios acima disso são todos de Mega da Virada, que tem uma reserva
+        própria e não depende de sequência de acúmulos — a de 2025 pagou
+        R$ 1,09 bilhão.
       </p>
       <p>
         O histórico completo com todos os acúmulos, sua duração e os prêmios finais
@@ -238,12 +242,12 @@ export const ANALISES: Analise[] = [
       <ul>
         <li>
           <strong>Lotofácil:</strong> prêmio menor, ganhos intermediários mais
-          frequentes, mais sorteios por semana (segunda, quarta e sábado). Ideal para
+          frequentes, mais sorteios por semana (de segunda a sexta e aos domingos). Ideal para
           quem gosta de ver resultado com mais regularidade.
         </li>
         <li>
           <strong>Mega-Sena:</strong> prêmio potencialmente gigantesco, chances de
-          qualquer ganho muito menores, menos sorteios (terça, quinta e sábado). Ideal
+          qualquer ganho muito menores, menos sorteios (terça, quinta e domingo). Ideal
           para quem está jogando pela fantasia do prêmio transformador.
         </li>
       </ul>
@@ -626,7 +630,8 @@ export const ANALISES: Analise[] = [
 
       <h2>O crescimento histórico dos prêmios</h2>
       <p>
-        Criada em 2009, a Mega da Virada saiu de <strong>R$ 144 milhões</strong> na
+        Com esse nome, a Mega da Virada existe desde 2009 (em 2008 houve um
+        concurso especial de fim de ano com outro formato). Ela saiu de <strong>R$ 144 milhões</strong> na
         primeira edição para <strong>R$ 635 milhões</strong> em 2024. A edição mais
         recente, sorteada na manhã de 1º de janeiro de 2026 (o sorteio de 31/12
         atrasou por instabilidade no sistema, causada por um volume recorde de
@@ -1345,17 +1350,19 @@ export const ANALISES: Analise[] = [
 
       <h2>A distribuição assimétrica</h2>
       <p>
-        Em um concurso típico da Mega-Sena (sem acúmulo, com volume normal de
-        apostas), a chance de haver pelo menos um ganhador de sena é de
-        aproximadamente 20-30%. Ou seja, em cerca de 70-80% dos concursos, ninguém
-        acerta as 6 dezenas e o prêmio acumula para o próximo.
+        Na Mega-Sena, o normal é ninguém acertar. Dos 3.084 concursos até novembro
+        de 2026, só 21,5% tiveram ganhador da sena; nos outros 78,5%, o prêmio
+        acumulou. Logo depois de um prêmio pago, quando o valor volta ao mínimo e
+        atrai menos apostas, a chance é ainda menor: de 2016 a 2026, só cerca de
+        1 em cada 10 desses concursos teve ganhador. A média geral é de 0,32
+        ganhador por concurso.
       </p>
       <p>
         Quando há acúmulo prolongado e o prêmio fica muito alto, o volume de apostas
         pode multiplicar por 5 ou 10. Isso aumenta a probabilidade de haver um
         ganhador — mas também aumenta drasticamente a chance de múltiplos ganhadores.
-        Em concursos com prêmio de R$200 milhões ou mais, não é incomum haver 3,
-        5 ou até 10 ganhadores de sena.
+        Dos 22 concursos que pagaram R$ 200 milhões ou mais, 12 tiveram 3 ou mais
+        ganhadores; o recorde é de 52 ganhadores na Mega da Virada de 2018.
       </p>
 
       <h2>O paradoxo do prêmio alto</h2>
@@ -1367,11 +1374,12 @@ export const ANALISES: Analise[] = [
         intuição sugere.
       </p>
       <p>
-        Em termos de valor esperado por aposta, concursos com prêmio acumulado muito
-        grande (acima de ~R$300 milhões) tendem a ter valor esperado positivo mesmo
-        considerando o rateio esperado. Mas a variância é enorme — você pode tanto
-        ganhar R$50 milhões (com outros 5 ganhadores) quanto ganhar R$300 milhões
-        (como único ganhador).
+        Em valor esperado, a aposta continua perdedora mesmo com prêmio muito alto.
+        Para uma aposta de R$ 6,00 empatar, o prêmio de cada ganhador da sena
+        precisaria passar de cerca de R$ 260 milhões, antes do imposto e sem
+        dividir com ninguém. Como prêmios assim atraem muito mais apostas, a chance
+        de dividir também sobe. E a variância é enorme: o mesmo acerto pode render
+        o prêmio inteiro ou uma pequena fração dele.
       </p>
 
       <h2>O histórico real</h2>
@@ -1617,14 +1625,15 @@ export const ANALISES: Analise[] = [
 
       <h2>O retorno esperado por faixa</h2>
       <p>
-        A Caixa destina percentuais fixos da arrecadação para cada faixa: 35% para
-        sena, 19% para quina e 19% para quadra (o restante acumula para concursos
-        especiais). Combinando probabilidade com retorno esperado:
+        Do valor arrecadado, 43,79% formam o prêmio bruto. Dele, 40% vão para a
+        sena, 10% para a quina e 10% para a quadra; os outros 25% são reservados
+        para os concursos de final 0 ou 5 e 15% para a Mega da Virada. Combinando
+        probabilidade com o prêmio de cada faixa:
       </p>
       <ul>
         <li>Sena: altíssima variância, prêmio pode ser de milhões a bilhões</li>
-        <li>Quina: prêmio médio histórico de R$30.000 a R$80.000, altamente variável com o rateio</li>
-        <li>Quadra: prêmio médio histórico de R$700 a R$1.500, mais estável</li>
+        <li>Quina: de 2023 a 2026, 8 em cada 10 concursos pagaram entre R$ 25 mil e R$ 80 mil, conforme o rateio</li>
+        <li>Quadra: no mesmo período, 8 em cada 10 concursos pagaram entre R$ 650 e R$ 1.400, mais estável</li>
       </ul>
       <p>
         O prêmio da quina e da quadra variam muito porque também são rateados —
@@ -2782,13 +2791,13 @@ export const ANALISES: Analise[] = [
     slug: "como-jogar-mega-sena-regras-completas",
     titulo: "Como jogar na Mega-Sena: regras e preço",
     resumo:
-      "6 a 20 dezenas de 1 a 60, sorteios às terças, quintas e sábados, aposta a partir de R$ 6,00. O guia rápido com tudo sobre a loteria mais famosa do Brasil.",
+      "6 a 20 dezenas de 1 a 60, sorteios às terças, quintas e domingos, aposta a partir de R$ 6,00. O guia rápido com tudo sobre a loteria mais famosa do Brasil.",
     data: "2026-08-24",
     categoria: "megasena" as const,
     tempoLeitura: 4,
     perguntasFrequentes: [
       { pergunta: "Quanto custa jogar na Mega-Sena?", resposta: "A aposta mínima, com 6 dezenas, custa R$ 6,00. Marcar mais dezenas (até o máximo de 20) aumenta o preço proporcionalmente." },
-      { pergunta: "Que dia é o sorteio da Mega-Sena?", resposta: "Terças, quintas e sábados, às 21h (horário de Brasília). Concursos especiais, como a Mega da Virada, têm data própria." },
+      { pergunta: "Que dia é o sorteio da Mega-Sena?", resposta: "Terças e quintas, às 21h, e domingos, às 11h (horário de Brasília). Desde 19/07/2026 o sorteio de sábado passou para domingo. Concursos especiais, como a Mega da Virada, têm data própria." },
       { pergunta: "Quantos números eu escolho na Mega-Sena?", resposta: "De 6 a 20 números, entre 1 e 60. A Caixa sorteia 6 dezenas." },
       { pergunta: "O que acontece se ninguém acertar as 6 dezenas?", resposta: "O prêmio acumula e é somado ao prêmio do próximo concurso." },
     ],
@@ -2809,9 +2818,10 @@ export const ANALISES: Analise[] = [
 
       <h2>Quando é o sorteio</h2>
       <p>
-        <strong>Terças, quintas e sábados, às 21h</strong> (horário de Brasília).
-        Concursos especiais, como a Mega da Virada, têm data própria fora dessa
-        agenda regular.
+        <strong>Terças e quintas, às 21h, e domingos, às 11h</strong> (horário de
+        Brasília). Desde 19/07/2026, o sorteio que era no sábado passou para
+        domingo de manhã. Concursos especiais, como a Mega da Virada, têm data
+        própria fora dessa agenda regular.
       </p>
 
       <h2>Faixas de premiação</h2>
@@ -3340,7 +3350,7 @@ export const ANALISES: Analise[] = [
 
       <h2>Histórico das Viradas anteriores</h2>
       <p>
-        A Mega da Virada existe desde 2009, quando pagou <strong>R$ 144
+        A Mega da Virada existe com esse nome desde 2009, quando pagou <strong>R$ 144
         milhões</strong> na primeira edição. Em 2024, o prêmio chegou a
         <strong> R$ 635 milhões</strong>. A edição mais recente, sorteada na manhã
         de 1º de janeiro de 2026 (o sorteio de 31/12 atrasou por causa de um volume

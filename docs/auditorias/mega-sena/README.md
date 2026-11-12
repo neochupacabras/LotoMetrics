@@ -24,6 +24,7 @@ Lotofácil), branch `auditoria/mega-sena`, worktree
 | `06-problemas-encontrados.md` | Registro de problemas | Final (37 itens) |
 | `07-plano-de-correcao.md` | Plano priorizado | Fase 6 concluída |
 | `08-relatorio-final.md` | Relatório final | Fase 6 concluída |
+| `09-correcoes-etapa1.md` | Correções de texto (Etapa 1) | Concluída, aguardando PR |
 
 ## Fase 1 — o que foi feito (11/11/2026)
 
@@ -82,11 +83,17 @@ com o repositório (idênticas). Plano em `07-plano-de-correcao.md`; parecer
 em `08-relatorio-final.md`: **cálculo central confiável; ferramentas
 derivadas e textos ainda não; modalidade não validada.**
 
+## Etapa 1 — textos (12/11/2026)
+
+Branch `fix/mega-sena-textos`. 13 itens corrigidos, MS-13 só no texto e 3
+achados novos (MS-38 a MS-40), também corrigidos. Testes de conteúdo em
+`lib/auditoria/mega-sena/textos.test.ts`. Ver `09-correcoes-etapa1.md`.
+
 ## Próximos passos (dependem de autorização)
 
 1. Etapa 0 do plano: confirmar a grade do volante, os preços históricos e a
    regra do imposto.
-2. Etapa 1 (textos) e Etapa 2 (cálculos), cada uma num PR.
+2. Etapa 2 (cálculos), num PR.
 3. Etapa 3: decisões sobre Destaques, Equilíbrio, Projeção, grade e
    fechamentos mínimos.
 4. Fase 3 (conferência do histórico com a Caixa), se desejado.
