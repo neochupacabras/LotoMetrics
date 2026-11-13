@@ -184,11 +184,15 @@ export default function ArtigoDuquesTrincasPage() {
           cerca de 736 aparições esperadas em 3.720 concursos. Existem C(25,3) = 2.300 trincas possíveis.
         </p>
         <p>
-          Na Mega-Sena, a chance de uma trinca específica sair é de apenas 0,06% por
-          concurso — uma em cada 1.670 sorteios, em média. Com C(60,3) = 34.220
-          trincas possíveis, a maioria delas nunca apareceu junta em toda a história
-          da Mega-Sena. Isso não significa que sejam "azaradas" — significa que há
-          trincas demais para o número de sorteios realizados.
+          Na Mega-Sena, a chance de uma trinca específica sair é de cerca de 0,058%
+          por concurso (6 × 5 × 4 ÷ (60 × 59 × 58)) — uma vez a cada 1.711 sorteios,
+          em média. Em pouco mais de 3.000 concursos, cada trinca aparece em média
+          menos de duas vezes, e cerca de 1 em cada 6 das C(60,3) = 34.220 trincas
+          possíveis deveria nunca ter saído. É o que os dados mostram: até novembro de
+          2026, 83,2% delas já saíram e as outras ainda são{" "}
+          <Link href="/megasena/ineditas">inéditas</Link>. Isso não significa que
+          sejam "azaradas" — significa que há trincas demais para o número de
+          sorteios realizados.
         </p>
 
         <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>

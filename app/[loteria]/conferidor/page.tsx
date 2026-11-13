@@ -90,11 +90,11 @@ export default async function ConferidorPage({
         <p>
           Além da pontuação por concurso, o conferidor calcula o custo total de ter jogado
           essa combinação em todos os concursos do período, os prêmios brutos que teria
-          ganho e o saldo final — que quase sempre é negativo, refletindo o retorno
-          ao apostador de{" "}
+          ganho e o saldo final — que quase sempre é negativo, porque só{" "}
           <a href={`/dicas/retorno-ao-apostador`} className="breadcrumb">
-            ~43% da arrecadação
-          </a>{" "}que a Caixa destina a prêmios.
+            43,79% da arrecadação
+          </a>{" "}vira prêmio, e parte disso ainda vai para reservas de concursos
+          especiais.
         </p>
         <h3 style={{ fontWeight: 600, marginTop: 16, marginBottom: 8, fontSize: "0.95rem" }}>
           Versão Premium
