@@ -1,14 +1,22 @@
 import { Pool } from "pg";
 
-// Em ambiente serverless (Vercel), cada função é uma instância isolada.
-// Sem controle, cada requisição abre um novo Pool com até 10 conexões,
-// esgotando rapidamente o limite do Supabase (200 no free tier).
+// Em ambiente serverless (Vercel), cada instância tem seu próprio Pool.
+// DATABASE_URL aponta para o Transaction Pooler do Supabase (porta 6543),
+// que multiplexa as conexões de cliente sobre o pool real do Postgres —
+// então algumas conexões por instância não esgotam o banco.
 //
-// Solução: max=1 por instância + Transaction Pooler do Supabase (porta 6543).
-// O Transaction Pooler gerencia o pool real externamente, então uma conexão
-// por função serverless é suficiente e não desperdiça recursos.
+// max=5 (antes 1): com Fluid compute uma instância atende várias requisições
+// ao mesmo tempo, e páginas como /admin e /[loteria]/resultados/[numero]
+// disparam várias consultas em Promise.all. Com 1 conexão elas faziam fila
+// — pg-pool.connect chegava a p95 2,4s / máx 11,6s, e no /admin (~25
+// consultas) a espera passava do connectionTimeoutMillis, que no pg-pool
+// também conta o tempo na fila: "timeout exceeded when trying to connect"
+// (LOTOANALITICA-B..G). Também era a origem das "Slow DB Query" com
+// consultas de ~25ms no banco (LOTOANALITICA-9/A).
 //
-// DATABASE_URL deve apontar para a porta 6543 (Transaction Pooler):
+// Região: vercel.json fixa as funções em gru1 (São Paulo), ao lado do banco
+// (sa-east-1). Em iad1 cada consulta custava ~120ms só de ida e volta.
+//
 //   postgresql://postgres.SEU-PROJETO:SENHA@aws-0-sa-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true
 //
 // SSL: rejectUnauthorized: false é o que o Supabase recomenda para conexões
@@ -21,7 +29,7 @@ const pool = new Pool(
     ? {
         connectionString: process.env.DATABASE_URL,
         ssl: { rejectUnauthorized: false },
-        max: 1,              // 1 conexão por instância serverless
+        max: 5,              // ver nota no topo
         idleTimeoutMillis: 10_000,   // fechar conexão ociosa após 10s
         // 10s em vez de 5s: builds na Vercel (iad1) cruzam até o pooler em
         // sa-east-1, e essa latência entre provedores por vezes passa dos
