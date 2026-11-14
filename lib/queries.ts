@@ -13,7 +13,14 @@ import { CONCURSOS_VIRADA, anoDaEdicao, type EdicaoVirada } from "./mega-da-vira
 // página, o que no Next.js força a rota inteira a pular o cache de rota
 // mesmo em páginas com `revalidate` declarado). Invalidado via
 // revalidateTag em /api/revalidar após cada importação de concursos.
-export const getLoteriaPorCodigo = unstable_cache(
+//
+// Todo unstable_cache vai embrulhado no cache() do React. Sem isso,
+// generateMetadata e a página, que rodam em paralelo, chamam a mesma função,
+// as duas veem o cache vazio, consultam e GRAVAM a mesma chave no cache de
+// dados da Vercel. A segunda gravação na mesma chave leva ~2–2,5s, e a
+// resposta ISR espera as gravações pendentes: toda página nova levava
+// ~2,5s com render de ~150ms (trace da Vercel, 13/11/2026).
+export const getLoteriaPorCodigo = cache(unstable_cache(
   async (codigo: string): Promise<Loteria | null> => {
     const { rows } = await pool.query(
       `SELECT id, codigo, nome, dezena_min, dezena_max, qtd_dezenas_sorteadas, grid_colunas
@@ -34,7 +41,7 @@ export const getLoteriaPorCodigo = unstable_cache(
   },
   ["loteria-por-codigo"],
   { tags: ["loterias"], revalidate: 86400 }
-);
+));
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapConcursoRow(r: any): Omit<Concurso, "premiacoes"> {
@@ -75,7 +82,7 @@ function mapPremiacoesJson(arr: unknown): PremiacaoFaixa[] {
   return Array.isArray(arr) ? arr.map(mapPremiacaoRow) : [];
 }
 
-export const getUltimoConcurso = unstable_cache(
+export const getUltimoConcurso = cache(unstable_cache(
   async (loteriaId: number): Promise<Concurso | null> => {
     // Concurso + premiações por faixa numa única query (json_agg) — evita a
     // segunda consulta separada a premiacao_faixa, que, repetida uma vez por
@@ -105,7 +112,7 @@ export const getUltimoConcurso = unstable_cache(
   },
   ["ultimo-concurso"],
   { tags: ["concursos"], revalidate: 300 }
-);
+));
 
 // Versão em lote do getUltimoConcurso: o último concurso (com premiações) de
 // VÁRIAS loterias numa única query. A home mostra um card por loteria; chamar
@@ -114,7 +121,7 @@ export const getUltimoConcurso = unstable_cache(
 // o concurso mais recente de cada loteria e o json_agg correlato resolve as
 // faixas dentro do mesmo SQL — uma ida só ao banco. Retorna um objeto indexado
 // por loteriaId (Record, e não Map, para ser serializável pelo unstable_cache).
-export const getUltimosConcursos = unstable_cache(
+export const getUltimosConcursos = cache(unstable_cache(
   async (loteriaIds: number[]): Promise<Record<number, Concurso>> => {
     const resultado: Record<number, Concurso> = {};
     if (loteriaIds.length === 0) return resultado;
@@ -150,7 +157,7 @@ export const getUltimosConcursos = unstable_cache(
   },
   ["ultimos-concursos"],
   { tags: ["concursos"], revalidate: 300 }
-);
+));
 
 export interface ConcursoParaExportacao {
   numero: number;
@@ -302,7 +309,7 @@ export const getConcursoPorNumero = cache(
 // Uma query só; varre a faixa 1 de uma loteria (alguns milhares de linhas).
 // unstable_cache por (loteria, número): o site renderiza dinamicamente (ver
 // nota no topo), então sem isso a query rodaria a cada visita do Googlebot.
-export const getContextoConcurso = unstable_cache(
+export const getContextoConcurso = cache(unstable_cache(
   async (loteriaId: number, numero: number): Promise<ContextoConcurso | null> => {
     const { rows } = await pool.query(
       `WITH f1 AS (
@@ -341,14 +348,14 @@ export const getContextoConcurso = unstable_cache(
   },
   ["contexto-concurso"],
   { tags: ["concursos"], revalidate: 86400 }
-);
+));
 
 // Histórico, ATÉ este concurso, das dezenas sorteadas nele: quantas vezes
 // cada uma saiu e o último concurso anterior em que saiu. Alimenta as frases
 // com link para as tabelas (lib/links-concurso.ts). Só concursos <= numero,
 // então o resultado de um concurso antigo não muda com o tempo. Mesma
 // contagem de fn_frequencia/fn_atraso (coluna `dezenas`).
-export const getHistoricoDezenasConcurso = unstable_cache(
+export const getHistoricoDezenasConcurso = cache(unstable_cache(
   async (
     loteriaId: number,
     numero: number,
@@ -376,13 +383,13 @@ export const getHistoricoDezenasConcurso = unstable_cache(
   },
   ["historico-dezenas-concurso"],
   { tags: ["concursos"], revalidate: 86400 }
-);
+));
 
 // Concursos que fecharam ciclo (todas as dezenas sorteadas ao menos uma vez),
 // com quantos concursos cada ciclo levou. Depende só da loteria: uma execução
 // de fn_ciclos_historico por loteria por dia, compartilhada por todas as
 // páginas de concurso.
-export const getFinsDeCiclo = unstable_cache(
+export const getFinsDeCiclo = cache(unstable_cache(
   async (loteriaId: number): Promise<[number, number][]> => {
     const { rows } = await pool.query(
       `SELECT concurso_fim, qtd_concursos FROM fn_ciclos_historico($1)`,
@@ -392,22 +399,22 @@ export const getFinsDeCiclo = unstable_cache(
   },
   ["fins-de-ciclo"],
   { tags: ["concursos"], revalidate: 86400 }
-);
+));
 
 // Total de concursos da loteria: muda só quando entra concurso novo.
-const getTotalConcursos = unstable_cache(
+const getTotalConcursos = cache(unstable_cache(
   async (loteriaId: number): Promise<number> => {
     const { rows } = await pool.query(`SELECT COUNT(*) FROM concurso WHERE loteria_id = $1`, [loteriaId]);
     return Number(rows[0].count);
   },
   ["total-concursos"],
   { tags: ["concursos"], revalidate: 3600 }
-);
+));
 
 // Uma página do histórico (mais recentes primeiro). Cacheada por loteria e
 // página (os argumentos entram na chave) e limpa pela tag "concursos" a
 // cada importação — a página 2 muda sempre que entra um concurso novo.
-const getPaginaConcursos = unstable_cache(
+const getPaginaConcursos = cache(unstable_cache(
   async (loteriaId: number, pagina: number, porPagina: number): Promise<ConcursoResumo[]> => {
     const offset = (pagina - 1) * porPagina;
     const { rows } = await pool.query(
@@ -430,7 +437,7 @@ const getPaginaConcursos = unstable_cache(
   },
   ["pagina-concursos"],
   { tags: ["concursos"], revalidate: 3600 }
-);
+));
 
 export async function getConcursosPaginado(
   loteriaId: number,
@@ -584,7 +591,7 @@ export async function getDrawsParaSimulacao(
 // por loteria — funciona para qualquer loteria cujas faixas sejam descritas
 // por contagem de acertos (não serve para +Milionária, cuja faixa depende
 // também dos trevos: ver FAIXAS_MILIONARIA em lib/probabilidades.ts).
-export const getMapaFaixasPorAcertos = unstable_cache(
+export const getMapaFaixasPorAcertos = cache(unstable_cache(
   async (loteriaId: number): Promise<Record<number, number>> => {
     const { rows } = await pool.query(
       `SELECT DISTINCT pf.faixa, pf.descricao_faixa
@@ -602,7 +609,7 @@ export const getMapaFaixasPorAcertos = unstable_cache(
   },
   ["mapa-faixas-por-acertos"],
   { tags: ["concursos"], revalidate: 86400 }
-);
+));
 
 // Conta quantos concursos seguidos a faixa 1 ficou acumulada (sem ganhador)
 export async function getConcursosAcumulados(loteriaId: number): Promise<number> {
@@ -630,7 +637,7 @@ export async function getConcursosAcumulados(loteriaId: number): Promise<number>
 // último resultado importado), indexada por código, em "AAAA-MM-DD". Uma query
 // só para todas as loterias — usada pelo calendário, que não pode confiar só na
 // grade semanal fixa (a Caixa remaneja datas).
-export const getDatasProximosConcursos = unstable_cache(
+export const getDatasProximosConcursos = cache(unstable_cache(
   async (): Promise<Record<string, string>> => {
     const { rows } = await pool.query(
       `SELECT DISTINCT ON (c.loteria_id) l.codigo,
@@ -645,13 +652,13 @@ export const getDatasProximosConcursos = unstable_cache(
   },
   ["datas-proximos-concursos"],
   { tags: ["concursos"], revalidate: 300 }
-);
+));
 
 // Todas as edições da Mega da Virada, com as faixas premiadas, numa só ida
 // ao banco. Passado = lista explícita de concursos (CONCURSOS_VIRADA); de
 // 2026 em diante, o concurso de 31/12 (ou de 01/01, se o sorteio atrasar)
 // entra sozinho assim que o importador o grava.
-export const getEdicoesVirada = unstable_cache(
+export const getEdicoesVirada = cache(unstable_cache(
   async (): Promise<EdicaoVirada[]> => {
     const { rows } = await pool.query(
       `SELECT c.numero, c.data_sorteio, c.dezenas, c.valor_arrecadado,
@@ -694,4 +701,4 @@ export const getEdicoesVirada = unstable_cache(
   },
   ["edicoes-virada"],
   { tags: ["concursos"], revalidate: 3600 }
-);
+));

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import {
   classificarJogo,
@@ -29,7 +30,7 @@ export interface AnaliseConcurso extends ClassificacaoJogo, ComparacaoHistorico 
 // no Search Console. Com unstable_cache, essas 7 queries rodam no máximo 1x por
 // dia por loteria (9 loterias = 9 execuções/dia), e todas as páginas de concurso
 // daquela loteria compartilham o mesmo resultado em cache.
-const getDistribuicoesCacheadas = unstable_cache(
+const getDistribuicoesCacheadas = cache(unstable_cache(
   async (loteriaId: number) => {
     const [paresImpares, primosDist, fibonacciDist, mult3Dist, sequencias, molduraCentro, soma] =
       await Promise.all([
@@ -45,7 +46,7 @@ const getDistribuicoesCacheadas = unstable_cache(
   },
   ["distribuicoes-por-loteria"],
   { revalidate: 86400 } // 24 horas
-);
+));
 
 export async function analisarConcurso(
   loteriaId: number,

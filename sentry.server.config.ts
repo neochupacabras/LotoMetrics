@@ -8,6 +8,9 @@ Sentry.init({
 
   tracesSampleRate: process.env.NODE_ENV === "development" ? 1.0 : 0.1,
 
-  // Anexa valores de variáveis locais aos frames do stack trace.
-  includeLocalVariables: true,
+  // includeLocalVariables fica DESLIGADO: ele liga o depurador do Node
+  // (node:inspector) para capturar variáveis nas exceções, e isso deixava
+  // toda renderização ISR ~2s mais lenta — página de resultado em 2,7s com
+  // ele, ~0,3s sem (preview na Vercel, 13/11/2026).
+  includeLocalVariables: false,
 });
