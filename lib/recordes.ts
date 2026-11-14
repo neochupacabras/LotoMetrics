@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import pool from "./db";
 import { getAcumulos } from "./queries";
@@ -39,7 +40,7 @@ export interface RecordesLoteria {
 
 const iso = (d: Date | string) => (d instanceof Date ? d.toISOString() : String(d)).slice(0, 10);
 
-export const getRecordesLoteria = unstable_cache(
+export const getRecordesLoteria = cache(unstable_cache(
   async (loteriaId: number, codigoLoteria: string): Promise<RecordesLoteria | null> => {
     const faixas = faixasPrincipais(codigoLoteria);
     const dezenas = temRecordesDeDezenas(codigoLoteria);
@@ -117,7 +118,7 @@ export const getRecordesLoteria = unstable_cache(
   },
   ["recordes-loteria"],
   { tags: ["concursos"], revalidate: 86400 }
-);
+));
 
 export interface RecordeGeral {
   codigo: string;
@@ -129,7 +130,7 @@ export interface RecordeGeral {
 
 // Hub /recordes: o maior prêmio por aposta de cada loteria, numa consulta só
 // (sem uma consulta por loteria).
-export const getMaioresPremiosPorLoteria = unstable_cache(
+export const getMaioresPremiosPorLoteria = cache(unstable_cache(
   async (): Promise<RecordeGeral[]> => {
     const { rows } = await pool.query(
       `SELECT DISTINCT ON (l.codigo) l.codigo, c.numero, c.data_sorteio, pf.valor_premio, pf.qtd_ganhadores
@@ -152,4 +153,4 @@ export const getMaioresPremiosPorLoteria = unstable_cache(
   },
   ["recordes-gerais"],
   { tags: ["concursos"], revalidate: 86400 }
-);
+));
