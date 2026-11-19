@@ -187,7 +187,7 @@ function CardsResumo({ r, cor }: { r: ResultadoSimulacao; cor?: string }) {
       <div className="simulador-hist-card cartao-elevado">
         <span className="simulador-hist-card-rotulo">Retorno</span>
         <span className="simulador-hist-card-valor">{r.retornoPct.toFixed(1)}%</span>
-        <span className="simulador-hist-card-detalhe">média teórica: ~43%</span>
+        <span className="simulador-hist-card-detalhe">do valor gasto</span>
       </div>
     </div>
   );
@@ -641,9 +641,11 @@ export default function SimuladorHistoricoClient({
               ? "teria fechado no positivo"
               : "teria perdido dinheiro"}: saldo final de{" "}
             <strong>{formatarReaisSimples(resultado.saldoFinal)}</strong> — um retorno de{" "}
-            <strong>{resultado.retornoPct.toFixed(1)}%</strong> do que foi gasto,{" "}
-            {resultado.retornoPct >= 43 ? "acima" : "abaixo"} da média histórica de ~43% pra
-            qualquer combinação.
+            <strong>{resultado.retornoPct.toFixed(1)}%</strong> do que foi gasto. Os
+            43,79% da arrecadação que a Caixa destina a prêmios não são o retorno
+            esperado de um jogo: parte desse valor vai para reservas de concursos
+            especiais e, nas loterias que acumulam, o prêmio principal fica concentrado
+            em poucos concursos.
           </InsightCallout>
 
           <CardsResumo r={resultado} />

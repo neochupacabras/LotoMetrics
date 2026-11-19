@@ -157,7 +157,9 @@ export default async function MegaDaViradaPage() {
           {textoContagem(dias, ano)} O sorteio é em 31 de dezembro, o prêmio não acumula
           e a aposta simples custa {formatarMoeda(PRECO_APOSTA_SIMPLES)}. Abaixo, o
           resultado e o prêmio de todas as edições desde 2009, as dezenas que mais
-          saíram e o montador de bolão para o seu grupo.
+          saíram e o montador de bolão para o seu grupo. Em 31/12/2008 houve um
+          concurso especial de fim de ano (nº 1035), com outro nome,
+          que acumulou; ele não entra na série da Mega da Virada.
         </p>
 
         {edicoes.length > 0 && (

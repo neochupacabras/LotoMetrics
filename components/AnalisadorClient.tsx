@@ -56,10 +56,10 @@ function fraseFrequencia(pct: number): string {
 // típicas"). Mesmo vocabulário raro/comum que os badges já usam.
 function fraseVeredito(tipicas: number): string {
   if (tipicas === 7) {
-    return "é um perfil clássico — todas as 7 características batem com o que a maioria já jogou";
+    return "é um perfil clássico — todas as 7 características batem com a maioria das combinações possíveis";
   }
   if (tipicas >= 5) {
-    return `é um perfil bem típico — ${tipicas} de 7 características batem com o que a maioria já jogou`;
+    return `é um perfil bem típico — ${tipicas} de 7 características batem com a maioria das combinações possíveis`;
   }
   if (tipicas >= 3) {
     return `tem um perfil misto — ${tipicas} de 7 características são comuns, o resto foge um pouco do padrão`;

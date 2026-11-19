@@ -215,6 +215,21 @@ export function temOpcoesBolao(codigoLoteria: string): boolean {
   return codigoLoteria in OPCOES_BOLAO;
 }
 
+// Exemplo para o texto explicativo do bolão: o pool do meio da faixa
+// oferecida e a menor garantia disponível nele (o plano mais barato desse
+// pool). Lido da tabela para que cada loteria mostre números que o
+// otimizador realmente gera — o texto fixo da Lotofácil ("18 dezenas,
+// garantia de 13") aparecia na página da Mega-Sena (auditoria, MS-23).
+export function exemploBolao(codigoLoteria: string): OpcaoBolao | null {
+  const opcoes = OPCOES_BOLAO[codigoLoteria];
+  if (!opcoes?.length) return null;
+  const pools = [...new Set(opcoes.map((o) => o.tamanhoPool))].sort((a, b) => a - b);
+  const pool = pools[Math.floor((pools.length - 1) / 2)];
+  return opcoes
+    .filter((o) => o.tamanhoPool === pool)
+    .reduce((menor, o) => (o.garantia < menor.garantia ? o : menor));
+}
+
 export interface PlanoBolao extends OpcaoBolao {
   custoTotal: number;
 }
