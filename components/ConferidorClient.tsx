@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { memo, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import SeletorColunasSuperSete from "./SeletorColunasSuperSete";
 import dynamic from "next/dynamic";
@@ -307,13 +307,24 @@ export default function ConferidorClient({
   );
 }
 
-function ResultadoConferidor({
+// memo: o resultado não depende do que se digita no campo de colar números.
+// Sem isso cada tecla rerenderizava o gráfico (Recharts) — ver GraficoBarras.
+const ResultadoConferidor = memo(function ResultadoConferidor({
   dados,
   codigoLoteria,
 }: {
   dados: NonNullable<ConferidorActionResult["dados"]>;
   codigoLoteria: string;
 }) {
+  const barras = useMemo(
+    () =>
+      dados.distribuicaoPontos.map((d) => ({
+        rotulo: String(d.pontos),
+        valor: d.ocorrencias,
+        destaque: dados.melhorResultado ? d.pontos === dados.melhorResultado.pontos : false,
+      })),
+    [dados]
+  );
   return (
     <div className="bloco">
       {dados.ultimoConcurso && (
@@ -344,11 +355,7 @@ function ResultadoConferidor({
         Distribuição completa
       </h2>
       <GraficoBarras
-        dados={dados.distribuicaoPontos.map((d) => ({
-          rotulo: String(d.pontos),
-          valor: d.ocorrencias,
-          destaque: dados.melhorResultado ? d.pontos === dados.melhorResultado.pontos : false,
-        }))}
+        dados={barras}
         rotuloValor="concursos"
         altura={240}
       />
@@ -417,7 +424,7 @@ function ResultadoConferidor({
       </div>
     </div>
   );
-}
+});
 
 function RetornoFinanceiroSection({
   codigoLoteria,
