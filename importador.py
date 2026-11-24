@@ -19,6 +19,10 @@ Modos de uso
 3) Importar/corrigir um concurso especifico:
    python importador.py --loteria megasena --modo unico --numero 2935
 
+4) Gravar um concurso a partir de um JSON (formato da API da Caixa), quando
+   a Caixa e o espelho estao sem o resultado:
+   python importador.py --loteria supersete --modo arquivo --arquivo dados/manuais/supersete-925.json
+
 Configuracao do banco via variaveis de ambiente:
    PGHOST, PGPORT, PGDATABASE, PGUSER, PGPASSWORD
 (ou edite os valores padrao em DB_CONFIG abaixo)
@@ -119,6 +123,16 @@ def _normalizar_fallback(d: dict) -> dict:
     }
 
 
+# Vao para job_runs.details. "sem_fonte" (nenhuma fonte respondeu) marca a
+# execucao como "partial", que o /admin mostra como alerta. Usar o espelho
+# nao e falha (a Caixa devolve erro para o Super Sete desde 10/2026), so fica
+# registrado. Espelho desatualizado (11/2026: Caixa e espelho sem o Super Sete
+# 925) nao da pra detectar aqui; o frescor do /admin pega pela data do
+# proximo sorteio (lib/admin/frescor.ts).
+loterias_sem_fonte: set = set()
+loterias_via_espelho: set = set()
+
+
 def buscar_resultado_api(loteria_codigo: str, numero: Optional[int] = None) -> Optional[dict]:
     dados = _buscar_url(f"{BASE_URL}/{loteria_codigo}" + (f"/{numero}" if numero is not None else ""))
     if dados is None and loteria_codigo in LOTERIAS_COM_FALLBACK:
@@ -126,6 +140,9 @@ def buscar_resultado_api(loteria_codigo: str, numero: Optional[int] = None) -> O
         alt = _buscar_url(f"{URL_FALLBACK}/{loteria_codigo}/{numero if numero is not None else 'latest'}")
         if alt and alt.get("concurso") is not None:
             dados = _normalizar_fallback(alt)
+            loterias_via_espelho.add(loteria_codigo)
+    if dados is None:
+        loterias_sem_fonte.add(loteria_codigo)
     return dados
 
 
@@ -273,6 +290,20 @@ def importar_concurso(conn, loteria_codigo: str, loteria_id: int, numero: int) -
     salvar_concurso(conn, loteria_id, dados)
     log.info("Concurso %d de %s salvo/atualizado.", numero, loteria_codigo)
     return True
+
+
+def importar_arquivo(conn, loteria_id: int, caminho: str) -> int:
+    """Grava um concurso a partir de um JSON no formato da API da Caixa, para
+    quando a Caixa e o espelho ficam sem o resultado.
+    Quando a API voltar, rode --modo unico --numero N para trocar pelos dados
+    oficiais (o incremental nao regrava um concurso que ja esta no banco)."""
+    with open(caminho, encoding="utf-8") as f:
+        dados = json.load(f)
+    numero = dados.get("numero")
+    if not isinstance(numero, int) or not dados.get("dataApuracao") or not dados.get("listaDezenas"):
+        raise ValueError(f"{caminho}: faltam numero, dataApuracao ou listaDezenas.")
+    salvar_concurso(conn, loteria_id, dados)
+    return numero
 
 
 def importar_intervalo(conn, loteria_codigo: str, inicio: int, fim: int) -> list:
@@ -446,7 +477,8 @@ def registrar_job_run(status: str, iniciado_em: datetime, detalhes: Optional[dic
 def main():
     parser = argparse.ArgumentParser(description="Importador de resultados de loterias da Caixa.")
     parser.add_argument("--loteria", choices=["lotofacil", "megasena", "quina", "lotomania", "diadesorte", "maismilionaria", "timemania", "duplasena", "supersete", "todas"], default="todas")
-    parser.add_argument("--modo", choices=["incremental", "backfill", "unico"], default="incremental")
+    parser.add_argument("--modo", choices=["incremental", "backfill", "unico", "arquivo"], default="incremental")
+    parser.add_argument("--arquivo", help="JSON no formato da API da Caixa (modo arquivo)")
     parser.add_argument("--inicio", type=int, help="Numero inicial (modo backfill)")
     parser.add_argument("--fim", type=int, help="Numero final (modo backfill)")
     parser.add_argument("--numero", type=int, help="Numero do concurso (modo unico)")
@@ -480,6 +512,16 @@ def main():
                 if importar_concurso(conn, loteria_codigo, loteria_id, args.numero):
                     houve_atualizacao = True
                     concursos_novos.append({"loteria": loteria_codigo, "numero": args.numero})
+
+            elif args.modo == "arquivo":
+                if args.loteria == "todas" or not args.arquivo:
+                    log.error("Modo arquivo requer uma --loteria especifica e --arquivo.")
+                    sys.exit(1)
+                loteria_id = obter_loteria_id(conn, loteria_codigo)
+                numero = importar_arquivo(conn, loteria_id, args.arquivo)
+                log.info("Concurso %d de %s salvo a partir de %s.", numero, loteria_codigo, args.arquivo)
+                houve_atualizacao = True
+                concursos_novos.append({"loteria": loteria_codigo, "numero": numero})
     except Exception as e:
         registrar_job_run("failed", iniciado_em, detalhes={"modo": args.modo, "loterias": loterias}, erro=str(e))
         raise
@@ -490,10 +532,16 @@ def main():
         invalidar_cache_site()
         disparar_notificacoes()
 
+    detalhes = {"modo": args.modo, "loterias": loterias, "houve_atualizacao": houve_atualizacao}
+    if loterias_via_espelho:
+        detalhes["via_espelho"] = sorted(loterias_via_espelho)
+    if loterias_sem_fonte:
+        detalhes["sem_fonte"] = sorted(loterias_sem_fonte)
     registrar_job_run(
-        "success",
+        "partial" if loterias_sem_fonte else "success",
         iniciado_em,
-        detalhes={"modo": args.modo, "loterias": loterias, "houve_atualizacao": houve_atualizacao},
+        detalhes=detalhes,
+        erro=f"Nenhuma fonte respondeu para: {', '.join(sorted(loterias_sem_fonte))}" if loterias_sem_fonte else None,
     )
 
 

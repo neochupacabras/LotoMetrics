@@ -63,6 +63,12 @@ interface Alerta {
 // pra justificar com dado real hoje: job travado/falhando, loteria com
 // dados atrasados, ou volume de erro acima do limiar já usado no Platform
 // Health. Nada de limiar arbitrário novo só pra preencher a seção.
+// "2026-11-23" -> "23/11", sem passar por Date (evita deslocamento de fuso).
+function dataCurta(iso: string): string {
+  const [, mes, dia] = iso.split("-");
+  return `${dia}/${mes}`;
+}
+
 function montarAlertas(
   jobs: Awaited<ReturnType<typeof getSaudeJobs>>,
   frescor: Awaited<ReturnType<typeof getFrescorLoterias>>,
@@ -80,20 +86,33 @@ function montarAlertas(
         nivel: "critical",
       });
     } else if (j.status === "warning") {
-      alertas.push({ texto: `Job "${NOME_JOB[j.jobName] ?? j.jobName}" está próximo do limite de atraso.`, nivel: "warning" });
+      alertas.push({
+        texto:
+          j.ultimoStatus === "partial"
+            ? `Job "${NOME_JOB[j.jobName] ?? j.jobName}" terminou com falhas parciais na última execução.`
+            : `Job "${NOME_JOB[j.jobName] ?? j.jobName}" está próximo do limite de atraso.`,
+        nivel: "warning",
+      });
     }
   }
 
   for (const f of frescor) {
-    if (f.status === "critical") {
+    if (f.status === "healthy") continue;
+    const nivel = f.status;
+    if (f.diasDesde == null) {
+      alertas.push({ texto: `Nenhum concurso de ${f.nome} encontrado no banco.`, nivel });
+    } else if (f.proximoSorteio) {
       alertas.push({
-        texto: f.diasDesde == null
-          ? `Nenhum concurso de ${f.nome} encontrado no banco.`
-          : `Dados de ${f.nome} desatualizados há ${f.diasDesde} dias.`,
-        nivel: "critical",
+        texto: `Sorteio de ${f.nome} de ${dataCurta(f.proximoSorteio)} ainda não foi importado (último no banco: ${f.ultimoConcurso}).`,
+        nivel,
       });
-    } else if (f.status === "warning") {
-      alertas.push({ texto: `Dados de ${f.nome} começando a atrasar (${f.diasDesde} dias).`, nivel: "warning" });
+    } else {
+      alertas.push({
+        texto: nivel === "critical"
+          ? `Dados de ${f.nome} desatualizados há ${f.diasDesde} dias.`
+          : `Dados de ${f.nome} começando a atrasar (${f.diasDesde} dias).`,
+        nivel,
+      });
     }
   }
 
@@ -276,8 +295,9 @@ export default async function AdminOverviewPage({
 
       <p className={styles.sectionTitle}>Frescor de dados por loteria</p>
       <p className={styles.note}>
-        Status calculado a partir da cadência esperada de sorteios de cada loteria (lib/calendario.ts) — não
-        é uma verificação exata dia a dia, serve para sinalizar atraso visível na importação. Checagens
+        Status pela data do próximo sorteio informada pela Caixa: o resultado deve estar no banco até o
+        meio-dia seguinte ao sorteio, e uma pausa anunciada (concurso especial) não alerta. Sem essa data,
+        vale a cadência esperada de sorteios (lib/admin/frescor.ts). Checagens
         de integridade (gaps, duplicados) em <Link href="/admin/data-health">/admin/data-health</Link>.
       </p>
       <table className={styles.table}>
@@ -287,6 +307,7 @@ export default async function AdminOverviewPage({
             <th>Último concurso</th>
             <th>Data do sorteio</th>
             <th>Dias desde</th>
+            <th>Próximo sorteio</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -299,6 +320,7 @@ export default async function AdminOverviewPage({
                 {f.dataUltimoSorteio ? new Date(f.dataUltimoSorteio).toLocaleDateString("pt-BR") : "—"}
               </td>
               <td className={styles.numCell}>{f.diasDesde ?? "—"}</td>
+              <td className={styles.numCell}>{f.proximoSorteio ? dataCurta(f.proximoSorteio) : "—"}</td>
               <td>
                 <span className={`${styles.dot} ${DOT_CLASS[f.status]}`} style={{ display: "inline-block", marginRight: 6 }} />
                 {LABEL_STATUS[f.status]}
