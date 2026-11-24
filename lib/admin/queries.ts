@@ -5,6 +5,7 @@ import { variacaoPct, type Periodo } from "@/lib/admin/periodo";
 import { FERRAMENTAS_CONHECIDAS } from "@/lib/telemetry";
 import { LOTERIAS } from "@/lib/format";
 import { abaAplicavel } from "@/lib/abas-loteria";
+import { avaliarFrescor, type StatusFrescor } from "@/lib/admin/frescor";
 
 // Camada de leitura do Admin Control Center. Fase 1: só expõe métricas
 // calculáveis hoje com os dados já existentes (ver docs/ADMIN_AUDIT.md,
@@ -128,7 +129,7 @@ export async function getKpisExecutivos(periodo: Periodo): Promise<KpisExecutivo
   };
 }
 
-export type StatusFrescor = "healthy" | "warning" | "critical";
+export type { StatusFrescor } from "@/lib/admin/frescor";
 
 export interface FrescorLoteria {
   codigo: string;
@@ -136,22 +137,11 @@ export interface FrescorLoteria {
   ultimoConcurso: number | null;
   dataUltimoSorteio: string | null;
   diasDesde: number | null;
+  proximoSorteio: string | null; // YYYY-MM-DD, informado pela Caixa no último concurso
   status: StatusFrescor;
 }
 
-// Critério de saúde, documentado (não é um número mágico): cada loteria tem
-// uma cadência esperada de sorteios/semana (lib/calendario.ts). Tolerância
-// = 2x o intervalo médio esperado entre sorteios + 1 dia de folga (cobre
-// fins de semana/feriados sem sorteio). "critical" a partir do dobro dessa
-// tolerância. É um critério simples o suficiente para sinalizar uma loteria
-// visivelmente atrasada — não tenta replicar o calendário exato dia a dia.
-function statusFrescor(diasDesde: number, sorteiosPorSemana: number): StatusFrescor {
-  const intervaloEsperadoDias = 7 / sorteiosPorSemana;
-  const tolerancia = intervaloEsperadoDias * 2 + 1;
-  if (diasDesde <= tolerancia) return "healthy";
-  if (diasDesde <= tolerancia * 2) return "warning";
-  return "critical";
-}
+// Critério de saúde documentado em lib/admin/frescor.ts.
 
 // ── Fase 2: jobs e erros ────────────────────────────────────────────────────
 
@@ -438,11 +428,13 @@ export async function getFrescorLoterias(): Promise<FrescorLoteria[]> {
     nome: string;
     numero: number | null;
     data_sorteio: string | Date | null;
+    proximo_sorteio: string | null;
   }>(`
-    SELECT l.codigo, l.nome, c.numero, c.data_sorteio
+    SELECT l.codigo, l.nome, c.numero, c.data_sorteio,
+      to_char(c.data_proximo_concurso, 'YYYY-MM-DD') AS proximo_sorteio
     FROM loteria l
     LEFT JOIN LATERAL (
-      SELECT numero, data_sorteio
+      SELECT numero, data_sorteio, data_proximo_concurso
       FROM concurso
       WHERE loteria_id = l.id
       ORDER BY numero DESC
@@ -461,6 +453,7 @@ export async function getFrescorLoterias(): Promise<FrescorLoteria[]> {
         ultimoConcurso: null,
         dataUltimoSorteio: null,
         diasDesde: null,
+        proximoSorteio: null,
         status: "critical",
       };
     }
@@ -472,7 +465,13 @@ export async function getFrescorLoterias(): Promise<FrescorLoteria[]> {
       ultimoConcurso: r.numero,
       dataUltimoSorteio: dataSorteio.toISOString(),
       diasDesde,
-      status: statusFrescor(diasDesde, qtdSorteiosPorSemana(r.codigo)),
+      proximoSorteio: r.proximo_sorteio,
+      status: avaliarFrescor({
+        diasDesde,
+        sorteiosPorSemana: qtdSorteiosPorSemana(r.codigo),
+        proximoSorteio: r.proximo_sorteio,
+        agora,
+      }),
     };
   });
 }

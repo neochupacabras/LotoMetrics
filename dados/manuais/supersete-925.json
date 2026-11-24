@@ -1,0 +1,21 @@
+{
+  "_fonte": "Gravado manualmente em 24/11/2026: API da Caixa (404/500) e espelho sem o concurso. Dados conferidos em 4 noticias concordantes (Mixvale, Tribuna de Jundiai, Correio do Povo Penedo, Piranot). Arrecadacao so na Mixvale; acumulado para o proximo nao divulgado. Trocar pelos dados oficiais com --modo unico --numero 925 quando a API voltar.",
+  "numero": 925,
+  "dataApuracao": "23/11/2026",
+  "listaDezenas": ["8", "3", "6", "0", "8", "3", "9"],
+  "dezenasSorteadasOrdemSorteio": ["8", "3", "6", "0", "8", "3", "9"],
+  "acumulado": true,
+  "localSorteio": "Espaço da Sorte",
+  "nomeMunicipioUFSorteio": "SAO PAULO, SP",
+  "valorArrecadado": 570822.0,
+  "valorAcumuladoProximoConcurso": null,
+  "valorEstimadoProximoConcurso": 700000.0,
+  "dataProximoConcurso": "25/11/2026",
+  "listaRateioPremio": [
+    { "faixa": 1, "descricaoFaixa": "7 acertos", "numeroDeGanhadores": 0, "valorPremio": 0 },
+    { "faixa": 2, "descricaoFaixa": "6 acertos", "numeroDeGanhadores": 1, "valorPremio": 23796.04 },
+    { "faixa": 3, "descricaoFaixa": "5 acertos", "numeroDeGanhadores": 23, "valorPremio": 1478.01 },
+    { "faixa": 4, "descricaoFaixa": "4 acertos", "numeroDeGanhadores": 409, "valorPremio": 83.11 },
+    { "faixa": 5, "descricaoFaixa": "3 acertos", "numeroDeGanhadores": 3889, "valorPremio": 6.0 }
+  ]
+}
