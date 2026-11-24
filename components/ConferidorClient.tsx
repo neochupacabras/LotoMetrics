@@ -81,12 +81,15 @@ export default function ConferidorClient({
     });
   }
 
-  function aplicarTextoColado() {
+  function lerTextoColado(): Set<number> {
     const numeros = (textoColar.match(/\d+/g) ?? [])
       .map(Number)
       .filter((n) => n >= dezenaMin && n <= dezenaMax);
-    const unicos = Array.from(new Set(numeros)).slice(0, qtdAposta);
-    setSelecionadas(new Set(unicos));
+    return new Set(Array.from(new Set(numeros)).slice(0, qtdAposta));
+  }
+
+  function aplicarTextoColado() {
+    setSelecionadas(lerTextoColado());
     setResultado(null);
     setErro(null);
   }
@@ -111,23 +114,50 @@ export default function ConferidorClient({
 
   const usaTrevos = codigoLoteria === "maismilionaria";
 
+  // Conta os cliques barrados pela validação: muda a `key` da mensagem de
+  // erro e a animação dela roda de novo. Sem isso, clicar outra vez em
+  // Conferir com o jogo incompleto não mudava nada na tela (rage click de
+  // 49 cliques no Sentry, LOTOANALITICA-J).
+  const [tentativasInvalidas, setTentativasInvalidas] = useState(0);
+
+  function recusar(mensagem: string) {
+    setErro(mensagem);
+    setTentativasInvalidas((n) => n + 1);
+  }
+
   function handleConferir() {
     setErro(null);
     setResultado(null);
 
-    if (!ehSuperSete && selecionadas.size !== qtdAposta) {
-      setErro(`Selecione exatamente ${qtdAposta} dezenas.`);
+    // Quem digitou ou colou os números e foi direto em Conferir, sem clicar
+    // em "Usar", espera que eles valham.
+    let dezenas = selecionadas;
+    if (!ehSuperSete && selecionadas.size < qtdAposta && textoColar.trim() !== "") {
+      const coladas = lerTextoColado();
+      if (coladas.size > selecionadas.size) {
+        dezenas = coladas;
+        setSelecionadas(coladas);
+      }
+    }
+
+    if (!ehSuperSete && dezenas.size !== qtdAposta) {
+      const faltam = qtdAposta - dezenas.size;
+      recusar(
+        dezenas.size === 0
+          ? `Marque as ${qtdAposta} dezenas do seu jogo na grade (ou cole os números e clique em Usar).`
+          : `${faltam === 1 ? "Falta 1 dezena" : `Faltam ${faltam} dezenas`}: você marcou ${dezenas.size} de ${qtdAposta}.`
+      );
       return;
     }
     if (usaTrevos && trevosSelecionados.size !== 2) {
-      setErro("Selecione exatamente 2 trevos.");
+      recusar(`Marque os 2 trevos do seu jogo (você marcou ${trevosSelecionados.size}).`);
       return;
     }
 
     startTransition(async () => {
       const r = await conferirJogoAction(
         codigoLoteria,
-        ehSuperSete ? colunas : Array.from(selecionadas),
+        ehSuperSete ? colunas : Array.from(dezenas),
         usaTrevos ? Array.from(trevosSelecionados) : undefined
       );
       setRestantes(r.restantes ?? null);
@@ -199,6 +229,12 @@ export default function ConferidorClient({
           placeholder="ex: 01 - 02 - 05 - 09 ..."
           value={textoColar}
           onChange={(e) => setTextoColar(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              aplicarTextoColado();
+            }
+          }}
           style={{
             flex: 1,
             padding: "8px 10px",
@@ -268,7 +304,11 @@ export default function ConferidorClient({
         </button>
       </div>
 
-      {erro && <p className="gerador-erro">{erro}</p>}
+      {erro && (
+        <p key={tentativasInvalidas} className="gerador-erro gerador-erro--destaque" role="alert">
+          {erro}
+        </p>
+      )}
 
       {resultado?.ok && resultado.dados && (
         <ResultadoConferidor dados={resultado.dados} codigoLoteria={codigoLoteria} />
