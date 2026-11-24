@@ -1166,6 +1166,27 @@ footer.rodape {
   margin: 12px 0;
 }
 
+/* Erro de validação do Conferidor: caixa visível que pisca de novo a cada
+   clique recusado (a `key` muda e a animação recomeça). */
+.gerador-erro--destaque {
+  padding: 8px 12px;
+  border-left: 3px solid var(--rust);
+  background: color-mix(in srgb, var(--rust) 8%, transparent);
+  animation: gerador-erro-pisca 0.45s ease-out;
+}
+
+@keyframes gerador-erro-pisca {
+  0% { transform: translateX(0); background: color-mix(in srgb, var(--rust) 22%, transparent); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gerador-erro--destaque { animation: none; }
+}
+
 .lista-jogos-gerados {
   display: flex;
   flex-direction: column;
