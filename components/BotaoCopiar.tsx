@@ -16,7 +16,9 @@ export default function BotaoCopiar({
   const [copiado, setCopiado] = useState(false);
 
   function handleClick() {
-    navigator.clipboard?.writeText(texto);
+    // Sem permissão (ou fora de HTTPS) o writeText rejeita; não há o que
+    // fazer além de não deixar a promessa sem tratamento.
+    navigator.clipboard?.writeText(texto).catch(() => {});
     setCopiado(true);
     setTimeout(() => setCopiado(false), 1500);
   }
