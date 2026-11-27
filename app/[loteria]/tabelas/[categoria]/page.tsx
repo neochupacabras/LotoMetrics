@@ -18,6 +18,7 @@ import { compararTempoComMundoReal, estimarDiasCorridos } from "@/lib/insights";
 import { qtdSorteiosPorSemana } from "@/lib/calendario";
 import * as Estat from "@/lib/estatisticas";
 import { zonaDaDezena } from "@/lib/classificacao";
+import { cicloEsperado } from "@/lib/ciclo-esperado";
 import { NOME_LOTERIA, metadataPagina } from "@/lib/seo";
 
 // Essas tabelas recalculam distribuições estatísticas sobre todo o histórico
@@ -197,7 +198,13 @@ async function ConteudoCategoria({
         />
       );
     case "ciclos":
-      return <ConteudoCiclos loteriaId={loteriaId} />;
+      return (
+        <ConteudoCiclos
+          loteriaId={loteriaId}
+          universo={dezenaMax - dezenaMin + 1}
+          qtdDezenasSorteadas={qtdDezenasSorteadas}
+        />
+      );
     case "sequencias":
       return <ConteudoSequencias loteriaId={loteriaId} />;
     case "pares-impares":
@@ -257,7 +264,13 @@ async function ConteudoCategoria({
         />
       );
     case "linhas-colunas":
-      return <ConteudoLinhasColunas loteriaId={loteriaId} />;
+      return (
+        <ConteudoLinhasColunas
+          loteriaId={loteriaId}
+          universo={dezenaMax - dezenaMin + 1}
+          qtdDezenasSorteadas={qtdDezenasSorteadas}
+        />
+      );
     case "duques-trincas":
       return (
         <ConteudoDuquesTrincas
@@ -438,8 +451,18 @@ async function ConteudoAtraso({
 // ---------------------------------------------------------------
 // CICLOS
 // ---------------------------------------------------------------
-async function ConteudoCiclos({ loteriaId }: { loteriaId: number }) {
-  const { atual, historico } = await Estat.getCiclos(loteriaId);
+async function ConteudoCiclos({
+  loteriaId,
+  universo,
+  qtdDezenasSorteadas,
+}: {
+  loteriaId: number;
+  universo: number;
+  qtdDezenasSorteadas: number;
+}) {
+  const { atual, historico, resumoHistorico } = await Estat.getCiclos(loteriaId);
+  const esperado = cicloEsperado(universo, qtdDezenasSorteadas);
+  const fmt1 = (n: number) => n.toFixed(1).replace(".", ",");
   const totalNoCicloAtual = atual
     ? atual.dezenasSorteadas.length + atual.dezenasFaltantes.length
     : 0;
@@ -463,7 +486,13 @@ async function ConteudoCiclos({ loteriaId }: { loteriaId: number }) {
               <>
                 {atual.dezenasFaltantes.length > 0 ? (
                   <>
-                    Faltam apenas <strong>{atual.dezenasFaltantes.length} dezenas</strong> pra
+                    {/* "apenas" só quando o ciclo pode fechar no próximo concurso;
+                        na Mega-Sena faltam dezenas às dezenas (auditoria, MS-25). */}
+                    {atual.dezenasFaltantes.length <= qtdDezenasSorteadas ? "Faltam apenas" : "Faltam"}{" "}
+                    <strong>
+                      {atual.dezenasFaltantes.length}{" "}
+                      {atual.dezenasFaltantes.length === 1 ? "dezena" : "dezenas"}
+                    </strong>{" "}pra
                     fechar esse ciclo — depois disso, todas as {totalNoCicloAtual} dezenas terão
                     saído ao menos uma vez desde o concurso #{atual.concursoInicio}.
                   </>
@@ -508,6 +537,18 @@ async function ConteudoCiclos({ loteriaId }: { loteriaId: number }) {
             concursos pra fechar — o mais rápido levou{" "}
             {Math.min(...historico.map((c) => c.qtdConcursos))} e o mais demorado,{" "}
             {Math.max(...historico.map((c) => c.qtdConcursos))}.
+            {resumoHistorico && (
+              <>
+                {" "}Em todo o histórico ({resumoHistorico.totalCiclos} ciclos fechados), a
+                média é de <strong>{fmt1(resumoHistorico.mediaConcursos)}</strong> concursos.
+              </>
+            )}
+            {Number.isFinite(esperado) && (
+              <>
+                {" "}Pela matemática, o esperado é{" "}
+                <strong>{fmt1(esperado)}</strong> concursos por ciclo.
+              </>
+            )}
           </p>
         )}
         <GraficoBarras
@@ -1014,18 +1055,63 @@ async function ConteudoMolduraCentro({
 // ---------------------------------------------------------------
 // LINHAS E COLUNAS
 // ---------------------------------------------------------------
-async function ConteudoLinhasColunas({ loteriaId }: { loteriaId: number }) {
+// Quantos desvios-padrão a contagem de uma linha (ou coluna) está acima do
+// esperado ao acaso, supondo que todas tenham o mesmo número de dezenas. Por
+// concurso, as dezenas que caem numa faixa de `universo / partes` casas seguem
+// a hipergeométrica; somando os concursos, a variância é
+// total · q(1−q) · (universo − sorteadas)/(universo − 1), com q = 1/partes.
+// Auditoria da Mega-Sena, MS-26: o "ponto quente" era anunciado sem dizer
+// que a maior de várias contagens sempre fica acima da média.
+function desvioDaMaior(
+  frequencias: number[],
+  universo: number,
+  qtdDezenasSorteadas: number
+): { esperado: number; desvios: number } | null {
+  const partes = frequencias.length;
+  if (partes < 2 || universo % partes !== 0 || universo <= 1) return null;
+  const total = frequencias.reduce((s, f) => s + f, 0);
+  const q = 1 / partes;
+  const esperado = total * q;
+  const dp = Math.sqrt(
+    total * q * (1 - q) * ((universo - qtdDezenasSorteadas) / (universo - 1))
+  );
+  if (!(dp > 0)) return null;
+  return { esperado, desvios: (Math.max(...frequencias) - esperado) / dp };
+}
+
+async function ConteudoLinhasColunas({
+  loteriaId,
+  universo,
+  qtdDezenasSorteadas,
+}: {
+  loteriaId: number;
+  universo: number;
+  qtdDezenasSorteadas: number;
+}) {
   const { linhas, colunas } = await Estat.getLinhasColunas(loteriaId);
   const linhaTop = [...linhas].sort((a, b) => b.frequencia - a.frequencia)[0];
   const colunaTop = [...colunas].sort((a, b) => b.frequencia - a.frequencia)[0];
+  const devLinha = desvioDaMaior(linhas.map((l) => l.frequencia), universo, qtdDezenasSorteadas);
+  const devColuna = desvioDaMaior(colunas.map((c) => c.frequencia), universo, qtdDezenasSorteadas);
+  const fmt1 = (n: number) => n.toFixed(1).replace(".", ",");
   return (
     <>
       {linhaTop && colunaTop && (
-        <InsightCallout kicker="O ponto quente do volante">
+        <InsightCallout kicker="Onde mais saíram dezenas">
           A <strong>linha {linhaTop.posicao}</strong> e a{" "}
-          <strong>coluna {colunaTop.posicao}</strong> são as que mais entregam
+          <strong>coluna {colunaTop.posicao}</strong> foram as que mais entregaram
           dezenas sorteadas — {linhaTop.frequencia} e {colunaTop.frequencia}{" "}
           ocorrências, respectivamente, ao longo de todo o histórico.
+          {devLinha && devColuna && (
+            <>
+              {" "}Pelo acaso, cada linha teria cerca de {Math.round(devLinha.esperado)} e
+              cada coluna cerca de {Math.round(devColuna.esperado)}: a linha está{" "}
+              {fmt1(devLinha.desvios)} e a coluna {fmt1(devColuna.desvios)} desvios-padrão
+              acima disso.
+            </>
+          )}{" "}
+          Entre várias linhas e colunas, alguma sempre fica acima da média; isso
+          descreve o passado e não muda a chance de nenhuma dezena no próximo sorteio.
         </InsightCallout>
       )}
       <div className="bloco">

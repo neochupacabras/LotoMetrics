@@ -198,11 +198,11 @@ export default function ArtigoAtrasoPage() {
           depois, sem nenhum "efeito de compensação" visível nos sorteios seguintes.
         </p>
         <p>
-          Na Mega-Sena, atrasos acima de 100 concursos já ocorreram para dezenas
-          específicas — o que com 60 dezenas e apenas 10% sendo sorteadas por vez é
-          estatisticamente plausível. Um atraso de 100 concursos na Mega-Sena tem
-          probabilidade de 0,0000265% — raro, mas não impossível em mais de 3.000
-          concursos realizados.
+          Na Mega-Sena, só uma dezena passou de 100 concursos de atraso: a 42, que
+          ficou 108 concursos sem sair. A chance de uma dezena específica ficar 100
+          concursos seguidos sem ser sorteada é de 0,9 elevado a 100, cerca de
+          0,00266% (1 em 38 mil) — rara para uma dezena num momento qualquer, mas
+          esperada de vez em quando com 60 dezenas e mais de 3.000 concursos.
         </p>
 
         <h2 className="dica-artigo__subtitulo" style={{ marginTop: "36px" }}>

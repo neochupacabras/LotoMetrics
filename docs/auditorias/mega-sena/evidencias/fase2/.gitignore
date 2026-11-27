@@ -1,0 +1,2 @@
+# Exportações do banco de produção (regeneráveis com export.sql e fns.sql)
+*.json
