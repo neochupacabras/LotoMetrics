@@ -19,6 +19,24 @@ Sentry.init({
     // grava texto nem mídia da tela, reduzindo exposição de PII.
     Sentry.replayIntegration(),
   ],
+
+  // Descarta promessas rejeitadas com `undefined` e sem stack: é a
+  // assinatura de scripts de terceiros (AdSense/qualidade de anúncios do
+  // Google, sobretudo no Safari do iOS) — sem stack não há o que investigar
+  // nem como corrigir. Nosso código não rejeita com `undefined`; qualquer
+  // rejeição com Error (ou com outro valor) continua sendo reportada.
+  // LOTOANALITICA-K, 27/11/2026.
+  beforeSend(event) {
+    const ex = event.exception?.values?.[0];
+    if (
+      ex?.type === "UnhandledRejection" &&
+      ex.value === "Non-Error promise rejection captured with value: undefined" &&
+      !ex.stacktrace?.frames?.length
+    ) {
+      return null;
+    }
+    return event;
+  },
 });
 
 // Liga as transições de navegação do App Router ao tracing.
